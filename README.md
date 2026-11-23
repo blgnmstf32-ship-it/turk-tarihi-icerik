@@ -1,15 +1,20 @@
-# Türk Tarihi — ücretsiz sinematik belgesel Reels otomasyonu v0.6
+# Türk Tarihi — ücretsiz sinematik belgesel Reels otomasyonu v0.7
 
 20 uzman rol, kaynaklı Türk tarihi konularını 60–75 saniyelik dikey belgesel taslağına dönüştürür. Roller aynı ücretsiz Python yürütücüsündeki iş modülleridir; 20 bağımsız/ücretli AI çalışanı değildir.
 
 ## Varsayılan video biçimi
 
-- 60–75 saniye, 9:16, 720×1280, 30 fps.
+- 60–75 saniye, 9:16, 1080×1920, 30 fps ve 10–12 sahne.
 - En az 10 tarihî alan/eser/harita/minyatür/arşiv görseli. Önce lisans ve kaynak bilgisi alınabilen ücretsiz Wikimedia Commons medyası aranır. Yetersiz sonuçta açıkça etiketlenmiş temsili sahne kullanılır ve görsel kalite kapısı başarısız olarak işaretlenir.
 - Remotion: yavaş sinematik yakınlaşma ve kaydırma, yumuşak sahne geçişi, hareketli Türkçe altyazı ve sırayla sözcük vurgusu.
 - FFmpeg: anlatım ve özgün/ücretsiz ambiyans miksajı, H.264/AAC MP4 sonlandırma.
 - Anlatım yönü: doğal ve merak uyandıran belgesel tonu; net telaffuz, dönüm noktalarında canlı ama ölçülü vurgu, tempoda çeşitlilik ve anlamlı duraklar.
 - İnsan ses kaydı varsa önceliklidir. Ücretsiz çevrimdışı Piper yedek sesidir ve sentetiktir; tek başına gerçek insan anlatımı doğallığı sağlamaz.
+- Google Chirp 3 HD ve Azure Speech seçilebilir, fakat iki bulut sağlayıcı da varsayılan olarak kapalıdır. Ücretli yedek geçişi yoktur; maliyet sınırı sıfırdır.
+- faster-whisper ile yerel altyazı kontrolü ve PySceneDetect ile sahne kontrolü isteğe bağlı `requirements-*-audit.txt` dosyalarında bulunur; indirilen modeller/ağ kullanımı varsayılan olarak kapalıdır.
+- Wikimedia lisans/atıfları `MEDIA_ATTRIBUTION.md` dosyasına yazılır. Görsel yetersizse açık etiketli temsili canlandırma kullanılır; gerçek fotoğraf diye gösterilmez.
+- Hata ve kullanıcı geri bildirimi `output/observer/*.jsonl` içine yerel kaydedilir; anahtarlar gizlenir.
+- Instagram Insights için salt okunur kapalı iskelettir. Otomatik yayın özelliği açılmaz.
 - İnsan anlatımı için programın ürettiği `VOICE_RECORDING_GUIDE.txt` dosyasındaki satırları ayrı dosyalara `01.wav`, `02.wav` … şeklinde kaydedip `--voice-recordings kayit-klasoru` seçeneğiyle verin. Böylece altyazılar her cümlenin gerçek ses süresine oturur.
 
 ## Maliyet ve yayın kapıları

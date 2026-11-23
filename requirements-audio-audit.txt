@@ -1,0 +1,2 @@
+# Optional offline QA only; model files must already be present locally.
+faster-whisper>=1.1,<2

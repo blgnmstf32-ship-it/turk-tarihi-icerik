@@ -21,7 +21,7 @@ Doğru, tarafsız, merak uyandırıcı, özlü. Kökenleri, dönemleri, devletle
 ## MUTLAK VİDEO KALİTE KAPISI (öncelikli)
 
 - Sessiz yazı slaytlarını bitmiş Reels olarak sunma. Önizlemeyi asla `reel.mp4` veya `ready` olarak etiketleme.
-- Varsayılan taslak 60–75 saniye, 9:16, 720×1280 ve 30 fps olmalı; Remotion sahne/altyazı hareketini, FFmpeg konuşma ve ses miksajını üretmeli.
+- Varsayılan taslak 60–75 saniye, 9:16, 1080×1920 ve 30 fps olmalı; Remotion sahne/altyazı hareketini, FFmpeg konuşma ve ses miksajını üretmeli.
 - En az 10 ayrı sahne ve her cümleyle ilgisi bulunan görsel gerekir. Mümkünse doğrulanmış açık lisanslı tarihî fotoğraf, eser, alan, harita veya arşiv görseli kullan; canlandırmaları gerçek arşiv görüntüsü gibi gösterme.
 - Altyazı konuşmaya zamanlanmalı ve kelime/ifade vurgusuyla hareket etmelidir. Anlatı Türkçe, coşkulu ama ölçülü belgesel tonunda olmalıdır.
 - Piper sentetiktir; insan anlatıcısı doğallığı sağladığını iddia etme. Üretilen ses düz veya robotik duyulursa teknik test geçse bile taslak yayın kalitesini geçmez.
@@ -29,7 +29,15 @@ Doğru, tarafsız, merak uyandırıcı, özlü. Kökenleri, dönemleri, devletle
 - Ücretli video/ses modeli gerekiyorsa kullanıcı izni olmadan çağrı yapma.
 - `python -m scripts.release_check ...` teknik kontrolleri ve ardından insan görsel/ses kalitesi onayını gerektir.
 
-## v0.6 belgesel video biçimi
+## Varsayılan belgesel video biçimi
+- Varsayılan 1080×1920, 30 fps; 60–75 saniye ve 10–12 ayrı sahnedir.
+- Ücretli ses sağlayıcıları seçilebilir adaptörlerdir; varsayılan Piper, bulut ve faturalandırma kapalıdır. Kredi bittiğinde ücretli yedek sağlayıcıya geçiş yasaktır.
+- Google Chirp 3 HD/Azure için ayrıca `paid_services_enabled`, `cloud_voice_enabled`, ilgili sağlayıcı `enabled` değeri ve geçerli kimlik bilgisi gerekir. Üretim iş akışları bu ayarları otomatik açmaz.
+- Wikimedia Commons görsellerinde lisans adı, kaynak sayfası ve atıf korunur; 10 uygun fotoğraf bulunmazsa yerel temsili görseller kullanılır ve gerçek tarihî fotoğraf diye sunulmaz.
+- faster-whisper ve PySceneDetect isteğe bağlı, yerel QA kontrolleridir; varsayılan olarak kapalıdır ve model dosyalarını ağdan indirmez.
+- Yerel Task Observer JSONL dosyalarına gizli bilgileri ayıklayarak hata/geri bildirim yazar. Instagram Insights gelecekteki salt-okunur iskelettir; yayınlama uç noktası yoktur.
+
+## v0.7 belgesel video biçimi
 - Varsayılan üretim: `python -m scripts.auto_produce --topic malazgirt-1071 --out output/auto`.
 - Bütün 20 görev modülü her içerikte 60–75 saniyelik dikey tarih belgeseli için çalışır. Rol sayısı bağımsız/ücretli 20 AI ajanı olduğu anlamına gelmez.
 - Kurgu Remotion ile 30 fps dikey kompozisyon, yavaş sinematik kamera hareketi, sahne geçişleri ve kelime/ifade vurgulu hareketli altyazı üretir; FFmpeg anlatım, müzik ve son H.264/AAC MP4 karışımını yapar.

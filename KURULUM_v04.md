@@ -1,9 +1,9 @@
-# Türk Tarihi belgesel Reels otomasyonu v0.6
+# Türk Tarihi belgesel Reels otomasyonu v0.7
 
 ## İçerik üretim modeli
 
 - `config/agents.json` içindeki 20 görev rolü, tek Python iş akışında çalışır. Bu sayı 20 bağımsız ücretli LLM ajanı demek değildir.
-- Varsayılan video: 60–75 saniye, dikey 9:16, 720×1280, 30 fps.
+- Varsayılan video: 60–75 saniye, dikey 9:16, 1080×1920, 30 fps.
 - Sahne görsellerinde önce Wikimedia Commons'ın açık lisanslı bitmap eserleri, arşiv fotoğrafları, haritaları ve tarihî alan görüntüleri aranır. Yazar, lisans ve kaynak sayfası `MEDIA_ATTRIBUTION.md` içinde saklanır. Yeterli uygun görsel bulunmazsa yerel canlandırmalar kullanılır ve görsel kalite eksiği rapora yazılır.
 - Remotion sinematik sahne hareketini ve sözcük vurgulu altyazıları render eder. FFmpeg anlatım/müziği miksler ve H.264/AAC MP4'ü tamamlar.
 - Anlatıcı yönü merak uyandıran, doğal ve ölçülü coşkulu Türkçe belgesel tonudur. İnsan kaydı tercih edilir; Piper sentetik ücretsiz yedektir.
@@ -14,7 +14,7 @@
 - Ücretli AI, görsel ve ses API servisleri kapalıdır; ücretsiz kota dolarsa ücretli modele geçiş olmaz.
 - Wikimedia Commons'ın anahtarsız, ücretsiz araması dışında harici üretim servisi varsayılan değildir.
 - Instagram otomatik paylaşımı kapalı, insan onayı zorunludur. Üretim yalnız incelenecek taslak oluşturur.
-- Hiçbir gizli anahtar depoya eklenmemelidir. `OPENROUTER_API_KEY` yoksa LLM çağrısı yoktur; 20 LLM çağrısını etkinleştiren değişken varsayılan olarak `0` olmalıdır.
+- Hiçbir gizli anahtar depoya eklenmemelidir. Varsayılan iş akışı LLM anahtarını kullanmaz; 20 rol yine yerel görev modülleri olarak korunur.
 - Actions ve Remotion lisans uygunluğu, hesap/proje koşullarına bağlıdır; ücretli bir özellik etkinleştirmeyin.
 
 ## Yerel çalıştırma
@@ -27,6 +27,16 @@ python -m scripts.auto_produce --topic malazgirt-1071 --out output/auto --model-
 ```
 
 Gerçek anlatıcı kaydı için `VOICE_RECORDING_GUIDE.txt` içindeki her satırı ayrı dosyaya `01.wav`, `02.wav`, … adıyla kaydedin ve `--voice-recordings kayit-klasoru` ekleyin. Piper kullanılmadığında Piper modeli indirilmez.
+
+## İsteğe bağlı yerel QA
+
+`requirements-audio-audit.txt` ve `requirements-video-audit.txt` isteğe bağlıdır. faster-whisper küçük modeli yalnızca kullanıcı isterse bir kez önbelleğe indirilir; otomatik üretim bunu varsayılan olarak indirmez.
+
+```bash
+python -m pip install -r requirements-audio-audit.txt -r requirements-video-audit.txt
+# Modeli yalnızca bu denetimi kullanmaya karar verirseniz önbelleğe alın:
+python -c "from faster_whisper import WhisperModel; WhisperModel('tiny', device='cpu', compute_type='int8')"
+```
 
 ## GitHub Actions
 

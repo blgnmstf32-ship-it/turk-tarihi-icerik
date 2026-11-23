@@ -1,0 +1,2 @@
+# Optional only when the project owner explicitly approves Google Cloud billing and voice use.
+google-auth>=2.30,<3

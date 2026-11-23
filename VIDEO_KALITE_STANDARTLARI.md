@@ -1,10 +1,10 @@
-# Türk Tarihi sinematik belgesel Reels standardı v0.6
+# Türk Tarihi sinematik belgesel Reels standardı v0.7
 
 ## Varsayılan üretim ölçüleri
 
 - Süre: 60–75 saniye; süre tutmazsa metni yeniden yaz, konuşmayı hızlandırıp yavaşlatarak zorla sığdırma.
-- Dikey 9:16, 720×1280, 30 fps; Remotion sahne kompozisyonu ve altyazıyı, FFmpeg ses miksajını ve H.264/AAC son çıktıyı üretir.
-- En az 10 ayrı sahne, sahneler arası yumuşak geçiş, yavaş yakınlaşma/kaydırma, sinematik renk dengesi ve izleyici arayüzü güvenli alanında altyazı.
+- Dikey 9:16, 1080×1920, 30 fps, 60–75 saniye ve 10–12 sahne; Remotion sahne kompozisyonu/altyazıyı, FFmpeg ses miksajını ve H.264/AAC son çıktıyı üretir.
+- En az 10 ayrı sahne, net sahne kesmeleri, yavaş yakınlaşma/kaydırma, sinematik renk dengesi ve izleyici arayüzü güvenli alanında altyazı.
 - Altyazılar cümle/ifade zamanına oturur; konuşma ilerledikçe sözcükler sırayla vurgulanır. Sözcük zamanları forced alignment değil, cümle içi yaklaşık ilerlemedir.
 
 ## Görsel standardı ve kaynak

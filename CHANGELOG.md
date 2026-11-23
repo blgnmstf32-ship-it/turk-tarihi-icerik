@@ -16,3 +16,10 @@
 - Added natural, emphatic Turkish narrator direction while keeping Piper as an explicitly synthetic free fallback.
 - Preserved paid-service-off, Instagram-auto-publish-off, human-approval-required settings.
 
+# v0.7.0 — Free-first documentary pipeline hardening
+
+- Updated default video output to 1080×1920, 30 fps, 60–75 seconds and 10–12 scenes while preserving all existing 20 editorial roles.
+- Added fail-closed Google Chirp 3 HD/Azure Speech selection, disabled AI image adapter, optional local faster-whisper/PySceneDetect audits, local redacted task/feedback logging and read-only disabled Instagram Insights scaffolding.
+- Removed the CI FFmpeg package installation stall; checks the runner's preinstalled FFmpeg and retains manual human publication gates.
+- No cloud billing, paid provider, or Instagram auto-publishing is enabled.
+
