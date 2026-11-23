@@ -64,6 +64,13 @@ def performance_script(topic):
             for spoken,caption,pace,pause in lines]
 
 
+def audio_mix_command(rendered_video,narration,music,final):
+    """Mux narration explicitly; Remotion renders visuals/captions without audio."""
+    return ['ffmpeg','-v','error','-y','-i',str(rendered_video),'-i',str(narration),'-i',str(music),
+        '-filter_complex','[1:a]volume=1.0[voice];[2:a]volume=0.12[music];[voice][music]amix=inputs=2:duration=first:dropout_transition=0:normalize=0,alimiter=limit=0.98[a]',
+        '-map','0:v:0','-map','[a]','-c:v','copy','-c:a','aac','-b:a','160k','-movflags','+faststart',str(final)]
+
+
 def optional_free_ai_suggestion(topic,out):
     """Use exactly one free OpenRouter request if a key is supplied; no paid fallback."""
     key=os.getenv('OPENROUTER_API_KEY')
@@ -140,9 +147,7 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
     rendered=out/'reel_with_voice.mp4'
     render_reel(scenes,voice_path,out/'subtitles.srt',rendered)
     final=out/'REVIEW_REQUIRED_REEL.mp4'
-    subprocess.run(['ffmpeg','-v','error','-y','-i',str(rendered),'-i',str(out/'original_soundtrack.wav'),
-        '-filter_complex','[0:a]volume=1.0[voice];[1:a]volume=0.17[music];[voice][music]amix=inputs=2:duration=first:dropout_transition=0[a]',
-        '-map','0:v:0','-map','[a]','-c:v','copy','-c:a','aac','-b:a','160k','-movflags','+faststart',str(final)],check=True,capture_output=True,text=True)
+    subprocess.run(audio_mix_command(rendered,voice_path,out/'original_soundtrack.wav',final),check=True,capture_output=True,text=True)
     technical=check(final,voice_path,out/'subtitles.srt',scenes)
     optional_audits={}
     if settings.get('speech_audit_enabled',False):
