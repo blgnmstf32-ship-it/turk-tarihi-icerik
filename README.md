@@ -1,6 +1,6 @@
-# Türk Tarihi — 20 Rol ile Ücretsiz İçerik Taslağı / Sesli Reels v0.4
+# Türk Tarihi — 20 Rol ile Ücretsiz İçerik Taslağı / Sesli Reels v0.5
 
-**Durum:** 20 iş modülü kuruludur; yeni sistem 5 farklı özgün tarihî illüstrasyonu, çevrimdışı Türkçe Piper seslendirmesini, kısa metinleri, tahmini zamanlı altyazıları ve özgün müziği birleştirerek **insan onayına sunulacak** bir dikey Reels MP4 üretecek şekilde geliştirilmiştir. Kodun GitHub Actions üzerinde **başarıyla çalıştığı henüz doğrulanmadıkça** gerçek yayın sistemi hazır sayılmaz.
+**Durum:** 20 iş modülü korunur. Üretim akışı 10 farklı özgün tarihî illüstrasyonu, çevrimdışı Türkçe Piper seslendirmesini, cümle bazlı durak/tempo düzenini, ses parçası sürelerine hizalı altyazıyı, özgün müziği ve hareketli kamera montajını birleştirerek **insan incelemesine sunulan** dikey Reels MP4 üretir. Piper sesi sentetiktir; vurgu ve ritim iyileştirmesi onu insan kaydı yapmaz. Yayın öncesi dinleme ve tarih kontrolü zorunludur.
 
 Bu 20 rol, **20 ayrı bulutta çalışan ücretli veya otonom LLM ajanı değildir**. Ücretsiz Python iş akışı içinde görev tanımlarıdır. İsteğe bağlı `OPENROUTER_API_KEY` ile `openrouter/free` modelinden bir yaratıcı metin önerisi alınabilir; bu öneriler doğrulanmadan yayın dosyasına girmez. GitHub Models 2026'da emekli edilmiştir, kullanılmaz.
 
@@ -8,7 +8,8 @@ Bu 20 rol, **20 ayrı bulutta çalışan ücretli veya otonom LLM ajanı değild
 - Ücretli AI API kullanımı: **0 TL** varsayılan; ücretsiz kota ve kullanım koşulları değişebilir.
 - GitHub Actions: depoya/hesaba uygulanan kota ve faturalandırma kuralları geçerli.
 - Türkçe Piper TTS: çevrimdışı, açık kaynak model; ilk seferde indirir. Ses kalitesi ve ses modeli lisansını kontrol edin.
-- Görsel: kodla oluşturulmuş özgün, stilize tarihî canlandırmalar (fotoğraf gerçekliğinde AI video değil).
+- Görsel: kodla oluşturulmuş 10 özgün, stilize tarihî canlandırma ve yavaş kamera hareketi (gerçek fotoğraf veya video değildir).
+- Ses: çevrimdışı Piper, cümle cümle üretim, değişen hafif tempo ve planlı duraklar; altyazılar her ses cümlesinin gerçek süresinden hesaplanır.
 - **Yayın kapalı**: Instagram API kimlik bilgileri eklenmedi, otomatik paylaşım tetiklenmez, `approval/approved.json` dosyası `false` olarak kalır.
 - Modelin ileri geri tarihî yorum veya yanlış üretilen çizim yapabilmesi nedeniyle insan kaynak kontrolü şart.
 
@@ -23,7 +24,7 @@ Yerel kullanımı: `pip install -r requirements.txt 'piper-tts>=1.3,<2.0'`, `ffm
 - [Kurulum ve yetki gereksinimleri](KURULUM_v04.md)
 - [20 görev tanımı](config/agents.json)
 - [Kalite kapısı](AGENTS.md)
-- [Orijinal sesli anlatım ve sahne üretimi](scripts/auto_produce.py)
+- [Sesli anlatım ve sahne üretimi](scripts/auto_produce.py)
 
 ## Özellikle yapılmayanlar
 - Başka hesaplardan görüntü indirme veya içerik çalma.

@@ -6,8 +6,8 @@
 
 1. Açılış 2 saniyede olayın merakını gösteren canlı sahne.
 2. En az 5 birbirinden farklı tarihî canlandırma, arşiv fotoğrafı (varsa lisanslı), hareketli harita veya gerçek çekim. Yazı kartı tek başına sahne sayılmaz.
-3. Anlaşılır, doğal Türkçe konuşma kaydı, bütüne hakim; `voiceover.wav` / `voiceover.mp3`.
-4. Konuşmayla zamanlanmış gerçek altyazı `.srt`.
+3. Anlaşılır, doğal Türkçe konuşma kaydı, bütüne hakim; `voiceover.wav` / `voiceover.mp3`. Piper'in çevrimdışı sesi sentetiktir; yalnız tempo/durak iyileştirmesi doğal insan kaydı sayılmaz. Hâlâ yapay duyuluyorsa yayın kalite kapısını geçmez.
+4. Gerçek ses parçası sürelerine göre hizalanmış altyazı `.srt` (kelime düzeyinde forced alignment değildir).
 5. Yasal müzik/SFX (tercihen özgün); konuşma hiçbir sahnede boğulmaz.
 6. Tarihî kıyafet ve dönem kontrolü; 1071'de Osmanlı üniforması, hilalli modern bayrak veya modern silah yok.
 7. En az iki güvenilir kaynak üzerinden tarih kontrolü; doğrulanmamış rakam veya sahte alıntı yok.
