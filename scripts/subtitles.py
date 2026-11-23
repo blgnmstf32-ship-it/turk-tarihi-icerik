@@ -16,3 +16,13 @@ def create(text,duration,path):
         out.append(f'{i}\n{stamp(p)} --> {stamp(end)}\n{s}\n')
         p=end
     path=Path(path);path.write_text('\n'.join(out)+'\n',encoding='utf-8');return path
+
+def create_timed(cues,path):
+    """Write cues from phrase-level audio timing instead of word-count estimates."""
+    out=[]
+    for i,cue in enumerate(cues,1):
+        start=float(cue['start']);end=float(cue['end'])
+        if end<=start:continue
+        out.append(f'{i}\n{stamp(start)} --> {stamp(end)}\n{cue["text"]}\n')
+    if not out:raise ValueError('Sesle hizalanmış altyazı cümlesi yok')
+    path=Path(path);path.write_text('\n'.join(out)+'\n',encoding='utf-8');return path

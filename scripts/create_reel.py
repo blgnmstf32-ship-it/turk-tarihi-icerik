@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 import subprocess
 import tempfile
+import re
 
 from PIL import Image
 
@@ -24,6 +25,12 @@ def ffprobe(path):
 def media_duration(path):
     info=ffprobe(path)
     return float(info['format']['duration'])
+
+def subtitle_cues(path):
+    text=Path(path).read_text(encoding='utf-8')
+    pattern=r'(\d{2}):(\d{2}):(\d{2}),(\d{3})\s+-->\s+(\d{2}):(\d{2}):(\d{2}),(\d{3})'
+    def seconds(h,m,s,ms):return int(h)*3600+int(m)*60+int(s)+int(ms)/1000
+    return [(seconds(*m.groups()[:4]),seconds(*m.groups()[4:])) for m in re.finditer(pattern,text)]
 
 
 def collect_scenes(folder):
@@ -56,19 +63,27 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=720,height=1280
     out.parent.mkdir(parents=True,exist_ok=True)
     # Ensure each scene gets screen time with a gently changing frame.
     # Last scene receives any duration rounding remainder.
-    per_scene=length/len(scenes)
+    cues=subtitle_cues(srt)
+    if len(cues)==len(scenes):
+        starts=[max(0,c[0]) for c in cues]
+        durations=[max(.45,(starts[i+1] if i+1<len(starts) else length)-starts[i]) for i in range(len(starts))]
+        durations[-1]=max(.45,length-starts[-1])
+    else:
+        durations=[length/len(scenes)]*len(scenes)
     segments=[]
     with tempfile.TemporaryDirectory(prefix='turktarihi_reel_') as td:
         work=Path(td)
         for i,src in enumerate(scenes):
             path=work/f'scene_{i:03d}.mp4'; segments.append(path)
-            dur=per_scene if i<len(scenes)-1 else length-per_scene*(len(scenes)-1)
-            # Alternate gentle center-push and upward drift to avoid stationary slides.
-            drift="x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2'" if i%2==0 else "x='(iw-iw/zoom)/2':y='min((ih-ih/zoom),on/12)'"
+            dur=durations[i]
+            # Alternate slow vertical/horizontal moves so the illustrated
+            # sequence behaves like a small documentary edit, not a slide deck.
+            drift=("x='(iw-iw/zoom)/2':y='min((ih-ih/zoom),on/10)'" if i%2==0 else
+                   "x='min((iw-iw/zoom),on/12)':y='(ih-ih/zoom)/2'")
             n=max(1,int(round(dur*fps)))
             vf=(f'scale={width}:{height}:force_original_aspect_ratio=increase,'
                 f'crop={width}:{height},'
-                f"zoompan=z='min(zoom+0.0009,1.16)':{drift}:d=1:s={width}x{height}:fps={fps},"
+                f"zoompan=z='min(zoom+0.0011,1.20)':{drift}:d=1:s={width}x{height}:fps={fps},"
                 f'format=yuv420p')
             subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-loop','1','-i',str(src),
                             '-vf',vf,'-frames:v',str(n),'-r',str(fps),'-c:v','libx264','-preset','ultrafast',
@@ -79,7 +94,7 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=720,height=1280
         srt_local=work/'captions.srt';srt_local.write_bytes(srt.read_bytes())
         cmd=['ffmpeg','-hide_banner','-loglevel','error','-y',
              '-f','concat','-safe','0','-i',str(concat),'-i',str(audio),
-             '-vf',"subtitles=captions.srt:force_style='FontName=DejaVu Sans,FontSize=20,Outline=2,Shadow=1,MarginV=95'",
+             '-vf',"subtitles=captions.srt:force_style='FontName=DejaVu Sans,FontSize=6,Bold=1,Alignment=2,Outline=1,Shadow=0,MarginV=80'",
              '-c:v','libx264','-preset','fast','-crf','22','-pix_fmt','yuv420p',
              '-c:a','aac','-b:a','160k','-shortest','-movflags','+faststart',str(out)]
         subprocess.run(cmd,cwd=work,check=True,capture_output=True,text=True)
