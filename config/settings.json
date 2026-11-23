@@ -1,5 +1,5 @@
 {
-  "project_name": "Türk Tarihi", 
+  "project_name": "Türk Tarihi",
   "language": "tr",
   "schedule_istanbul": "Salı ve Cuma 12:17",
   "weekly_post_target": 2,
@@ -8,6 +8,9 @@
   "monthly_spend_limit_try": 0,
   "instagram_auto_publish_enabled": false,
   "human_approval_required": true,
-  "media_generation": "Pillow + FFmpeg (ücretsiz şablon)",
-  "history_policy": "Yalnız kaynaklanmış olgular; tartışmalı tarihlerde belirsizliği açıkça belirt."
+  "media_generation": "5 original illustrated scenes + offline Piper Turkish TTS + original ambient music + FFmpeg vertical MP4; approval required",
+  "history_policy": "Yalnız kaynaklanmış olgular; tartışmalı tarihlerde belirsizliği açıkça belirt.",
+  "production_version": "0.4",
+  "publishing_policy": "Manual owner approval mandatory; IG credentials missing",
+  "video_quality": "Original stylized illustrations; not photorealistic AI footage"
 }
