@@ -8,17 +8,44 @@
   "monthly_spend_limit_try": 0,
   "instagram_auto_publish_enabled": false,
   "human_approval_required": true,
-  "media_generation": "60-75s documentary Reels; 10-14 licensed historical/location/artifact visuals with cinematic Remotion motion + animated phrase/word captions + FFmpeg audio finishing; human narrator recording preferred; free offline Turkish Piper fallback; approval required",
+  "media_generation": "60-75s documentary Reels; 10-12 licensed historical/location/artifact visuals with cinematic Remotion motion + animated phrase/word captions + FFmpeg audio finishing; 1080x1920; human narrator recording preferred; free offline Turkish Piper fallback; approval required",
   "history_policy": "Yalnız kaynaklanmış olgular; tartışmalı tarihlerde belirsizliği açıkça belirt.",
-  "production_version": "0.6",
+  "production_version": "0.7",
   "publishing_policy": "Manual owner approval mandatory; IG credentials missing",
-  "video_duration_seconds": {"min": 60, "max": 75},
+  "video_duration_seconds": {
+    "min": 60,
+    "max": 75
+  },
   "video_fps": 30,
-  "video_resolution": "720x1280",
-  "video_renderer": ["Remotion", "FFmpeg"],
+  "video_resolution": "1080x1920",
+  "video_renderer": [
+    "Remotion",
+    "FFmpeg"
+  ],
   "video_style": "documentary-like cinematic historical storytelling; realistic licensed photos, archaeological sites, artifacts, maps, archival media or clearly labeled reconstructions; warm natural color grade; slow push/pan; bold animated Turkish captions",
   "narration_direction": "Natural Turkish documentary narrator; curious intimate opening, measured factual passages, lively emphasis on turning points, varied pace and short meaningful pauses; confident and warm, never shouting or flat",
   "voice_mode": "human_recording_preferred_free_offline_piper_fallback",
   "visual_asset_policy": "Wikimedia Commons openly licensed/public-domain media with attribution; if fewer than ten suitable assets are found, clearly labeled generated illustrations may fill the gap and human review remains mandatory",
-  "video_quality": "10-14 distinct cinematic documentary scenes with licensed historical/location/artifact visuals or explicitly labeled reconstructions; animated word/phrase captions; source attribution required"
+  "video_quality": "10-12 distinct cinematic documentary scenes with licensed historical/location/artifact visuals or explicitly labeled reconstructions; animated word/phrase captions; source attribution required",
+  "paid_services_enabled": false,
+  "billing_enabled": false,
+  "cloud_voice_enabled": false,
+  "voice_provider": "piper",
+  "cloud_voice": {
+    "google_chirp3_hd": {
+      "enabled": false,
+      "voice": "tr-TR-Chirp3-HD-Achird"
+    },
+    "azure_speech": {
+      "enabled": false,
+      "voice": "tr-TR-Aydın:MAI-Voice-2"
+    }
+  },
+  "ai_image_provider": {
+    "enabled": false,
+    "provider": ""
+  },
+  "speech_audit_enabled": false,
+  "scene_audit_enabled": false,
+  "instagram_insights_enabled": false
 }

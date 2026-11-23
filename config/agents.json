@@ -39,7 +39,7 @@
     "id": 7,
     "name": "Senarist",
     "stage": "writing",
-    "job": "60-75 saniyelik, 10-14 sahneli sinematik belgesel akışını kaynaklı olgularla kurar"
+    "job": "60-75 saniyelik, 10-12 sahneli sinematik belgesel akışını kaynaklı olgularla kurar"
   },
   {
     "id": 8,
@@ -63,7 +63,7 @@
     "id": 11,
     "name": "Sahne Planlayıcısı",
     "stage": "production",
-    "job": "Her anlatı bölümü için 10-14 sahne, gerçek yer/eser/harita ve hareket amacını planlar"
+    "job": "Her anlatı bölümü için 10-12 sahne, gerçek yer/eser/harita ve hareket amacını planlar"
   },
   {
     "id": 12,
@@ -93,7 +93,7 @@
     "id": 16,
     "name": "Biçim Denetçisi",
     "stage": "review",
-    "job": "60-75 saniye, 9:16, 30 fps, 720x1280, ses, altyazı ve Remotion render teknik kontrolü yapar"
+    "job": "60-75 saniye, 9:16, 30 fps, 1080x1920, ses, altyazı ve Remotion render teknik kontrolü yapar"
   },
   {
     "id": 17,
