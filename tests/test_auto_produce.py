@@ -4,6 +4,7 @@ from PIL import Image
 from scripts.run import ROOT, load_json
 from scripts.auto_produce import production,verified_facts_only,performance_script
 from scripts.subtitles import create,create_timed
+from scripts.illustrate import generate
 
 class AutomaticProductionTests(unittest.TestCase):
     @classmethod
@@ -15,12 +16,14 @@ class AutomaticProductionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             f=create('İlk cümle. İkinci cümle.',26,Path(d)/'v.srt')
             self.assertIn('00:00:26,000',f.read_text())
-    def test_performance_script_uses_spoken_date_and_rhythm(self):
+    def test_performance_script_uses_spoken_date_and_documentary_length(self):
         lines=performance_script(self.topic)
-        self.assertGreaterEqual(len(lines),8)
+        self.assertGreaterEqual(len(lines),10)
         self.assertTrue(any('Yirmi altı Ağustos' in x['spoken'] for x in lines))
         self.assertTrue(any('!' in x['spoken'] or '...' in x['spoken'] for x in lines))
-        self.assertIn('İki ordu... Ve', ' '.join(x['spoken'] for x in lines))
+        words=sum(len(x['spoken'].split()) for x in lines)
+        self.assertGreaterEqual(words,115)
+        self.assertLessEqual(words,165)
     def test_timed_subtitles_follow_audio_cues(self):
         with tempfile.TemporaryDirectory() as d:
             f=create_timed([{'start':0.0,'end':1.35,'text':'Vurgu cümlesi.'},
@@ -28,15 +31,21 @@ class AutomaticProductionTests(unittest.TestCase):
             text=f.read_text()
             self.assertIn('00:00:01,350',text)
             self.assertIn('00:00:01,800 --> 00:00:03,100',text)
-    def test_ten_unique_visuals_zero_pays_zero_publishes(self):
+    def test_twenty_roles_ten_scenes_zero_pays_zero_publishes(self):
         with tempfile.TemporaryDirectory() as d:
             result=production(self.topic,Path(d)/'draft',Path(d)/'cache',skip_narration=True)
             self.assertEqual(result['roles'],20)
             self.assertFalse(result['ready_for_instagram'])
             self.assertFalse(result['instagram_published'])
             self.assertFalse(result['paid_api_services_enabled'])
+            self.assertEqual(result['target_duration_seconds'],{'min':60,'max':75})
             paths=list((Path(d)/'draft'/'scenes').glob('*_scene.jpg'))
             self.assertEqual(len(paths),10)
             self.assertEqual(len({p.read_bytes() for p in paths}),10)
             for p in paths:
                 with Image.open(p) as img:self.assertEqual(img.size,(720,1280))
+            stale=Path(d)/'draft'/'scenes'/'stale_commons.jpg'
+            Image.new('RGB',(180,320),(0,0,0)).save(stale)
+            generate(self.topic,Path(d)/'draft'/'scenes')
+            self.assertFalse(stale.exists())
+            self.assertEqual(len(list((Path(d)/'draft'/'scenes').glob('*.jpg'))),10)
