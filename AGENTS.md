@@ -21,15 +21,22 @@ Doğru, tarafsız, merak uyandırıcı, özlü. Kökenleri, dönemleri, devletle
 ## MUTLAK VİDEO KALİTE KAPISI (öncelikli)
 
 - Sessiz yazı slaytlarını bitmiş Reels olarak sunma. Önizlemeyi asla `reel.mp4` veya `ready` olarak etiketleme.
-- Yayınlanabilir MP4 için Türkçe doğal seslendirme, anlatıma göre en az 5 ayrı tarihî canlandırma/harita sahnesi, senkron altyazı, ambiyans ve telif güvenli ses, 9:16 en az 720×1280 görsel zorunludur.
+- Varsayılan taslak 60–75 saniye, 9:16, 720×1280 ve 30 fps olmalı; Remotion sahne/altyazı hareketini, FFmpeg konuşma ve ses miksajını üretmeli.
+- En az 10 ayrı sahne ve her cümleyle ilgisi bulunan görsel gerekir. Mümkünse doğrulanmış açık lisanslı tarihî fotoğraf, eser, alan, harita veya arşiv görseli kullan; canlandırmaları gerçek arşiv görüntüsü gibi gösterme.
+- Altyazı konuşmaya zamanlanmalı ve kelime/ifade vurgusuyla hareket etmelidir. Anlatı Türkçe, coşkulu ama ölçülü belgesel tonunda olmalıdır.
+- Piper sentetiktir; insan anlatıcısı doğallığı sağladığını iddia etme. Üretilen ses düz veya robotik duyulursa teknik test geçse bile taslak yayın kalitesini geçmez.
 - Gerçek kaynak doğrulaması yapılmadan savaş sayıları, komutan alıntıları ve kesin taktik iddiaları ekleme.
-- Daha iyi kalite için ücretli video/ses modeli gerekiyorsa, maliyetini önceden göster ve açık izin almadan ücretli çağrı yapma.
+- Ücretli video/ses modeli gerekiyorsa kullanıcı izni olmadan çağrı yapma.
 - `python -m scripts.release_check ...` teknik kontrolleri ve ardından insan görsel/ses kalitesi onayını gerektir.
 
-## v0.4 ücretsiz sesli taslak prodüksiyonu
-- Yeni görev: `python -m scripts.auto_produce --topic malazgirt-1071 --out output/auto`
-- Ücretsiz Piper Türkçe TTS; ses modeli indirilip gerçek TTS olmalı, deney amaçlı ton/ses dosyası konuşma olarak gösterilmez.
-- `scripts/illustrate.py` çizimleri temsili canlandırmadır; gerçek tarihî fotoğraf/sinema videosu gibi sunulmaz.
+## v0.6 belgesel video biçimi
+- Varsayılan üretim: `python -m scripts.auto_produce --topic malazgirt-1071 --out output/auto`.
+- Bütün 20 görev modülü her içerikte 60–75 saniyelik dikey tarih belgeseli için çalışır. Rol sayısı bağımsız/ücretli 20 AI ajanı olduğu anlamına gelmez.
+- Kurgu Remotion ile 30 fps dikey kompozisyon, yavaş sinematik kamera hareketi, sahne geçişleri ve kelime/ifade vurgulu hareketli altyazı üretir; FFmpeg anlatım, müzik ve son H.264/AAC MP4 karışımını yapar.
+- En az 10 ayrı görsel sahne kullan. Öncelik, Wikimedia Commons üzerinden lisans/atıf verisi doğrulanmış kamu malı veya ticari kullanıma açık tarihî eser, arkeolojik alan, nesne, harita ve arşiv görüntüleridir. Dosya başına yazar, lisans ve kaynak sayfası `MEDIA_ATTRIBUTION.md` içine yazılır. Gerçek fotoğraf olmayan canlandırmaları görsel üzerinde **TEMSİLÎ CANLANDIRMA** olarak belirt; görseli arşiv fotoğrafı diye sunma.
+- Konuşma yönü: doğal Türkçe belgesel anlatıcısı; merak uyandıran sakin giriş, olgular net ve ölçülü, dönüm noktalarında canlı vurgu, kısa anlamlı duraklar. Bağırma, düz okuma ve habersiz ses efekti yapma.
+- Gerçek insan kaydı varsa onu tercih et. Ücretsiz çevrimdışı Piper yalnızca yedek TTS'dir; sentetik sesi doğal insan sesi diye tanımlama. Kullanıcı örneği `180010.mp4` ses kanalı içermediğinden bu örneğin ses tonuna dair talimat çıkarma; yalnız görsel kurgu yaklaşımını referans al.
+- Gerçek ses kaydı/Piper süresi 60–75 saniye değilse metni yeniden yaz; konuşmayı hızlandırıp/yavaşlatıp süreye zorla sığdırma.
 - `scripts/instagram_publish.py` yalnızca açık insan onayı ve manuel çağrıyla çalıştırılabilir. GitHub `instagram-production` environment kurulu olmadan devreye almayın.
-- API anahtarları yalnız GitHub Secret ortamında saklanır; `OPENROUTER_API_KEY` yoksa hiçbir LLM çağrısı yapma.
-- Ses ve SRT'nin eşleşmesi teknik kontrollerden geçse bile kelime bazlı otomatik hizalama yoktur.
+- Ücretli API ve ücretli görsel/ses servislerini kullanıcı izni olmadan etkinleştirme. Wikimedia Commons sorguları ücretsiz ve anahtarsız medya aramasıdır; dış LLM anahtarı yoksa hiçbir LLM çağrısı yapma.
+- İnsan onayı, kaynak/lisans kontrolü ve ses/görüntü dinlemesi tamamlanmadan taslağı yayına hazır sayma. Instagram otomatik yayınını açma.

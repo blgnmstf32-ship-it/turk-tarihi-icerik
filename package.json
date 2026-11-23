@@ -1,0 +1,21 @@
+{
+  "name": "turk-tarihi-belgesel-reels",
+  "private": true,
+  "version": "0.6.0",
+  "description": "Free-first documentary-style Turkish history Reels renderer",
+  "scripts": {
+    "render:documentary": "remotion render remotion/index.tsx DocumentaryReel",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.409",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "remotion": "4.0.409",
+    "zod": "3.22.3"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.10",
+    "typescript": "5.9.2"
+  }
+}

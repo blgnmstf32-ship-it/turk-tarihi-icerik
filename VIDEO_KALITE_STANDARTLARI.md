@@ -1,18 +1,30 @@
-# Instagram Reels kalite standartları
+# Türk Tarihi sinematik belgesel Reels standardı v0.6
 
-**Eski sürümün hatası:** Üç düz metin sahnesi birleştirilip sessiz MP4 olarak sunuldu. Bu yayın kalitesini karşılamıyor.
+## Varsayılan üretim ölçüleri
 
-## Zorunlu geçiş koşulları
+- Süre: 60–75 saniye; süre tutmazsa metni yeniden yaz, konuşmayı hızlandırıp yavaşlatarak zorla sığdırma.
+- Dikey 9:16, 720×1280, 30 fps; Remotion sahne kompozisyonu ve altyazıyı, FFmpeg ses miksajını ve H.264/AAC son çıktıyı üretir.
+- En az 10 ayrı sahne, sahneler arası yumuşak geçiş, yavaş yakınlaşma/kaydırma, sinematik renk dengesi ve izleyici arayüzü güvenli alanında altyazı.
+- Altyazılar cümle/ifade zamanına oturur; konuşma ilerledikçe sözcükler sırayla vurgulanır. Sözcük zamanları forced alignment değil, cümle içi yaklaşık ilerlemedir.
 
-1. Açılış 2 saniyede olayın merakını gösteren canlı sahne.
-2. En az 5 birbirinden farklı tarihî canlandırma, arşiv fotoğrafı (varsa lisanslı), hareketli harita veya gerçek çekim. Yazı kartı tek başına sahne sayılmaz.
-3. Anlaşılır, doğal Türkçe konuşma kaydı, bütüne hakim; `voiceover.wav` / `voiceover.mp3`. Piper'in çevrimdışı sesi sentetiktir; yalnız tempo/durak iyileştirmesi doğal insan kaydı sayılmaz. Hâlâ yapay duyuluyorsa yayın kalite kapısını geçmez.
-4. Gerçek ses parçası sürelerine göre hizalanmış altyazı `.srt` (kelime düzeyinde forced alignment değildir).
-5. Yasal müzik/SFX (tercihen özgün); konuşma hiçbir sahnede boğulmaz.
-6. Tarihî kıyafet ve dönem kontrolü; 1071'de Osmanlı üniforması, hilalli modern bayrak veya modern silah yok.
-7. En az iki güvenilir kaynak üzerinden tarih kontrolü; doğrulanmamış rakam veya sahte alıntı yok.
-8. Render: dikey 9:16 en az 720x1280, 20–60 saniye, H.264 video + AAC audio.
-9. Maliyet tavanı: Kullanıcının açık onayı olmadan ücretli üretim yok.
-10. Yayın: Tarihçi/insan gözden geçirmesi + Instagram sahibinin onayı olmadan yayına alınamaz.
+## Görsel standardı ve kaynak
 
-`scripts/release_check.py`, yalnızca teknik asgari kaliteyi doğrular; içerik etkileyiciliği için insan incelemesi zorunludur.
+- İlk tercih, Wikimedia Commons'tan lisansı ve atfı kaydedilmiş arkeolojik alan, eser, harita, tarihî minyatür veya açık lisanslı arşiv görüntüsüdür. Kaynak adı, yazar, lisans ve dosya sayfası `MEDIA_ATTRIBUTION.md` içinde saklanır.
+- Gerçek fotoğraf mevcut değilse tarihsel gerçekliği iddia etmeyen, açıkça **TEMSİLÎ CANLANDIRMA** olarak etiketlenmiş görsel kullan. Görsel sahnenin tarihî ayrıntılarını doğrulanmış gibi sunma.
+- En az 10 farklı görsel yoksa teknik kalite kapısı geçmez. Ücretsiz Commons sonuçları yetersiz olduğunda atıf/lisans uydurma veya ücretli servise düşme; temsili görsel kullan ve gerçekçi görsel şartının karşılanmadığını raporla.
+
+## Anlatım ve ses
+
+- Türkçe belgesel anlatıcısı: merak uyandıran ve yakın giriş; kişi, tarih ve yer adlarında net telaffuz; dönüm noktalarında canlı vurgu; tempoda kontrollü çeşitlilik ve anlamlı duraklar. Bağırma ve düz okuma yok.
+- İnsan anlatıcı kaydı tercih edilir. Ücretsiz çevrimdışı Piper yalnız yedek TTS'dir ve sentetik olarak açıkça tanımlanır; insan sesi doğallığı iddia edilemez.
+- Konuşma anlaşılır olmalı, müzik/ambiyans anlatıcının altında kalmalı; gerçek ses dinleme ve insan kalite onayı gerekir.
+- Örnek `180010.mp4` ekran kaydında ses akışı bulunmadığından anlatıcı ses tonu için kaynak değildir; yalnızca görsel belgesel yaklaşımı referans alınmıştır.
+
+## Tarih, maliyet ve yayın
+
+- En az iki güvenilir kaynakla tarih doğrulaması; doğrulanmamış rakam, alıntı, taktik veya neden-sonuç iddiası yok.
+- Yalnızca açık lisans koşullarına uyan görseller ve telif güvenli/özgün ses kullanılır. Kaynak atıflarını eksiksiz sakla.
+- Ücretli API, ücretli TTS veya ücretli görsel/video servisi varsayılan olarak kapalıdır. Kullanıcı açıkça izin vermeden açma veya ücretli yedeğe yönelme.
+- İnsan tarih, görsel ve ses incelemesi tamamlanmadan `ready` deme. Instagram otomatik paylaşımı kapalıdır; yayın için ayrıca açık insan onayı gerekir.
+
+`python -m scripts.release_check ...` yalnız teknik koşulları kontrol eder; kaynak, lisans ve sanat kalitesi onayı yerine geçmez.

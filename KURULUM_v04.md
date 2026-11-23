@@ -1,40 +1,45 @@
-# Türk Tarihi Instagram İçerik Fabrikası v0.4 — Sıfır ücretli API
+# Türk Tarihi belgesel Reels otomasyonu v0.6
 
-## Gerçekte neler var?
-- `config/agents.json` içindeki **20 fonksiyonel rol**, tek Python sürecinde işler. Bunlar henüz 20 bağımsız LLM değildir.
-- `scripts.auto_produce` otomatik: kaynaklı konu arşivi → taslak → 5 farklı özgün stilize canlandırma çizimi → **Piper Türkçe seslendirme** → SRT → özgün atmosferik enstrümantal ses → FFmpeg 9:16 video.
-- İsteğe bağlı OpenRouter `openrouter/free` modeli, sadece **alternatif senaryo ÖNERİSİ** üretir; doğrulanmamış öneri doğrudan videoya girmez. GitHub Models kullanılmaz (2026'da kapatıldı).
-- Altyazı zamanlaması **cümle bazında tahminidir**, doğrulanmış kelime hizalaması değildir.
-- Çizimlerde gerçek tarihî görüntüler/foto-gerçekçi sahneler yoktur; 5 ayrı orijinal illüstrasyon vardır. Tam sinematik video için ayrıca lisanslı kayıt veya görsel/video modeli gerekir.
-- **Instagram'a otomatik yayın yok**. İnsan tarih/telif/yaratıcılık onayı zorunlu. `OPENROUTER_API_KEY` zorunlu değildir. Ücretli AI API çağrıları sıfır.
+## İçerik üretim modeli
 
-## GitHub'a kurulum
-Repo: `https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik`
-Bu ZIP içindeki dosyaları repo köküne, mevcut dosyaların üzerine **değişiklikleri birleştirerek** yükle. `.github/workflows/produce.yml` eski sessiz taslak akışının yerine geçer. GitHub Work/Codex ile kod incelemesi, PR ve test yap. Hiçbir gizli anahtarı depoya commit etme.
+- `config/agents.json` içindeki 20 görev rolü, tek Python iş akışında çalışır. Bu sayı 20 bağımsız ücretli LLM ajanı demek değildir.
+- Varsayılan video: 60–75 saniye, dikey 9:16, 720×1280, 30 fps.
+- Sahne görsellerinde önce Wikimedia Commons'ın açık lisanslı bitmap eserleri, arşiv fotoğrafları, haritaları ve tarihî alan görüntüleri aranır. Yazar, lisans ve kaynak sayfası `MEDIA_ATTRIBUTION.md` içinde saklanır. Yeterli uygun görsel bulunmazsa yerel canlandırmalar kullanılır ve görsel kalite eksiği rapora yazılır.
+- Remotion sinematik sahne hareketini ve sözcük vurgulu altyazıları render eder. FFmpeg anlatım/müziği miksler ve H.264/AAC MP4'ü tamamlar.
+- Anlatıcı yönü merak uyandıran, doğal ve ölçülü coşkulu Türkçe belgesel tonudur. İnsan kaydı tercih edilir; Piper sentetik ücretsiz yedektir.
+- `180010.mp4` örneğinde ses kanalı yoktur; görsel ritim ve altyazı yaklaşımı örnek alınır, konuşma sesi taklit edilmez.
 
-GitHub > Actions > **Türk tarihi ücretsiz sesli Reels taslağı** > Run workflow. Konu `malazgirt-1071`. Çıktı `tarih-sesli-reels-taslagi-...` adlı artifact içinde `REVIEW_REQUIRED_REEL.mp4` olacaktır **yalnızca sesli üretim ve teknik kontrol başarılıysa**.
+## Ücret ve yayın güvenliği
 
-Salı ve cuma 12:17 TR saatinde taslak üretimi zamanlanmıştır; GitHub gecikme yapabilir.
+- Ücretli AI, görsel ve ses API servisleri kapalıdır; ücretsiz kota dolarsa ücretli modele geçiş olmaz.
+- Wikimedia Commons'ın anahtarsız, ücretsiz araması dışında harici üretim servisi varsayılan değildir.
+- Instagram otomatik paylaşımı kapalı, insan onayı zorunludur. Üretim yalnız incelenecek taslak oluşturur.
+- Hiçbir gizli anahtar depoya eklenmemelidir. `OPENROUTER_API_KEY` yoksa LLM çağrısı yoktur; 20 LLM çağrısını etkinleştiren değişken varsayılan olarak `0` olmalıdır.
+- Actions ve Remotion lisans uygunluğu, hesap/proje koşullarına bağlıdır; ücretli bir özellik etkinleştirmeyin.
 
-İlk çalıştırmada Piper'ın yaklaşık onlarca MB Türkçe modeli indirilir, paket ve modelin güncel lisanslarına dikkat et. Ücretsiz altyapı ve kota şartları değişebilir. Kodun depoda olması yeterli değildir; **Actions'da başarılı bir çalışma gözlenmelidir**. İlk çalışma başarısızsa logları değerlendir.
+## Yerel çalıştırma
 
-## İsteğe bağlı LLM öneri ajanı
-OpenRouter'dan ücretsiz kotaya sahip API anahtarı alınırsa GitHub > Settings > Secrets and variables > Actions > New repository secret kısmında `OPENROUTER_API_KEY` adıyla saklanır. Bu anahtar **varsayılan olarak zorunlu değil**. Koda yalnız `openrouter/free` yönlendiricisi yazılmıştır; fiyatlı model fallback'i yoktur. Yanlış tarihî bilgi yayımlamak yerine öneriler incelemeye bırakılır.
+```bash
+npm ci
+npm run typecheck
+python -m pip install -r requirements.txt 'piper-tts>=1.3,<2.0'
+python -m scripts.auto_produce --topic malazgirt-1071 --out output/auto --model-cache .cache/piper
+```
 
-## Gelişim yolu
-1. v0.4: otomatik illüstrasyon, çevrimdışı Türkçe TTS, ses yatağı ve MP4 (CI üzerinden çalışma **henüz doğrulanmadıysa** yayın hazır demeyin).
-2. v0.5: lisans onaylı tarihî tablo/fotoğraf veritabanı, daha dramatik özgün sahneler, sahne seçimi; gerektiğinde ücretli görüntü modeli ve bütçe sınırı.
-3. v0.6: Meta Instagram profesyonel hesabıyla doğrulanmış API, ayrı yayın onayı ekranı, güvenli token, paylaşım raporu. Instagram erişim belirteci ve kullanıcı onayı olmadan aktivasyon yapılmaz.
+Gerçek anlatıcı kaydı için `VOICE_RECORDING_GUIDE.txt` içindeki her satırı ayrı dosyaya `01.wav`, `02.wav`, … adıyla kaydedin ve `--voice-recordings kayit-klasoru` ekleyin. Piper kullanılmadığında Piper modeli indirilmez.
 
-## Kaynaklar
-- Piper: https://github.com/OHF-Voice/piper1-gpl
-- Türkçe ses modeli: https://huggingface.co/rhasspy/piper-voices/tree/main/tr/tr_TR/dfki/medium
-- OpenRouter ücretsiz yönlendirici: https://openrouter.ai/openrouter/free
+## GitHub Actions
 
-## Instagram yayın bağlantısı (bilerek kapalı)
-`instagram_publish_manual.yml` dosyası kod olarak hazırdır; kendiliğinden çalışmaz. Meta profesyonel hesap/API yetkisi, yayınlanacak MP4 için herkese açık HTTPS barındırma, `IG_ACCESS_TOKEN`, `IG_USER_ID`, GitHub `instagram-production` onay ortamı ve `approval/approved.json` dosyasında gerçek içerik onayı olmadan kullanılamaz. `approval/approved.json` varsayılan **false**. Bu sürümde hiçbir paylaşım yapılmadı.
+Repo: https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik
 
-Resmî Meta iki aşamalı container + media_publish akışına göre scaffold yazıldı; API sürümü ve onay/izinlerin canlı kurulum sırasında güncelliği yeniden kontrol edilmelidir.
+Actions > **Türk tarihi ücretsiz sesli Reels taslağı** > Run workflow > `malazgirt-1071`. Başarılı çalışma `tarih-sesli-reels-taslagi-N` adlı artifact üretir. Önce workflow testi ve Remotion TypeScript kontrolü çalışır.
 
-## İsteğe bağlı gerçek 20 LLM görev yürütücüsü
-`OPENROUTER_API_KEY` GitHub Secrets'a eklendiğinde ve Actions repository variable olarak `ENABLE_20_LLM_AGENTS=1` ayarlandığında `scripts/ai_agents.py` **20 ayrı ücretsiz model çağrısı** yapar. Ön tanımlı `0` olduğunda ayrı LLM çağrısı yok, yalnız 20 kod modülü çalışır. İlgili bağımsız rol önerileri `AI_AGENTS_STATUS.json` içinde saklanır ve tarihî doğruluk onayı olmadan videoya sokulmaz. Ücretsiz kotanın dolması hâlinde ajan hatayı kaydeder, **ücretli modele otomatik geçiş yapmaz**.
+Salı ve cuma 12:17 Türkiye saatinde taslak üretimi zamanlanır; GitHub zamanlaması gecikebilir. Bu zamanlama Instagram paylaşımı yapmaz.
+
+## İsteğe bağlı ücretsiz LLM rol çağrıları
+
+`ENABLE_20_LLM_AGENTS=1` ve uygun `OPENROUTER_API_KEY` birlikte verilirse her rol için `openrouter/free` yönlendiricisine bir çağrı yapılır. Varsayılan kapalıdır, bağımsız 20 ajan çalıştığı anlamına gelmez; kota veya hata durumunda ücretli modele geçilmez.
+
+## Güvenlik kapıları
+
+Yayımdan önce tarihî kaynaklar, görsellerin sahneye uygunluğu ve lisansları, sesin doğallığı ve altyazı gözle incelenmelidir. Piper sesi sentetiktir. `approval/approved.json` false kalır; Instagram otomatik yayın akışı bu görevde etkinleştirilmez.
