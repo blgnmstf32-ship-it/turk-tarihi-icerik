@@ -1,0 +1,133 @@
+{
+  "topic_id": "malazgirt-1071",
+  "topic_title": "MALAZGİRT",
+  "produced_at_utc": "2026-11-23T08:31:57.180187+00:00",
+  "approval": {
+    "status": "needs_human_approval",
+    "approved": false,
+    "publish_enabled": false
+  },
+  "actual_automatic_historical_source_verification": false,
+  "sources_for_manual_review": [
+    {
+      "title": "Türk Tarih Kurumu — Osmanlı Tarihine Giriş",
+      "url": "https://ttk.gov.tr/osmanli-tarihine-giris/"
+    }
+  ],
+  "roles_completed": [
+    {
+      "id": 1,
+      "name": "Konu Avcısı",
+      "result": "Arşivden konu seçildi"
+    },
+    {
+      "id": 2,
+      "name": "Kronolog",
+      "result": "Tarih ve dönem alanları var"
+    },
+    {
+      "id": 3,
+      "name": "Kaynak Kütüphanecisi",
+      "result": "Kaynak URL kayıtları denetlendi; içerik insan tarafından okunmalı"
+    },
+    {
+      "id": 4,
+      "name": "Kanıt Eşleyici",
+      "result": "Her konu için en az bir kaynak var"
+    },
+    {
+      "id": 5,
+      "name": "Belirsizlik Editörü",
+      "result": "Tartışmalı yorumlar bağlam notuna ayrıldı"
+    },
+    {
+      "id": 6,
+      "name": "İlk 3 Saniye Yazarı",
+      "result": "Açılış cümlesi üretildi"
+    },
+    {
+      "id": 7,
+      "name": "Senarist",
+      "result": "Üç tarihî bilgiyle senaryo derlendi"
+    },
+    {
+      "id": 8,
+      "name": "Seslendirme Yazarı",
+      "result": "Seslendirme metni hazırlandı"
+    },
+    {
+      "id": 9,
+      "name": "Açıklama Editörü",
+      "result": "Instagram açıklaması oluşturuldu"
+    },
+    {
+      "id": 10,
+      "name": "Etiket Editörü",
+      "result": "Konuya özgü etiketler eklendi"
+    },
+    {
+      "id": 11,
+      "name": "Sahne Planlayıcısı",
+      "result": "3 sahne planlandı"
+    },
+    {
+      "id": 12,
+      "name": "Kapak Tasarımcısı",
+      "result": "4:5 özgün poster üretildi"
+    },
+    {
+      "id": 13,
+      "name": "Sinematik Yönetmen",
+      "result": "İsteğe bağlı sinematik illüstrasyon promptu kaydedildi"
+    },
+    {
+      "id": 14,
+      "name": "Ses Tasarımcısı",
+      "result": "Telifsiz seslendirme/müzik yönergesi yazıldı"
+    },
+    {
+      "id": 15,
+      "name": "Kurgu Ajanı",
+      "result": "15 saniyelik dikey kısa video üretimi denendi"
+    },
+    {
+      "id": 16,
+      "name": "Biçim Denetçisi",
+      "result": "Görsel boyutları, video dosyası ve formatlar kontrol edildi"
+    },
+    {
+      "id": 17,
+      "name": "Telif Denetçisi",
+      "result": "Dış medya varlığı kullanılmadı; müzik hakları insan kontrolünde"
+    },
+    {
+      "id": 18,
+      "name": "Tarih Doğruluk Denetçisi",
+      "result": "Kaynak listesi iliştirildi, insan tarih doğrulaması bekleniyor"
+    },
+    {
+      "id": 19,
+      "name": "Yayın Sorumlusu",
+      "result": "YAYIN KAPALI: insan onayı gerekiyor"
+    },
+    {
+      "id": 20,
+      "name": "Performans Kaydedicisi",
+      "result": "Maliyet ve çalışma raporu kaydedildi"
+    }
+  ],
+  "n_roles": 20,
+  "cost": {
+    "paid_api_calls": 0,
+    "estimated_paid_api_cost_try": 0,
+    "notes": []
+  },
+  "publication": "NONE",
+  "files": {
+    "post": "post_1080x1350.png",
+    "mp4": "reel_15sn_720x1280.mp4",
+    "caption": "caption.txt",
+    "voiceover": "voiceover.txt",
+    "sources": "sources.json"
+  }
+}

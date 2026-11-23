@@ -1,0 +1,7 @@
+ffconcat version 1.0
+file 'reel_sahne_1.png'
+duration 5
+file 'reel_sahne_2.png'
+duration 5
+file 'reel_sahne_3.png'
+duration 5
