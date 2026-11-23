@@ -1,0 +1,37 @@
+name: Instagram yayın (SADECE açık insan onayıyla)
+on:
+  workflow_dispatch:
+    inputs:
+      confirmed:
+        description: 'Yayın için I_APPROVE_THIS_POST yazılmalı'
+        required: true
+        type: string
+      public_video_url:
+        description: 'Onaylı MP4 dosyasının herkese açık HTTPS adresi'
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  publish-only-by-owner:
+    if: ${{ inputs.confirmed == 'I_APPROVE_THIS_POST' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    environment: instagram-production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Post explicitly approved media only
+        env:
+          IG_ALLOW_PUBLISH: ${{ inputs.confirmed }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          VIDEO_URL: ${{ inputs.public_video_url }}
+        run: |
+          python -m scripts.instagram_publish --execute \
+            --url "$VIDEO_URL" \
+            --caption-file approval/caption.txt \
+            --approval-file approval/approved.json

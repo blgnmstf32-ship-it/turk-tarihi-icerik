@@ -1,39 +1,55 @@
-name: Türk tarihi taslak üretimi
+name: Türk tarihi ücretsiz sesli Reels taslağı
 on:
   workflow_dispatch:
     inputs:
       topic:
-        description: 'Konu kimliği (boşsa haftalık sıradaki konu)'
+        description: 'İçerik konusu (örn: malazgirt-1071); boşsa otomatik seç'
         required: false
-        default: ''
         type: string
+        default: ''
   schedule:
-    # UTC: 09:17 = İstanbul'da kış/yaz 12:17 (Türkiye UTC+3)
-    - cron: '17 9 * * 2,5'
-
+    - cron: '17 9 * * 2,5'  # Türkiye 12:17; GitHub schedule gecikebilir
 permissions:
   contents: read
 concurrency:
-  group: tarih-draft
+  group: turk-tarihi-content-drafts
   cancel-in-progress: false
-
 jobs:
-  build-draft:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+  create-narrated-review-draft:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'
-      - run: python -m pip install -r requirements.txt
-      - name: Taslak üret (ücretli AI çağrısı yok)
+          cache: pip
+      - name: Install FFmpeg, espeak and open source TTS
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg libespeak-ng1 espeak-ng-data
+          pip install -r requirements.txt
+          pip install 'piper-tts>=1.3,<2.0'
+      - name: Cache Turkish speech model
+        uses: actions/cache@v4
+        with:
+          path: .cache/piper
+          key: tr_TR-dfki-medium-v1
+      - name: Validate 20 roles and safety gates
+        run: python -m unittest discover -s tests -v
+      - name: Generate Turkish audio, five scenes, subtitles and vertical MP4
         env:
           TOPIC_ID: ${{ inputs.topic || '' }}
-        run: python -m scripts.run --topic "$TOPIC_ID" --out output/draft
-      - uses: actions/upload-artifact@v4
+          # Optional only; 'openrouter/free' model does NOT allow paid fallback.
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          ENABLE_20_LLM_AGENTS: ${{ vars.ENABLE_20_LLM_AGENTS || '0' }}
+        run: |
+          python -m scripts.auto_produce --topic "$TOPIC_ID" --out output/auto --model-cache .cache/piper
+      - name: Save review bundle even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: tarih-yayin-taslagi-${{ github.run_number }}
-          path: output/draft/
+          name: tarih-sesli-reels-taslagi-${{ github.run_number }}
+          path: output/auto/
           retention-days: 7
+          if-no-files-found: warn
