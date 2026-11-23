@@ -43,7 +43,7 @@ class AutomaticProductionTests(unittest.TestCase):
             self.assertEqual(len(paths),10)
             self.assertEqual(len({p.read_bytes() for p in paths}),10)
             for p in paths:
-                with Image.open(p) as img:self.assertEqual(img.size,(720,1280))
+                with Image.open(p) as img:self.assertEqual(img.size,(1080,1920))
             stale=Path(d)/'draft'/'scenes'/'stale_commons.jpg'
             Image.new('RGB',(180,320),(0,0,0)).save(stale)
             generate(self.topic,Path(d)/'draft'/'scenes')
