@@ -8,7 +8,7 @@ import math, random
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-W,H=900,1600
+W,H=1080,1920
 FONTS=['/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf','/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf']
 INK='#101821'; CREAM='#f7edda'; GOLD='#edb865'; PALE='#d9d4c4'; RED='#a85443'; TEAL='#426d70'
 
@@ -171,7 +171,7 @@ def scene(topic,i,dest):
     od.rounded_rectangle((32,1455,868,1555),radius=20,fill=(5,12,18,185))
     od.text((60,1485),labels[i%8],font=font(31),fill=(238,190,122,255))
     im=Image.alpha_composite(im.convert('RGBA'),overlay).convert('RGB')
-    im=im.resize((720,1280),Image.Resampling.LANCZOS)
+    im=im.resize((1080,1920),Image.Resampling.LANCZOS)
     dest=Path(dest);dest.parent.mkdir(parents=True,exist_ok=True);im.save(dest,quality=94)
     return dest
 

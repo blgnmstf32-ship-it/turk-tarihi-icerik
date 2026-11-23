@@ -25,7 +25,7 @@ def narrate(text,dest,cache):
     if dest.stat().st_size<1000:raise RuntimeError('Piper çok küçük ses dosyası üretti')
     return dest
 
-def narrate_segments(segments,dest,cache,recordings_dir=None):
+def narrate_segments(segments,dest,cache,recordings_dir=None,provider='piper',settings=None):
     """Render short performance-led phrases separately, with controlled cadence.
 
     Piper is still a synthetic voice. Short phrase boundaries, rhetorical
@@ -35,7 +35,7 @@ def narrate_segments(segments,dest,cache,recordings_dir=None):
     """
     dest=Path(dest);dest.parent.mkdir(parents=True,exist_ok=True)
     recordings_dir=Path(recordings_dir) if recordings_dir else None
-    model=None if recordings_dir else ensure_model(cache)
+    model=None if recordings_dir or provider!='piper' else ensure_model(cache)
     if not segments:raise ValueError('Seslendirme cümlesi yok')
     cues=[];parts=[];rate=None;channels=None;sampwidth=None;elapsed=0.0
     with tempfile.TemporaryDirectory(prefix='piper_performance_') as td:
@@ -52,13 +52,21 @@ def narrate_segments(segments,dest,cache,recordings_dir=None):
                     '-af','loudnorm=I=-18:TP=-2:LRA=11','-ar','22050','-ac','1','-c:a','pcm_s16le',str(part)],
                     capture_output=True,text=True,timeout=120)
                 if result.returncode or not part.exists():raise RuntimeError(f'İnsan ses kaydı dönüştürülemedi ({source.name}): '+result.stderr[-500:])
-            else:
+            elif provider=='piper':
                 pace=float(item.get('pace',1.0))
                 cmd=[sys.executable,'-m','piper','--model',str(model),'--output_file',str(part),
                      '--length-scale',str(pace),'--noise-scale',str(item.get('noise_scale',0.70)),
                      '--noise-w-scale',str(item.get('noise_w_scale',0.85)),'--',spoken]
                 result=subprocess.run(cmd,capture_output=True,text=True,timeout=90)
                 if result.returncode or not part.exists():raise RuntimeError('Piper TTS başarısız: '+result.stderr[-700:])
+            else:
+                from scripts.voice_provider import synthesize
+                raw=td/f'{i:02d}_raw.wav'
+                synthesize(spoken,raw,provider,settings)
+                result=subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(raw),
+                    '-af','loudnorm=I=-18:TP=-2:LRA=11','-ar','22050','-ac','1','-c:a','pcm_s16le',str(part)],
+                    capture_output=True,text=True,timeout=120)
+                if result.returncode or not part.exists():raise RuntimeError(f'{provider} ses biçimi dönüştürülemedi: '+result.stderr[-500:])
             with wave.open(str(part),'rb') as wf:
                 current=(wf.getframerate(),wf.getnchannels(),wf.getsampwidth())
                 if rate is None:rate,channels,sampwidth=current

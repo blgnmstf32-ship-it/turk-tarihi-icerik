@@ -21,7 +21,7 @@ def check(video,voiceover,subtitles,scenes):
     a=next((s for s in streams if s.get('codec_type')=='audio'),None)
     if not v or not a:raise ValueError('A publishable Reel requires BOTH video and audio')
     w,h=v.get('width',0),v.get('height',0)
-    if w<720 or h<1280 or abs(w/h-9/16)>.012:raise ValueError('Video must be vertical >=720x1280')
+    if w<1080 or h<1920 or abs(w/h-9/16)>.012:raise ValueError('Video must be vertical >=1080x1920')
     duration=float(info.get('format',{}).get('duration',0))
     if duration<60 or duration>75:raise ValueError('Documentary Reel must be 60-75 seconds')
     if int(v.get('r_frame_rate','0/1').split('/')[0])<30:raise ValueError('Documentary Reel must be at least 30 fps')

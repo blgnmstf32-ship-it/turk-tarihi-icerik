@@ -49,7 +49,7 @@ def collect_scenes(folder):
     return images
 
 
-def render_reel(scenes_dir,audio_path,srt_path,output_path,width=720,height=1280,fps=30):
+def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=1920,fps=30):
     """Render cinematic scene motion and active-word captions with Remotion."""
     scenes=collect_scenes(scenes_dir)
     audio=Path(audio_path).resolve();srt=Path(srt_path).resolve();out=Path(output_path).resolve()
@@ -59,7 +59,7 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=720,height=1280
     if not any(s.get('codec_type')=='audio' for s in info['streams']):raise ValueError('Konuşma dosyası ses içermiyor')
     length=media_duration(audio)
     if not (60<=length<=75):raise ValueError('Belgesel seslendirmesi 60–75 saniye olmalı')
-    if (width,height,fps)!=(720,1280,30):raise ValueError('Varsayılan belgesel ölçüsü 720x1280, 30 fps olmalı')
+    if (width,height,fps)!=(1080,1920,30):raise ValueError('Varsayılan belgesel ölçüsü 1080x1920, 30 fps olmalı')
     out.parent.mkdir(parents=True,exist_ok=True)
     cues=subtitle_cues(srt)
     if not cues:raise ValueError('Zamanlı altyazı cümlesi bulunamadı')

@@ -17,6 +17,8 @@ from scripts.ai_agents import run_agents
 from scripts.create_reel import render_reel,media_duration
 from scripts.release_check import check
 from scripts.commons_media import fetch_visuals,write_attribution
+from scripts.voice_provider import select_provider
+from scripts.task_observer import record
 
 
 def verified_facts_only(topic):
@@ -84,12 +86,14 @@ def optional_free_ai_suggestion(topic,out):
         return {'status':'failed_no_fallback','api_calls':1}
 
 
-def production(topic,out,model_cache,skip_narration=False,recordings_dir=None):
+def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,voice_provider_override=None):
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     settings=load_json(ROOT/'config'/'settings.json')
+    record('production_started',{'topic':topic.get('id'),'out':str(out)})
     if settings.get('ai_paid_services_enabled',True) or settings.get('instagram_auto_publish_enabled',True) or not settings.get('human_approval_required',False):
         raise RuntimeError('Zero-cost mode and manual approval gate must remain enabled')
     # 20 actual functional roles perform their tasks in the existing trusted pipeline.
+    provider=select_provider(settings,voice_provider_override)
     prev=build(topic,out,video=False)
     segments=performance_script(topic)
     script='\n'.join(item['spoken'] for item in segments)
@@ -124,11 +128,11 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None):
     if recordings_dir:
         voice_mode='human_recordings'
     else:
-        voice_mode='free_offline_piper_synthetic'
+        voice_mode='free_offline_piper_synthetic' if provider=='piper' else provider
     guide='İnsan seslendirmesi için her satırı ayrı kaydedin; 01.wav, 02.wav, ... adlarını kullanın.\n\n'
     guide+='\n'.join(f"{i+1:02d}.wav — {item['spoken']}" for i,item in enumerate(segments))+'\n'
     (out/'VOICE_RECORDING_GUIDE.txt').write_text(guide,encoding='utf-8')
-    cues=narrate_segments(segments,voice_path,model_cache,recordings_dir)
+    cues=narrate_segments(segments,voice_path,model_cache,recordings_dir,provider,settings)
     duration=media_duration(voice_path)
     if not 60<=duration<=75:raise ValueError(f'Voice length {duration:.1f}s outside 60-75s; expand/rewrite narration, never time-stretch')
     create_subtitles(cues,out/'subtitles.srt')
@@ -140,16 +144,26 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None):
         '-filter_complex','[0:a]volume=1.0[voice];[1:a]volume=0.17[music];[voice][music]amix=inputs=2:duration=first:dropout_transition=0[a]',
         '-map','0:v:0','-map','[a]','-c:v','copy','-c:a','aac','-b:a','160k','-movflags','+faststart',str(final)],check=True,capture_output=True,text=True)
     technical=check(final,voice_path,out/'subtitles.srt',scenes)
+    optional_audits={}
+    if settings.get('speech_audit_enabled',False):
+        from scripts.speech_audit import compare_subtitles
+        optional_audits['speech']=compare_subtitles(voice_path,out/'subtitles.srt')
+    if settings.get('scene_audit_enabled',False):
+        from scripts.scene_audit import audit
+        optional_audits['scenes']=audit(final)
+    visual_review=('Lisanslı tarihî görselin anlatıdaki dönem/olayla eşleşmesini ve her atfı doğrula' if len(licensed_visuals)>=10
+                   else 'Temsilî çizimleri tarih bağlamı ve etiketleri açısından incele; fotoğraf diye sunma')
     manifest.update({'status':'technical_draft_complete_review_required','video_generated':True,'voice_generated':True,
       'video_file':final.name,'seconds':round(duration,2),'technical_review':technical,'ready_for_instagram':False,
       'visual_scene_count':len(list(scenes.glob('*.jpg'))),'subtitle_alignment':'actual_phrase_audio_timing',
       'renderer':'Remotion scenes and animated captions; FFmpeg narration/music mux and H.264/AAC encoding',
-      'fps':30,'resolution':'720x1280','narration_style':'Turkish documentary direction; short phrases, planned pauses, varied pace, rising/falling emphasis; Piper fallback remains synthetic',
-      'voice_source':voice_mode,'natural_voice_human_review_required':voice_mode!='human_recordings',
+      'fps':30,'resolution':'1080x1920','narration_style':'Turkish documentary direction; short phrases, planned pauses, varied pace, rising/falling emphasis; Piper fallback remains synthetic',
+      'voice_source':voice_mode,'voice_provider':provider,'natural_voice_human_review_required':voice_mode!='human_recordings','optional_audits':optional_audits,
       'target_duration_seconds':{'min':60,'max':75},
-      'human_review_checklist':['Tarihî olguları birincil/akademik kaynakta doğrula','Temsili çizimlerin tarih bağlamına uygunluğunu gözden geçir',
+      'human_review_checklist':['Tarihî olguları birincil/akademik kaynakta doğrula',visual_review,
         'Türkçe sesin anlaşılır olup olmadığını dinle','Altyazı zamanını gözle kontrol et','Instagram yayın onayını ayrıca ver']})
     (out/'AUTO_REPORT.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+    record('production_finished',{'topic':topic.get('id'),'status':manifest.get('status'),'technical_gate':technical.get('technical_gate'),'duration':duration,'voice_provider':provider})
     return manifest
 
 
@@ -159,11 +173,16 @@ def main():
     p.add_argument('--out',default='output/auto')
     p.add_argument('--model-cache',default='.cache/piper')
     p.add_argument('--voice-recordings',default='',help='Optional folder with one human-recorded phrase per file: 01.wav, 02.wav, ...')
-    p.add_argument('--skip-narration',action='store_true',help='Offline dry-run of 20 roles and five illustrated visuals')
+    p.add_argument('--skip-narration',action='store_true',help='Offline dry-run of 20 roles and ten illustrated visuals')
+    p.add_argument('--voice-provider',default='',help='piper, google_chirp3_hd or azure_speech; paid cloud providers fail closed by default')
     a=p.parse_args()
     topics=load_json(ROOT/'data'/'topics.json');topic=select_topic(topics,a.topic)
     if topic is None:p.error('Unknown topic')
-    result=production(topic,a.out,a.model_cache,a.skip_narration,a.voice_recordings or None)
+    try:
+        result=production(topic,a.out,a.model_cache,a.skip_narration,a.voice_recordings or None,a.voice_provider or None)
+    except Exception as exc:
+        record('production_failed',{'topic':topic.get('id'),'error':f'{type(exc).__name__}: {exc}'})
+        raise
     print(json.dumps(result,ensure_ascii=False,indent=2))
 
 if __name__=='__main__':main()

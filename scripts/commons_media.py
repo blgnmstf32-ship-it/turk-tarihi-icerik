@@ -12,6 +12,7 @@ from io import BytesIO
 
 API='https://commons.wikimedia.org/w/api.php'
 MAX_BYTES=8_000_000
+TARGET_SIZE=(1080,1920)
 
 
 def _plain(value):
@@ -78,7 +79,7 @@ def fetch_visuals(topic, output_dir, session=requests, limit=10):
                 try:
                     im=Image.open(BytesIO(b''.join(chunks))).convert('RGB')
                     if im.width<480 or im.height<480:continue
-                    im=ImageOps.fit(im,(720,1280),method=Image.Resampling.LANCZOS)
+                    im=ImageOps.fit(im,TARGET_SIZE,method=Image.Resampling.LANCZOS)
                 except Exception:
                     continue
                 filename=output_dir/f'{len(found)+1:02d}_commons.jpg'
