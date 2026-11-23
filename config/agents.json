@@ -3,120 +3,120 @@
     "id": 1,
     "name": "Konu Avcısı",
     "stage": "research",
-    "job": "Onaylı tarih arşivinden sıradaki konuyu seçer"
+    "job": "Kaynaklı Türk tarihi konusunu 60-75 saniyelik belgesel anlatıya uygun seçer"
   },
   {
     "id": 2,
     "name": "Kronolog",
     "stage": "research",
-    "job": "Tarih ve dönem bilgilerini kontrol eder"
+    "job": "Tarih, dönem ve kronolojiyi kontrol edip 60-75 saniyelik anlatı akışını kurar"
   },
   {
     "id": 3,
     "name": "Kaynak Kütüphanecisi",
     "stage": "research",
-    "job": "Kaynak URL'lerini ve kaynak türlerini denetler"
+    "job": "Tarihî iddiaların kaynaklarını ve ücretsiz görsel kaynak sayfalarını kaydeder"
   },
   {
     "id": 4,
     "name": "Kanıt Eşleyici",
     "stage": "research",
-    "job": "Paylaşılacak bilgiyle kaynak kaydını eşler"
+    "job": "Her anlatı cümlesini kanıtına, her görseli sahneye eşler"
   },
   {
     "id": 5,
     "name": "Belirsizlik Editörü",
     "stage": "research",
-    "job": "İhtilaflı ya da doğrulanmamış anlatımı işaretler"
+    "job": "Belirsiz iddiaları, canlandırma sınırını ve görsel yanıltma riskini işaretler"
   },
   {
     "id": 6,
     "name": "İlk 3 Saniye Yazarı",
     "stage": "writing",
-    "job": "Kısa ve dikkat çekici açılış cümlesi oluşturur"
+    "job": "Belgesel videosunun ilk üç saniyesi için merak uyandıran doğal Türkçe açılış yazar"
   },
   {
     "id": 7,
     "name": "Senarist",
     "stage": "writing",
-    "job": "Üç sahneli kısa anlatı kurar"
+    "job": "60-75 saniyelik, 10-14 sahneli sinematik belgesel akışını kaynaklı olgularla kurar"
   },
   {
     "id": 8,
     "name": "Seslendirme Yazarı",
     "stage": "writing",
-    "job": "Seslendirilebilir metni üretir"
+    "job": "Coşkulu ama ölçülü Türkçe anlatıcı için durak, vurgu ve nefes noktaları belirler"
   },
   {
     "id": 9,
     "name": "Açıklama Editörü",
     "stage": "writing",
-    "job": "Instagram açıklaması oluşturur"
+    "job": "Belgesel videosuyla uyumlu, kaynakları ve canlandırma notunu içeren açıklama yazar"
   },
   {
     "id": 10,
     "name": "Etiket Editörü",
     "stage": "writing",
-    "job": "Konuya uygun ölçülü etiketleri ekler"
+    "job": "Tarihî belgesel içeriğine uygun, ölçülü etiketleri ekler"
   },
   {
     "id": 11,
     "name": "Sahne Planlayıcısı",
     "stage": "production",
-    "job": "Anlatım için 5 ayrı sahne ve izleyicinin göreceği ana olguları planlar"
+    "job": "Her anlatı bölümü için 10-14 sahne, gerçek yer/eser/harita ve hareket amacını planlar"
   },
   {
     "id": 12,
     "name": "Kapak Tasarımcısı",
     "stage": "production",
-    "job": "1080x1350 poster ve 5 özgün çizim üretir"
+    "job": "Açık lisanslı tarihî alan, eser, arşiv ve harita görsellerini seçer; kaynağı ve atfı yazar"
   },
   {
     "id": 13,
     "name": "Sinematik Yönetmen",
     "stage": "production",
-    "job": "Tarihî temsili canlandırma tasarımını hazırlar; gerçekçi AI sahne modeli henüz bağlı değildir"
+    "job": "Gerçekçi belgesel kadrajı, dönem atmosferi, sıcak doğal renk ve yavaş kamera hareketi tasarlar; canlandırmayı açıkça etiketler"
   },
   {
     "id": 14,
     "name": "Ses Tasarımcısı",
     "stage": "production",
-    "job": "Telif güvenli özgün ambiyans müziğini oluşturur; Piper Türkçe konuşmasıyla karışım yapar"
+    "job": "Ücretsiz/telif güvenli ambiyans, seviye dengesi ve anlatıcı için ses boşluklarını düzenler"
   },
   {
     "id": 15,
     "name": "Kurgu Ajanı",
     "stage": "production",
-    "job": "FFmpeg ile hareketli kamera efektli, Türkçe anlatımlı ve altyazılı MP4 derler"
+    "job": "Remotion ile sinematik hareket ve kelime vurgulu altyazı; FFmpeg ile Türkçe anlatım/müzik miksajı ve MP4 üretir"
   },
   {
     "id": 16,
     "name": "Biçim Denetçisi",
     "stage": "review",
-    "job": "MP4 boyut, ses kanalı ve altyazı teknik kontrolü yapar"
+    "job": "60-75 saniye, 9:16, 30 fps, 720x1280, ses, altyazı ve Remotion render teknik kontrolü yapar"
   },
   {
     "id": 17,
     "name": "Telif Denetçisi",
     "stage": "review",
-    "job": "İllüstrasyon ve ses kaynaklarının lisans/özgünlük kayıtlarını denetler"
+    "job": "Her görsel ve sesin açık lisansını/özgünlüğünü ve zorunlu atıflarını denetler"
   },
   {
     "id": 18,
     "name": "Tarih Doğruluk Denetçisi",
     "stage": "review",
-    "job": "Tarihî olgular için kaynakları listeler; insan kaynak doğrulaması zorunludur"
+    "job": "Tarihî olguları birincil/akademik kaynaklarla denetler; insan doğrulaması zorunludur"
   },
   {
     "id": 19,
     "name": "Yayın Sorumlusu",
     "stage": "review",
-    "job": "İnsan onayı olmadan yayın kapısını kapalı tutar"
+    "job": "İnsan onayı olmadan taslağı yayıma hazır saymaz; otomatik Instagram yayını kapalı tutar"
   },
   {
     "id": 20,
     "name": "Performans Kaydedicisi",
     "stage": "review",
-    "job": "Üretim raporu ve sonraki iyileştirme önerisi yazar"
+    "job": "Ses doğallığı, izleyici ritmi, görsel çeşitliliği ve maliyet için üretim raporu yazar"
   }
 ]
