@@ -12,8 +12,8 @@ def check(video,voiceover,subtitles,scenes):
         if not f.is_file() or f.stat().st_size<500: raise ValueError(f'Missing or suspiciously small production asset: {f}')
     if not scenes.is_dir(): raise ValueError('Visual scenes folder missing')
     images=[x for x in scenes.iterdir() if x.suffix.lower() in ('.png','.jpg','.jpeg','.webp')]
-    if len(images)<5:raise ValueError('At least five actual visual scene assets required')
-    if len({hashlib.sha256(i.read_bytes()).hexdigest() for i in images})<5:raise ValueError('Visual scenes duplicate')
+    if len(images)<10:raise ValueError('At least ten actual visual scene assets required')
+    if len({hashlib.sha256(i.read_bytes()).hexdigest() for i in images})<10:raise ValueError('Visual scenes duplicate')
     p=subprocess.run(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(video)],capture_output=True,text=True,check=True)
     info=json.loads(p.stdout)
     streams=info.get('streams',[])
@@ -23,7 +23,8 @@ def check(video,voiceover,subtitles,scenes):
     w,h=v.get('width',0),v.get('height',0)
     if w<720 or h<1280 or abs(w/h-9/16)>.012:raise ValueError('Video must be vertical >=720x1280')
     duration=float(info.get('format',{}).get('duration',0))
-    if duration<20 or duration>60:raise ValueError('Reel must be 20-60 seconds')
+    if duration<60 or duration>75:raise ValueError('Documentary Reel must be 60-75 seconds')
+    if int(v.get('r_frame_rate','0/1').split('/')[0])<30:raise ValueError('Documentary Reel must be at least 30 fps')
     if subtitles.suffix.lower()!='.srt' or '-->' not in subtitles.read_text(encoding='utf-8'):raise ValueError('Valid SRT subtitles required')
     return {'technical_gate':'passed','manual_creative_and_historical_review':'still_required','duration_seconds':duration,'resolution':f'{w}x{h}'}
 

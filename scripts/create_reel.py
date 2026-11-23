@@ -11,6 +11,8 @@ from pathlib import Path
 import subprocess
 import tempfile
 import re
+import shutil
+import os
 
 from PIL import Image
 
@@ -28,30 +30,27 @@ def media_duration(path):
 
 def subtitle_cues(path):
     text=Path(path).read_text(encoding='utf-8')
-    pattern=r'(\d{2}):(\d{2}):(\d{2}),(\d{3})\s+-->\s+(\d{2}):(\d{2}):(\d{2}),(\d{3})'
+    pattern=r'(\d{2}):(\d{2}):(\d{2}),(\d{3})\s+-->\s+(\d{2}):(\d{2}):(\d{2}),(\d{3})\s+([^\n]+)'
     def seconds(h,m,s,ms):return int(h)*3600+int(m)*60+int(s)+int(ms)/1000
-    return [(seconds(*m.groups()[:4]),seconds(*m.groups()[4:])) for m in re.finditer(pattern,text)]
+    return [{'start':seconds(*m.groups()[:4]),'end':seconds(*m.groups()[4:8]),'text':m.group(9).strip()}
+            for m in re.finditer(pattern,text)]
 
 
 def collect_scenes(folder):
     folder=Path(folder)
     if not folder.is_dir():raise ValueError(f'Sahne klasörü bulunamadı: {folder}')
     images=sorted(p for p in folder.iterdir() if p.suffix.lower() in VALID_IMAGE_EXTS)
-    if len(images)<5:raise ValueError('En az 5 farklı sahne görseli gerekiyor')
-    if len({hashlib.sha256(p.read_bytes()).hexdigest() for p in images})<5:
-        raise ValueError('En az 5 gerçekten farklı görsel gerekiyor')
+    if len(images)<10:raise ValueError('Belgesel biçimi için en az 10 farklı sahne görseli gerekiyor')
+    if len({hashlib.sha256(p.read_bytes()).hexdigest() for p in images})<10:
+        raise ValueError('Belgesel biçimi için en az 10 gerçekten farklı görsel gerekiyor')
     for p in images:
         with Image.open(p) as im:
             im.verify()
     return images
 
 
-def render_reel(scenes_dir,audio_path,srt_path,output_path,width=720,height=1280,fps=24):
-    """Generate MP4 with slow documentary-style camera motion + narration + burnt-in SRT.
-
-    This is video editing, not AI motion generation. Images should already carry
-    strong visual storytelling and a suitable usage license.
-    """
+def render_reel(scenes_dir,audio_path,srt_path,output_path,width=720,height=1280,fps=30):
+    """Render cinematic scene motion and active-word captions with Remotion."""
     scenes=collect_scenes(scenes_dir)
     audio=Path(audio_path).resolve();srt=Path(srt_path).resolve();out=Path(output_path).resolve()
     if not audio.is_file() or not srt.is_file(): raise ValueError('Seslendirme ve SRT altyazı dosyaları gereklidir')
@@ -59,56 +58,45 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=720,height=1280
     info=ffprobe(audio)
     if not any(s.get('codec_type')=='audio' for s in info['streams']):raise ValueError('Konuşma dosyası ses içermiyor')
     length=media_duration(audio)
-    if not (20<=length<=60):raise ValueError('Seslendirme 20–60 saniye olmalı')
+    if not (60<=length<=75):raise ValueError('Belgesel seslendirmesi 60–75 saniye olmalı')
+    if (width,height,fps)!=(720,1280,30):raise ValueError('Varsayılan belgesel ölçüsü 720x1280, 30 fps olmalı')
     out.parent.mkdir(parents=True,exist_ok=True)
-    # Ensure each scene gets screen time with a gently changing frame.
-    # Last scene receives any duration rounding remainder.
     cues=subtitle_cues(srt)
-    if len(cues)==len(scenes):
-        starts=[max(0,c[0]) for c in cues]
-        durations=[max(.45,(starts[i+1] if i+1<len(starts) else length)-starts[i]) for i in range(len(starts))]
-        durations[-1]=max(.45,length-starts[-1])
-    else:
-        durations=[length/len(scenes)]*len(scenes)
-    segments=[]
-    with tempfile.TemporaryDirectory(prefix='turktarihi_reel_') as td:
-        work=Path(td)
-        for i,src in enumerate(scenes):
-            path=work/f'scene_{i:03d}.mp4'; segments.append(path)
-            dur=durations[i]
-            # Alternate slow vertical/horizontal moves so the illustrated
-            # sequence behaves like a small documentary edit, not a slide deck.
-            drift=("x='(iw-iw/zoom)/2':y='min((ih-ih/zoom),on/10)'" if i%2==0 else
-                   "x='min((iw-iw/zoom),on/12)':y='(ih-ih/zoom)/2'")
-            n=max(1,int(round(dur*fps)))
-            vf=(f'scale={width}:{height}:force_original_aspect_ratio=increase,'
-                f'crop={width}:{height},'
-                f"zoompan=z='min(zoom+0.0011,1.20)':{drift}:d=1:s={width}x{height}:fps={fps},"
-                f'format=yuv420p')
-            subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-loop','1','-i',str(src),
-                            '-vf',vf,'-frames:v',str(n),'-r',str(fps),'-c:v','libx264','-preset','ultrafast',
-                            '-crf','24','-an',str(path)],check=True,capture_output=True,text=True)
-        concat=work/'concat.txt'
-        concat.write_text('ffconcat version 1.0\n'+''.join(f"file '{p.name}'\n" for p in segments),encoding='utf-8')
-        # ASS/SRT subtitles burn-in with safe filename in temp work directory.
-        srt_local=work/'captions.srt';srt_local.write_bytes(srt.read_bytes())
-        cmd=['ffmpeg','-hide_banner','-loglevel','error','-y',
-             '-f','concat','-safe','0','-i',str(concat),'-i',str(audio),
-             '-vf',"subtitles=captions.srt:force_style='FontName=DejaVu Sans,FontSize=6,Bold=1,Alignment=2,Outline=1,Shadow=0,MarginV=80'",
-             '-c:v','libx264','-preset','fast','-crf','22','-pix_fmt','yuv420p',
-             '-c:a','aac','-b:a','160k','-shortest','-movflags','+faststart',str(out)]
-        subprocess.run(cmd,cwd=work,check=True,capture_output=True,text=True)
+    if not cues:raise ValueError('Zamanlı altyazı cümlesi bulunamadı')
+    root=Path(__file__).resolve().parents[1]
+    public_dir=root/'public'/'scenes'/out.stem
+    public_dir.mkdir(parents=True,exist_ok=True)
+    copied=[]
+    for src in scenes:
+        shutil.copy2(src,public_dir/src.name)
+        copied.append({'src':f'scenes/{out.stem}/{src.name}'})
+    props={'durationSec':length,'title':'TÜRK TARİHİ','scenes':copied,'captions':cues}
+    with tempfile.TemporaryDirectory(prefix='turktarihi_remotion_') as td:
+        props_path=Path(td)/'props.json'
+        props_path.write_text(json.dumps(props,ensure_ascii=False),encoding='utf-8')
+        cmd=['npx','--no-install','remotion','render','remotion/index.tsx','DocumentaryReel',str(out),
+             '--props',str(props_path),'--codec=h264','--crf=22','--concurrency=2','--log=error',
+             '--license-key=free-license']
+        try:
+            env=os.environ.copy()
+            compat=root/'scripts'/'remotion_node_compat.cjs'
+            env['NODE_OPTIONS']=(env.get('NODE_OPTIONS','')+f' --require={compat}').strip()
+            env['REMOTION_FORCE_LOOPBACK_NETWORK']='1'
+            subprocess.run(cmd,cwd=root,env=env,check=True,capture_output=True,text=True,timeout=2400)
+        except subprocess.CalledProcessError as exc:
+            raise RuntimeError('Remotion render başarısız: '+(exc.stderr or exc.stdout)[-1800:]) from exc
     result=ffprobe(out)
     if not any(s.get('codec_type')=='audio' for s in result['streams']):raise RuntimeError('Çıktı ses içermiyor')
     return {'path':str(out),'seconds':round(media_duration(out),2),'scenes':len(scenes),
-            'contains_audio_track':True,'speech_verified':False,'subtitle_burned_in':True,'instagram_published':False,
+            'renderer':'Remotion','fps':fps,'resolution':f'{width}x{height}',
+            'contains_audio_track':False,'speech_verified':False,'animated_word_captions':True,'instagram_published':False,
             'creative_review_required':True,'historical_review_required':True}
 
 
 def main():
     ap=argparse.ArgumentParser(description='Ücretsiz FFmpeg ile anlatımlı tarih Reels montajı')
-    ap.add_argument('--scenes',required=True,help='En az 5 farklı lisanslı PNG/JPG görsel içeren klasör')
-    ap.add_argument('--voice',required=True,help='20–60 saniyelik seslendirme WAV/MP3')
+    ap.add_argument('--scenes',required=True,help='En az 10 farklı tarihî görsel içeren klasör')
+    ap.add_argument('--voice',required=True,help='60–75 saniyelik Türkçe belgesel anlatımı WAV/MP3')
     ap.add_argument('--subtitles',required=True,help='Senaryoyla eşleşen SRT altyazı')
     ap.add_argument('--out',required=True,help='Çıktı MP4 yolu')
     a=ap.parse_args()

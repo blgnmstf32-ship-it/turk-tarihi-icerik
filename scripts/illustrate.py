@@ -177,6 +177,11 @@ def scene(topic,i,dest):
 
 def generate(topic,out):
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
+    # Remove stale captures from prior attempts so fallback art and Commons
+    # assets can never silently mix or inflate the scene count.
+    for old in out.iterdir():
+        if old.is_file() and old.suffix.lower() in {'.png','.jpg','.jpeg','.webp'}:
+            old.unlink()
     files=[str(scene(topic,i,out/f'{i+1:02d}_scene.jpg')) for i in range(10)]
     (out/'IMAGE_PROVENANCE.md').write_text(
         'Eight original vector-style illustrations made in code. They are symbolic reconstructions, not documentary images, factual maps, uniform references, or verified battle tactics. No third-party media is used.\n',encoding='utf-8')

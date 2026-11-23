@@ -25,7 +25,7 @@ def narrate(text,dest,cache):
     if dest.stat().st_size<1000:raise RuntimeError('Piper çok küçük ses dosyası üretti')
     return dest
 
-def narrate_segments(segments,dest,cache):
+def narrate_segments(segments,dest,cache,recordings_dir=None):
     """Render short performance-led phrases separately, with controlled cadence.
 
     Piper is still a synthetic voice. Short phrase boundaries, rhetorical
@@ -33,7 +33,9 @@ def narrate_segments(segments,dest,cache):
     natural rhythm without claiming emotion controls the model does not have.
     Returns subtitle cues aligned to the actual rendered WAV durations.
     """
-    dest=Path(dest);dest.parent.mkdir(parents=True,exist_ok=True);model=ensure_model(cache)
+    dest=Path(dest);dest.parent.mkdir(parents=True,exist_ok=True)
+    recordings_dir=Path(recordings_dir) if recordings_dir else None
+    model=None if recordings_dir else ensure_model(cache)
     if not segments:raise ValueError('Seslendirme cümlesi yok')
     cues=[];parts=[];rate=None;channels=None;sampwidth=None;elapsed=0.0
     with tempfile.TemporaryDirectory(prefix='piper_performance_') as td:
@@ -42,12 +44,21 @@ def narrate_segments(segments,dest,cache):
             spoken=str(item['spoken']).strip()
             if not spoken:continue
             part=td/f'{i:02d}.wav'
-            pace=float(item.get('pace',1.0))
-            cmd=[sys.executable,'-m','piper','--model',str(model),'--output_file',str(part),
-                 '--length-scale',str(pace),'--noise-scale',str(item.get('noise_scale',0.70)),
-                 '--noise-w-scale',str(item.get('noise_w_scale',0.85)),'--',spoken]
-            result=subprocess.run(cmd,capture_output=True,text=True,timeout=90)
-            if result.returncode or not part.exists():raise RuntimeError('Piper TTS başarısız: '+result.stderr[-700:])
+            if recordings_dir:
+                candidates=[recordings_dir/f'{i+1:02d}{ext}' for ext in ('.wav','.mp3','.m4a','.aac','.ogg')]
+                source=next((f for f in candidates if f.is_file()),None)
+                if source is None:raise ValueError(f'İnsan ses kaydı eksik: {i+1:02d}.wav (veya mp3/m4a/aac/ogg)')
+                result=subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(source),
+                    '-af','loudnorm=I=-18:TP=-2:LRA=11','-ar','22050','-ac','1','-c:a','pcm_s16le',str(part)],
+                    capture_output=True,text=True,timeout=120)
+                if result.returncode or not part.exists():raise RuntimeError(f'İnsan ses kaydı dönüştürülemedi ({source.name}): '+result.stderr[-500:])
+            else:
+                pace=float(item.get('pace',1.0))
+                cmd=[sys.executable,'-m','piper','--model',str(model),'--output_file',str(part),
+                     '--length-scale',str(pace),'--noise-scale',str(item.get('noise_scale',0.70)),
+                     '--noise-w-scale',str(item.get('noise_w_scale',0.85)),'--',spoken]
+                result=subprocess.run(cmd,capture_output=True,text=True,timeout=90)
+                if result.returncode or not part.exists():raise RuntimeError('Piper TTS başarısız: '+result.stderr[-700:])
             with wave.open(str(part),'rb') as wf:
                 current=(wf.getframerate(),wf.getnchannels(),wf.getsampwidth())
                 if rate is None:rate,channels,sampwidth=current
