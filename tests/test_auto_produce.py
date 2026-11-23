@@ -2,7 +2,7 @@ import tempfile, unittest
 from pathlib import Path
 from PIL import Image
 from scripts.run import ROOT, load_json
-from scripts.auto_produce import production,verified_facts_only,performance_script
+from scripts.auto_produce import production,verified_facts_only,performance_script,audio_mix_command
 from scripts.subtitles import create,create_timed
 from scripts.illustrate import generate
 
@@ -12,6 +12,14 @@ class AutomaticProductionTests(unittest.TestCase):
     def test_script_factual_guard(self):
         text=verified_facts_only(self.topic)
         self.assertTrue(all(f in text for f in self.topic['facts']))
+    def test_final_mix_maps_the_narration_file_not_remotion_silence(self):
+        command=audio_mix_command('visuals.mp4','narration.wav','music.wav','final.mp4')
+        self.assertEqual(command[command.index('-i')+1],'visuals.mp4')
+        self.assertEqual(command[command.index('-i',command.index('-i')+1)+1],'narration.wav')
+        graph=command[command.index('-filter_complex')+1]
+        self.assertIn('[1:a]volume=1.0[voice]',graph)
+        self.assertIn('[2:a]volume=0.12[music]',graph)
+        self.assertIn('[voice][music]amix=',graph)
     def test_subtitle_estimated_times(self):
         with tempfile.TemporaryDirectory() as d:
             f=create('İlk cümle. İkinci cümle.',26,Path(d)/'v.srt')
