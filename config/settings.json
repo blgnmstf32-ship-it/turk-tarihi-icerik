@@ -8,9 +8,9 @@
   "monthly_spend_limit_try": 0,
   "instagram_auto_publish_enabled": false,
   "human_approval_required": true,
-  "media_generation": "5 original illustrated scenes + offline Piper Turkish TTS + original ambient music + FFmpeg vertical MP4; approval required",
+  "media_generation": "10 original illustrated scenes + phrase-paced offline Piper Turkish TTS + cue-timed subtitles + original ambient music + FFmpeg vertical MP4; approval required",
   "history_policy": "Yalnız kaynaklanmış olgular; tartışmalı tarihlerde belirsizliği açıkça belirt.",
-  "production_version": "0.4",
+  "production_version": "0.5",
   "publishing_policy": "Manual owner approval mandatory; IG credentials missing",
-  "video_quality": "Original stylized illustrations; not photorealistic AI footage"
+  "video_quality": "10 distinct original stylized illustrations with motion; not photorealistic footage"
 }
