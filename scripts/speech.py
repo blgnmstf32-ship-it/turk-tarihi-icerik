@@ -1,6 +1,6 @@
 """Offline Turkish narration via Piper. No paid service or API key."""
 from pathlib import Path
-import json, subprocess, sys, urllib.request
+import subprocess, sys, urllib.request, tempfile, wave
 
 MODEL='tr_TR-dfki-medium'
 BASE='https://huggingface.co/rhasspy/piper-voices/resolve/main/tr/tr_TR/dfki/medium/'
@@ -24,3 +24,44 @@ def narrate(text,dest,cache):
     if result.returncode or not dest.exists():raise RuntimeError('Piper TTS başarısız: '+result.stderr[-700:])
     if dest.stat().st_size<1000:raise RuntimeError('Piper çok küçük ses dosyası üretti')
     return dest
+
+def narrate_segments(segments,dest,cache):
+    """Render short performance-led phrases separately, with controlled cadence.
+
+    Piper is still a synthetic voice. Short phrase boundaries, rhetorical
+    punctuation, modest pace changes and deliberate pauses give the edit more
+    natural rhythm without claiming emotion controls the model does not have.
+    Returns subtitle cues aligned to the actual rendered WAV durations.
+    """
+    dest=Path(dest);dest.parent.mkdir(parents=True,exist_ok=True);model=ensure_model(cache)
+    if not segments:raise ValueError('Seslendirme cümlesi yok')
+    cues=[];parts=[];rate=None;channels=None;sampwidth=None;elapsed=0.0
+    with tempfile.TemporaryDirectory(prefix='piper_performance_') as td:
+        td=Path(td)
+        for i,item in enumerate(segments):
+            spoken=str(item['spoken']).strip()
+            if not spoken:continue
+            part=td/f'{i:02d}.wav'
+            pace=float(item.get('pace',1.0))
+            cmd=[sys.executable,'-m','piper','--model',str(model),'--output_file',str(part),
+                 '--length-scale',str(pace),'--noise-scale',str(item.get('noise_scale',0.70)),
+                 '--noise-w-scale',str(item.get('noise_w_scale',0.85)),'--',spoken]
+            result=subprocess.run(cmd,capture_output=True,text=True,timeout=90)
+            if result.returncode or not part.exists():raise RuntimeError('Piper TTS başarısız: '+result.stderr[-700:])
+            with wave.open(str(part),'rb') as wf:
+                current=(wf.getframerate(),wf.getnchannels(),wf.getsampwidth())
+                if rate is None:rate,channels,sampwidth=current
+                if current!=(rate,channels,sampwidth):raise RuntimeError('Piper ses parçalarının biçimi uyuşmuyor')
+                frames=wf.readframes(wf.getnframes())
+            duration=len(frames)/(rate*channels*sampwidth)
+            start=elapsed;parts.append(frames);elapsed+=duration
+            cues.append({'start':start,'end':elapsed,'text':str(item.get('caption',spoken))})
+            pause=float(item.get('pause_after',0.22))
+            if pause>0:
+                silence_frames=int(rate*pause)
+                parts.append(b'\0'*(silence_frames*channels*sampwidth));elapsed+=silence_frames/rate
+        with wave.open(str(dest),'wb') as out:
+            out.setframerate(rate);out.setnchannels(channels);out.setsampwidth(sampwidth)
+            out.writeframes(b''.join(parts))
+    if dest.stat().st_size<1000:raise RuntimeError('Piper çok küçük ses dosyası üretti')
+    return cues
