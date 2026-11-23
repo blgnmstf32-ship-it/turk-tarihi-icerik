@@ -1,4 +1,5 @@
-import json, tempfile, unittest
+import json, tempfile, unittest, shutil
+from unittest.mock import patch
 from pathlib import Path
 from scripts.run import ROOT,load_json,build
 
@@ -28,7 +29,15 @@ class PipelineTests(unittest.TestCase):
             p=build(self.topics[0],d,True)
             self.assertIsNone(p['files']['mp4'])
             self.assertFalse(p['files']['ready_for_instagram'])
-            self.assertTrue((Path(d)/p['files']['silent_preview_only']).exists())
+            if shutil.which('ffmpeg'):
+                self.assertTrue((Path(d)/p['files']['silent_preview_only']).exists())
+            else:
+                self.assertIsNone(p['files']['silent_preview_only'])
+    def test_silent_preview_gracefully_skips_without_ffmpeg(self):
+        with tempfile.TemporaryDirectory() as d, patch('scripts.run.shutil.which',return_value=None):
+            p=build(self.topics[0],d,True)
+            self.assertIsNone(p['files']['silent_preview_only'])
+            self.assertFalse(p['files']['ready_for_instagram'])
     def test_old_silent_reel_rejected_by_release_gate(self):
         from scripts.release_check import check
         with tempfile.TemporaryDirectory() as d:
