@@ -8,10 +8,10 @@ import {
   useCurrentFrame,
 } from 'remotion';
 
-export const WIDTH = 720;
-export const HEIGHT = 1280;
+export const WIDTH = 1080;
+export const HEIGHT = 1920;
 export const FPS = 30;
-const XFADE = 14;
+// Clear editorial cuts keep scene changes legible and machine-auditable.
 
 export type CaptionCue = {start: number; end: number; text: string};
 export type DocumentaryProps = {
@@ -29,7 +29,7 @@ const Scene: React.FC<{
   const frame = useCurrentFrame();
   const local = frame;
   const scale = interpolate(local, [0, Math.max(1, duration)], index % 2 ? [1.08, 1] : [1, 1.08], {extrapolateRight: 'clamp'});
-  const opacity = interpolate(local, [0, XFADE], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  const opacity = 1;
   const drift = interpolate(local, [0, Math.max(1, duration)], index % 2 ? [1.2, -1.2] : [-1.2, 1.2], {extrapolateRight: 'clamp'});
   return (
     <AbsoluteFill style={{opacity, overflow: 'hidden', backgroundColor: '#090d12'}}>
@@ -57,7 +57,7 @@ const ActiveCaption: React.FC<{captions: CaptionCue[]}> = ({captions}) => {
     return progress * total >= before && progress * total < elapsed;
   });
   return (
-    <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.18em 0.28em', maxWidth: '92%', padding: '18px 24px', borderRadius: 18, background: 'rgba(5,8,12,0.76)', color: '#fff', fontFamily: 'Arial, sans-serif', fontWeight: 900, fontSize: 48, lineHeight: 1.12, textAlign: 'center', textShadow: '0 3px 12px rgba(0,0,0,.9)', boxShadow: '0 8px 30px rgba(0,0,0,.2)'}}>
+    <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.18em 0.28em', maxWidth: '92%', padding: '18px 24px', borderRadius: 18, background: 'rgba(5,8,12,0.76)', color: '#fff', fontFamily: 'Arial, sans-serif', fontWeight: 900, fontSize: 66, lineHeight: 1.12, textAlign: 'center', textShadow: '0 3px 12px rgba(0,0,0,.9)', boxShadow: '0 8px 30px rgba(0,0,0,.2)'}}>
       {words.map((word, i) => (
         <span key={`${i}-${word}`} style={{color: i === active ? '#ffd47d' : '#fff', transform: i === active ? 'scale(1.06)' : 'scale(1)', transition: 'color 120ms linear, transform 120ms ease', display: 'inline-block'}}>{word}</span>
       ))}
@@ -73,7 +73,7 @@ export const DocumentaryReel: React.FC<DocumentaryProps> = ({durationSec, title 
     <AbsoluteFill style={{backgroundColor: '#080b10', color: 'white'}}>
       {usable.map((scene, i) => {
         const from = Math.floor(i * step);
-        const to = Math.min(totalFrames, Math.ceil((i + 1) * step) + (i < usable.length - 1 ? XFADE : 0));
+        const to = Math.min(totalFrames, Math.ceil((i + 1) * step));
         return <Sequence key={`${i}-${scene.src}`} from={from} durationInFrames={Math.max(1, to - from)}><Scene src={scene.src} index={i} duration={to - from} /></Sequence>;
       })}
       <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(0,0,0,.34) 0%, transparent 26%, transparent 55%, rgba(0,0,0,.20) 72%, rgba(0,0,0,.76) 100%)', pointerEvents: 'none'}} />
