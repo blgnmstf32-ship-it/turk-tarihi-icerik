@@ -1,0 +1,22 @@
+[
+  {"id":1,"name":"Konu Avcısı","stage":"research","job":"Onaylı tarih arşivinden sıradaki konuyu seçer"},
+  {"id":2,"name":"Kronolog","stage":"research","job":"Tarih ve dönem bilgilerini kontrol eder"},
+  {"id":3,"name":"Kaynak Kütüphanecisi","stage":"research","job":"Kaynak URL'lerini ve kaynak türlerini denetler"},
+  {"id":4,"name":"Kanıt Eşleyici","stage":"research","job":"Paylaşılacak bilgiyle kaynak kaydını eşler"},
+  {"id":5,"name":"Belirsizlik Editörü","stage":"research","job":"İhtilaflı ya da doğrulanmamış anlatımı işaretler"},
+  {"id":6,"name":"İlk 3 Saniye Yazarı","stage":"writing","job":"Kısa ve dikkat çekici açılış cümlesi oluşturur"},
+  {"id":7,"name":"Senarist","stage":"writing","job":"Üç sahneli kısa anlatı kurar"},
+  {"id":8,"name":"Seslendirme Yazarı","stage":"writing","job":"Seslendirilebilir metni üretir"},
+  {"id":9,"name":"Açıklama Editörü","stage":"writing","job":"Instagram açıklaması oluşturur"},
+  {"id":10,"name":"Etiket Editörü","stage":"writing","job":"Konuya uygun ölçülü etiketleri ekler"},
+  {"id":11,"name":"Sahne Planlayıcısı","stage":"production","job":"Dikey video sahnelerini planlar"},
+  {"id":12,"name":"Kapak Tasarımcısı","stage":"production","job":"1080x1350 paylaşım görseli oluşturur"},
+  {"id":13,"name":"Sinematik Yönetmen","stage":"production","job":"Görsel üretim promptlarını çıkarır"},
+  {"id":14,"name":"Ses Tasarımcısı","stage":"production","job":"Telif güvenli müzik ve efekt notu üretir"},
+  {"id":15,"name":"Kurgu Ajanı","stage":"production","job":"Ücretsiz FFmpeg ile dikey MP4 derler"},
+  {"id":16,"name":"Biçim Denetçisi","stage":"review","job":"Çözünürlük ve dosya çıktılarını kontrol eder"},
+  {"id":17,"name":"Telif Denetçisi","stage":"review","job":"Dış görsel/ses varlıklarını ve hak bilgisini kontrol eder"},
+  {"id":18,"name":"Tarih Doğruluk Denetçisi","stage":"review","job":"Kaynağın varlığını ve el ile kontrol zorunluluğunu denetler"},
+  {"id":19,"name":"Yayın Sorumlusu","stage":"review","job":"İnsan onayı olmadan yayın kapısını kapalı tutar"},
+  {"id":20,"name":"Performans Kaydedicisi","stage":"review","job":"Üretim raporu ve sonraki iyileştirme önerisi yazar"}
+]
