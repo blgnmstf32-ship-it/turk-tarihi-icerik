@@ -1,0 +1,12 @@
+TÜRK TARİHİ / 20 GÖREVLİ SİSTEM — ANDROID KILAVUZU
+
+1) Paket dosyasını telefonuna indir, ZIP'i aç.
+2) GitHub hesabında Private repo oluştur.
+3) ZIP içeriğini, .github ve .codex gizli klasörleri dahil, dosyaların klasör yapısını koruyarak depoya yerleştir. ZIP'i tek dosya olarak yüklemek yeterli değildir.
+4) Actions > Türk tarihi taslak üretimi > Run workflow seç.
+5) Çalışma tamamlandığında Artifacts kısmındaki taslağı indir.
+6) Kaynak dosyalarını ve tarihî cümleleri kontrol et. Sonra gönderi ve Reels'i manuel yayınla.
+
+ÖNEMLİ: Proje kodu oluşturuldu ve test edildi. GitHub'a yükleme, Meta/Instagram bağlantısı ve otomatik yayın henüz yapılmadı. Ücretli AI video servisleri kapalıdır.
+
+Dosyaları telefon üzerinden aktarmak zor gelirse ZIP dosyasını ChatGPT Codex ile bağlı bir GitHub deposunda açıp yerleştirebilirsin; repo oluşturma ve dosya yükleme için gerekli izinler ayrı bir işlemdir.
