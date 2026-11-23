@@ -25,3 +25,11 @@ Doğru, tarafsız, merak uyandırıcı, özlü. Kökenleri, dönemleri, devletle
 - Gerçek kaynak doğrulaması yapılmadan savaş sayıları, komutan alıntıları ve kesin taktik iddiaları ekleme.
 - Daha iyi kalite için ücretli video/ses modeli gerekiyorsa, maliyetini önceden göster ve açık izin almadan ücretli çağrı yapma.
 - `python -m scripts.release_check ...` teknik kontrolleri ve ardından insan görsel/ses kalitesi onayını gerektir.
+
+## v0.4 ücretsiz sesli taslak prodüksiyonu
+- Yeni görev: `python -m scripts.auto_produce --topic malazgirt-1071 --out output/auto`
+- Ücretsiz Piper Türkçe TTS; ses modeli indirilip gerçek TTS olmalı, deney amaçlı ton/ses dosyası konuşma olarak gösterilmez.
+- `scripts/illustrate.py` çizimleri temsili canlandırmadır; gerçek tarihî fotoğraf/sinema videosu gibi sunulmaz.
+- `scripts/instagram_publish.py` yalnızca açık insan onayı ve manuel çağrıyla çalıştırılabilir. GitHub `instagram-production` environment kurulu olmadan devreye almayın.
+- API anahtarları yalnız GitHub Secret ortamında saklanır; `OPENROUTER_API_KEY` yoksa hiçbir LLM çağrısı yapma.
+- Ses ve SRT'nin eşleşmesi teknik kontrollerden geçse bile kelime bazlı otomatik hizalama yoktur.
