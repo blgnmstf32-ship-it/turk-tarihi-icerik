@@ -24,6 +24,12 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install Remotion renderer
+        run: npm ci && npm run typecheck
       - name: Install FFmpeg, espeak and open source TTS
         run: |
           sudo apt-get update -qq
@@ -37,7 +43,7 @@ jobs:
           key: tr_TR-dfki-medium-v1
       - name: Validate 20 roles and safety gates
         run: python -m unittest discover -s tests -v
-      - name: Generate Turkish audio, ten scenes, subtitles and vertical MP4
+      - name: Generate Turkish documentary audio, licensed visuals and Remotion/FFmpeg MP4
         env:
           TOPIC_ID: ${{ inputs.topic || '' }}
           # Optional only; 'openrouter/free' model does NOT allow paid fallback.
