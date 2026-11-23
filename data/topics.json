@@ -22,7 +22,19 @@
         "url": "https://kutuphane.ttk.gov.tr/details?id=564747&materialType=KT&query=Malazgirt+Sava%C5%9F%C4%B1%2C+1071."
       }
     ],
-    "image_prompt": "Original cinematic historical illustration of 11th-century Anatolian plateau, distant Seljuk cavalry silhouettes, dusty sunset, historically cautious clothing, no modern objects, no words or text. Artistic reconstruction, not archival photograph."
+    "image_prompt": "Original cinematic historical illustration of 11th-century Anatolian plateau, distant Seljuk cavalry silhouettes, dusty sunset, historically cautious clothing, no modern objects, no words or text. Artistic reconstruction, not archival photograph.",
+    "visual_search_queries": [
+      "Sultan Alp Arslan miniature public domain",
+      "Seljuk Sultan Malik Shah miniature",
+      "Seljuk miniature manuscript",
+      "Seljuk museum artifacts",
+      "Seljuk architecture stone carving",
+      "Byzantine medieval miniature manuscript",
+      "medieval Anatolia map",
+      "Anatolian plateau landscape",
+      "Manzikert historical artwork",
+      "Seljuk manuscript illustration"
+    ]
   },
   {
     "id": "istanbul-1453",
@@ -43,7 +55,19 @@
         "url": "https://islamansiklopedisi.org.tr/istanbul"
       }
     ],
-    "image_prompt": "Original cinematic illustration of 15th-century Constantinople skyline across Bosphorus with stone walls and sails at dawn, no text, historically cautious, artistic reconstruction not archival photo."
+    "image_prompt": "Original cinematic illustration of 15th-century Constantinople skyline across Bosphorus with stone walls and sails at dawn, no text, historically cautious, artistic reconstruction not archival photo.",
+    "visual_search_queries": [
+      "Constantinople Theodosian walls historical photo",
+      "Hagia Sophia historical architecture",
+      "Byzantine medieval miniature manuscript",
+      "Ottoman Istanbul historical map",
+      "Topkapi Palace museum historical artifacts",
+      "siege of Constantinople medieval miniature",
+      "Byzantine Constantinople historical map",
+      "Ottoman miniature Istanbul 15th century",
+      "Theodosian walls Istanbul photograph",
+      "Byzantine coin museum Constantinople"
+    ]
   },
   {
     "id": "samsun-1919",
@@ -64,7 +88,19 @@
         "url": "https://atam.gov.tr/wp-content/uploads/2023/06/Milli-Mucadele-SempozyumlariTamami1.pdf"
       }
     ],
-    "image_prompt": "Original cinematic artistic illustration of 1919 Black Sea port of Samsun at dawn, old steamship in distance, period atmosphere, without portrait or text. Artistic reconstruction, not archival photo."
+    "image_prompt": "Original cinematic artistic illustration of 1919 Black Sea port of Samsun at dawn, old steamship in distance, period atmosphere, without portrait or text. Artistic reconstruction, not archival photo.",
+    "visual_search_queries": [
+      "Samsun old harbor historical photograph",
+      "Bandırma ferry museum public domain",
+      "Turkish War of Independence archival photo",
+      "Black Sea steamship 1919 historical",
+      "Samsun 1919 historical photograph",
+      "Mustafa Kemal Samsun 1919 archival",
+      "Anatolia 1919 historical map",
+      "Ottoman steamship historical photograph",
+      "Turkish national movement archival photo",
+      "Bandırma Vapuru museum"
+    ]
   },
   {
     "id": "tbmm-1920",
@@ -85,7 +121,19 @@
         "url": "https://tbmm.gov.tr/history"
       }
     ],
-    "image_prompt": "Original historically sensitive cinematic illustration of early 1920s Ankara parliament building exterior, dawn light, no text, artistic reconstruction and not archival photo."
+    "image_prompt": "Original historically sensitive cinematic illustration of early 1920s Ankara parliament building exterior, dawn light, no text, artistic reconstruction and not archival photo.",
+    "visual_search_queries": [
+      "First Turkish Grand National Assembly building historical photo",
+      "Ankara 1920 archival photograph",
+      "Turkish parliament 1920 public domain",
+      "Ankara historical map 1920",
+      "First Assembly building Ankara museum",
+      "Ankara Ulus historical photograph",
+      "Turkish National Movement 1920 archival",
+      "Ankara 1920 historical building",
+      "Turkish parliament opening 1920 photo",
+      "Ankara museum historical artifact 1920"
+    ]
   },
   {
     "id": "cumhuriyet-1923",
@@ -110,6 +158,18 @@
         "url": "https://tbmm.gov.tr/history"
       }
     ],
-    "image_prompt": "Original cinematic respectful illustration of Ankara 1923 gathering with historic architecture and red-and-white flags, no words, no identifiable modern people. Artistic reconstruction, not archival photo."
+    "image_prompt": "Original cinematic respectful illustration of Ankara 1923 gathering with historic architecture and red-and-white flags, no words, no identifiable modern people. Artistic reconstruction, not archival photo.",
+    "visual_search_queries": [
+      "Ankara 1923 archival photograph public domain",
+      "Turkish Grand National Assembly 1923 historical",
+      "Republic of Turkey proclamation 1923 archival photo",
+      "Ankara historical map 1923",
+      "Atatürk Ankara 1923 archival photograph",
+      "Turkish parliament 1923 historical photo",
+      "Ankara Ulus 1920s photograph",
+      "Republic Day Turkey 1923 historical",
+      "early Turkish Republic archival photograph",
+      "Ankara 1923 historical building"
+    ]
   }
 ]
