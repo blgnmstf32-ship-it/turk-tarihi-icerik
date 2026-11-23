@@ -37,7 +37,7 @@ jobs:
           key: tr_TR-dfki-medium-v1
       - name: Validate 20 roles and safety gates
         run: python -m unittest discover -s tests -v
-      - name: Generate Turkish audio, five scenes, subtitles and vertical MP4
+      - name: Generate Turkish audio, ten scenes, subtitles and vertical MP4
         env:
           TOPIC_ID: ${{ inputs.topic || '' }}
           # Optional only; 'openrouter/free' model does NOT allow paid fallback.
