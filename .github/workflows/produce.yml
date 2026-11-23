@@ -1,0 +1,39 @@
+name: Türk tarihi taslak üretimi
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Konu kimliği (boşsa haftalık sıradaki konu)'
+        required: false
+        default: ''
+        type: string
+  schedule:
+    # UTC: 09:17 = İstanbul'da kış/yaz 12:17 (Türkiye UTC+3)
+    - cron: '17 9 * * 2,5'
+
+permissions:
+  contents: read
+concurrency:
+  group: tarih-draft
+  cancel-in-progress: false
+
+jobs:
+  build-draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - run: python -m pip install -r requirements.txt
+      - name: Taslak üret (ücretli AI çağrısı yok)
+        env:
+          TOPIC_ID: ${{ inputs.topic || '' }}
+        run: python -m scripts.run --topic "$TOPIC_ID" --out output/draft
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tarih-yayin-taslagi-${{ github.run_number }}
+          path: output/draft/
+          retention-days: 7
