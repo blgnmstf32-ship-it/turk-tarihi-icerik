@@ -1,6 +1,6 @@
 # Codex proje talimatları: Türk Tarihi
 
-Bu proje tarihî, eğitici ve kaynaklı Türkçe Instagram içeriği üretir. `config/agents.json` içindeki **20 uzman rolünü** koru. Bunlar ilk aşamada `scripts/run.py` içinde tek ücretsiz yürütücüdeki 20 iş modülüdür; bağımsız AI ajanı olduklarını iddia etme.
+Bu proje tarihî, eğitici ve kaynaklı Türkçe Instagram taslakları üretir. `config/agents.json` içindeki ilk **20 uzman rolünü aynen koru**; sonlarına 4 Three.js görev modülü eklenmiştir. Bunlar tek ücretsiz yürütmede çalışan iş modülleridir; bağımsız LLM ajanı olduklarını iddia etme. 3D LLM çağrısı varsayılan olarak kapalıdır.
 
 ## Sırasıyla uygula
 1. Önce resmî veya akademik kaynakları bul; kaynağı açmadan yeni bir iddiayı doğrulanmış olarak işaretleme.
@@ -11,6 +11,10 @@ Bu proje tarihî, eğitici ve kaynaklı Türkçe Instagram içeriği üretir. `c
 6. `python -m unittest discover -s tests -v` çalıştır.
 7. Üretim için **0 ücretli API hedefi** koru; ücretli API çağrılarını kullanıcı onayı olmadan etkinleştirme.
 8. Instagram'da yayın yapma; insan onayı, Meta uygulaması, token ve doğrulanmış kamuya açık medya URL'si olmadan yayın kapısını açma.
+9. Savaş konularında `scripts/three_scene.py` ile kuşbakışı Three.js savaş haritası; şehir/fetih konularında şehir uçuşu veya kuşatma sahnesi planla. Ana Remotion + FFmpeg montajı aynı kalır.
+10. 3D sahneleri kısa tut (sahne başı yaklaşık 7–9 saniye, video başına en çok 3). Temsili canlandırma olarak etiketle; taktik ayrıntıyı kaynak olmadan kesin tarihî gerçek gibi gösterme.
+11. 3D WebGL renderı hata verirse aynı Remotion kurgusunu 3D kapalı yeniden üret ve `three_d` raporunda `fallback_2d_after_3d_failure` olarak kaydet.
+12. Ücretsiz prosedürel Three.js/React Three Fiber kullan. Blender isteğe bağlıdır; zorunlu bağımlılık yapma. Ücretli 3D üretim servislerini açma.
 
 ## Üslup
 Doğru, tarafsız, merak uyandırıcı, özlü. Kökenleri, dönemleri, devletleri ve bireyleri birbirine karıştırma. Tarihî yeniden canlandırmaları açıkça etiketle. Her gönderide kaynakları sakla ve uygun yerde paylaş.
@@ -39,7 +43,10 @@ Doğru, tarafsız, merak uyandırıcı, özlü. Kökenleri, dönemleri, devletle
 
 ## v0.7 belgesel video biçimi
 - Varsayılan üretim: `python -m scripts.auto_produce --topic malazgirt-1071 --out output/auto`.
-- Bütün 20 görev modülü her içerikte 60–75 saniyelik dikey tarih belgeseli için çalışır. Rol sayısı bağımsız/ücretli 20 AI ajanı olduğu anlamına gelmez.
+- İlk 20 görev modülü korunur; 3D Sahne Planlayıcı, 3D Animasyon Ajanı, 3D Render Ajanı ve 3D Kalite Kontrol Ajanı görevleri sona eklenmiştir. Toplam 24 iş modülü aynı ücretsiz üretim hattında çalışır; dört 3D görevi ek LLM çağrısı başlatmaz.
+- `visual_mode: battle_map` savaş başlığında; `visual_mode: siege_city` fetih/şehir başlığında 1–2 kısa prosedürel Three.js sahnesini etkinleştirir. Belirtilmemiş konular için yerel anahtar kelime sınıflandırması vardır.
+- Three.js sahneleri `@remotion/three` ile ana Remotion zaman çizelgesine eklenir; Chromium WebGL renderı `--gl=angle` kullanır. Blender bulunmadan da üretim çalışmalıdır.
+- 3D render başarısızlığında ana 2D Remotion/FFmpeg akışı yeniden denenir; plan `3D_SCENE_PLAN.json`, sonuç `AUTO_REPORT.json` içine yazılır. Üretilen sahneler temsili canlandırmadır ve insan incelemesi ister.
 - Kurgu Remotion ile 30 fps dikey kompozisyon, yavaş sinematik kamera hareketi, sahne geçişleri ve kelime/ifade vurgulu hareketli altyazı üretir; FFmpeg anlatım, müzik ve son H.264/AAC MP4 karışımını yapar.
 - En az 10 ayrı görsel sahne kullan. Öncelik, Wikimedia Commons üzerinden lisans/atıf verisi doğrulanmış kamu malı veya ticari kullanıma açık tarihî eser, arkeolojik alan, nesne, harita ve arşiv görüntüleridir. Dosya başına yazar, lisans ve kaynak sayfası `MEDIA_ATTRIBUTION.md` içine yazılır. Gerçek fotoğraf olmayan canlandırmaları görsel üzerinde **TEMSİLÎ CANLANDIRMA** olarak belirt; görseli arşiv fotoğrafı diye sunma.
 - Konuşma yönü: doğal Türkçe belgesel anlatıcısı; merak uyandıran sakin giriş, olgular net ve ölçülü, dönüm noktalarında canlı vurgu, kısa anlamlı duraklar. Bağırma, düz okuma ve habersiz ses efekti yapma.
