@@ -1,5 +1,15 @@
 name: Türk tarihi ücretsiz sesli Reels taslağı
 on:
+  push:
+    paths:
+      - '.github/workflows/produce.yml'
+      - 'scripts/**'
+      - 'config/**'
+      - 'remotion/**'
+      - 'data/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'requirements*.txt'
   workflow_dispatch:
     inputs:
       topic:
@@ -40,3 +50,69 @@ jobs:
           ffprobe -version
           pip install -r requirements.txt
           pip install 'piper-tts>=1.3,<2.0'
+          pip install -r requirements-audio-audit.txt
+      - name: Cache free Turkish Piper voice model
+        uses: actions/cache@v4
+        with:
+          path: .cache/piper
+          key: piper-tr-TR-dfki-medium-v1
+      - name: Cache free Turkish speech audit model
+        uses: actions/cache@v4
+        with:
+          path: .cache/huggingface
+          key: faster-whisper-tiny-cpu-v1
+      - name: Prepare offline speech audit model
+        env:
+          HF_HOME: ${{ github.workspace }}/.cache/huggingface
+        run: |
+          python - <<'PY'
+          from faster_whisper import WhisperModel
+          WhisperModel('tiny', device='cpu', compute_type='int8')
+          PY
+      - name: Validate 20 roles and safety gates
+        run: python -m unittest discover -s tests -v
+      - name: Produce Malazgirt narrated documentary video
+        env:
+          TOPIC_ID: ${{ inputs.topic || 'malazgirt-1071' }}
+          ENABLE_20_LLM_AGENTS: '0'
+          HF_HOME: ${{ github.workspace }}/.cache/huggingface
+        run: python -m scripts.auto_produce --topic "$TOPIC_ID" --out output/auto --model-cache .cache/piper
+      - name: Verify MP4, format, and Turkish speech
+        env:
+          HF_HOME: ${{ github.workspace }}/.cache/huggingface
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.create_reel import ffprobe
+          from scripts.speech_audit import compare_subtitles
+          report = json.loads(Path('output/auto/AUTO_REPORT.json').read_text(encoding='utf-8'))
+          video = Path('output/auto/REVIEW_REQUIRED_REEL.mp4')
+          speech = compare_subtitles('output/auto/narration.wav', 'output/auto/subtitles.srt')
+          Path('output/auto/TURKCE_SES_KONTROLU.json').write_text(
+              json.dumps({'transcription_language': 'tr', 'language_mode': 'forced Turkish ASR', **speech},
+                         ensure_ascii=False, indent=2), encoding='utf-8')
+          info = ffprobe(video)
+          streams = info['streams']
+          v = next((s for s in streams if s.get('codec_type') == 'video'), None)
+          a = next((s for s in streams if s.get('codec_type') == 'audio'), None)
+          assert v and (v['width'], v['height']) == (1080, 1920), f'Unexpected video stream: {v}'
+          assert a, 'MP4 has no audio channel'
+          assert report.get('technical_review', {}).get('technical_gate') == 'passed', report
+          assert 60 <= float(info['format']['duration']) <= 75, 'MP4 duration outside 60-75 seconds'
+          assert speech.get('status') == 'passed' and speech.get('recognized_segments', 0) > 0, f'Turkish speech audit failed: {speech}'
+          print(json.dumps({'video': str(video), 'resolution': '1080x1920', 'audio_stream': a.get('codec_name'),
+                            'speech_language': 'tr (forced ASR, transcript matched)', 'speech_word_error_rate': speech['word_error_rate'],
+                            'duration_seconds': report.get('seconds'), 'review_required': True,
+                            'instagram_published': False}, ensure_ascii=False, indent=2))
+          PY
+      - name: Save review package and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: malazgirt-belgesel-${{ github.run_number }}
+          path: |
+            output/auto/**
+            output/observer/**
+          retention-days: 14
+          if-no-files-found: warn
