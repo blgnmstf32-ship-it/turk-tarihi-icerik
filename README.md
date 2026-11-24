@@ -1,6 +1,6 @@
-# Türk Tarihi — ücretsiz sinematik belgesel Reels otomasyonu v0.8
+# TARİHİN BİLİNMEYEN GERÇEKLERİ
 
-20 özgün uzman rolü ile dört ek 3D rolü, kaynaklı Türk tarihi konularını 60–75 saniyelik dikey belgesel taslağına dönüştürür. Roller aynı Python yürütücüsündeki görev modülleridir; 24 bağımsız AI çalışanı değildir.
+20 özgün uzman rolü ile dört ek 3D rolü, Türk ve dünya tarihinden kaynaklı konuları 60–75 saniyelik dikey belgesel taslağına dönüştürür. Roller aynı Python yürütücüsündeki görev modülleridir; 24 bağımsız AI çalışanı değildir.
 
 ## Varsayılan video biçimi
 
@@ -26,9 +26,9 @@
 
 ## Üretim
 
-Actions > **Türk tarihi ücretsiz sesli Reels taslağı** > Run workflow. Konu kimliği örneği: `malazgirt-1071`.
+Actions > **Tarihin Bilinmeyen Gerçekleri · Haftalık rapor ve Reels** > Run workflow. Örnek konu `antikythera-disli`. Boş bırakılırsa son rapordan kaynak ve anlatım dosyası bulunan bir aday seçilir.
 
-Başarılı üretim `tarih-sesli-reels-taslagi-N` artifact'inde `REVIEW_REQUIRED_REEL.mp4` dosyasını saklar. Bu taslak inceleme içindir; kendi kendine Instagram'da yayınlanmaz.
+Başarılı üretim `tarihin-bilinmeyen-gercekleri-N` artifact'inde `REVIEW_REQUIRED_REEL.mp4` dosyasını saklar. Bu taslak inceleme içindir; kendi kendine Instagram'da yayınlanmaz.
 
 Yerel kurulum:
 
@@ -36,7 +36,7 @@ Yerel kurulum:
 npm ci
 npm run typecheck
 python -m pip install -r requirements.txt 'piper-tts>=1.3,<2.0'
-python -m scripts.auto_produce --topic malazgirt-1071 --out output/auto --model-cache .cache/piper
+python -m scripts.auto_produce --topic antikythera-disli --out output/auto --model-cache .cache/piper
 ```
 
 ## Ajan rolleri ve kalite standardı
@@ -46,18 +46,23 @@ python -m scripts.auto_produce --topic malazgirt-1071 --out output/auto --model-
 - Varsayılan üretim ayarları: `config/settings.json`
 - Ayrıntılı video standardı: `VIDEO_KALITE_STANDARTLARI.md`
 
-## İçerik yönetimi ve haftalık karar raporu
+## Haftalık yayın yönetimi
 
-- 20 özgün rol ve dört 3D üretim rolü korunmuştur. AI Genel Yayın Yönetmeni bunları içerik araştırması, strateji ve sonuç raporuyla koordine eder. Rol modülleri tek Python sürecindeki otomasyonlardır; bağımsız LLM ajanları değildir.
-- Konu Avcısı kamuya açık Google Trends Türkiye RSS'i ile `config/research_sources.json` içindeki tarih kanallarının son YouTube RSS başlıklarını tarar. RSS rakip izlenme sayısını vermez; sistem bunu performans kanıtı gibi sunmaz.
-- İçerik Stratejisti dört kategori için fikirleri trend eşleşmesi, rakip başlık kapsamı ve varsa kendi geçmiş performansına göre göreli 0–100 endekste sıralar. Bu endeks başarı olasılığı değildir. Fikir değerlendirmesi her öneri için dayanak, karşı sav ve tarih doğruluğu kapısı verir.
-- Her üretim sonunda `output/auto/editorial/EDITORIAL_DECISION_REPORT.md` ve `.json` oluşur. Öneriler görsel, 3D, ses, montaj, üretim süresi ve ücretli API maliyet varsayımı taşır.
-- Üretim raporları `AI_AGENT_EXECUTION_REPORT.json` içinde gerçek LLM çağrısı yapılan rolleri yazar. LLM varsayılan kapalıdır; açmak için `config/settings.json` içindeki `editorial_intelligence.free_llm_enabled`, ilgili açık environment opt-in'i ve anahtar gerekir. Yalnızca `openrouter/free` kullanılır, ücretli yedeğe geçilmez.
-- Instagram Insights adaptörü salt okunur ve kapalı başlar. Yetkili Meta token/erişim, medya eşlemesi ve `instagram_insights_enabled` ayarı olduğunda Reels görüntüleme, erişim, paylaşım ve ortalama izlenme süresi ölçülerini alır; hesap düzeyindeki takip değişimini ayrı tutar. Ölçümler `data/performance.jsonl` dosyasına yerel kaydedilir ve sonraki önerilere girer.
+`data/editorial_ideas.json` Türk ve dünya tarihinden 10 başlangıç önerisi ve altı kategori tutar. Her fikir için ilk üç saniye, kaynak bağlantıları, kanıt sınırı, izlenme hipotezi, görsel yaklaşım ve iş süresi kaydedilir. `data/topics.json` içinde kaynakları ve 60–75 saniyelik anlatımı hazırlanmış konular render adayıdır. Eski arşiv konuları açık kimlikle seçilebilir.
 
-Bağımsız haftalık rapor için:
+Konu Avcısı Google Trends Türkiye, tarih kanallarının YouTube akışları ve Crossref üzerinden yeni araştırma ipuçları toplar. RSS varsa izlenme sayısını ekler. İsteğe bağlı `YOUTUBE_DATA_API_KEY` görünür izlenme, beğeni ve yorum sayaçlarını resmî API üzerinden alır. Erişilemeyen paylaşım sayıları boş kalır. Raporda her sayaç için kaynak ve alınma zamanı gösterilir. Eski sayaç gözlemleri tarihli ve ayrı tutulur. YouTube rakip ölçüleri Instagram Reels ölçüleriyle birleştirilmez.
+
+Haftalık rapor her salı 12.17 Türkiye saati için planlanır. Yerelde:
 
 ```bash
 python -m scripts.editorial_board --out output/editorial
 python -m scripts.performance_learning --out output/editorial
 ```
+
+### Ücretsiz gerçek LLM
+
+GitHub Actions için `OPENROUTER_API_KEY` adında bir depo secret'ı ve `ENABLE_FREE_LLM=1` adında bir depo değişkeni gerekir. Yerelde aynı isimlerle ortam değişkeni kullanılır. Proje ayarı ücretsiz modeli destekler. Anahtar veya opt-in yoksa rapor hangi alanın eksik olduğunu gösterir.
+
+Konu Avcısı, İçerik Stratejisti, Tarih Doğruluk Denetçisi ve AI Genel Yayın Yönetmeni, sırasıyla birbirinin görüşüne yanıt veren dört ayrı `openrouter/free` isteği alır. Gerçek model ve çağrı durumu raporlanır. Yeni fikirlerin bağlantıları taranmış kaynak kayıtlarıyla eşlenir ve araştırma kuyruğuna gider. Doğrulanmış anlatımlar otomatik olarak değiştirilmez. Ücretsiz rota hata verirse ücretli yedek yoktur. 20 rolün isteğe bağlı model önerileri ayrıca `ENABLE_20_LLM_AGENTS=1` ister ve haftalık workflow'da kapalıdır. Dört 3D rolü üretim otomasyonudur.
+
+Instagram Insights salt okunur ve varsayılan olarak kapalıdır. Yetkili bağlantı veya yerel geçmiş sağlanırsa gerçek izlenme, izlenme süresi, paylaşım ve etkileşim ölçümleri ayrı analiz edilir. Erişilemeyen metrikler boş kalır. `EDITORIAL_DECISION_REPORT.md/.json` ve `AI_AGENT_EXECUTION_REPORT.json` çalışma sonucunu saklar.

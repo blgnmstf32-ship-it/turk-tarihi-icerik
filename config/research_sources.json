@@ -1,9 +1,69 @@
 {
   "google_trends_rss": "https://trends.google.com/trending/rss?geo=TR",
   "competitor_youtube_channels": [
-    {"name": "ÖOF Tarih", "channel_id": "UC17ByOPG0_BwCeK_LN3IlBA"},
-    {"name": "Türk Tarihi", "channel_id": "UCEM95TZ22rEnadaBhRGy4pA"}
+    {
+      "name": "ÖOF Tarih",
+      "channel_id": "UC17ByOPG0_BwCeK_LN3IlBA"
+    },
+    {
+      "name": "Türk Tarihi",
+      "channel_id": "UCEM95TZ22rEnadaBhRGy4pA"
+    },
+    {
+      "name": "British Museum",
+      "channel_id": "UCvpQ-l09fCVxJd3urZbxzHg"
+    }
   ],
   "research_timeout_seconds": 8,
-  "historical_data_file": "data/performance.jsonl"
+  "historical_data_file": "data/performance.jsonl",
+  "comparison_videos": [
+    {
+      "name": "British Museum",
+      "video_id": "klJBwnBHET8",
+      "title": "The Rosetta Stone and what it actually says",
+      "published": "2022-10-13",
+      "views": 2909386,
+      "likes": 67000,
+      "retrieved_on": "2026-11-24",
+      "freshness": "YouTube arama indeksindeki yaklaşık iki aylık görüntü"
+    },
+    {
+      "name": "History Hit",
+      "video_id": "Namm1EClooM",
+      "title": "How Did We Really Crack The Rosetta Stone?",
+      "published": "2022-11-11",
+      "views": 218537,
+      "likes": 4600,
+      "retrieved_on": "2026-11-24",
+      "freshness": "YouTube arama indeksindeki yaklaşık iki aylık görüntü"
+    },
+    {
+      "name": "Clickspring",
+      "video_id": "ML4tw_UzqZE",
+      "title": "Building The World's First Computer - Antikythera Mechanism Episode 1",
+      "published": "2017-01-27",
+      "views": 1123524,
+      "likes": 26000,
+      "retrieved_on": "2026-11-24",
+      "freshness": "YouTube arama indeksindeki yaklaşık dört haftalık görüntü"
+    },
+    {
+      "name": "Kamuya açık YouTube karşılaştırması",
+      "video_id": "hY4QvVP4Pno",
+      "title": "Derinkuyu Şehrinin Sırrı",
+      "published": "2026-05-01",
+      "views": 732601,
+      "likes": 29000,
+      "retrieved_on": "2026-11-24",
+      "freshness": "YouTube arama indeksindeki yaklaşık iki aylık görüntü; videonun tarihî iddiaları kaynak olarak kullanılmadı"
+    }
+  ],
+  "source_discovery_queries": {
+    "az_bilinen_olay": "historical archival discovery history",
+    "tarihi_gizem": "archaeology disputed interpretation artifact",
+    "kayip_sehir": "archaeology lost settlements lidar",
+    "kesif": "archaeological excavation new discovery",
+    "unutulmus_savas": "military archaeology historical battlefield",
+    "siradisi_hikaye": "ancient letters everyday life textual evidence"
+  }
 }

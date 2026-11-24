@@ -1,5 +1,138 @@
 [
   {
+    "id": "antikythera-disli",
+    "title": "Tutulmayı hesaplayan antik dişliler",
+    "category": "kesif",
+    "scope": "dunya",
+    "hook": "Tutulmayı hesaplayan antik dişliler!",
+    "sources": [
+      {
+        "title": "Nature — X-ışınıyla mekanizmanın çözümü",
+        "url": "https://www.nature.com/articles/nature05357"
+      },
+      {
+        "title": "WHOI — Antikythera batığı",
+        "url": "https://www.whoi.edu/ocean-learning-hub/ocean-topics/ocean-human-lives/underwater-archaeology/antikythera-shipwreck/"
+      }
+    ],
+    "evidence_boundary": "Tutulma kadranı destekleniyor. Kayıp ön yüzün tam dişli düzeni araştırma konusu.",
+    "date": "ANTİK ÇAĞ / 1900",
+    "era": "YUNANİSTAN AÇIKLARI",
+    "color": "teal",
+    "visual_mode": "artifact_gears",
+    "facts": [
+      "Antikitera mekanizması, bir gemi batığında bulunan, birbirine geçen bronz dişlilerden oluşan antik bir düzenektir.",
+      "Araştırmacılar, iç kısımları ve yazıtları röntgen tomografisi ile incelemiştir.",
+      "Arka yüzdeki kadranlardan biri tutulma döngüsünü izlemek için kullanılıyordu."
+    ],
+    "context": "Tutulma kadranı destekleniyor. Kayıp ön yüzün tam dişli düzeni araştırma konusu.",
+    "image_prompt": "Documentary closeups of bronze fragments and original schematic gears. Label any visual reconstruction.",
+    "visual_search_queries": [
+      "Antikythera mechanism fragments",
+      "Antikythera mechanism Athens museum",
+      "Antikythera mechanism replica gears",
+      "Antikythera island Greece"
+    ],
+    "narration": [
+      "Tutulmayı hesaplayan antik dişliler!",
+      "Yunanistan açıklarında sünger dalgıçları bir gemi batığı buldu. Batıktan çıkan parçalar arasında aşınmış bronz da vardı.",
+      "Antikitera adını taşıyan düzenekten bugün geriye parçalar kaldı. Ama bronzun içinde, birbirine geçen dişliler saklıydı.",
+      "Araştırmacılar röntgen tomografisiyle, yüzeyden görülemeyen katmanlara baktılar. Hem dişliler hem de yazıtlar incelemeye alındı.",
+      "Peki bu düzenek neyi hesaplıyordu? Dişlilerin hareketi, gökyüzündeki döngüleri kadranlarda göstermeye yarıyordu.",
+      "Arka yüzdeki bir kadran, Güneş ve Ay tutulmalarını öngörmek için kullanılan bir döngüyü takip ediyordu.",
+      "Bir başka kadran ise Ay aylarıyla yıllar arasındaki takvim ilişkisini gösteriyordu. Aynı alet, birden çok hesabı bir araya getiriyordu.",
+      "Bunlar, kalan parçalardan ve üzerlerindeki işaretlerden çıkarılan sonuçlar. Ön yüzün tam düzeni içinse farklı modeller var.",
+      "Bu yüzden hareketli çizim, çalışma ilkesini anlatan temsili bir canlandırma. Kayıp parçaların kesin biçimini göstermiyor.",
+      "Bir batıktan çıkan bronz parçalar, bize şunu gösteriyor: Antik çağda gökyüzünün döngüleri, dişlilerle hesaplanabiliyordu."
+    ]
+  },
+  {
+    "id": "piri-reis-kayip-kaynak",
+    "title": "Piri Reis’in haritasındaki kayıp kaynak neyi açıklayabilir?",
+    "category": "tarihi_gizem",
+    "scope": "turk",
+    "sources": [
+      {
+        "title": "Islam Museum — Piri Reis’in 1513 dünya haritası",
+        "url": "https://www.islam.museum/en/invention/piri-reis-map/"
+      }
+    ],
+    "evidence_boundary": "İmzalı harita parçası somut kanıttır. Kaybolmuş kaynakların tam içeriği çıkarım olarak sunulur.",
+    "hook": "Bu haritanın kayıp bir kaynağı var.",
+    "date": "1513",
+    "era": "OSMANLI HARİTACILIĞI",
+    "color": "gold",
+    "visual_mode": "2d",
+    "facts": [
+      "Piri Reis, 1513 tarihli dünya haritasını Gelibolu’da imzaladı.",
+      "Bugün haritanın yalnızca bir parçası Topkapı Sarayı’nda korunuyor.",
+      "Haritanın notları, farklı coğrafi kaynakların bir araya getirildiğini gösteriyor."
+    ],
+    "context": "İmzalı harita parçası somut kanıttır. Kaybolmuş kaynakların tam içeriği çıkarım olarak sunulur.",
+    "image_prompt": "1513 tarihli parça üzerinde kıyı çizgisi yakın planı ve kaynak ilişkilerini gösteren animasyon.",
+    "visual_search_queries": [
+      "Piri Reis 1513 map parchment",
+      "Piri Reis map Atlantic 1513",
+      "Ottoman portolan map",
+      "Topkapi Palace historical manuscript"
+    ],
+    "narration": [
+      "Bu haritanın kayıp bir kaynağı var.",
+      "Bin beş yüz on üç. Gelibolu’da Piri Reis, bir dünya haritasını imzaladı. Bugün elimizde o haritanın yalnızca bir bölümü var.",
+      "Parçaya yakından bakınca, Atlas Okyanusu’nun iki yakasının da çizildiği görülüyor. Harita kıyıları, adaları ve yazılı notları bir araya getiriyor.",
+      "Asıl ipucu bu notlarda. Piri Reis, çizimi oluştururken başka haritalardan yararlandığını açıkça yazmış.",
+      "Yararlanılan kaynaklar içinde, Kristof Kolomb’a bağlanan bir harita da var.",
+      "Ama o kayıp haritayı yanına koyup iki çizimi karşılaştıramıyoruz. Özgün belgenin hangi ayrıntıları taşıdığı bugün kesin olarak bilinmiyor.",
+      "Uzmanların elindeki dayanak, Piri Reis’in bıraktığı notlar ve hayatta kalan kıyı çizgileri.",
+      "Bu fark önemli. Kaynağın adını okumak mümkün. Kaynağın eksik sayfasını kesin olarak çizmek mümkün değil.",
+      "Topkapı Sarayı’nda korunan parça, hem gördüğümüz çizgileri hem de göremediğimiz bir kaynak zincirini düşündürüyor.",
+      "Bir haritaya bakıyoruz. Aynı zamanda, kaybolmuş bir haritanın izini sürüyoruz."
+    ]
+  },
+  {
+    "id": "pig-war-1859",
+    "title": "Bir domuz yüzünden iki ülke nasıl savaşın eşiğine geldi?",
+    "category": "unutulmus_savas",
+    "scope": "dunya",
+    "sources": [
+      {
+        "title": "ABD Ulusal Park Servisi — The Pig War",
+        "url": "https://home.nps.gov/sajh/learn/historyculture/the-pig-war.htm"
+      }
+    ],
+    "evidence_boundary": "Domuzun vurulması belgeli. Başlıkta bir muharebe yaşandığı iddia edilmez.",
+    "hook": "Bir domuz, iki ülke, bir kriz.",
+    "date": "1859",
+    "era": "SAN JUAN ADASI",
+    "color": "gold",
+    "visual_mode": "2d",
+    "facts": [
+      "1859’da San Juan Adası’nda bir Amerikalı, bahçesine giren bir domuzu vurdu.",
+      "Ada üzerinde ABD ve Britanya arasında çözülememiş sınır anlaşmazlığı vardı.",
+      "Askerî gerilim bir muharebeye dönüşmedi."
+    ],
+    "context": "Domuzun vurulması belgeli. Başlıkta bir muharebe yaşandığı iddia edilmez.",
+    "image_prompt": "San Juan ve boğaz haritası, dönem kamp fotoğrafları, sınır uyuşmazlığının animasyonu.",
+    "visual_search_queries": [
+      "Pig War San Juan American Camp",
+      "English Camp San Juan Island",
+      "San Juan Islands boundary map 1859",
+      "San Juan Island National Historical Park historic"
+    ],
+    "narration": [
+      "Bir domuz, iki ülke, bir kriz.",
+      "Bin sekiz yüz elli dokuzda, San Juan Adası’nda bir domuz bahçeye girdi. Bahçe sahibi hayvanı vurdu.",
+      "Hayvan, Britanya bağlantılı Hudson Körfezi Şirketi’ne aitti. Bahçe sahibi ise bir Amerikalı yerleşimciydi.",
+      "Normalde bu, komşular arasında çözülecek bir olay gibi görünür. Ama adanın hangi ülkeye ait olduğu zaten tartışmalıydı.",
+      "Haritaya bakın. Ada, kıyılar arasındaki su yollarının içinde. Sınırın hangi kanaldan geçeceği, adanın kime kalacağını belirliyordu.",
+      "Yerel anlaşmazlık büyüdü. ABD adaya asker gönderdi. Britanya gemileri de bölgeye geldi.",
+      "Buna rağmen iki taraf arasında adada bir muharebe yaşanmadı. Krizden sonra bir süre iki tarafın da adada bir kampı kaldı.",
+      "Anlaşmazlık ancak sınır konusunda verilen uluslararası kararla kapandı.",
+      "Bugün öykü, Domuz Savaşı adıyla hatırlanıyor. Ada üzerindeki yıllanmış sınır sorunu, tek bir bahçedeki olayla görünür olmuştu.",
+      "Ulusal Park Servisi’nin kaydına göre, bu sözde savaşın tek kaybı domuzdu."
+    ]
+  },
+  {
     "id": "malazgirt-1071",
     "visual_mode": "battle_map",
     "title": "MALAZGİRT",

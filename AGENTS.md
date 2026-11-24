@@ -1,6 +1,6 @@
-# Codex proje talimatları: Türk Tarihi
+# Codex proje talimatları: Tarihin Bilinmeyen Gerçekleri
 
-Bu proje tarihî, eğitici ve kaynaklı Türkçe Instagram taslakları üretir. `config/agents.json` içindeki ilk **20 uzman rolünü aynen koru**; sonlarına 4 Three.js görev modülü eklenmiştir. Bunlar tek ücretsiz yürütmede çalışan iş modülleridir; bağımsız LLM ajanı olduklarını iddia etme. 3D LLM çağrısı varsayılan olarak kapalıdır.
+Bu proje Türk ve dünya tarihini kapsayan kaynaklı Türkçe Instagram Reels taslakları üretir. `config/agents.json` içindeki ilk **20 uzman rolünü aynen koru**; sonlarına 4 Three.js görev modülü eklenmiştir. Bunlar tek ücretsiz yürütmede çalışan iş modülleridir; bağımsız LLM ajanı olduklarını iddia etme. 3D LLM çağrısı varsayılan olarak kapalıdır.
 
 ## Sırasıyla uygula
 1. Önce resmî veya akademik kaynakları bul; kaynağı açmadan yeni bir iddiayı doğrulanmış olarak işaretleme.
@@ -42,7 +42,7 @@ Doğru, tarafsız, merak uyandırıcı, özlü. Kökenleri, dönemleri, devletle
 - Yerel Task Observer JSONL dosyalarına gizli bilgileri ayıklayarak hata/geri bildirim yazar. Instagram Insights gelecekteki salt-okunur iskelettir; yayınlama uç noktası yoktur.
 
 ## v0.7 belgesel video biçimi
-- Varsayılan üretim: `python -m scripts.auto_produce --topic malazgirt-1071 --out output/auto`.
+- Varsayılan üretim: `python -m scripts.auto_produce --topic antikythera-disli --out output/auto`.
 - İlk 20 görev modülü korunur; 3D Sahne Planlayıcı, 3D Animasyon Ajanı, 3D Render Ajanı ve 3D Kalite Kontrol Ajanı görevleri sona eklenmiştir. Toplam 24 iş modülü aynı ücretsiz üretim hattında çalışır; dört 3D görevi ek LLM çağrısı başlatmaz.
 - `visual_mode: battle_map` savaş başlığında; `visual_mode: siege_city` fetih/şehir başlığında 1–2 kısa prosedürel Three.js sahnesini etkinleştirir. Belirtilmemiş konular için yerel anahtar kelime sınıflandırması vardır.
 - Three.js sahneleri `@remotion/three` ile ana Remotion zaman çizelgesine eklenir; Chromium WebGL renderı `--gl=angle` kullanır. Blender bulunmadan da üretim çalışmalıdır.
@@ -56,14 +56,14 @@ Doğru, tarafsız, merak uyandırıcı, özlü. Kökenleri, dönemleri, devletle
 - Ücretli API ve ücretli görsel/ses servislerini kullanıcı izni olmadan etkinleştirme. Wikimedia Commons sorguları ücretsiz ve anahtarsız medya aramasıdır; dış LLM anahtarı yoksa hiçbir LLM çağrısı yapma.
 - İnsan onayı, kaynak/lisans kontrolü ve ses/görüntü dinlemesi tamamlanmadan taslağı yayına hazır sayma. Instagram otomatik yayınını açma.
 
-## İçerik stratejisi, araştırma ve öğrenme
-- `scripts.editorial_board` AI Genel Yayın Yönetmeni koordinasyon katmanıdır. Her üretimde haftalık karar raporu oluşturur; `EDITORIAL_DECISION_REPORT.md/.json` dosyalarını teslim eder.
-- `scripts.editorial_research` anahtarsız Google Trends Türkiye RSS'ini ve `config/research_sources.json` içindeki kamuya açık YouTube kanal RSS başlıklarını okur. Rakip başlıkları konu kapsamını gösterir; izlenme sayısı veya rakip Insights verisi göstermez. Kaynak ve toplama zamanı rapora yazılır.
-- `scripts.content_strategy` tarih, tarihî gizem, az bilinen olay ve keşif kategorilerini; trend eşleşmesi, rakip başlık kapsamı ve `data/performance.jsonl` ölçümlerini kullanarak göreli 0–100 endeksle sıralar. Bu değer başarı olasılığı değildir; örneklem yoksa başlangıç puanı ve açık belirsizlik yazılır.
-- Fikir değerlendirmesi `Konu Avcısı`, `İçerik Stratejisti` ve `Tarih Doğruluk Denetçisi` perspektiflerini, her görüşün dayanak ve karşı savıyla raporlar. Kurallı perspektifleri bağımsız LLM sohbeti diye sunma.
-- Haftalık öneriler sıralı fikir, gerekçe, karşı görüş, önerilen görsel/3D/ses/kurgu, tahmini üretim süresi ve ücretli API maliyeti tahminini içerir. 0 TL yalnız ücretli API maliyeti içindir; iş gücü ve donanım maliyeti buna dahil değildir.
-- `scripts.performance_learning` gerçek Instagram Insights ölçülerini veya içe aktarılan ölçümleri normalize edip yeterli örneklem olduğunda kategori medyanlarıyla karşılaştırır; `data/performance.jsonl` içine yerel öğrenme kayıtları yazar. Küçük örneklemde sonuç `insufficient_baseline` olur.
-- Insights adaptörü salt okunur `GET` çağrısı kullanır. Varsayılan kapalıdır; yalnız hesap sahibi ayarı, `INSTAGRAM_INSIGHTS_ENABLED=1`, uygun token/izin ve medya eşlemesini sağlarsa çağrı yapar. Yayınlama endpoint'i ekleme. Metriklerin bir bölümü hesap, bir bölümü Reels bazında olabilir; erişilemeyen alanı tahmin etme.
-- Mevcut 20 rolün görevleri tek Python hattında otomasyon olarak çalışır; bunlar 20 ayrı LLM ajanı demek değildir. Gerçek LLM, yalnız `editorial_intelligence.free_llm_enabled=true`, `ENABLE_FREE_LLM=1`, anahtar ve `openrouter/free` rotasıyla yönetici önerisi için açılır. 20 rolün LLM önerileri ayrıca `ENABLE_20_LLM_AGENTS=1` ister. Ücretli model/fallback çağrısı yasaktır; koşullar eksikse sıfır LLM çağrısı yap.
-- LLM önerilerini taslak karar desteği say; tarihî olgu, trend, kaynak veya başarı olasılığı uyduramaz. Her rolün gerçek çağrı durumunu `AI_AGENT_EXECUTION_REPORT.json` içinde açıkça kaydet.
-- GitHub Actions üretim workflow'u strateji raporu, Remotion render, FFmpeg ses miksajı, Türkçe konuşma kontrolü ve çıktıları Actions artifact'e kaydetme adımlarını yürütür. Instagram yayın adımı ekleme.
+## Tarihin Bilinmeyen Gerçekleri
+
+- Altı yayın kategorisi az bilinen gerçekler, gizemler, kayıp şehirler ve antik yapılar, arkeolojik keşifler, unutulmuş savaşlar ve hükümdarlar, Türk ve dünya tarihinden sıra dışı hikâyelerdir.
+- `data/editorial_ideas.json` ilk 10 fikri tutar. `data/topics.json` içindeki kaynaklı ve anlatımı hazırlanmış adaylar varsayılan seçime girer. Eski Türk tarihi arşivi açık kimlikle kullanılabilir.
+- İlk üç saniyede açık bir merak sorusu veya görsel ipucu ver. Olguyu, varsayımı ve efsaneyi anlaşılır dilde ayır. Yeni iddia eklemeden önce kaynağın kendisini aç. Başlık, DOI ve model çıktısı kaynak doğrulamasının yerine geçmez.
+- `scripts.editorial_research` Google Trends, kamuya açık YouTube akışları, erişilebilen sayaçlar ve Crossref araştırma ipuçlarına bakar. Erişilemeyen rakip paylaşım, yorum veya diğer sayaçları uydurma. Sayaç tarihini ve platformu koru.
+- `scripts.editorial_board` haftalık karar raporunu üretir. Konu Avcısı, İçerik Stratejisti ve Tarih Doğruluk Denetçisi ayrı LLM istemleriyle birbirinin önerisini değerlendirir. AI Genel Yayın Yönetmeni gerekçeli karar ve karşı görüşü yazar. Yapılandırma yoksa rapor kurallı ön değerlendirmeyi açıkça etiketler.
+- Ücretsiz LLM için `ENABLE_FREE_LLM=1`, `OPENROUTER_API_KEY` ve `editorial_intelligence.free_llm_enabled` gerekir. Rota yalnızca `openrouter/free`. Ücretli yedek yoktur. 20 üretim rolünün ayrı öneri çağrıları `ENABLE_20_LLM_AGENTS=1` ister. Dört 3D görevi deterministik kalır.
+- Yeni fikirlerin kaynak ve anlatım incelemesini tamamla, sonra render kataloğuna ekle. Anadolu, Türk ve dünya tarihi arasında konu çeşitliliğini izle.
+- Rapor her fikir için görsel/animasyon, insan erkek Türkçe seslendirme (Piper yedek), kurgu, süre ve doğrudan servis maliyeti tahmini verir. 0 TL tahmini iş gücü ve donanımı kapsamaz.
+- Insights salt okunur ve isteğe bağlıdır. Tarih ve kategori bağlamını koruyarak veriyi `data/performance.jsonl` dosyasına kaydet. Ayrı Instagram yayın onayı ve ücretli hizmet onayı zorunludur.

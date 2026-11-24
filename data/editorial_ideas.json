@@ -1,0 +1,240 @@
+[
+  {
+    "id": "antikythera-disli",
+    "category": "kesif",
+    "scope": "dunya",
+    "title": "Tutulmayı hesaplayan antik dişliler",
+    "hook": "Tutulmayı hesaplayan antik dişliler!",
+    "visual": "Batığın konum haritası, bronz parçaların lisanslı makro görüntüleri ve özgün 3D dişli şeması.",
+    "focus_terms": [
+      "antikythera",
+      "antikitera"
+    ],
+    "visual_strength": 10,
+    "effort_minutes": 150,
+    "potential_reason": "Paslı parçadan çalışan dişliye görsel geçiş, ilk soruyu somut bir keşifle cevaplar.",
+    "evidence_boundary": "Tutulma kadranı destekleniyor. Kayıp ön yüzün tam dişli düzeni araştırma konusu.",
+    "sources": [
+      {
+        "title": "Nature — X-ışınıyla mekanizmanın çözümü",
+        "url": "https://www.nature.com/articles/nature05357"
+      },
+      {
+        "title": "WHOI — Antikythera batığı",
+        "url": "https://www.whoi.edu/ocean-learning-hub/ocean-topics/ocean-human-lives/underwater-archaeology/antikythera-shipwreck/"
+      }
+    ]
+  },
+  {
+    "id": "derinkuyu-hava",
+    "category": "kayip_sehir",
+    "scope": "anadolu",
+    "title": "Derinkuyu’da yerin altına hava nasıl ulaşıyordu?",
+    "hook": "Yer altında hava nereden geliyordu?",
+    "visual": "UNESCO planı referanslı dikey kesit, tünel fotoğrafları ve havalandırma şaftının temsili animasyonu.",
+    "focus_terms": [
+      "derinkuyu",
+      "cappadocia underground"
+    ],
+    "visual_strength": 10,
+    "effort_minutes": 160,
+    "potential_reason": "Yer altında nefes alma sorusu gündelik bir ihtiyacı, gözle görülür mimari çözüme bağlar.",
+    "evidence_boundary": "Yeraltı yerleşimi ve belgelenen yapı unsurları gösterilir. Kesin nüfus ve ilk yapım tarihi ileri sürülmez.",
+    "sources": [
+      {
+        "title": "UNESCO — Göreme ve Kapadokya kaya alanları",
+        "url": "https://whc.unesco.org/en/list/357/"
+      },
+      {
+        "title": "UNESCO — Derinkuyu yeraltı şehri planı",
+        "url": "https://whc.unesco.org/en/documents/118594"
+      }
+    ]
+  },
+  {
+    "id": "piri-reis-kayip-kaynak",
+    "category": "tarihi_gizem",
+    "scope": "turk",
+    "title": "Piri Reis’in haritasındaki kayıp kaynak neyi açıklayabilir?",
+    "hook": "Bu haritanın bir kaynağı kayıp.",
+    "visual": "1513 tarihli parça üzerinde kıyı çizgisi yakın planı ve kaynak ilişkilerini gösteren animasyon.",
+    "focus_terms": [
+      "piri reis",
+      "piri re'is"
+    ],
+    "visual_strength": 9,
+    "effort_minutes": 135,
+    "potential_reason": "Tanıdık bir Osmanlı nesnesine kayıp bir belgenin peşinden giderek yeni bir soru getirir.",
+    "evidence_boundary": "İmzalı harita parçası somut kanıttır. Kaybolmuş kaynakların tam içeriği çıkarım olarak sunulur.",
+    "sources": [
+      {
+        "title": "Islam Museum — Piri Reis’in 1513 dünya haritası",
+        "url": "https://www.islam.museum/en/invention/piri-reis-map/"
+      }
+    ]
+  },
+  {
+    "id": "pig-war-1859",
+    "category": "unutulmus_savas",
+    "scope": "dunya",
+    "title": "Bir domuz yüzünden iki ülke nasıl savaşın eşiğine geldi?",
+    "hook": "Bir domuz, iki ülkeyi karşı karşıya getirdi.",
+    "visual": "San Juan ve boğaz haritası, dönem kamp fotoğrafları, sınır uyuşmazlığının animasyonu.",
+    "focus_terms": [
+      "pig war",
+      "san juan island"
+    ],
+    "visual_strength": 8,
+    "effort_minutes": 110,
+    "potential_reason": "Beklenmedik açılışın ödülü, küçük bir olayın arkasındaki büyük sınır sorununu anlamak.",
+    "evidence_boundary": "Domuzun vurulması belgeli. Başlıkta bir muharebe yaşandığı iddia edilmez.",
+    "sources": [
+      {
+        "title": "ABD Ulusal Park Servisi — The Pig War",
+        "url": "https://home.nps.gov/sajh/learn/historyculture/the-pig-war.htm"
+      }
+    ]
+  },
+  {
+    "id": "maya-lidar-yollar",
+    "category": "kayip_sehir",
+    "scope": "dunya",
+    "title": "Lazer, Maya ormanının altında hangi yolları gördü?",
+    "hook": "Ağaçların altında bir yol ağı vardı.",
+    "visual": "Yayımlanan araştırma üzerinden nokta bulutu mantığını anlatan 3D topoğrafya ve önce/sonra katmanları.",
+    "focus_terms": [
+      "maya lidar",
+      "mayan lidar",
+      "maya jungle"
+    ],
+    "visual_strength": 10,
+    "effort_minutes": 165,
+    "potential_reason": "Orman örtüsünün haritadan silinmesi Reels için güçlü bir görsel açığa çıkış sağlar.",
+    "evidence_boundary": "Tespit edilen yapılar ve yollar araştırmada belgeleniyor. Ağın günlük trafiği varsayım olarak kalır.",
+    "sources": [
+      {
+        "title": "Science — Kuzey Guatemala Maya ovalarında havadan lazer taraması",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/30262469/"
+      }
+    ]
+  },
+  {
+    "id": "hatsepsut-heykel",
+    "category": "az_bilinen_olay",
+    "scope": "dunya",
+    "title": "Kırılmış Hatşepsut heykelinde hangi izler kaldı?",
+    "hook": "Bir hükümdarın heykeli nasıl parçalandı?",
+    "visual": "Müze arşivinden parça ve onarım görselleri, temsili birleştirme animasyonu.",
+    "focus_terms": [
+      "hatshepsut",
+      "hatşepsut",
+      "hatsepsut"
+    ],
+    "visual_strength": 9,
+    "effort_minutes": 130,
+    "potential_reason": "Eserin parçalarının yeniden birleşmesi, siyasî bağlamı bir nesne üzerinden izlenebilir kılar.",
+    "evidence_boundary": "Kırılma ve onarım belgeleniyor. Hasarın her parçasını tek bir nedene veya kişisel kine bağlamayız.",
+    "sources": [
+      {
+        "title": "The Met — Queen Hatshepsut Restored",
+        "url": "https://www.metmuseum.org/it/essays/queen-hatshepsut-restored"
+      }
+    ]
+  },
+  {
+    "id": "uluburun-kargo",
+    "category": "kesif",
+    "scope": "anadolu",
+    "title": "Uluburun batığının yükü neden bir ticaret haritası gibi?",
+    "hook": "Bir geminin yükü farklı kıyıları ele verdi.",
+    "visual": "Külçe ve eser fotoğrafları, Akdeniz’de buluntu kökenlerini gösteren animasyonlu harita.",
+    "focus_terms": [
+      "uluburun"
+    ],
+    "visual_strength": 9,
+    "effort_minutes": 140,
+    "potential_reason": "Bir batığın envanterini, eşyalar üzerinden ilerleyen görsel bir bulmacaya dönüştürür.",
+    "evidence_boundary": "Kazı envanteri kaynaklıdır. Geminin kesin rotası veya son varış limanı ileri sürülmez.",
+    "sources": [
+      {
+        "title": "Institute of Nautical Archaeology — Uluburun kazısı",
+        "url": "https://nauticalarch.org/projects/uluburun-late-bronze-age-shipwreck-excavation/"
+      }
+    ]
+  },
+  {
+    "id": "vindolanda-davet",
+    "category": "siradisi_hikaye",
+    "scope": "dunya",
+    "title": "Roma sınırındaki bir doğum günü daveti nasıl günümüze kaldı?",
+    "hook": "Bu antik belge bir doğum günü daveti.",
+    "visual": "Ahşap tabletin izinli makro görseli, Roma sınır haritası ve satır vurguları.",
+    "focus_terms": [
+      "vindolanda",
+      "claudia severa"
+    ],
+    "visual_strength": 8,
+    "effort_minutes": 105,
+    "potential_reason": "Bugün tanıdık bir sosyal jest, uzak bir dönemi gündelik hayat üzerinden anlaşılır kılar.",
+    "evidence_boundary": "Mektup daveti belgeliyor. Kutlamaya gidilip gidilmediği bilinmiyor.",
+    "sources": [
+      {
+        "title": "British Museum koleksiyon kaydı — Claudia Severa’nın daveti",
+        "url": "https://artsandculture.google.com/asset/writing-tablet-with-a-letter-inviting-sulpicia-lepidina-the-commander-s-wife-to-a-birthday-party/kAHBJkxO7nDWsw"
+      }
+    ]
+  },
+  {
+    "id": "ur-oyun-kurallari",
+    "category": "tarihi_gizem",
+    "scope": "dunya",
+    "title": "Binlerce yıllık bir masa oyununun kuralları nasıl okundu?",
+    "hook": "Tahta bulundu. Peki kurallar nerede?",
+    "visual": "Tahta ve taşların makro planı, çivi yazısı ve temsili bir hamle animasyonu.",
+    "focus_terms": [
+      "royal game of ur",
+      "game of ur",
+      "ur oyunu"
+    ],
+    "visual_strength": 8,
+    "effort_minutes": 125,
+    "potential_reason": "Açılıştaki oyun sorusu son karede izleyicinin anlayabileceği bir hamleyle çözülür.",
+    "evidence_boundary": "Oyun tahtası gerçek. Tek bir kural setinin her çağda kullanıldığı varsayılmaz.",
+    "sources": [
+      {
+        "title": "British Museum — Royal Game of Ur oyun tahtası",
+        "url": "https://www.britishmuseum.org/collection/object/W_1928-1009-378"
+      },
+      {
+        "title": "J. Paul Getty Museum — Ur oyununun bilgi ve kuralları",
+        "url": "https://www.getty.edu/education/college/ancient_rome_at_home/pdf/ur_game.pdf"
+      }
+    ]
+  },
+  {
+    "id": "rosetta-tasinin-metni",
+    "category": "az_bilinen_olay",
+    "scope": "dunya",
+    "title": "Hiyeroglifleri çözdüren taşın üzerindeki karar neydi?",
+    "hook": "Ünlü taşta bir yönetim kararı yazıyor.",
+    "visual": "Taşın üç yazı bölümünde animasyonlu yakınlaşma, müze görselleri ve çeviri parçaları.",
+    "focus_terms": [
+      "rosetta stone",
+      "rosetta taşı"
+    ],
+    "visual_strength": 9,
+    "effort_minutes": 115,
+    "potential_reason": "Benzer belge çözümlemelerinde izlenme ve beğeni gözlendi. Bu fikrin farkı çözüm yarışından yazının içeriğine geçmek.",
+    "evidence_boundary": "Üç yazı sistemi ile dil sayısı ayrı açıklanır. Çeviri uygun kaynağa bağlanır.",
+    "sources": [
+      {
+        "title": "British Museum — Hiyeroglif sergisi rehberi, Memphis kararnamesi",
+        "url": "https://www.britishmuseum.org/sites/default/files/2022-10/Hieroglyphs_unlocking_ancient_Egypt_large_print_guide_The_British_Museum.pdf"
+      },
+      {
+        "title": "British Museum — Küratör Ilona Regulski taşın metnini açıklıyor",
+        "url": "https://www.youtube.com/watch?v=klJBwnBHET8"
+      }
+    ]
+  }
+]

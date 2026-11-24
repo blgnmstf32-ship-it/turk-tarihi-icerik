@@ -4,7 +4,7 @@ import {interpolate, useCurrentFrame} from 'remotion';
 import * as THREE from 'three';
 import {AbsoluteFill} from 'remotion';
 
-export type History3DKind = 'battle_map' | 'city_flyover' | 'siege';
+export type History3DKind = 'battle_map' | 'city_flyover' | 'siege' | 'artifact_gears';
 export type History3DSceneProps = {
   kind: History3DKind;
   title: string;
@@ -111,11 +111,40 @@ const City: React.FC<{siege: boolean}> = ({siege}) => {
   );
 };
 
+// A simplified gear pair for explanation. It does not reconstruct the artifact.
+const Gear: React.FC<{x: number; y: number; radius: number; teeth: number; angle: number; color: string}> = ({x, y, radius, teeth, angle, color}) => (
+  <group position={[x, y, 0]} rotation={[0, 0, angle]}>
+    <mesh><torusGeometry args={[radius - 0.18, 0.36, 8, 48]} /><meshStandardMaterial color={color} metalness={0.65} roughness={0.46} /></mesh>
+    {Array.from({length: teeth}, (_, i) => {
+      const a = (i / teeth) * 2 * Math.PI;
+      return <mesh key={i} position={[radius * Math.cos(a), radius * Math.sin(a), 0]} rotation={[0, 0, a]}>
+        <boxGeometry args={[0.62, 0.34, 0.53]} /><meshStandardMaterial color={color} metalness={0.65} roughness={0.46} />
+      </mesh>;
+    })}
+    {[0, 1, 2].map(i => <mesh key={i} rotation={[0, 0, i * Math.PI / 3]}>
+      <boxGeometry args={[radius * 1.65, 0.26, 0.5]} /><meshStandardMaterial color={color} />
+    </mesh>)}
+  </group>
+);
+
+const ArtifactGears: React.FC = () => {
+  const frame = useCurrentFrame();
+  return <ThreeCanvas width={1080} height={1920} dpr={1} camera={{position: [0, 1.1, 16 - frame / 300], fov: 53}} gl={{antialias: false}}>
+    <color attach="background" args={['#101c20']} />
+    <ambientLight intensity={1.2} />
+    <directionalLight position={[-5, 7, 12]} intensity={3.4} />
+    <group rotation={[-0.24, -0.2, -0.42]}>
+      <Gear x={-1.8} y={0.7} radius={2.3} teeth={22} angle={frame / 80} color="#c4935a" />
+      <Gear x={2.15} y={0.7} radius={1.65} teeth={16} angle={-frame / 80 * 22 / 16} color="#8fa698" />
+    </group>
+  </ThreeCanvas>;
+};
+
 export const History3DScene: React.FC<History3DSceneProps> = ({kind, title, labels = []}) => (
   <AbsoluteFill style={{backgroundColor: '#17211e'}}>
-    {kind === 'battle_map' ? <BattleMap /> : <City siege={kind === 'siege'} />}
-    <div style={{position: 'absolute', left: 30, right: 30, top: 42, textAlign: 'center', color: '#fff0d4', font: '800 32px Arial, sans-serif', letterSpacing: 1.5, textShadow: '0 3px 14px #000', background: 'rgba(5,9,12,.56)', borderRadius: 12, padding: '14px 18px'}}>{title}</div>
-    <div style={{position: 'absolute', left: 24, right: 24, bottom: 286, display: 'flex', justifyContent: 'space-evenly', gap: 12}}>
+    {kind === 'battle_map' ? <BattleMap /> : kind === 'artifact_gears' ? <ArtifactGears /> : <City siege={kind === 'siege'} />}
+    <div style={{position: 'absolute', left: 30, right: 30, top: 130, textAlign: 'center', color: '#fff0d4', font: '800 32px Arial, sans-serif', letterSpacing: 1.5, textShadow: '0 3px 14px #000', background: 'rgba(5,9,12,.56)', borderRadius: 12, padding: '14px 18px'}}>{title}</div>
+    <div style={{position: 'absolute', left: 24, right: 24, top: 210, display: 'flex', justifyContent: 'space-evenly', gap: 12}}>
       {labels.map((label) => <span key={label} style={{font: '700 21px Arial, sans-serif', letterSpacing: 0.5, color: '#fff2d5', background: 'rgba(6,9,11,.72)', padding: '9px 12px', borderRadius: 9}}>{label}</span>)}
     </div>
   </AbsoluteFill>

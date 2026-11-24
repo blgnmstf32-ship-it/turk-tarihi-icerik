@@ -13,6 +13,7 @@ except ModuleNotFoundError:
     from graphics import render_card
 
 ROOT=Path(__file__).resolve().parent.parent
+from scripts.content_strategy import CONCEPT, score_ideas
 from scripts.three_scene import plan_3d_scenes, save_plan
 
 
@@ -20,13 +21,20 @@ def load_json(path):
     with open(path,encoding='utf-8') as f:return json.load(f)
 
 
-def select_topic(items,topic_id):
+def select_topic(items, topic_id, editorial_report=None):
+    ready = {item["id"]: item for item in items}
     if topic_id:
-        return next((x for x in items if x['id']==topic_id),None)
-    # Stable weekly rotation; 2 drafts (one on each scheduled day).
-    week=datetime.now(timezone.utc).isocalendar().week
-    weekday=datetime.now(timezone.utc).weekday()
-    return items[((week*2)+(0 if weekday<3 else 1))%len(items)]
+        return ready.get(topic_id)
+    report = editorial_report or {}
+    reviewed = report.get("coordinator_llm", {})
+    decision = reviewed.get("decision") or {}
+    eligible = {key for key, item in ready.items() if item.get("narration") and item.get("category")}
+    if reviewed.get("completed_discussion") and decision.get("selected_idea_id") in eligible:
+        return ready[decision["selected_idea_id"]]
+    for idea in report.get("recommendations") or score_ideas({}, []):
+        if idea["id"] in eligible:
+            return ready[idea["id"]]
+    return None
 
 
 def build(topic,outdir,video=True):
@@ -59,7 +67,7 @@ def build(topic,outdir,video=True):
     script=act(7,'Üç tarihî bilgiyle senaryo derlendi',lambda:[hook,*topic['facts']])
     voiceover=act(8,'Seslendirme metni hazırlandı',lambda:' '.join(script))
     caption=act(9,'Instagram açıklaması oluşturuldu',lambda: '\n\n'.join([f"{topic['title']} — {topic['date']}",*topic['facts'], f"Tarihî bağlam: {topic['context']}", 'Kaynaklar: '+', '.join(s['title'] for s in sources)]))
-    hashtags=act(10,'Konuya özgü etiketler eklendi',lambda:'#TürkTarihi #Tarih #TarihBilgisi #TarihReels')
+    hashtags=act(10,'Konuya özgü etiketler eklendi',lambda:'#TarihinBilinmeyenGerçekleri #Tarih #TarihReels' + (' #TürkTarihi' if topic.get('scope')=='turk' else ''))
     caption+='\n\n'+hashtags
     (outdir/'caption.txt').write_text(caption,encoding='utf-8')
     (outdir/'voiceover.txt').write_text(voiceover,encoding='utf-8')
@@ -111,7 +119,7 @@ def build(topic,outdir,video=True):
     act(22,'Ücretsiz prosedürel Three.js hareket planı hazırlandı',lambda:three_d_plan.get('scenes',[]))
     act(23,'Remotion Three.js render katmanı kuyruğa alındı; Blender opsiyonel',lambda:{'status':'queued' if three_d_plan.get('scenes') else '2d_only'})
     act(24,'Render başarısızlığında mevcut 2D sahnelere dönme doğrulandı',lambda:{'fallback':'2d','manual_review_required':True})
-    package={'topic_id':topic['id'],'topic_title':topic['title'],'produced_at_utc':datetime.now(timezone.utc).isoformat(),'approval':approval,'actual_automatic_historical_source_verification':False,'sources_for_manual_review':sources,'roles_completed':done,'n_roles':len(done),'three_d_scene_plan':three_d_plan,'cost':report,'publication':'NONE','files':{'post':poster.name,'mp4':None,'silent_preview_only':mp4.name if mp4 else None,'ready_for_instagram':False,'missing':['Türkçe insan kalitesinde seslendirme','En az 5 dönem uyumlu sahne','SFX ve müzik lisansı','Hareketli video ve altyazı','İnsan tarih doğrulaması'],'caption':'caption.txt','voiceover':'voiceover.txt','sources':'sources.json'}}
+    package={'topic_id':topic['id'],'topic_title':topic['title'],'concept':CONCEPT,'evidence_boundary':topic.get('evidence_boundary',topic.get('context')),'produced_at_utc':datetime.now(timezone.utc).isoformat(),'approval':approval,'actual_automatic_historical_source_verification':False,'sources_for_manual_review':sources,'roles_completed':done,'n_roles':len(done),'three_d_scene_plan':three_d_plan,'cost':report,'publication':'NONE','files':{'post':poster.name,'mp4':None,'silent_preview_only':mp4.name if mp4 else None,'ready_for_instagram':False,'missing':['Türkçe insan kalitesinde seslendirme','En az 5 dönem uyumlu sahne','SFX ve müzik lisansı','Hareketli video ve altyazı','İnsan tarih doğrulaması'],'caption':'caption.txt','voiceover':'voiceover.txt','sources':'sources.json'}}
     (outdir/'draft_manifest.json').write_text(json.dumps(package,ensure_ascii=False,indent=2),encoding='utf-8')
     (outdir/'STORYBOARD.md').write_text('# Sahne planı\n\n'+'\n\n'.join(f'{i}. {s}' for i,s in enumerate(storyboard,1))+'\n\n**Kaynak kontrolü ve insan onayı olmadan yayınlanmaz.**',encoding='utf-8')
     return package

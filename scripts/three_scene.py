@@ -14,8 +14,8 @@ import re
 def classify_topic(topic: dict) -> str | None:
     """Return battle_map, siege_city, or None using metadata then safe heuristics."""
     explicit = str(topic.get("visual_mode", "")).strip().lower()
-    if explicit in {"battle_map", "siege_city"}:
-        return explicit
+    if explicit in {"battle_map", "siege_city", "artifact_gears", "2d"}:
+        return None if explicit == "2d" else explicit
     text = " ".join(str(topic.get(k, "")) for k in ("id", "title", "hook", "context"))
     text = re.sub(r"\s+", " ", text).casefold()
     if any(word in text for word in ("fetih", "kuşatma", "kusatma", "şehir", "istanbul")):
@@ -30,7 +30,14 @@ def plan_3d_scenes(topic: dict, duration_seconds: float = 70) -> dict:
     mode = classify_topic(topic)
     topic_id = str(topic.get("id", "unknown"))
     scenes: list[dict] = []
-    if mode == "battle_map":
+    if mode == "artifact_gears":
+        scenes.append({
+            "kind": "artifact_gears", "from_sec": 21.0, "duration_sec": 8.0,
+            "title": "DİŞLİLERİN İLKESİ • TEMSİLÎ ŞEMA",
+            "motion": "Basitleştirilmiş iki dişli karşı yönlerde döner.",
+            "labels": ["TARİHÎ REPLİKA DEĞİLDİR"],
+        })
+    elif mode == "battle_map":
         scenes.append({
             "kind": "battle_map",
             "from_sec": 8.0,

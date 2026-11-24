@@ -57,7 +57,7 @@ def render_card(path,topic,heading,main,footer,portrait=True,kind='intro'):
         d.ellipse((x,y,x+rr,y+rr),fill=(45,56,69))
     pad=round(w*.09); max_width=w-2*pad
     d.rectangle((pad,round(h*.07),w-pad,round(h*.076)),fill=accent)
-    d.text((pad,round(h*.096)),"TÜRK TARİHİ  /  BELGELİ HİKÂYELER",font=font(20 if portrait else 26),fill=accent)
+    d.text((pad,round(h*.096)),"TARİHİN BİLİNMEYEN GERÇEKLERİ  /  BELGELİ HİKÂYELER",font=font(20 if portrait else 26),fill=accent)
     d.text((pad,round(h*.185)),topic['era'],font=font(25 if portrait else 31,bold=False),fill=(206,213,223))
     heading_fs=44 if portrait else 51
     main_fs=58 if portrait else 70

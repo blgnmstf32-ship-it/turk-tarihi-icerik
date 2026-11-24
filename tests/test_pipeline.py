@@ -25,7 +25,7 @@ class PipelineTests(unittest.TestCase):
             self.assertTrue((Path(d)/'post_1080x1350.png').exists())
             self.assertTrue((Path(d)/'caption.txt').exists())
             self.assertEqual(p['cost']['paid_api_calls'],0)
-            self.assertEqual(p['three_d_scene_plan']['scenes'][0]['kind'],'battle_map')
+            self.assertEqual(p['three_d_scene_plan']['scenes'][0]['kind'],'artifact_gears')
 
     def test_silent_slides_never_marked_publish_ready(self):
         with tempfile.TemporaryDirectory() as d:

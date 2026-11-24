@@ -1,4 +1,10 @@
 # Değişiklikler
+## 0.9
+
+- Türk ve dünya tarihi için Tarihin Bilinmeyen Gerçekleri konsepti, altı kategori ve on kaynaklı pilot fikir.
+- Erişilebilen rakip sayaçları, akademik kaynak taraması, ücretsiz LLM ile sıralı rol görüşleri ve haftalık Reels taslak seçimi.
+- Kaynaklı Antikitera anlatımı, 3D dişli şeması ve ilk üç saniye ölçümü.
+
 
 ## v0.8 — İçerik yönetimi ve performans öğrenmesi
 - AI Genel Yayın Yönetmeni koordinasyon raporu: ücretsiz trend/rakip RSS araştırması, dört içerik kategorisi için gerekçeli öneriler, kanıta dayalı rol değerlendirmesi ve tahmini ücretsiz üretim planı.

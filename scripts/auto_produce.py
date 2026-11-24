@@ -5,7 +5,7 @@ Turkish Piper narration, estimated SRT, original music, and a narrated vertical 
 Output is for human approval ONLY. Nothing uploads to Instagram.
 """
 from __future__ import annotations
-import argparse, json, os, subprocess, sys
+import argparse, json, os, shutil, subprocess, sys
 from datetime import datetime, timezone
 from pathlib import Path
 from scripts.run import ROOT, load_json, select_topic, build
@@ -35,6 +35,11 @@ def verified_facts_only(topic):
 
 def performance_script(topic):
     """Build a 60-75s sourced documentary script with marked performance beats."""
+    if topic.get('narration'):
+        return [
+            {'spoken': line, 'caption': line, 'pace': 1.0, 'pause_after': 0.22}
+            for line in topic['narration']
+        ]
     if topic['id']=='malazgirt-1071':
         lines=[
           ('Bir tarih düşünün... Ve Anadolu tarihinin akışında iz bırakan bir karşılaşma.','Bir tarih. Bir karşılaşma.',0.98,0.38),
@@ -89,28 +94,6 @@ def update_3d_role_results(role_modules,status):
     return result
 
 
-def optional_free_ai_suggestion(topic,out):
-    """Use exactly one free OpenRouter request if a key is supplied; no paid fallback."""
-    key=os.getenv('OPENROUTER_API_KEY')
-    if os.getenv('ENABLE_FREE_LLM')!='1' or not key:return {'status':'disabled_or_not_configured','api_calls':0,'actual_llm_used':False}
-    import requests
-    prompt=('Türk tarihi Instagram Reels için yalnız aşağıdaki OL GULARA dayanarak yaratıcı açılış ve ' 
-            'en fazla 100 sözcüklük Türkçe konuşma metni öner. Tarih, isim, alıntı, rakam ekleme. ' 
-            'Bir iddia belirsizse belirsiz olduğunu açıkla. Çıktıda teklif metnini ver; yayınlama.\n' +
-            json.dumps({'hook':topic['hook'],'facts':topic['facts'],'context':topic.get('context')},ensure_ascii=False))
-    try:
-        r=requests.post('https://openrouter.ai/api/v1/chat/completions',timeout=35,
-            headers={'Authorization':f'Bearer {key}','Content-Type':'application/json','X-Title':'Turk Tarihi Draft'},
-            json={'model':'openrouter/free','messages':[{'role':'system','content':'You must NOT invent historical facts. Only suggest edits for human review.'},{'role':'user','content':prompt}], 'temperature':.55,'max_tokens':400})
-        r.raise_for_status()
-        answer=r.json()['choices'][0]['message']['content']
-        (out/'AI_SCRIPT_SUGGESTION_REVIEW_REQUIRED.txt').write_text(str(answer),encoding='utf-8')
-        return {'status':'suggestion_only_review_required','api_calls':1,'model':'openrouter/free','paid_api_accepted':False}
-    except Exception as ex:
-        (out/'AI_EDITOR_ERROR.txt').write_text(type(ex).__name__+': '+str(ex)[:150],encoding='utf-8')
-        return {'status':'failed_no_fallback','api_calls':1}
-
-
 def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,voice_provider_override=None):
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     settings=load_json(ROOT/'config'/'settings.json')
@@ -139,7 +122,12 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
         execution_rows.append({'id':role['id'],'name':role['name'],'actual_llm_used':bool(row and row.get('status')=='suggestion_review_required'),
             'execution':'free_llm_suggestion' if row and row.get('status')=='suggestion_review_required' else 'deterministic_automation',
             'status':row.get('status') if row else 'no_llm_call'})
-    execution_report={'coordinator':'AI Genel Yayın Yönetmeni','coordinator_actual_llm_used':editorial_report.get('coordinator_llm',{}).get('actual_llm_used',False),
+    editorial_stages = editorial_report.get('coordinator_llm', {}).get('stages', [])
+    coordinator_called = any(stage['role']=='AI Genel Yayın Yönetmeni' and stage.get('actual_llm_used')
+                             for stage in editorial_stages)
+    execution_report={'coordinator':'AI Genel Yayın Yönetmeni','coordinator_actual_llm_used':coordinator_called,
+        'editorial_llm_stages':[{key:stage.get(key) for key in ('role','model','status','actual_llm_used')}
+                                for stage in editorial_stages],
         'original_20_llm_calls':ai_result.get('calls',0),'original_20_llm_successes':ai_result.get('separate_llm_roles_completed',0),
         'paid_api_calls':0,'paid_fallback':False,'roles':execution_rows,
         'note':'20 görev modülü gerçek LLM çağrısı değildir; yalnızca free_llm_enabled=true, OPENROUTER_API_KEY ve ENABLE_20_LLM_AGENTS=1 birlikte verilirse öneri amaçlı LLM çağrısı yapılır. 3D görevleri deterministiktir.'}
@@ -149,18 +137,17 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
     if not skip_narration:
         commons_dir=out/'commons_visuals'
         licensed_visuals=fetch_visuals(topic,commons_dir,limit=10)
-        if len(licensed_visuals)>=10:
-            import shutil
-            shutil.rmtree(scenes,ignore_errors=True);scenes.mkdir(parents=True,exist_ok=True)
-            for item in licensed_visuals:shutil.copy2(commons_dir/item['file'],scenes/item['file'])
-        else:
-            import shutil
-            shutil.rmtree(commons_dir,ignore_errors=True)
-        write_attribution(licensed_visuals if len(licensed_visuals)>=10 else [],out/'MEDIA_ATTRIBUTION.md')
-    visual_kind='OPEN_LICENSED_DOCUMENTARY_MEDIA' if len(licensed_visuals)>=10 else 'LABELED_STYLIZED_RECONSTRUCTION_FALLBACK'
+        for i, item in enumerate(licensed_visuals, 1):
+            placeholder = scenes / f"{i:02d}_scene.jpg"
+            placeholder.unlink()
+            shutil.copy2(commons_dir/item["file"], scenes/item["file"])
+        write_attribution(licensed_visuals, out/"MEDIA_ATTRIBUTION.md")
+    visual_kind = ("OPEN_LICENSED_DOCUMENTARY_MEDIA" if len(licensed_visuals) >= 10 else
+        "MIXED_LICENSED_MEDIA_AND_LABELED_GRAPHICS" if licensed_visuals else "LABELED_STYLIZED_RECONSTRUCTION_FALLBACK")
     manifest={'topic':topic['id'],'utc':datetime.now(timezone.utc).isoformat(),'roles':prev['n_roles'],
         'target_duration_seconds':{'min':60,'max':75},
-        'external_licensed_media':bool(len(licensed_visuals)>=10),'visual_kind':visual_kind,
+        'first_hook_seconds':None,
+        'external_licensed_media':bool(licensed_visuals),'visual_kind':visual_kind,
         'licensed_visual_count':len(licensed_visuals),'realistic_visuals_gate':'passed' if len(licensed_visuals)>=10 else 'not_met_fallback_requires_manual_visual_upgrade',
         'historical_facts_manual_verified':False,'instagram_published':False,
         'human_approval_required':True,'paid_api_services_enabled':False,'ai_editor':ai_result,
@@ -182,6 +169,10 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
     (out/'VOICE_RECORDING_GUIDE.txt').write_text(guide,encoding='utf-8')
     cues=narrate_segments(segments,voice_path,model_cache,recordings_dir,provider,settings)
     duration=media_duration(voice_path)
+    hook_seconds=round(cues[0]['end'],2)
+    if topic.get('narration') and hook_seconds>3:
+        raise ValueError(f'Opening hook {hook_seconds}s exceeds 3s; shorten opening line')
+    manifest['first_hook_seconds']=hook_seconds
     if not 60<=duration<=75:raise ValueError(f'Voice length {duration:.1f}s outside 60-75s; expand/rewrite narration, never time-stretch')
     create_subtitles(cues,out/'subtitles.srt')
     create_bed(duration,out/'original_soundtrack.wav')
@@ -228,7 +219,10 @@ def main():
     p.add_argument('--skip-narration',action='store_true',help='Offline dry-run of 24 task modules, ten illustrations and the 3D scene plan')
     p.add_argument('--voice-provider',default='',help='piper, google_chirp3_hd or azure_speech; paid cloud providers fail closed by default')
     a=p.parse_args()
-    topics=load_json(ROOT/'data'/'topics.json');topic=select_topic(topics,a.topic)
+    editorial_path = Path(a.out)/"editorial"/"EDITORIAL_DECISION_REPORT.json"
+    report = load_json(editorial_path) if editorial_path.exists() else run_board(editorial_path.parent)
+    topics=load_json(ROOT/'data'/'topics.json')
+    topic=select_topic(topics,a.topic,report)
     if topic is None:p.error('Unknown topic')
     try:
         result=production(topic,a.out,a.model_cache,a.skip_narration,a.voice_recordings or None,a.voice_provider or None)

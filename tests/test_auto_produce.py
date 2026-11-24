@@ -9,7 +9,7 @@ from scripts.illustrate import generate
 
 class AutomaticProductionTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.topic=load_json(ROOT/'data'/'topics.json')[0]
+    def setUpClass(cls):cls.topic=next(t for t in load_json(ROOT/'data'/'topics.json') if t['id']=='malazgirt-1071')
     def test_script_factual_guard(self):
         text=verified_facts_only(self.topic)
         self.assertTrue(all(f in text for f in self.topic['facts']))

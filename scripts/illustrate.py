@@ -166,7 +166,7 @@ def scene(topic,i,dest):
     # Consistent branded frame and a specific, concise scene label.
     overlay=Image.new('RGBA',(W,H),(0,0,0,0));od=ImageDraw.Draw(overlay)
     od.rounded_rectangle((32,48,868,125),radius=23,fill=(5,12,18,190))
-    od.text((60,69),'TÜRK TARİHİ     •     TEMSİLÎ CANLANDIRMA',font=font(28),fill=(244,228,202,255))
+    od.text((60,69),'TARİHİN BİLİNMEYEN GERÇEKLERİ     •     TEMSİLÎ CANLANDIRMA',font=font(28),fill=(244,228,202,255))
     labels=['MALAZGİRT • 1071','TARİHİN UZUN AKIŞI','SULTAN ALP ARSLAN','SELÇUKLU VE BİZANS','ORDULAR KARŞI KARŞIYA','ÇARPIŞMANIN SONUCU','UZUN BİR DÖNÜŞÜM','ANADOLU TARİHİNDE BİR EŞİK','YENİ BİR DÖNEME','MALAZGİRT • 26 AĞUSTOS 1071']
     od.rounded_rectangle((32,1455,868,1555),radius=20,fill=(5,12,18,185))
     od.text((60,1485),labels[i%8],font=font(31),fill=(238,190,122,255))
@@ -175,6 +175,31 @@ def scene(topic,i,dest):
     dest=Path(dest);dest.parent.mkdir(parents=True,exist_ok=True);im.save(dest,quality=94)
     return dest
 
+def editorial_scene(topic, index, dest):
+    """Original explanatory cards for topics without a bespoke illustration set."""
+    im=background(index, '#07171d', '#334c44')
+    draw=ImageDraw.Draw(im)
+    x=380+((index*83)%290)
+    y=700+((index*71)%465)
+    for ring in range(5):
+        radius=70+ring*64
+        draw.arc((x-radius,y-radius,x+radius,y+radius), index*24, 330+index*24,
+                 fill=GOLD if ring%2==0 else TEAL, width=4)
+    if topic.get('visual_mode')=='artifact_gears':
+        for offset, radius, teeth in ((-185, 150, 16),(118,112,12)):
+            cx, cy=540+offset,900+int(115*math.sin(index*.6))
+            draw.ellipse((cx-radius,cy-radius,cx+radius,cy+radius), outline=GOLD,width=16)
+            for tooth in range(teeth):
+                angle=math.tau*tooth/teeth+index*.26
+                draw.line((cx+radius*math.cos(angle),cy+radius*math.sin(angle),
+                           cx+(radius+30)*math.cos(angle),cy+(radius+30)*math.sin(angle)),fill=GOLD,width=11)
+    draw.text((65,72),'TARİHİN BİLİNMEYEN GERÇEKLERİ',font=font(34),fill=CREAM)
+    draw.text((65,125),'TEMSİLÎ GRAFİK',font=font(27),fill=GOLD)
+    draw.text((70,1470),f'{index+1:02d}  /  {topic["era"]}',font=font(29),fill=CREAM)
+    im.save(dest,quality=93)
+    return dest
+
+
 def generate(topic,out):
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     # Remove stale captures from prior attempts so fallback art and Commons
@@ -182,7 +207,8 @@ def generate(topic,out):
     for old in out.iterdir():
         if old.is_file() and old.suffix.lower() in {'.png','.jpg','.jpeg','.webp'}:
             old.unlink()
-    files=[str(scene(topic,i,out/f'{i+1:02d}_scene.jpg')) for i in range(10)]
+    render_scene=scene if topic['id']=='malazgirt-1071' else editorial_scene
+    files=[str(render_scene(topic,i,out/f'{i+1:02d}_scene.jpg')) for i in range(10)]
     (out/'IMAGE_PROVENANCE.md').write_text(
-        'Eight original vector-style illustrations made in code. They are symbolic reconstructions, not documentary images, factual maps, uniform references, or verified battle tactics. No third-party media is used.\n',encoding='utf-8')
+        'Ten original illustrations made in code. They are symbolic reconstructions, not documentary images or factual reconstructions. No third-party media is used.\n',encoding='utf-8')
     return files

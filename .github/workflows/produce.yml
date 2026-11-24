@@ -1,4 +1,4 @@
-name: Türk tarihi ücretsiz sesli Reels taslağı
+name: Tarihin Bilinmeyen Gerçekleri · Haftalık rapor ve Reels
 on:
   push:
     paths:
@@ -13,12 +13,12 @@ on:
   workflow_dispatch:
     inputs:
       topic:
-        description: 'İçerik konusu (örn: malazgirt-1071); boşsa otomatik seç'
+        description: 'İçerik konusu (örn: antikythera-disli); boşsa otomatik seç'
         required: false
         type: string
         default: ''
   schedule:
-    - cron: '17 9 * * 2,5' # Türkiye 12:17; GitHub schedule gecikebilir
+    - cron: '17 9 * * 2' # Türkiye 12:17; GitHub schedule gecikebilir
 permissions:
   contents: read
 concurrency:
@@ -73,12 +73,13 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: AI General Editor research and weekly strategy
         env:
-          ENABLE_FREE_LLM: '0'
-          ENABLE_20_LLM_AGENTS: '0'
+          ENABLE_FREE_LLM: ${{ vars.ENABLE_FREE_LLM || '0' }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          YOUTUBE_DATA_API_KEY: ${{ secrets.YOUTUBE_DATA_API_KEY }}
         run: python -m scripts.editorial_board --out output/auto/editorial
-      - name: Produce Malazgirt narrated documentary video
+      - name: Produce selected narrated documentary video
         env:
-          TOPIC_ID: ${{ inputs.topic || 'malazgirt-1071' }}
+          TOPIC_ID: ${{ inputs.topic || '' }}
           ENABLE_FREE_LLM: '0'
           ENABLE_20_LLM_AGENTS: '0'
           HF_HOME: ${{ github.workspace }}/.cache/huggingface
@@ -131,7 +132,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: malazgirt-belgesel-${{ github.run_number }}
+          name: tarihin-bilinmeyen-gercekleri-${{ github.run_number }}
           path: |
             output/auto/**
             output/observer/**

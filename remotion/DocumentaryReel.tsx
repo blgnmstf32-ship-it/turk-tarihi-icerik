@@ -67,7 +67,7 @@ const ActiveCaption: React.FC<{captions: CaptionCue[]}> = ({captions}) => {
   );
 };
 
-export const DocumentaryReel: React.FC<DocumentaryProps> = ({durationSec, title = 'TÜRK TARİHİ', scenes, captions, threeScenes = []}) => {
+export const DocumentaryReel: React.FC<DocumentaryProps> = ({durationSec, title = 'TARİHİN BİLİNMEYEN GERÇEKLERİ', scenes, captions, threeScenes = []}) => {
   const totalFrames = Math.ceil(durationSec * FPS);
   const usable = scenes.length ? scenes : [{src: 'placeholder.svg'}];
   const step = totalFrames / usable.length;

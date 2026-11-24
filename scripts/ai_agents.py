@@ -39,7 +39,7 @@ def run_agents(topic,agents,output,requester=None,settings=None):
             summaries.append({'role_id':role['id'],'role':role['name'],'status':'suggestion_review_required','text':suggestion})
             success+=1
         except Exception as ex:
-            summaries.append({'role_id':role['id'],'role':role['name'],'status':'error','error':str(ex)[:150]})
+            summaries.append({'role_id':role['id'],'role':role['name'],'status':'error','error_type':type(ex).__name__})
         # Cost controlled and no retry or paid fallback. Don't hammer free providers.
         if role['id']!=llm_roles[-1]['id']:time.sleep(0.4)
     result={'enabled':True,'actual_llm_used':success>0,'requested_model':FREE_MODEL,'calls':len(llm_roles),'separate_llm_roles_completed':success,

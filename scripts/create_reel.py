@@ -71,12 +71,12 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=192
         shutil.copy2(src,public_dir/src.name)
         copied.append({'src':f'scenes/{out.stem}/{src.name}'})
     three_scenes=three_scenes or []
-    allowed={'battle_map','city_flyover','siege'}
+    allowed={'battle_map','city_flyover','siege','artifact_gears'}
     for item in three_scenes:
         if item.get('kind') not in allowed:raise ValueError('Geçersiz 3D sahne türü')
         if item.get('from_sec',0)<0 or item.get('duration_sec',0)<=0:raise ValueError('3D sahne zamanlaması geçersiz')
         if item.get('from_sec',0)+item.get('duration_sec',0)>length:raise ValueError('3D sahne seslendirme süresinin dışına taşıyor')
-    props={'durationSec':length,'title':'TÜRK TARİHİ','scenes':copied,'captions':cues,
+    props={'durationSec':length,'title':'TARİHİN BİLİNMEYEN GERÇEKLERİ','scenes':copied,'captions':cues,
            'threeScenes':[{'kind':s['kind'],'title':s['title'],'labels':s.get('labels',[]),'fromSec':s['from_sec'],'durationSec':s['duration_sec']} for s in three_scenes]}
     with tempfile.TemporaryDirectory(prefix='turktarihi_remotion_') as td:
         props_path=Path(td)/'props.json'
