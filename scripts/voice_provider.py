@@ -7,6 +7,8 @@ def select_provider(settings=None, requested=None):
     settings=settings or json.loads((Path(__file__).resolve().parents[1]/'config/settings.json').read_text(encoding='utf-8'))
     provider=(requested or os.getenv('TURK_TARIHI_VOICE_PROVIDER') or settings.get('voice_provider','piper')).lower()
     if provider in ('piper','human_recording'): return provider
+    if provider == 'gemini_tts':
+        raise RuntimeError('Gemini yalnız açık --voice-provider gemini_tts seçimiyle çağrılır.')
     cloud=settings.get('cloud_voice',{}).get(provider,{})
     if not settings.get('billing_enabled',False) or not settings.get('paid_services_enabled',False) or not settings.get('cloud_voice_enabled',False) or not cloud.get('enabled',False) or float(settings.get('monthly_spend_limit_try',0))<=0:
         raise RuntimeError(f'{provider} kapalı; ücretsiz Piper/insan kaydı seçin. Ücretli sağlayıcıya otomatik geçiş yok.')

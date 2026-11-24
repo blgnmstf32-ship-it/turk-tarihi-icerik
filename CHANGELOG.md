@@ -1,4 +1,10 @@
 # Değişiklikler
+## 0.9 sonrası
+
+- OpenRouter için sıfır fiyat sınırı ve dört gerçek değerlendirme gerektiren çalıştırma modu.
+- Ücretsiz proje onayıyla yerel Gemini 3.8 Flash TTS seçeneği ve konuşmaya eşlenen altyazı.
+- GitHub yazma erişimi kılavuzu ve son MP4 sesini denetleyen aşama raporu.
+
 ## 0.9
 
 - Türk ve dünya tarihi için Tarihin Bilinmeyen Gerçekleri konsepti, altı kategori ve on kaynaklı pilot fikir.

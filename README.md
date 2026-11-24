@@ -66,3 +66,49 @@ GitHub Actions için `OPENROUTER_API_KEY` adında bir depo secret'ı ve `ENABLE_
 Konu Avcısı, İçerik Stratejisti, Tarih Doğruluk Denetçisi ve AI Genel Yayın Yönetmeni, sırasıyla birbirinin görüşüne yanıt veren dört ayrı `openrouter/free` isteği alır. Gerçek model ve çağrı durumu raporlanır. Yeni fikirlerin bağlantıları taranmış kaynak kayıtlarıyla eşlenir ve araştırma kuyruğuna gider. Doğrulanmış anlatımlar otomatik olarak değiştirilmez. Ücretsiz rota hata verirse ücretli yedek yoktur. 20 rolün isteğe bağlı model önerileri ayrıca `ENABLE_20_LLM_AGENTS=1` ister ve haftalık workflow'da kapalıdır. Dört 3D rolü üretim otomasyonudur.
 
 Instagram Insights salt okunur ve varsayılan olarak kapalıdır. Yetkili bağlantı veya yerel geçmiş sağlanırsa gerçek izlenme, izlenme süresi, paylaşım ve etkileşim ölçümleri ayrı analiz edilir. Erişilemeyen metrikler boş kalır. `EDITORIAL_DECISION_REPORT.md/.json` ve `AI_AGENT_EXECUTION_REPORT.json` çalışma sonucunu saklar.
+
+### Dört gerçek model çağrısını doğrulama
+
+[OpenRouter Keys](https://openrouter.ai/settings/keys) üzerinden bir anahtar oluşturun. Depoda **Settings → Secrets and variables → Actions** altında `OPENROUTER_API_KEY` adlı secret ile `ENABLE_FREE_LLM` adlı `1` değerli değişkeni tanımlayın. Anahtar yalnızca haftalık rapor adımına verilir. Rota `openrouter/free` ile sabittir ve istek fiyatı sıfırla sınırlandırılır. Dört görüşten biri tamamlanmazsa etkinleştirilmiş iş akışı teşhis raporunu kaydeder ve başarısız olur.
+
+Yerel deneme için anahtarı kabuğa gizli girin:
+
+```bash
+read -rsp 'OpenRouter API key: ' OPENROUTER_API_KEY
+export OPENROUTER_API_KEY
+ENABLE_FREE_LLM=1 python -m scripts.editorial_board --out output/editorial --require-llm
+unset OPENROUTER_API_KEY
+```
+
+### İsteğe bağlı Gemini Türkçe belgesel sesi
+
+Gemini 3.8 Flash TTS, Charon sesi ve Türkiye Türkçesi belgesel yönlendirmesiyle bütün senaryoyu tek seferde okur. Tempoyu, vurguyu ve durakları model belirler. Yerel faster-whisper altyazıyı gerçek konuşma zamanlarına eşler. Ses 60–75 saniye aralığına veya ilk üç saniye açılışına uymuyorsa üretim durur ve metin incelemesi gerekir.
+
+[AI Studio API Keys](https://aistudio.google.com/api-keys) üzerinden **faturalandırma hesabı bağlanmamış Free Tier projesinin** anahtarını kullanın. Proje sahibi, AI Studio'da ücretsiz katmanı kontrol ettikten sonra her çalıştırmada bunu onaylar. API anahtarı projenin faturalandırma durumunu istemciye bildirmez. Proje ücretsiz kotada kaldığında 0 USD. Google'ın 24 Kasım 2026 tarihli [fiyat tablosunda](https://aistudio.google.com/docs/pricing#gemini-3.8-flash-tts) ücretli katman 31 Aralık 2026'ya kadar 1 milyon metin giriş token'ı için 0,50 USD ve 1 milyon ses çıkış token'ı için 9 USD. 60–75 saniye ses çıkışı yaklaşık 0,0135–0,0169 USD, metin girişi ayrıca. Google 1 Ocak 2027'den itibaren ücretli birim fiyatların iki katına çıkacağını belirtiyor. Ücretsiz kota ve erişim AI Studio projesine bağlıdır. Bu entegrasyonun ücretli modu yoktur.
+
+```bash
+python -m pip install -r requirements.txt -r requirements-audio-audit.txt
+export HF_HOME="$PWD/.cache/huggingface"
+python -c "from faster_whisper import WhisperModel; WhisperModel('tiny', device='cpu', compute_type='int8')"
+read -rsp 'Free Tier Gemini API key: ' GEMINI_API_KEY
+export GEMINI_API_KEY
+python -m scripts.auto_produce --topic antikythera-disli --out output/gemini \
+  --voice-provider gemini_tts --confirm-gemini-free-project
+python -m scripts.verify_production --out output/gemini --topic antikythera-disli
+unset GEMINI_API_KEY
+```
+
+API kota, erişim veya yanıt hatasında durur. Gemini yalnız açık yerel komutla seçilir. Haftalık iş akışı Piper kullanır. Ücretsiz katmana yalnız yayınlanabilir nitelikte, hassas bilgi içermeyen senaryo gönderin.
+
+### GitHub yazma erişimi
+
+`Resource not accessible by integration` için [GitHub App kurulumunu](https://github.com/settings/installations) açın. Doğru hesabı ve `blgnmstf32-ship-it/turk-tarihi-icerik` deposunu seçin. Uygulama kurulumu depoya erişmeli ve `Contents: Read and write` izni bulunmalı. `.github/workflows/` değişikliklerini de aktaracak erişimde `Workflows: Read and write` iznini doğrulayın. ChatGPT GitHub bağlantısını bu kurulumla yeniden yetkilendirin. Kurulum izinleri uygulama tarafından sunulmuyorsa, repo sahibi terminalinde GitHub CLI ile yetkilendirilmiş Git aktarımı kullanabilir:
+
+```bash
+gh auth login --hostname github.com --git-protocol https --web --scopes workflow
+gh auth setup-git
+git fetch origin
+git push origin HEAD:main
+```
+
+Komutlar bu projenin güncel yerel kopyasında çalıştırılır. Uzak `main` ilerlemişse önce değişiklikleri birleştirin. Gönderimden sonra GitHub'daki commit kimliğini ve ilk Actions sonucunu kontrol edin. Instagram yayını için ayrı insan onayı gerekir.

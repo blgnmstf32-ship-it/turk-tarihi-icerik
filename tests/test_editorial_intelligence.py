@@ -80,6 +80,8 @@ class EditorialIntelligenceTests(unittest.TestCase):
             payload=kwargs['json']
             requests.append(payload)
             self.assertEqual(payload['model'],'openrouter/free')
+            self.assertEqual(payload['provider']['max_price'], {'prompt':0, 'completion':0, 'request':0})
+            self.assertFalse(kwargs['allow_redirects'])
             return Response(data={'model':'test/free','choices':[{'message':{'content':json.dumps({
                 'selected_idea_id':'example','rationale':'Kaynak var',
                 'research_queue':[{'source_url':'https://example.org/archive'}, {'source_url':'https://invented.example'}]
@@ -95,6 +97,16 @@ class EditorialIntelligenceTests(unittest.TestCase):
             result=review(settings, inputs, {}, post)
         self.assertFalse(result['actual_llm_used'])
         self.assertIn('OPENROUTER_API_KEY',result['requirements_missing'])
+
+    def test_editorial_review_stops_on_unexpected_cost(self):
+        from unittest.mock import Mock
+        mock = Mock(return_value=Response(data={'usage':{'cost':0.01}}))
+        with patch.dict('os.environ', {'ENABLE_FREE_LLM':'1','OPENROUTER_API_KEY':'test-key'}, clear=True):
+            result = review({'editorial_intelligence':{'free_llm_enabled':True}}, [{'id':'a'}], {}, mock)
+        self.assertEqual(result['calls'],1)
+        self.assertFalse(result['completed_discussion'])
+        self.assertFalse(result['paid_fallback'])
+        self.assertNotIn('test-key', json.dumps(result))
 
     def test_auto_selection_uses_ready_editorial_candidates_and_keeps_legacy_explicit(self):
         items=[{'id':'legacy'},{'id':'world','narration':['hook'],'category':'kesif'}]
@@ -133,7 +145,9 @@ class EditorialIntelligenceTests(unittest.TestCase):
         self.assertIn('python -m scripts.auto_produce',workflow)
         self.assertIn('python -m unittest discover -s tests -v',workflow)
         self.assertIn('actions/upload-artifact@v4',workflow)
-        self.assertIn('TURKCE_SES_KONTROLU.json',workflow)
+        self.assertIn('python -m scripts.verify_production', workflow)
+        self.assertIn('--require-llm', workflow)
+        self.assertNotIn('GEMINI_API_KEY', workflow)
         self.assertNotIn('instagram_publish.py',workflow)
         self.assertIn("ENABLE_20_LLM_AGENTS: '0'",workflow)
 

@@ -76,7 +76,10 @@ jobs:
           ENABLE_FREE_LLM: ${{ vars.ENABLE_FREE_LLM || '0' }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           YOUTUBE_DATA_API_KEY: ${{ secrets.YOUTUBE_DATA_API_KEY }}
-        run: python -m scripts.editorial_board --out output/auto/editorial
+        run: |
+          flags=()
+          if [[ "$ENABLE_FREE_LLM" == "1" ]]; then flags+=(--require-llm); fi
+          python -m scripts.editorial_board --out output/auto/editorial "${flags[@]}"
       - name: Produce selected narrated documentary video
         env:
           TOPIC_ID: ${{ inputs.topic || '' }}
@@ -87,47 +90,8 @@ jobs:
       - name: Verify MP4, format, and Turkish speech
         env:
           HF_HOME: ${{ github.workspace }}/.cache/huggingface
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          from scripts.create_reel import ffprobe
-          from scripts.speech_audit import transcribe_local
-          report = json.loads(Path('output/auto/AUTO_REPORT.json').read_text(encoding='utf-8'))
-          video = Path('output/auto/REVIEW_REQUIRED_REEL.mp4')
-          heard = transcribe_local('output/auto/narration.wav')
-          transcript = ' '.join(segment['text'] for segment in heard['segments'])
-          reference = Path('output/auto/NARRATION_TR.txt').read_text(encoding='utf-8')
-          import re
-          words = lambda text: re.findall(r'[\wçğıöşüÇĞİÖŞÜ]+', text.lower())
-          expected, recognized = words(reference), words(transcript)
-          row = list(range(len(recognized) + 1))
-          for i, word in enumerate(expected, 1):
-              col = [i] + [0] * len(recognized)
-              for j, heard_word in enumerate(recognized, 1):
-                  col[j] = min(row[j] + 1, col[j-1] + 1, row[j-1] + (word != heard_word))
-              row = col
-          wer = row[-1] / max(1, len(expected))
-          speech = {'status': 'passed' if wer <= 0.35 and heard['language'] == 'tr' and recognized else 'review_required',
-                    'detected_language': heard['language'], 'recognized_segments': len(heard['segments']),
-                    'word_error_rate': round(wer, 4), 'transcript': transcript}
-          Path('output/auto/TURKCE_SES_KONTROLU.json').write_text(
-              json.dumps({'reference': 'NARRATION_TR.txt', 'language_mode': 'forced Turkish ASR', **speech},
-                         ensure_ascii=False, indent=2), encoding='utf-8')
-          info = ffprobe(video)
-          streams = info['streams']
-          v = next((s for s in streams if s.get('codec_type') == 'video'), None)
-          a = next((s for s in streams if s.get('codec_type') == 'audio'), None)
-          assert v and (v['width'], v['height']) == (1080, 1920), f'Unexpected video stream: {v}'
-          assert a, 'MP4 has no audio channel'
-          assert report.get('technical_review', {}).get('technical_gate') == 'passed', report
-          assert 60 <= float(info['format']['duration']) <= 75, 'MP4 duration outside 60-75 seconds'
-          assert speech.get('status') == 'passed' and speech.get('detected_language') == 'tr' and speech.get('recognized_segments', 0) > 0, f'Turkish speech audit failed: {speech}'
-          print(json.dumps({'video': str(video), 'resolution': '1080x1920', 'audio_stream': a.get('codec_name'),
-                            'speech_language': speech['detected_language'] + ' (forced ASR, transcript matched)', 'speech_word_error_rate': speech['word_error_rate'],
-                            'duration_seconds': report.get('seconds'), 'review_required': True,
-                            'instagram_published': False}, ensure_ascii=False, indent=2))
-          PY
+          TOPIC_ID: ${{ inputs.topic || '' }}
+        run: python -m scripts.verify_production --out output/auto --topic "$TOPIC_ID"
       - name: Save review package and diagnostics
         if: always()
         uses: actions/upload-artifact@v4

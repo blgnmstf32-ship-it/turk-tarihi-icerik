@@ -108,10 +108,21 @@ def run_board(output, research_config=None, performance_path=None, research_fn=N
 def main():
     parser=argparse.ArgumentParser(description="Ücretsiz RSS araştırması ve haftalık içerik karar raporu")
     parser.add_argument("--out",default="output/editorial");parser.add_argument("--performance",default="")
+    parser.add_argument("--require-llm", action="store_true",
+                        help="Exit unsuccessfully unless all four real free-model reviews complete")
     args=parser.parse_args();report=run_board(args.out,performance_path=args.performance or None)
     print(json.dumps({"status":report["status"],"top_idea":report["recommendations"][0]["id"],
         "recommendations":len(report["recommendations"]),"research":report["research"]["evidence_counts"],
         "actual_llm_used":report["coordinator_llm"]["actual_llm_used"],"llm_calls":report["coordinator_llm"]["calls"],
         "report":str(Path(args.out)/"EDITORIAL_DECISION_REPORT.md")},ensure_ascii=False,indent=2))
+
+    discussion = report["coordinator_llm"]
+    if args.require_llm and not (
+        discussion.get("completed_discussion") and discussion.get("calls") == 4
+        and len(discussion.get("stages", [])) == 4
+        and all(stage.get("actual_llm_used") for stage in discussion["stages"])
+    ):
+        parser.exit(1, "Dört gerçek OpenRouter görüşü tamamlanamadı. Ayrıntılar karar raporunda.\n")
+
 
 if __name__=="__main__":main()

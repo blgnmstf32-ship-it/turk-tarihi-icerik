@@ -94,14 +94,23 @@ def update_3d_role_results(role_modules,status):
     return result
 
 
-def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,voice_provider_override=None):
+def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,voice_provider_override=None,gemini_free_project=False):
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     settings=load_json(ROOT/'config'/'settings.json')
     record('production_started',{'topic':topic.get('id'),'out':str(out)})
     if settings.get('ai_paid_services_enabled',True) or settings.get('instagram_auto_publish_enabled',True) or not settings.get('human_approval_required',False):
         raise RuntimeError('Zero-cost mode and manual approval gate must remain enabled')
     # 20 actual functional roles perform their tasks in the existing trusted pipeline.
-    provider=select_provider(settings,voice_provider_override)
+    if gemini_free_project and voice_provider_override != 'gemini_tts':
+        raise ValueError('--confirm-gemini-free-project yalnız --voice-provider gemini_tts ile geçerli.')
+    if voice_provider_override == 'gemini_tts':
+        if recordings_dir:
+            raise ValueError('Gemini seçimi insan ses kaydıyla birlikte kullanılamaz.')
+        from scripts.gemini_tts import free_project_key
+        free_project_key(gemini_free_project)
+        provider = 'gemini_tts'
+    else:
+        provider=select_provider(settings,voice_provider_override)
     prev=build(topic,out,video=False)
     three_d_plan=plan_3d_scenes(topic,70)
     save_plan(three_d_plan,out/'3D_SCENE_PLAN.json')
@@ -167,10 +176,17 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
     guide='İnsan seslendirmesi için her satırı ayrı kaydedin; 01.wav, 02.wav, ... adlarını kullanın.\n\n'
     guide+='\n'.join(f"{i+1:02d}.wav — {item['spoken']}" for i,item in enumerate(segments))+'\n'
     (out/'VOICE_RECORDING_GUIDE.txt').write_text(guide,encoding='utf-8')
-    cues=narrate_segments(segments,voice_path,model_cache,recordings_dir,provider,settings)
+    if provider == 'gemini_tts':
+        from scripts.gemini_tts import MODEL, VOICE, narrate
+        cues = narrate(segments, voice_path, gemini_free_project)
+        manifest['voice_generation'] = {'model': MODEL, 'voice': VOICE, 'cloud_requests': 1,
+                                        'billing_guard': 'operator_confirms_unbilled_project',
+                                        'pace_and_pauses': 'model'}
+    else:
+        cues=narrate_segments(segments,voice_path,model_cache,recordings_dir,provider,settings)
     duration=media_duration(voice_path)
     hook_seconds=round(cues[0]['end'],2)
-    if topic.get('narration') and hook_seconds>3:
+    if (topic.get('narration') or provider == 'gemini_tts') and hook_seconds>3:
         raise ValueError(f'Opening hook {hook_seconds}s exceeds 3s; shorten opening line')
     manifest['first_hook_seconds']=hook_seconds
     if not 60<=duration<=75:raise ValueError(f'Voice length {duration:.1f}s outside 60-75s; expand/rewrite narration, never time-stretch')
@@ -196,9 +212,10 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
                    else 'Temsilî çizimleri tarih bağlamı ve etiketleri açısından incele; fotoğraf diye sunma')
     manifest.update({'status':'technical_draft_complete_review_required','video_generated':True,'voice_generated':True,
       'video_file':final.name,'seconds':round(duration,2),'technical_review':technical,'ready_for_instagram':False,
-      'visual_scene_count':len(list(scenes.glob('*.jpg'))),'subtitle_alignment':'actual_phrase_audio_timing',
+      'visual_scene_count':len(list(scenes.glob('*.jpg'))),'subtitle_alignment':'local_asr_word_alignment' if provider=='gemini_tts' else 'actual_phrase_audio_timing',
       'renderer':'Remotion scenes and animated captions; FFmpeg narration/music mux and H.264/AAC encoding',
-      'fps':30,'resolution':'1080x1920','narration_style':'Turkish documentary direction; short phrases, planned pauses, varied pace, rising/falling emphasis; Piper fallback remains synthetic',
+      'fps':30,'resolution':'1080x1920','narration_style':('Turkish documentary; Gemini chooses pace and pauses in one take' if provider=='gemini_tts'
+                         else 'Turkish documentary direction; short phrases, planned pauses, varied emphasis'),
       'voice_source':voice_mode,'voice_provider':provider,'natural_voice_human_review_required':voice_mode!='human_recordings','optional_audits':optional_audits,
       'three_d':{**three_d_plan,**three_d_result,'scene_count_rendered':len(three_d_plan.get('scenes',[])) if three_d_render_status=='rendered' else 0},
       'role_modules':update_3d_role_results(prev.get('roles_completed',[]),three_d_render_status),
@@ -217,7 +234,9 @@ def main():
     p.add_argument('--model-cache',default='.cache/piper')
     p.add_argument('--voice-recordings',default='',help='Optional folder with one human-recorded phrase per file: 01.wav, 02.wav, ...')
     p.add_argument('--skip-narration',action='store_true',help='Offline dry-run of 24 task modules, ten illustrations and the 3D scene plan')
-    p.add_argument('--voice-provider',default='',help='piper, google_chirp3_hd or azure_speech; paid cloud providers fail closed by default')
+    p.add_argument('--voice-provider',default='',help='piper, gemini_tts, google_chirp3_hd or azure_speech')
+    p.add_argument('--confirm-gemini-free-project', action='store_true',
+                   help='Confirm this Gemini API key belongs to an AI Studio project without billing')
     a=p.parse_args()
     editorial_path = Path(a.out)/"editorial"/"EDITORIAL_DECISION_REPORT.json"
     report = load_json(editorial_path) if editorial_path.exists() else run_board(editorial_path.parent)
@@ -225,7 +244,7 @@ def main():
     topic=select_topic(topics,a.topic,report)
     if topic is None:p.error('Unknown topic')
     try:
-        result=production(topic,a.out,a.model_cache,a.skip_narration,a.voice_recordings or None,a.voice_provider or None)
+        result=production(topic,a.out,a.model_cache,a.skip_narration,a.voice_recordings or None,a.voice_provider or None,a.confirm_gemini_free_project)
     except Exception as exc:
         record('production_failed',{'topic':topic.get('id'),'error':f'{type(exc).__name__}: {exc}'})
         raise

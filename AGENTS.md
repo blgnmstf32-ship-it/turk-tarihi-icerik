@@ -67,3 +67,9 @@ Doğru, tarafsız, merak uyandırıcı, özlü. Kökenleri, dönemleri, devletle
 - Yeni fikirlerin kaynak ve anlatım incelemesini tamamla, sonra render kataloğuna ekle. Anadolu, Türk ve dünya tarihi arasında konu çeşitliliğini izle.
 - Rapor her fikir için görsel/animasyon, insan erkek Türkçe seslendirme (Piper yedek), kurgu, süre ve doğrudan servis maliyeti tahmini verir. 0 TL tahmini iş gücü ve donanımı kapsamaz.
 - Insights salt okunur ve isteğe bağlıdır. Tarih ve kategori bağlamını koruyarak veriyi `data/performance.jsonl` dosyasına kaydet. Ayrı Instagram yayın onayı ve ücretli hizmet onayı zorunludur.
+
+## Canlı çağrı ve uçtan uca doğrulama
+
+- OpenRouter için anahtarı ortam veya GitHub Actions secret üzerinden al. `openrouter/free` rotası ve sıfır fiyat sınırı kullan. `--require-llm` ile gerçek dört görüşün tamamlandığını doğrula. Çalışmayan bir görüşü başarılı sayma.
+- Gemini TTS yalnız `--voice-provider gemini_tts --confirm-gemini-free-project` ile ve faturalandırma bağlanmamış projeye ait `GEMINI_API_KEY` sağlandığında çalışır. Tek konuşma çıktısı al, hızı ve durakları modele bırak, altyazıyı yerelde konuşmaya eşle. Kota veya hata durumunda dur. Ücretli veya otomatik sağlayıcı geçişi ekleme.
+- `python -m scripts.verify_production --out ...` araştırma, editoryal görüş, konu seçimi, kaynaklı senaryo, ses, görseller, montaj ve son MP4 aşamalarını ayrı denetler. Konuşma denetimi son MP4 sesinden yapılır. GitHub'da çalışan sürümü ancak uzak commit ve Actions sonucu doğrulandıktan sonra bildir.
