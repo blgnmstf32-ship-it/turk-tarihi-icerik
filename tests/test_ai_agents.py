@@ -20,7 +20,8 @@ class AIAgentTests(unittest.TestCase):
             history.append(kwargs['json']['messages'][0]['content']);return FakeResp()
         with patch.dict(os.environ,{'OPENROUTER_API_KEY':'test','ENABLE_20_LLM_AGENTS':'1'}), patch('scripts.ai_agents.time.sleep',lambda x:None):
             with tempfile.TemporaryDirectory() as d:
-                r=run_agents(load_json(ROOT/'data/topics.json')[0],load_json(ROOT/'config/agents.json'),d,fake_post)
+                r=run_agents(load_json(ROOT/'data/topics.json')[0],load_json(ROOT/'config/agents.json'),d,fake_post,
+                    {'editorial_intelligence':{'free_llm_enabled':True}})
                 self.assertEqual(r['calls'],20)
                 self.assertEqual(r['separate_llm_roles_completed'],20)
                 self.assertEqual(len(set(history)),20)

@@ -1,5 +1,12 @@
 # Değişiklikler
 
+## v0.8 — İçerik yönetimi ve performans öğrenmesi
+- AI Genel Yayın Yönetmeni koordinasyon raporu: ücretsiz trend/rakip RSS araştırması, dört içerik kategorisi için gerekçeli öneriler, kanıta dayalı rol değerlendirmesi ve tahmini ücretsiz üretim planı.
+- İçerik Stratejisti, 20 özgün rolü koruyarak karşılaştırmalı puanlama ve belirsizlik/karşı görüş açıklaması üretir.
+- Salt okunur Instagram Insights için kapalı başlayan Reels/account ölçüm adaptörü; yerel kategori öğrenme kayıtları ve raporu.
+- Her rolün LLM çağrısı ile deterministik otomasyon durumunu ayrı raporla; ücretsiz LLM için açık ayar ve ortam opt-in'i, ücretli yedek yok.
+- GitHub Actions'a haftalık editoryal rapor, tam video üretim/doğrulama ve artifact saklama adımları eklendi.
+
 ## v0.5 — 23 Kasım 2026
 
 - Malazgirt anlatımı daha kısa, konuşma diline yakın cümlelere ayrıldı; tarih ve adlar seslendirme için yazıyla açıldı.

@@ -10,11 +10,14 @@ import requests
 
 FREE_MODEL='openrouter/free'
 
-def run_agents(topic,agents,output,requester=None):
+def run_agents(topic,agents,output,requester=None,settings=None):
     output=Path(output);output.mkdir(parents=True,exist_ok=True)
     key=os.getenv('OPENROUTER_API_KEY')
-    if not key or os.getenv('ENABLE_20_LLM_AGENTS')!='1':
-        result={'enabled':False,'reason':'missing key or explicit opt-in','calls':0,'separate_llm_roles_completed':0}
+    if settings is None:
+        settings=json.loads((Path(__file__).resolve().parents[1]/'config'/'settings.json').read_text(encoding='utf-8'))
+    llm_allowed=bool(settings.get('editorial_intelligence',{}).get('free_llm_enabled',False))
+    if not key or os.getenv('ENABLE_20_LLM_AGENTS')!='1' or not llm_allowed:
+        result={'enabled':False,'reason':'settings opt-in, key, or explicit ENABLE_20_LLM_AGENTS opt-in missing','calls':0,'separate_llm_roles_completed':0,'actual_llm_used':False}
         (output/'AI_AGENTS_STATUS.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
         return result
     request=requester or requests.post
@@ -39,7 +42,8 @@ def run_agents(topic,agents,output,requester=None):
             summaries.append({'role_id':role['id'],'role':role['name'],'status':'error','error':str(ex)[:150]})
         # Cost controlled and no retry or paid fallback. Don't hammer free providers.
         if role['id']!=llm_roles[-1]['id']:time.sleep(0.4)
-    result={'enabled':True,'requested_model':FREE_MODEL,'calls':len(llm_roles),'separate_llm_roles_completed':success,
+    result={'enabled':True,'actual_llm_used':success>0,'requested_model':FREE_MODEL,'calls':len(llm_roles),'separate_llm_roles_completed':success,
+            'llm_role_names':[role['name'] for role in llm_roles],
             'verified_historical_sources':False,'human_review_required':True,
             'paid_fallback_allowed':False,'roles':summaries}
     (output/'AI_AGENTS_STATUS.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')

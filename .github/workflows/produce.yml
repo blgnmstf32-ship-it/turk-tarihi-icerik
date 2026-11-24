@@ -71,9 +71,15 @@ jobs:
           PY
       - name: Validate 24 task modules and safety gates
         run: python -m unittest discover -s tests -v
+      - name: AI General Editor research and weekly strategy
+        env:
+          ENABLE_FREE_LLM: '0'
+          ENABLE_20_LLM_AGENTS: '0'
+        run: python -m scripts.editorial_board --out output/auto/editorial
       - name: Produce Malazgirt narrated documentary video
         env:
           TOPIC_ID: ${{ inputs.topic || 'malazgirt-1071' }}
+          ENABLE_FREE_LLM: '0'
           ENABLE_20_LLM_AGENTS: '0'
           HF_HOME: ${{ github.workspace }}/.cache/huggingface
         run: python -m scripts.auto_produce --topic "$TOPIC_ID" --out output/auto --model-cache .cache/piper

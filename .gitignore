@@ -6,3 +6,4 @@ output/
 node_modules/
 public/scenes/
 *.token
+data/performance.jsonl

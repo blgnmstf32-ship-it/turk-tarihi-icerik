@@ -1,6 +1,6 @@
-# Türk Tarihi — ücretsiz sinematik belgesel Reels otomasyonu v0.7
+# Türk Tarihi — ücretsiz sinematik belgesel Reels otomasyonu v0.8
 
-20 uzman rol, kaynaklı Türk tarihi konularını 60–75 saniyelik dikey belgesel taslağına dönüştürür. Roller aynı ücretsiz Python yürütücüsündeki iş modülleridir; 20 bağımsız/ücretli AI çalışanı değildir.
+20 özgün uzman rolü ile dört ek 3D rolü, kaynaklı Türk tarihi konularını 60–75 saniyelik dikey belgesel taslağına dönüştürür. Roller aynı Python yürütücüsündeki görev modülleridir; 24 bağımsız AI çalışanı değildir.
 
 ## Varsayılan video biçimi
 
@@ -41,7 +41,23 @@ python -m scripts.auto_produce --topic malazgirt-1071 --out output/auto --model-
 
 ## Ajan rolleri ve kalite standardı
 
-- 20 rol tanımı: `config/agents.json`
+- 20 özgün rol + 4 3D rol tanımı: `config/agents.json`
 - Proje ve güvenlik talimatları: `AGENTS.md`
 - Varsayılan üretim ayarları: `config/settings.json`
 - Ayrıntılı video standardı: `VIDEO_KALITE_STANDARTLARI.md`
+
+## İçerik yönetimi ve haftalık karar raporu
+
+- 20 özgün rol ve dört 3D üretim rolü korunmuştur. AI Genel Yayın Yönetmeni bunları içerik araştırması, strateji ve sonuç raporuyla koordine eder. Rol modülleri tek Python sürecindeki otomasyonlardır; bağımsız LLM ajanları değildir.
+- Konu Avcısı kamuya açık Google Trends Türkiye RSS'i ile `config/research_sources.json` içindeki tarih kanallarının son YouTube RSS başlıklarını tarar. RSS rakip izlenme sayısını vermez; sistem bunu performans kanıtı gibi sunmaz.
+- İçerik Stratejisti dört kategori için fikirleri trend eşleşmesi, rakip başlık kapsamı ve varsa kendi geçmiş performansına göre göreli 0–100 endekste sıralar. Bu endeks başarı olasılığı değildir. Fikir değerlendirmesi her öneri için dayanak, karşı sav ve tarih doğruluğu kapısı verir.
+- Her üretim sonunda `output/auto/editorial/EDITORIAL_DECISION_REPORT.md` ve `.json` oluşur. Öneriler görsel, 3D, ses, montaj, üretim süresi ve ücretli API maliyet varsayımı taşır.
+- Üretim raporları `AI_AGENT_EXECUTION_REPORT.json` içinde gerçek LLM çağrısı yapılan rolleri yazar. LLM varsayılan kapalıdır; açmak için `config/settings.json` içindeki `editorial_intelligence.free_llm_enabled`, ilgili açık environment opt-in'i ve anahtar gerekir. Yalnızca `openrouter/free` kullanılır, ücretli yedeğe geçilmez.
+- Instagram Insights adaptörü salt okunur ve kapalı başlar. Yetkili Meta token/erişim, medya eşlemesi ve `instagram_insights_enabled` ayarı olduğunda Reels görüntüleme, erişim, paylaşım ve ortalama izlenme süresi ölçülerini alır; hesap düzeyindeki takip değişimini ayrı tutar. Ölçümler `data/performance.jsonl` dosyasına yerel kaydedilir ve sonraki önerilere girer.
+
+Bağımsız haftalık rapor için:
+
+```bash
+python -m scripts.editorial_board --out output/editorial
+python -m scripts.performance_learning --out output/editorial
+```

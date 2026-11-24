@@ -24,7 +24,7 @@ class ProviderSafetyTests(unittest.TestCase):
             self.assertNotIn('do-not-log',raw)
             self.assertIn('[REDACTED]',raw)
     def test_insights_scaffold_disabled_and_read_only(self):
-        self.assertEqual(get_insights(),{'status':'disabled','read_only':True,'published':False})
+        self.assertEqual(get_insights(),{'status':'disabled','read_only':True,'published':False,'records':[]})
     def test_optional_local_audits_report_missing_dependencies(self):
         import builtins
         from unittest.mock import patch

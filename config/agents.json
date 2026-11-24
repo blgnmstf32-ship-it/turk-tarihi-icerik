@@ -3,7 +3,7 @@
     "id": 1,
     "name": "Konu Avcısı",
     "stage": "research",
-    "job": "Kaynaklı Türk tarihi konusunu 60-75 saniyelik belgesel anlatıya uygun seçer"
+    "job": "Türkçe Google Trends RSS'ini, izlenen rakiplerin son YouTube RSS başlıklarını ve arşiv konularını tarar; talep sinyallerini kanıt düzeyine göre ayırıp konu adaylarını gerekçeli önerir"
   },
   {
     "id": 2,
@@ -117,7 +117,7 @@
     "id": 20,
     "name": "Performans Kaydedicisi",
     "stage": "review",
-    "job": "Ses doğallığı, izleyici ritmi, görsel çeşitliliği ve maliyet için üretim raporu yazar"
+    "job": "Gerçek sonuç kayıtlarını kategori medyanlarıyla karşılaştırır; izlenme, izlenme süresi, paylaşım ve takipçi değişimi verisinin bulunup bulunmadığını ayırıp öğrenme raporu yazar"
   },
   {
     "id": 21,

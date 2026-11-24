@@ -1,4 +1,5 @@
-import tempfile, unittest
+import tempfile, unittest, json
+from unittest.mock import patch
 from pathlib import Path
 from PIL import Image
 from scripts.run import ROOT, load_json
@@ -41,13 +42,20 @@ class AutomaticProductionTests(unittest.TestCase):
             self.assertIn('00:00:01,800 --> 00:00:03,100',text)
     def test_twenty_four_roles_ten_scenes_and_malazgirt_3d_plan(self):
         with tempfile.TemporaryDirectory() as d:
-            result=production(self.topic,Path(d)/'draft',Path(d)/'cache',skip_narration=True)
+            board={'coordinator_llm':{'actual_llm_used':False,'calls':0}}
+            with patch('scripts.auto_produce.run_board',return_value=board):
+                result=production(self.topic,Path(d)/'draft',Path(d)/'cache',skip_narration=True)
             self.assertEqual(result['roles'],24)
             self.assertFalse(result['ready_for_instagram'])
             self.assertFalse(result['instagram_published'])
             self.assertFalse(result['paid_api_services_enabled'])
             self.assertEqual(result['three_d']['scenes'][0]['kind'],'battle_map')
             self.assertTrue((Path(d)/'draft'/'3D_SCENE_PLAN.json').exists())
+            self.assertEqual(result['editorial_decision_report'],'editorial/EDITORIAL_DECISION_REPORT.md')
+            llm_report=json.loads((Path(d)/'draft'/'AI_AGENT_EXECUTION_REPORT.json').read_text())
+            self.assertEqual(len(llm_report['roles']),24)
+            self.assertEqual(llm_report['original_20_llm_calls'],0)
+            self.assertFalse(llm_report['coordinator_actual_llm_used'])
             self.assertEqual(result['target_duration_seconds'],{'min':60,'max':75})
             paths=list((Path(d)/'draft'/'scenes').glob('*_scene.jpg'))
             self.assertEqual(len(paths),10)

@@ -10,7 +10,7 @@
   "human_approval_required": true,
   "media_generation": "60-75s documentary Reels; 10-12 licensed historical/location/artifact visuals with cinematic Remotion motion + animated phrase/word captions + FFmpeg audio finishing; 1080x1920; human narrator recording preferred; free offline Turkish Piper fallback; optional 1-3 short Three.js historical scenes; approval required",
   "history_policy": "Yalnız kaynaklanmış olgular; tartışmalı tarihlerde belirsizliği açıkça belirt.",
-  "production_version": "0.7",
+  "production_version": "0.8",
   "publishing_policy": "Manual owner approval mandatory; IG credentials missing",
   "video_duration_seconds": {
     "min": 60,
@@ -57,5 +57,24 @@
   },
   "speech_audit_enabled": false,
   "scene_audit_enabled": false,
-  "instagram_insights_enabled": false
+  "instagram_insights_enabled": false,
+  "editorial_intelligence": {
+    "enabled": true,
+    "weekly_recommendations": true,
+    "free_llm_enabled": false,
+    "free_llm_route": "openrouter/free",
+    "llm_opt_in_environment": "ENABLE_FREE_LLM",
+    "twenty_role_llm_opt_in_environment": "ENABLE_20_LLM_AGENTS",
+    "competitor_research": "public YouTube RSS titles; no views or private data",
+    "trend_research": "Google Trends public RSS (Türkiye)",
+    "performance_store": "data/performance.jsonl",
+    "human_approval_required": true,
+    "paid_api_fallback": false
+  },
+  "instagram_insights_adapter": {
+    "read_only": true,
+    "enabled_by_default": false,
+    "api_version": "v27.0",
+    "publishing_endpoint": false
+  }
 }

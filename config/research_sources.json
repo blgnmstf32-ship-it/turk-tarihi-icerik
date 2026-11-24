@@ -1,0 +1,9 @@
+{
+  "google_trends_rss": "https://trends.google.com/trending/rss?geo=TR",
+  "competitor_youtube_channels": [
+    {"name": "ÖOF Tarih", "channel_id": "UC17ByOPG0_BwCeK_LN3IlBA"},
+    {"name": "Türk Tarihi", "channel_id": "UCEM95TZ22rEnadaBhRGy4pA"}
+  ],
+  "research_timeout_seconds": 8,
+  "historical_data_file": "data/performance.jsonl"
+}

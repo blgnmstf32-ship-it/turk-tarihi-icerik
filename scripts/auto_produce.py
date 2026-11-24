@@ -20,6 +20,7 @@ from scripts.commons_media import fetch_visuals,write_attribution
 from scripts.voice_provider import select_provider
 from scripts.task_observer import record
 from scripts.three_scene import plan_3d_scenes, render_with_2d_fallback, save_plan
+from scripts.editorial_board import run_board
 
 
 def verified_facts_only(topic):
@@ -91,7 +92,7 @@ def update_3d_role_results(role_modules,status):
 def optional_free_ai_suggestion(topic,out):
     """Use exactly one free OpenRouter request if a key is supplied; no paid fallback."""
     key=os.getenv('OPENROUTER_API_KEY')
-    if not key:return {'status':'not_configured','api_calls':0}
+    if os.getenv('ENABLE_FREE_LLM')!='1' or not key:return {'status':'disabled_or_not_configured','api_calls':0,'actual_llm_used':False}
     import requests
     prompt=('Türk tarihi Instagram Reels için yalnız aşağıdaki OL GULARA dayanarak yaratıcı açılış ve ' 
             'en fazla 100 sözcüklük Türkçe konuşma metni öner. Tarih, isim, alıntı, rakam ekleme. ' 
@@ -124,7 +125,25 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
     segments=performance_script(topic)
     script='\n'.join(item['spoken'] for item in segments)
     (out/'NARRATION_TR.txt').write_text(script,encoding='utf-8')
-    ai_result=run_agents(topic,load_json(ROOT/'config'/'agents.json'),out) if os.getenv('ENABLE_20_LLM_AGENTS')=='1' else optional_free_ai_suggestion(topic,out)
+    # The coordinator researches and scores options every run. LLM use remains
+    # a separate, explicit free-model opt-in; no key alone triggers a request.
+    editorial_path=out/'editorial'/'EDITORIAL_DECISION_REPORT.json'
+    editorial_report=load_json(editorial_path) if editorial_path.exists() else run_board(out/'editorial')
+    ai_result=run_agents(topic,load_json(ROOT/'config'/'agents.json'),out) if os.getenv('ENABLE_20_LLM_AGENTS')=='1' else {
+        'enabled':False,'reason':'ENABLE_20_LLM_AGENTS is not explicitly set to 1','calls':0,
+        'separate_llm_roles_completed':0,'actual_llm_used':False}
+    llm_roles={row.get('role_id'):row for row in ai_result.get('roles',[])}
+    execution_rows=[]
+    for role in load_json(ROOT/'config'/'agents.json'):
+        row=llm_roles.get(role['id'])
+        execution_rows.append({'id':role['id'],'name':role['name'],'actual_llm_used':bool(row and row.get('status')=='suggestion_review_required'),
+            'execution':'free_llm_suggestion' if row and row.get('status')=='suggestion_review_required' else 'deterministic_automation',
+            'status':row.get('status') if row else 'no_llm_call'})
+    execution_report={'coordinator':'AI Genel Yayın Yönetmeni','coordinator_actual_llm_used':editorial_report.get('coordinator_llm',{}).get('actual_llm_used',False),
+        'original_20_llm_calls':ai_result.get('calls',0),'original_20_llm_successes':ai_result.get('separate_llm_roles_completed',0),
+        'paid_api_calls':0,'paid_fallback':False,'roles':execution_rows,
+        'note':'20 görev modülü gerçek LLM çağrısı değildir; yalnızca free_llm_enabled=true, OPENROUTER_API_KEY ve ENABLE_20_LLM_AGENTS=1 birlikte verilirse öneri amaçlı LLM çağrısı yapılır. 3D görevleri deterministiktir.'}
+    (out/'AI_AGENT_EXECUTION_REPORT.json').write_text(json.dumps(execution_report,ensure_ascii=False,indent=2),encoding='utf-8')
     scenes=out/'scenes';generate(topic,scenes)
     licensed_visuals=[]
     if not skip_narration:
@@ -146,7 +165,10 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
         'historical_facts_manual_verified':False,'instagram_published':False,
         'human_approval_required':True,'paid_api_services_enabled':False,'ai_editor':ai_result,
         'voice_generated':False,'video_generated':False,'subtitle_alignment':'estimated_sentence_timing',
-        'ready_for_instagram':False,'three_d':{**three_d_plan,'status':'planned_not_rendered' if three_d_plan.get('scenes') else 'not_applicable_2d_only'}}
+        'ready_for_instagram':False,'editorial_decision_report':'editorial/EDITORIAL_DECISION_REPORT.md',
+        'ai_agent_execution_report':'AI_AGENT_EXECUTION_REPORT.json',
+        'editorial_coordinator_llm':editorial_report['coordinator_llm'],
+        'three_d':{**three_d_plan,'status':'planned_not_rendered' if three_d_plan.get('scenes') else 'not_applicable_2d_only'}}
     if skip_narration:
         manifest['status']='awaiting_local_tts';(out/'AUTO_REPORT.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
         return manifest
