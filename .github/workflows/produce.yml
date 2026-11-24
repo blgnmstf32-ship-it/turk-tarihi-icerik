@@ -43,7 +43,7 @@ jobs:
       - name: Install FFmpeg and open source TTS
         run: |
           if ! command -v ffmpeg >/dev/null 2>&1; then
-            # FFmpeg is preinstalled on the ubuntu-24.04 runner
+            sudo apt-get update -qq
             sudo apt-get install -y -qq ffmpeg
           fi
           ffmpeg -version
