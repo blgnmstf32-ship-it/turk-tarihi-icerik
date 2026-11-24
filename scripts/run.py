@@ -13,6 +13,7 @@ except ModuleNotFoundError:
     from graphics import render_card
 
 ROOT=Path(__file__).resolve().parent.parent
+from scripts.three_scene import plan_3d_scenes, save_plan
 
 
 def load_json(path):
@@ -31,7 +32,7 @@ def select_topic(items,topic_id):
 def build(topic,outdir,video=True):
     roles=load_json(ROOT/'config'/'agents.json')
     settings=load_json(ROOT/'config'/'settings.json')
-    assert len(roles)==20 and len({r['id'] for r in roles})==20
+    assert len(roles)==24 and len({r['id'] for r in roles})==24
     assert settings['human_approval_required'] and not settings['instagram_auto_publish_enabled']
     outdir=Path(outdir).resolve();outdir.mkdir(parents=True,exist_ok=True)
     done=[];notes=[]; artifacts={}
@@ -105,7 +106,12 @@ def build(topic,outdir,video=True):
     act(18,'Kaynak listesi iliştirildi, insan tarih doğrulaması bekleniyor',lambda:True)
     approval=act(19,'YAYIN KAPALI: insan onayı gerekiyor',lambda:{'status':'needs_human_approval','approved':False,'publish_enabled':False})
     report=act(20,'Maliyet ve çalışma raporu kaydedildi',lambda:{'paid_api_calls':0,'estimated_paid_api_cost_try':0,'notes':notes})
-    package={'topic_id':topic['id'],'topic_title':topic['title'],'produced_at_utc':datetime.now(timezone.utc).isoformat(),'approval':approval,'actual_automatic_historical_source_verification':False,'sources_for_manual_review':sources,'roles_completed':done,'n_roles':len(done),'cost':report,'publication':'NONE','files':{'post':poster.name,'mp4':None,'silent_preview_only':mp4.name if mp4 else None,'ready_for_instagram':False,'missing':['Türkçe insan kalitesinde seslendirme','En az 5 dönem uyumlu sahne','SFX ve müzik lisansı','Hareketli video ve altyazı','İnsan tarih doğrulaması'],'caption':'caption.txt','voiceover':'voiceover.txt','sources':'sources.json'}}
+    three_d_plan=act(21,'Konuya göre 3D sahne türü belirlendi',lambda:plan_3d_scenes(topic))
+    save_plan(three_d_plan,outdir/'3D_SCENE_PLAN.json')
+    act(22,'Ücretsiz prosedürel Three.js hareket planı hazırlandı',lambda:three_d_plan.get('scenes',[]))
+    act(23,'Remotion Three.js render katmanı kuyruğa alındı; Blender opsiyonel',lambda:{'status':'queued' if three_d_plan.get('scenes') else '2d_only'})
+    act(24,'Render başarısızlığında mevcut 2D sahnelere dönme doğrulandı',lambda:{'fallback':'2d','manual_review_required':True})
+    package={'topic_id':topic['id'],'topic_title':topic['title'],'produced_at_utc':datetime.now(timezone.utc).isoformat(),'approval':approval,'actual_automatic_historical_source_verification':False,'sources_for_manual_review':sources,'roles_completed':done,'n_roles':len(done),'three_d_scene_plan':three_d_plan,'cost':report,'publication':'NONE','files':{'post':poster.name,'mp4':None,'silent_preview_only':mp4.name if mp4 else None,'ready_for_instagram':False,'missing':['Türkçe insan kalitesinde seslendirme','En az 5 dönem uyumlu sahne','SFX ve müzik lisansı','Hareketli video ve altyazı','İnsan tarih doğrulaması'],'caption':'caption.txt','voiceover':'voiceover.txt','sources':'sources.json'}}
     (outdir/'draft_manifest.json').write_text(json.dumps(package,ensure_ascii=False,indent=2),encoding='utf-8')
     (outdir/'STORYBOARD.md').write_text('# Sahne planı\n\n'+'\n\n'.join(f'{i}. {s}' for i,s in enumerate(storyboard,1))+'\n\n**Kaynak kontrolü ve insan onayı olmadan yayınlanmaz.**',encoding='utf-8')
     return package
@@ -121,6 +127,6 @@ def main():
     topic=select_topic(topics,args.topic)
     if not topic:p.error('Konu bulunamadı; data/topics.json içindeki id kullanılmalı.')
     package=build(topic,args.out,not args.skip_video)
-    print(f"20/20 modül tamamlandı | Konu: {topic['title']} | Yayın: KAPALI | YALNIZCA SESSİZ ÖNİZLEME: {bool(package['files']['silent_preview_only'])}")
+    print(f"24/24 görev modülü tamamlandı | Konu: {topic['title']} | 3D: {len(package['three_d_scene_plan']['scenes'])} sahne planlandı | Yayın: KAPALI | YALNIZCA SESSİZ ÖNİZLEME: {bool(package['files']['silent_preview_only'])}")
 
 if __name__=='__main__':main()

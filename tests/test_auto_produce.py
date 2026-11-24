@@ -39,13 +39,15 @@ class AutomaticProductionTests(unittest.TestCase):
             text=f.read_text()
             self.assertIn('00:00:01,350',text)
             self.assertIn('00:00:01,800 --> 00:00:03,100',text)
-    def test_twenty_roles_ten_scenes_zero_pays_zero_publishes(self):
+    def test_twenty_four_roles_ten_scenes_and_malazgirt_3d_plan(self):
         with tempfile.TemporaryDirectory() as d:
             result=production(self.topic,Path(d)/'draft',Path(d)/'cache',skip_narration=True)
-            self.assertEqual(result['roles'],20)
+            self.assertEqual(result['roles'],24)
             self.assertFalse(result['ready_for_instagram'])
             self.assertFalse(result['instagram_published'])
             self.assertFalse(result['paid_api_services_enabled'])
+            self.assertEqual(result['three_d']['scenes'][0]['kind'],'battle_map')
+            self.assertTrue((Path(d)/'draft'/'3D_SCENE_PLAN.json').exists())
             self.assertEqual(result['target_duration_seconds'],{'min':60,'max':75})
             paths=list((Path(d)/'draft'/'scenes').glob('*_scene.jpg'))
             self.assertEqual(len(paths),10)

@@ -19,6 +19,7 @@ from scripts.release_check import check
 from scripts.commons_media import fetch_visuals,write_attribution
 from scripts.voice_provider import select_provider
 from scripts.task_observer import record
+from scripts.three_scene import plan_3d_scenes, render_with_2d_fallback, save_plan
 
 
 def verified_facts_only(topic):
@@ -71,6 +72,22 @@ def audio_mix_command(rendered_video,narration,music,final):
         '-map','0:v:0','-map','[a]','-c:v','copy','-c:a','aac','-b:a','160k','-movflags','+faststart',str(final)]
 
 
+def update_3d_role_results(role_modules,status):
+    """Record actual 3D render and fallback outcomes for the two downstream roles."""
+    result=list(role_modules)
+    render_text={
+        'rendered':'Three.js sahneleri Remotion çıktısına eklendi',
+        'fallback_2d_after_3d_failure':'3D render başarısız; 2D fallback başarıyla seçildi',
+        'not_applicable_2d_only':'Bu konu için 3D gerekmedi; 2D akış kullanıldı',
+    }.get(status,'3D render henüz çalışmadı')
+    qc_text=('3D katmanı ve 2D fallback kontrol edildi; manuel tarih/görsel incelemesi gerekli'
+             if status=='rendered' else '2D fallback/konu sınıflandırması kontrol edildi; manuel tarih/görsel incelemesi gerekli')
+    for item in result:
+        if item.get('id')==23:item['result']=render_text
+        if item.get('id')==24:item['result']=qc_text
+    return result
+
+
 def optional_free_ai_suggestion(topic,out):
     """Use exactly one free OpenRouter request if a key is supplied; no paid fallback."""
     key=os.getenv('OPENROUTER_API_KEY')
@@ -102,6 +119,8 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
     # 20 actual functional roles perform their tasks in the existing trusted pipeline.
     provider=select_provider(settings,voice_provider_override)
     prev=build(topic,out,video=False)
+    three_d_plan=plan_3d_scenes(topic,70)
+    save_plan(three_d_plan,out/'3D_SCENE_PLAN.json')
     segments=performance_script(topic)
     script='\n'.join(item['spoken'] for item in segments)
     (out/'NARRATION_TR.txt').write_text(script,encoding='utf-8')
@@ -127,7 +146,7 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
         'historical_facts_manual_verified':False,'instagram_published':False,
         'human_approval_required':True,'paid_api_services_enabled':False,'ai_editor':ai_result,
         'voice_generated':False,'video_generated':False,'subtitle_alignment':'estimated_sentence_timing',
-        'ready_for_instagram':False}
+        'ready_for_instagram':False,'three_d':{**three_d_plan,'status':'planned_not_rendered' if three_d_plan.get('scenes') else 'not_applicable_2d_only'}}
     if skip_narration:
         manifest['status']='awaiting_local_tts';(out/'AUTO_REPORT.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
         return manifest
@@ -145,7 +164,11 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
     create_subtitles(cues,out/'subtitles.srt')
     create_bed(duration,out/'original_soundtrack.wav')
     rendered=out/'reel_with_voice.mp4'
-    render_reel(scenes,voice_path,out/'subtitles.srt',rendered)
+    _, three_d_result=render_with_2d_fallback(render_reel,scenes,voice_path,out/'subtitles.srt',rendered,
+                                               three_scenes=three_d_plan.get('scenes',[]))
+    three_d_render_status=three_d_result['status']
+    if three_d_result.get('error'):
+        (out/'THREE_D_RENDER_FAILURE.txt').write_text(three_d_result['error']+'\n2D fallback render succeeded.',encoding='utf-8')
     final=out/'REVIEW_REQUIRED_REEL.mp4'
     subprocess.run(audio_mix_command(rendered,voice_path,out/'original_soundtrack.wav',final),check=True,capture_output=True,text=True)
     technical=check(final,voice_path,out/'subtitles.srt',scenes)
@@ -164,6 +187,8 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
       'renderer':'Remotion scenes and animated captions; FFmpeg narration/music mux and H.264/AAC encoding',
       'fps':30,'resolution':'1080x1920','narration_style':'Turkish documentary direction; short phrases, planned pauses, varied pace, rising/falling emphasis; Piper fallback remains synthetic',
       'voice_source':voice_mode,'voice_provider':provider,'natural_voice_human_review_required':voice_mode!='human_recordings','optional_audits':optional_audits,
+      'three_d':{**three_d_plan,**three_d_result,'scene_count_rendered':len(three_d_plan.get('scenes',[])) if three_d_render_status=='rendered' else 0},
+      'role_modules':update_3d_role_results(prev.get('roles_completed',[]),three_d_render_status),
       'target_duration_seconds':{'min':60,'max':75},
       'human_review_checklist':['Tarihî olguları birincil/akademik kaynakta doğrula',visual_review,
         'Türkçe sesin anlaşılır olup olmadığını dinle','Altyazı zamanını gözle kontrol et','Instagram yayın onayını ayrıca ver']})
@@ -178,7 +203,7 @@ def main():
     p.add_argument('--out',default='output/auto')
     p.add_argument('--model-cache',default='.cache/piper')
     p.add_argument('--voice-recordings',default='',help='Optional folder with one human-recorded phrase per file: 01.wav, 02.wav, ...')
-    p.add_argument('--skip-narration',action='store_true',help='Offline dry-run of 20 roles and ten illustrated visuals')
+    p.add_argument('--skip-narration',action='store_true',help='Offline dry-run of 24 task modules, ten illustrations and the 3D scene plan')
     p.add_argument('--voice-provider',default='',help='piper, google_chirp3_hd or azure_speech; paid cloud providers fail closed by default')
     a=p.parse_args()
     topics=load_json(ROOT/'data'/'topics.json');topic=select_topic(topics,a.topic)

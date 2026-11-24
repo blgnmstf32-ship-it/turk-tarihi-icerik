@@ -7,6 +7,7 @@ import {
   staticFile,
   useCurrentFrame,
 } from 'remotion';
+import {History3DScene, History3DKind} from './History3DScene';
 
 export const WIDTH = 1080;
 export const HEIGHT = 1920;
@@ -19,6 +20,7 @@ export type DocumentaryProps = {
   title?: string;
   scenes: {src: string; label?: string}[];
   captions: CaptionCue[];
+  threeScenes?: {kind: History3DKind; title: string; labels?: string[]; fromSec: number; durationSec: number}[];
 };
 
 const Scene: React.FC<{
@@ -65,7 +67,7 @@ const ActiveCaption: React.FC<{captions: CaptionCue[]}> = ({captions}) => {
   );
 };
 
-export const DocumentaryReel: React.FC<DocumentaryProps> = ({durationSec, title = 'TÜRK TARİHİ', scenes, captions}) => {
+export const DocumentaryReel: React.FC<DocumentaryProps> = ({durationSec, title = 'TÜRK TARİHİ', scenes, captions, threeScenes = []}) => {
   const totalFrames = Math.ceil(durationSec * FPS);
   const usable = scenes.length ? scenes : [{src: 'placeholder.svg'}];
   const step = totalFrames / usable.length;
@@ -76,6 +78,11 @@ export const DocumentaryReel: React.FC<DocumentaryProps> = ({durationSec, title 
         const to = Math.min(totalFrames, Math.ceil((i + 1) * step));
         return <Sequence key={`${i}-${scene.src}`} from={from} durationInFrames={Math.max(1, to - from)}><Scene src={scene.src} index={i} duration={to - from} /></Sequence>;
       })}
+      {threeScenes.map((scene, i) => (
+        <Sequence key={`three-${i}-${scene.kind}`} from={Math.round(scene.fromSec * FPS)} durationInFrames={Math.max(1, Math.round(scene.durationSec * FPS))}>
+          <History3DScene kind={scene.kind} title={scene.title} labels={scene.labels} />
+        </Sequence>
+      ))}
       <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(0,0,0,.34) 0%, transparent 26%, transparent 55%, rgba(0,0,0,.20) 72%, rgba(0,0,0,.76) 100%)', pointerEvents: 'none'}} />
       <div style={{position: 'absolute', top: 42, left: 35, padding: '9px 14px', borderRadius: 8, background: 'rgba(0,0,0,.38)', fontFamily: 'Arial, sans-serif', fontSize: 20, fontWeight: 700, letterSpacing: 2}}>{title}</div>
       <div style={{position: 'absolute', left: 0, right: 0, bottom: 250, display: 'flex', justifyContent: 'center'}}><ActiveCaption captions={captions} /></div>

@@ -118,5 +118,29 @@
     "name": "Performans Kaydedicisi",
     "stage": "review",
     "job": "Ses doğallığı, izleyici ritmi, görsel çeşitliliği ve maliyet için üretim raporu yazar"
+  },
+  {
+    "id": 21,
+    "name": "3D Sahne Planlayıcı",
+    "stage": "production",
+    "job": "Savaş konularını kuşbakışı harita; fetih/şehir konularını şehir uçuşu ve kuşatma sahnelerine eşler"
+  },
+  {
+    "id": 22,
+    "name": "3D Animasyon Ajanı",
+    "stage": "production",
+    "job": "Ücretsiz Three.js ile ordu hareketi, kamera uçuşu ve kuşatma düzenini prosedürel canlandırır"
+  },
+  {
+    "id": 23,
+    "name": "3D Render Ajanı",
+    "stage": "production",
+    "job": "Three.js sahnelerini Remotion üzerinden ana dikey video renderına ekler; Blender yalnız isteğe bağlıdır"
+  },
+  {
+    "id": 24,
+    "name": "3D Kalite Kontrol Ajanı",
+    "stage": "review",
+    "job": "3D sahne türü, süre ve ana videoya eklenmesini kontrol eder; render hatasında 2D yedeği kullanır"
   }
 ]

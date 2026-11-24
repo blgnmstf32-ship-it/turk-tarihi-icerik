@@ -1,6 +1,7 @@
 [
   {
     "id": "malazgirt-1071",
+    "visual_mode": "battle_map",
     "title": "MALAZGİRT",
     "date": "26 AĞUSTOS 1071",
     "era": "BÜYÜK SELÇUKLU",
@@ -38,6 +39,7 @@
   },
   {
     "id": "istanbul-1453",
+    "visual_mode": "siege_city",
     "title": "İSTANBUL'UN FETHİ",
     "date": "29 MAYIS 1453",
     "era": "OSMANLI",

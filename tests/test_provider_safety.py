@@ -47,7 +47,11 @@ class ProviderSafetyTests(unittest.TestCase):
         self.assertFalse(settings['instagram_auto_publish_enabled'])
         self.assertEqual(settings['monthly_spend_limit_try'],0)
         self.assertEqual(settings['video_resolution'],'1080x1920')
-    def test_twenty_existing_roles_preserved(self):
+    def test_twenty_existing_roles_preserved_and_3d_roles_added(self):
         roles=json.loads(Path('config/agents.json').read_text())
-        self.assertEqual(len(roles),20)
-        self.assertEqual([x['id'] for x in roles],list(range(1,21)))
+        self.assertEqual(len(roles),24)
+        self.assertEqual([x['id'] for x in roles],list(range(1,25)))
+        self.assertEqual([x['name'] for x in roles[-4:]],['3D Sahne Planlayıcı','3D Animasyon Ajanı','3D Render Ajanı','3D Kalite Kontrol Ajanı'])
+        settings=json.loads(Path('config/settings.json').read_text())
+        self.assertFalse(settings['three_d_generation']['paid_ai_generation_enabled'])
+        self.assertTrue(settings['three_d_generation']['render_failure_fallback']=='2d')

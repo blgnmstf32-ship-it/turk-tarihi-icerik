@@ -69,7 +69,7 @@ jobs:
           from faster_whisper import WhisperModel
           WhisperModel('tiny', device='cpu', compute_type='int8')
           PY
-      - name: Validate 20 roles and safety gates
+      - name: Validate 24 task modules and safety gates
         run: python -m unittest discover -s tests -v
       - name: Produce Malazgirt narrated documentary video
         env:

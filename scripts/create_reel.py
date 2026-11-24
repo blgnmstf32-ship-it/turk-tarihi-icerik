@@ -49,7 +49,7 @@ def collect_scenes(folder):
     return images
 
 
-def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=1920,fps=30):
+def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=1920,fps=30,three_scenes=None):
     """Render cinematic scene motion and active-word captions with Remotion."""
     scenes=collect_scenes(scenes_dir)
     audio=Path(audio_path).resolve();srt=Path(srt_path).resolve();out=Path(output_path).resolve()
@@ -70,12 +70,19 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=192
     for src in scenes:
         shutil.copy2(src,public_dir/src.name)
         copied.append({'src':f'scenes/{out.stem}/{src.name}'})
-    props={'durationSec':length,'title':'TÜRK TARİHİ','scenes':copied,'captions':cues}
+    three_scenes=three_scenes or []
+    allowed={'battle_map','city_flyover','siege'}
+    for item in three_scenes:
+        if item.get('kind') not in allowed:raise ValueError('Geçersiz 3D sahne türü')
+        if item.get('from_sec',0)<0 or item.get('duration_sec',0)<=0:raise ValueError('3D sahne zamanlaması geçersiz')
+        if item.get('from_sec',0)+item.get('duration_sec',0)>length:raise ValueError('3D sahne seslendirme süresinin dışına taşıyor')
+    props={'durationSec':length,'title':'TÜRK TARİHİ','scenes':copied,'captions':cues,
+           'threeScenes':[{'kind':s['kind'],'title':s['title'],'labels':s.get('labels',[]),'fromSec':s['from_sec'],'durationSec':s['duration_sec']} for s in three_scenes]}
     with tempfile.TemporaryDirectory(prefix='turktarihi_remotion_') as td:
         props_path=Path(td)/'props.json'
         props_path.write_text(json.dumps(props,ensure_ascii=False),encoding='utf-8')
         cmd=['npx','--no-install','remotion','render','remotion/index.tsx','DocumentaryReel',str(out),
-             '--props',str(props_path),'--codec=h264','--crf=22','--concurrency=2','--log=error',
+             '--props',str(props_path),'--codec=h264','--crf=22','--concurrency=2','--gl=angle','--log=error',
              '--license-key=free-license']
         try:
             env=os.environ.copy()
@@ -90,7 +97,8 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=192
     return {'path':str(out),'seconds':round(media_duration(out),2),'scenes':len(scenes),
             'renderer':'Remotion','fps':fps,'resolution':f'{width}x{height}',
             'contains_audio_track':False,'speech_verified':False,'animated_word_captions':True,'instagram_published':False,
-            'creative_review_required':True,'historical_review_required':True}
+            'creative_review_required':True,'historical_review_required':True,
+            'three_d_scenes':len(three_scenes),'three_d_renderer':'Three.js via Remotion' if three_scenes else None}
 
 
 def main():

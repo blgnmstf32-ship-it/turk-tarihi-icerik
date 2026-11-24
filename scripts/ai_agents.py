@@ -20,7 +20,9 @@ def run_agents(topic,agents,output,requester=None):
     request=requester or requests.post
     facts=json.dumps({'title':topic['title'],'date':topic['date'],'facts':topic['facts'],'context':topic['context'],'sources':topic['sources']},ensure_ascii=False)
     summaries=[];success=0
-    for role in agents:
+    # The four 3D roles are deterministic renderer tasks, not extra LLM calls.
+    llm_roles=[role for role in agents if role['id']<=20]
+    for role in llm_roles:
         prompt=(f'Role: {role["name"]}. Task: {role["job"]}. '+
                 'Produce only a brief DRAFT suggestion, no invented history, no new dates, quotes or counts. '
                 'Never state a source has been examined. No publishing. Data: '+facts)
@@ -36,8 +38,8 @@ def run_agents(topic,agents,output,requester=None):
         except Exception as ex:
             summaries.append({'role_id':role['id'],'role':role['name'],'status':'error','error':str(ex)[:150]})
         # Cost controlled and no retry or paid fallback. Don't hammer free providers.
-        if role['id']!=20:time.sleep(0.4)
-    result={'enabled':True,'requested_model':FREE_MODEL,'calls':len(agents),'separate_llm_roles_completed':success,
+        if role['id']!=llm_roles[-1]['id']:time.sleep(0.4)
+    result={'enabled':True,'requested_model':FREE_MODEL,'calls':len(llm_roles),'separate_llm_roles_completed':success,
             'verified_historical_sources':False,'human_review_required':True,
             'paid_fallback_allowed':False,'roles':summaries}
     (output/'AI_AGENTS_STATUS.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
