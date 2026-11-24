@@ -23,7 +23,7 @@ permissions:
   contents: read
 concurrency:
   group: turk-tarihi-content-drafts
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   create-narrated-review-draft:
     runs-on: ubuntu-24.04
