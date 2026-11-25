@@ -1,0 +1,44 @@
+{
+  "history": {
+    "label": "TARİHİN BİLİNMEYEN GERÇEKLERİ",
+    "title": [
+      "Piri Reis",
+      "ve kayıp kaynak"
+    ],
+    "subtitle": "ATLANTİK HARİTASI   /   1513",
+    "credit": "ARŞİV FOTOĞRAFI · YAIR HAKLAI / CC BY-SA 4.0",
+    "query": "Piri Reis 1513 portolan map",
+    "palette": {
+      "light": "#f6ead7",
+      "accent": "#edbc77",
+      "shadow": "#211815"
+    },
+    "animation": "gsap_atlas_pan",
+    "foley": [
+      "paper rustle",
+      "soft ocean wave"
+    ],
+    "seconds": 10.8
+  },
+  "beauty": {
+    "label": "GÜZELLİK VE KİŞİSEL BAKIM",
+    "title": [
+      "Nemlendirici",
+      "için doğru an"
+    ],
+    "subtitle": "KURU CİLT   /   DUŞ SONRASI",
+    "credit": "TEMSİLİ AI GÖRSELİ · NANO BANANA",
+    "query": "skin cream",
+    "palette": {
+      "light": "#ffeeec",
+      "accent": "#efadba",
+      "shadow": "#261521"
+    },
+    "animation": "lottie_moisture_pulse",
+    "foley": [
+      "water drop",
+      "soft cloth rustle"
+    ],
+    "seconds": 6.8
+  }
+}
