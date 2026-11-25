@@ -68,6 +68,17 @@ def _suggestion(content, source_count):
     return {"suggestion": text, "caveat": caveat, "source_numbers": list(dict.fromkeys(refs))}, None
 
 
+def _media_advice(content, source_count, allowed):
+    advice, error = _suggestion(content, source_count)
+    if error:
+        return None, error
+    value, _ = _parse(content)
+    tool = value.get("media_tool")
+    if tool is not None and (not isinstance(tool, str) or tool not in allowed):
+        return None, "invalid_media_tool"
+    return {**advice, "media_tool": tool}, None
+
+
 def _comparison(content, completed_ids):
     data, error = _parse(content)
     if error:
@@ -85,7 +96,8 @@ def _comparison(content, completed_ids):
 
 def run_agents(topic, agents, output, requester=None, settings=None, *, editorial=None,
                state_path=DEFAULT_STATE, quota_reader=None, sleep=None, brand="tarih", research=None,
-               gemini_session=None):
+               gemini_session=None, media_review=False):
+    media_review = media_review or os.getenv("ENABLE_MEDIA_TOOL_REVIEW") == "1"
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     if settings is None:
@@ -143,12 +155,22 @@ def run_agents(topic, agents, output, requester=None, settings=None, *, editoria
         for assignment in selected:
             role_id = assignment["role_id"]
             role = candidates[role_id]
+            specialist_input = {"topic": context, "assignment": assignment}
+            check = lambda content: _suggestion(content, len(sources))
+            if media_review:
+                from scripts.media_tools import options
+                allowed_tools = options(brand, role_id)
+                if allowed_tools:
+                    specialist_input["media_tool_options"] = allowed_tools
+                    specialist_input["media_tool_request"] = (
+                        "İhtiyaç varsa JSON içine media_tool alanında listelenen bir araç seç. "
+                        "Araç gerekmiyorsa alanı boş bırak. Dosya indirme, kod veya URL talimatı verme.")
+                    check = lambda content: _media_advice(content, len(sources), allowed_tools)
             outcome = session.evaluate(role["name"], policy +
                 f"Uzmanlık görevin: {role['job']}. Sadece verilen görev için somut öneri sun. "
                 'Şema: {"suggestion":"…","caveat":"…","source_numbers":[1]}. '
                 "Öneri doğrudan verilen kanıta dayanmıyorsa source_numbers boş olabilir.",
-                {"topic": context, "assignment": assignment},
-                lambda content: _suggestion(content, len(sources)), namespace=namespace, reserve_calls=1)
+                specialist_input, check, namespace=namespace, reserve_calls=1)
             rows[role_id] = {**outcome, "role_id": role_id, "assignment": assignment["brief"]}
             if outcome["status"] == "proposal":
                 completed.append({"role_id": role_id, "role": role["name"], **outcome["answer"]})
