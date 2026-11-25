@@ -1,0 +1,82 @@
+name: Editoryal · Eksik uzmanların tekil doğrulaması
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/specialist_validation_retry.yml]
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: turk-tarihi-content-drafts
+  cancel-in-progress: false
+jobs:
+  validate:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt
+      - name: Check dispatch, quota and renderer-independent safety
+        run: python -m unittest discover -s tests -q
+      - name: Restore the shared main-branch editorial responses and quota ledger
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .cache/editorial-llm.sqlite3
+            .cache/gemini-quota.sqlite3
+            .cache/gemini-voice
+          key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            editorial-llm-v1-
+      - name: Recover only the known first audit report
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45705288817
+          name: specialist-live-validation-1
+          path: output/previous-specialist-validation
+      - name: Verify report integrity before reuse
+        working-directory: output/previous-specialist-validation
+        run: |
+          sha256sum -c <<'SHA256'
+          230ea88e7c4376ae63e71250b2c59f429c0a64cc51cd4ea5f1c9284c66223208  MODEL_ACCESS.json
+          0c9e61e2da62717f92c3ab757817b8361c2884331645bcfc3533ba1f69a6b55c  SUMMARY.json
+          5b2e1ba7f7d4281b615da116e1e94af783ad43bf1dbf08bb265551f81517171d  bakim/AI_AGENTS_STATUS.json
+          2306885262d83c68ee684041eef12ac6ee37ba72401d42cf79a03aed3785ea24  bakim/ARASTIRMA.json
+          1cc0def316d1687bf7324659df751c9c9f71d9bde4cf36f3879d087fbf90ab60  bakim/UZMANLAR.json
+          05b2654c07b7f14319a7b398fc6680322435c90ea028147541df8105e1a45cde  tarih/AI_AGENTS_STATUS.json
+          c61b7ef84302136c121ca23bf8b6ccd5d3ef7eb7cc3f19f5a2399da5c82a0a53  tarih/ARASTIRMA.json
+          98c296212afc7f862d567419ea87fedccdc7b8bd620a4560b11817f52ea9eb64  tarih/UZMANLAR.json
+          SHA256
+      - name: Recover the three missing role decisions with Gemini only
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY != secrets.GEMINI_IMAGE_API_KEY && secrets.GEMINI_API_KEY || '' }}
+          ENABLE_GEMINI_EDITORIAL: "1"
+          GEMINI_FREE_TIER_CONFIRMED: "1"
+          ENABLE_20_LLM_AGENTS: "1"
+        run: |
+          python -m scripts.specialist_validation --out output/specialist-validation-retry --resume output/previous-specialist-validation
+      - name: Save the shared ledger even after partial results
+        if: ${{ always() && hashFiles('.cache/editorial-llm.sqlite3') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .cache/editorial-llm.sqlite3
+            .cache/gemini-quota.sqlite3
+            .cache/gemini-voice
+          key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Upload per-role evidence and separate brand reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: specialist-live-validation-retry-${{ github.run_number }}
+          path: output/specialist-validation-retry/**/*.json
+          if-no-files-found: error
+          retention-days: 14
