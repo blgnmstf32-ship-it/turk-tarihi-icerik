@@ -1,0 +1,10 @@
+{
+  "topic": "piri-reis-kayip-kaynak",
+  "model": "gemini-3.8-flash-tts",
+  "voice": "Charon",
+  "cloud_requests": 1,
+  "free_project_confirmed": true,
+  "duration_seconds": 67.6,
+  "audio_sha256": "3c1b6e038fa28d36289146d63dcf0e0b5c17b56a62beb4b444ba7e4144d0d83b",
+  "script_sha256": "169a62476f05eb536c82d9b67c9dd7dc8e4017d93324ca20e6a3dfcaee81f866"
+}

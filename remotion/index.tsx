@@ -9,7 +9,8 @@ const schema = z.object({
   title: z.string().optional(),
   scenes: z.array(z.object({src: z.string(), label: z.string().optional()})),
   captions: z.array(z.object({start: z.number(), end: z.number(), text: z.string()})),
-  threeScenes: z.array(z.object({kind: z.enum(['battle_map', 'city_flyover', 'siege', 'artifact_gears']), title: z.string(), labels: z.array(z.string()).optional(), fromSec: z.number(), durationSec: z.number()})).optional(),
+  edit: z.object({title: z.string(), topic: z.string(), hook: z.string()}).optional(),
+  threeScenes: z.array(z.object({kind: z.enum(['battle_map', 'city_flyover', 'siege', 'artifact_gears', 'atlantic_atlas']), title: z.string(), labels: z.array(z.string()).optional(), fromSec: z.number(), durationSec: z.number()})).optional(),
 });
 
 const Root: React.FC = () => (

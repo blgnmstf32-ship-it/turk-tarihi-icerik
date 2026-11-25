@@ -9,13 +9,12 @@
 - Remotion: yavaş sinematik yakınlaşma ve kaydırma, yumuşak sahne geçişi, hareketli Türkçe altyazı ve sırayla sözcük vurgusu.
 - FFmpeg: anlatım ve özgün/ücretsiz ambiyans miksajı, H.264/AAC MP4 sonlandırma.
 - Anlatım yönü: doğal ve merak uyandıran belgesel tonu; net telaffuz, dönüm noktalarında canlı ama ölçülü vurgu, tempoda çeşitlilik ve anlamlı duraklar.
-- İnsan ses kaydı varsa önceliklidir. Ücretsiz çevrimdışı Piper yedek sesidir ve sentetiktir; tek başına gerçek insan anlatımı doğallığı sağlamaz.
-- Google Chirp 3 HD ve Azure Speech seçilebilir, fakat iki bulut sağlayıcı da varsayılan olarak kapalıdır. Ücretli yedek geçişi yoktur; maliyet sınırı sıfırdır.
+- Tek anlatıcı Gemini Charon. Yeni kayıt yalnız faturalandırmasız Free Tier onayıyla alınır.
+- Müziği ve temsili ortam dokularını proje kendi sentezler. FFmpeg, Charon konuşurken fonu otomatik kısar.
 - faster-whisper ile yerel altyazı kontrolü ve PySceneDetect ile sahne kontrolü isteğe bağlı `requirements-*-audit.txt` dosyalarında bulunur; indirilen modeller/ağ kullanımı varsayılan olarak kapalıdır.
 - Wikimedia lisans/atıfları `MEDIA_ATTRIBUTION.md` dosyasına yazılır. Görsel yetersizse açık etiketli temsili canlandırma kullanılır; gerçek fotoğraf diye gösterilmez.
 - Hata ve kullanıcı geri bildirimi `output/observer/*.jsonl` içine yerel kaydedilir; anahtarlar gizlenir.
 - Instagram Insights için salt okunur kapalı iskelettir. Otomatik yayın özelliği açılmaz.
-- İnsan anlatımı için programın ürettiği `VOICE_RECORDING_GUIDE.txt` dosyasındaki satırları ayrı dosyalara `01.wav`, `02.wav` … şeklinde kaydedip `--voice-recordings kayit-klasoru` seçeneğiyle verin. Böylece altyazılar her cümlenin gerçek ses süresine oturur.
 
 ## Maliyet ve yayın kapıları
 
@@ -35,8 +34,7 @@ Yerel kurulum:
 ```bash
 npm ci
 npm run typecheck
-python -m pip install -r requirements.txt 'piper-tts>=1.3,<2.0'
-python -m scripts.auto_produce --topic antikythera-disli --out output/auto --model-cache .cache/piper
+python -m pip install -r requirements.txt -r requirements-audio-audit.txt
 ```
 
 ## Ajan rolleri ve kalite standardı
@@ -82,7 +80,7 @@ ENABLE_FREE_LLM=1 python -m scripts.editorial_board --out output/editorial --req
 unset OPENROUTER_API_KEY
 ```
 
-### İsteğe bağlı Gemini Türkçe belgesel sesi
+### Gemini Charon Türkçe belgesel sesi
 
 Gemini 3.8 Flash TTS, Charon sesi ve Türkiye Türkçesi belgesel yönlendirmesiyle bütün senaryoyu tek seferde okur. Tempoyu, vurguyu ve durakları model belirler. Yerel faster-whisper altyazıyı gerçek konuşma zamanlarına eşler. Ses 60–75 saniye aralığına veya ilk üç saniye açılışına uymuyorsa üretim durur ve metin incelemesi gerekir.
 
@@ -91,7 +89,7 @@ Gemini 3.8 Flash TTS, Charon sesi ve Türkiye Türkçesi belgesel yönlendirmesi
 ```bash
 python -m pip install -r requirements.txt -r requirements-audio-audit.txt
 export HF_HOME="$PWD/.cache/huggingface"
-python -c "from faster_whisper import WhisperModel; WhisperModel('tiny', device='cpu', compute_type='int8')"
+python -c "from faster_whisper import WhisperModel; [WhisperModel(m, device='cpu', compute_type='int8') for m in ('tiny','small')]"
 read -rsp 'Free Tier Gemini API key: ' GEMINI_API_KEY
 export GEMINI_API_KEY
 python -m scripts.auto_produce --topic antikythera-disli --out output/gemini \
@@ -100,7 +98,7 @@ python -m scripts.verify_production --out output/gemini --topic antikythera-disl
 unset GEMINI_API_KEY
 ```
 
-API kota, erişim veya yanıt hatasında durur. GitHub Actions'ta Gemini denemek için faturalandırılmamış Free Tier proje anahtarını `GEMINI_API_KEY` secret'ı olarak ekleyip **Run workflow** ekranında `confirm_gemini_free_project` kutusunu seçin. Zamanlanmış üretim Piper kullanır. Ücretsiz katmana yalnız yayınlanabilir nitelikte, hassas bilgi içermeyen senaryo gönderin.
+Kota, erişim, yanıt veya hizalama hatası `VOICE_FAILURE.json` ile raporlanır ve üretim durur. Elle çalıştırmada faturalandırmasız anahtar için `confirm_gemini_free_project` seçin. Zamanlanmış canlı üretim için proje sahibi Free Tier durumunu kontrol ettikten sonra depo değişkeni `GEMINI_FREE_TIER_CONFIRMED=1` tanımlar. Anahtar ücretli projeye geçirilirse bu değişkeni kaldırın. Kod API anahtarından faturalandırma durumunu okuyamaz.
 
 ### GitHub yazma erişimi
 
@@ -116,15 +114,7 @@ git push origin HEAD:main
 Komutlar bu projenin güncel yerel kopyasında çalıştırılır. Uzak `main` ilerlemişse önce değişiklikleri birleştirin. Gönderimden sonra GitHub'daki commit kimliğini ve ilk Actions sonucunu kontrol edin. Instagram yayını için ayrı insan onayı gerekir.
 
 Dört editoryal görüş, uzmanlar ve yönetmen birlikte çalıştırma başına sekiz, UTC günü başına kırk üretim isteğiyle sınırlıdır. Başarısız istekler de sayılır. Geçici OpenRouter hatalarında bir değerlendirme en fazla üç kez denenir. OpenRouter kalan kotayı bildiriyorsa daha düşük sınır uygulanır. Uzun `Retry-After` değerinde yeni istekler durur. Başarılı yanıtlar aynı girdilerle tekrar kullanılabilir. GitHub Actions, başarısız değerlendirmelerden sonra da yanıtları ve istek sayacını saklar.
-## Piri Reis ses karşılaştırması
 
-Actions → **Piri Reis · Gemini Charon ve Piper** → **Run workflow**. AI Studio'da
-`GEMINI_API_KEY` anahtarının faturalandırma hesabı bağlanmamış Free Tier
-projesine ait olduğunu kontrol edin ve onay kutusunu işaretleyin. Canlı adım
-Charon için bir istek yapar. Kota, erişim ya da ses doğrulama hatasında durur.
+## Piri Reis sinematik yeniden üretim
 
-Bu deneme mevcut Piri Reis senaryosunu ve aynı sahneleri iki ayrı MP4'e işler.
-Her sürüm kendi konuşmasına zamanlanmış altyazı kullanır. İndirme paketindeki
-`SES_KARSILASTIRMA.json` son MP4'lerdeki Türkçe konuşma ve altyazı zamanlamasını,
-ölçülen durakları ve temiz anlatıcı sesindeki perde aralığını gösterir.
-Telaffuz ve anlatım doğallığı için videolar ayrıca dinlenmelidir. İki çıktı da inceleme taslağıdır.
+Actions → **Piri Reis · Sinematik Charon** → **Run workflow**. Üretim, `data/` altındaki onaylı WAV ve senaryonun SHA-256 özeti eşleşirse önceki Charon kaydını kullanır. Bu yolda Gemini ve OpenRouter istekleri sıfırdır. Dinamik Atlas sahnesi temsili coğrafya şeması olarak etiketlenir. `data/` altındaki kayıt GitHub Actions paketinin süresi dolsa da yeniden kullanılabilir. Yerel çalıştırmada başka bir klasördeki aynı onaylı WAV ve `GEMINI_RECEIPT.json` dosyalarını seçmek için `--approved-voice` kullanın.

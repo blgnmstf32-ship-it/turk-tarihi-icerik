@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   AbsoluteFill,
+  Easing,
   Img,
   Sequence,
   interpolate,
@@ -12,7 +13,6 @@ import {History3DScene, History3DKind} from './History3DScene';
 export const WIDTH = 1080;
 export const HEIGHT = 1920;
 export const FPS = 30;
-// Clear editorial cuts keep scene changes legible and machine-auditable.
 
 export type CaptionCue = {start: number; end: number; text: string};
 export type DocumentaryProps = {
@@ -20,6 +20,7 @@ export type DocumentaryProps = {
   title?: string;
   scenes: {src: string; label?: string}[];
   captions: CaptionCue[];
+  edit?: {title: string; topic: string; hook: string};
   threeScenes?: {kind: History3DKind; title: string; labels?: string[]; fromSec: number; durationSec: number}[];
 };
 
@@ -27,18 +28,26 @@ const Scene: React.FC<{
   src: string;
   index: number;
   duration: number;
-}> = ({src, index, duration}) => {
+  label?: string;
+  dissolve?: number;
+}> = ({src, index, duration, label, dissolve = 0}) => {
   const frame = useCurrentFrame();
   const local = frame;
-  const scale = interpolate(local, [0, Math.max(1, duration)], index % 2 ? [1.08, 1] : [1, 1.08], {extrapolateRight: 'clamp'});
-  const opacity = 1;
-  const drift = interpolate(local, [0, Math.max(1, duration)], index % 2 ? [1.2, -1.2] : [-1.2, 1.2], {extrapolateRight: 'clamp'});
+  const motion = {extrapolateRight: 'clamp' as const, easing: Easing.inOut(Easing.cubic)};
+  const scale = interpolate(local, [0, Math.max(1, duration)], index === 0 ? [1.32,1.13] :
+    index % 2 ? [1.18,1.05] : [1.03,1.17], motion);
+  const opacity = dissolve ? interpolate(local,[0,dissolve],[0,1],motion) : 1;
+  const drift = interpolate(local, [0, Math.max(1, duration)], index % 2 ? [2.4,-1.1] : [-2,1.6], motion);
+  const lift = interpolate(local,[0,Math.max(1,duration)],index % 3 === 0 ? [1,-2] : [-1,1],motion);
   return (
     <AbsoluteFill style={{opacity, overflow: 'hidden', backgroundColor: '#090d12'}}>
       <Img
         src={staticFile(src)}
-        style={{width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${scale}) translateX(${drift}%)`, filter: 'saturate(0.9) contrast(1.06) brightness(0.78)'}}
+        style={{width:'100%',height:'100%',objectFit:'cover',transform:`scale(${scale}) translate(${drift}%,${lift}%)`,
+          filter:'saturate(0.84) contrast(1.09) brightness(0.93) sepia(.12)'}}
       />
+      {label && <div style={{position:'absolute',top:135,left:54,color:'#faf0d7',font:'700 22px Arial',
+        letterSpacing:3,background:'#102020',padding:'10px 14px'}}>{label}</div>}
     </AbsoluteFill>
   );
 };
@@ -49,25 +58,23 @@ const ActiveCaption: React.FC<{captions: CaptionCue[]}> = ({captions}) => {
   const cue = captions.find((item) => second >= item.start && second < item.end);
   if (!cue) return null;
   const words = cue.text.trim().split(/\s+/).filter(Boolean);
-  const progress = Math.max(0, Math.min(0.999, (second - cue.start) / Math.max(0.05, cue.end - cue.start)));
-  const weight = words.map((word) => Math.max(2, word.replace(/[^\p{L}\p{N}]/gu, '').length));
-  const total = weight.reduce((sum, value) => sum + value, 0);
-  let elapsed = 0;
-  const active = weight.findIndex((value) => {
-    const before = elapsed;
-    elapsed += value;
-    return progress * total >= before && progress * total < elapsed;
-  });
+  const emphasis = /^(atlas|okyanus|piri|reis|gelibolu|kolomb|kayıp|kayna|harita|tutulma|antik|zafer|kaynak|oyun)/u;
+  const accent = words.map(word => emphasis.test(word.toLocaleLowerCase('tr-TR').replace(/^[^\p{L}]+/u,'')));
+  const enter = interpolate(second-cue.start,[0,.11],[7,0],{extrapolateRight:'clamp'});
   return (
-    <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.18em 0.28em', maxWidth: '92%', padding: '18px 24px', borderRadius: 18, background: 'rgba(5,8,12,0.76)', color: '#fff', fontFamily: 'Arial, sans-serif', fontWeight: 900, fontSize: 66, lineHeight: 1.12, textAlign: 'center', textShadow: '0 3px 12px rgba(0,0,0,.9)', boxShadow: '0 8px 30px rgba(0,0,0,.2)'}}>
+    <div style={{display:'flex',flexWrap:'wrap',justifyContent:'center',gap:'0.07em 0.25em',maxWidth:'85%',
+      padding:'16px 29px',borderRadius:12,background:'rgba(5,12,14,.88)',borderBottom:'3px solid #b69360',
+      color:'#fffdf3',fontFamily:'Arial, sans-serif',fontWeight:750,fontSize:words.length>10?47:59,
+      lineHeight:1.13,textAlign:'center',transform:`translateY(${enter}px)`,textShadow:'0 2px 8px #030609'}}>
       {words.map((word, i) => (
-        <span key={`${i}-${word}`} style={{color: i === active ? '#ffd47d' : '#fff', transform: i === active ? 'scale(1.06)' : 'scale(1)', transition: 'color 120ms linear, transform 120ms ease', display: 'inline-block'}}>{word}</span>
+        <span key={`${i}-${word}`} style={{color:accent[i]?'#f3ca85':'#fffdf3',display:'inline-block'}}>{word}</span>
       ))}
     </div>
   );
 };
 
-export const DocumentaryReel: React.FC<DocumentaryProps> = ({durationSec, title = 'TARİHİN BİLİNMEYEN GERÇEKLERİ', scenes, captions, threeScenes = []}) => {
+export const DocumentaryReel: React.FC<DocumentaryProps> = ({durationSec, title = 'TARİHİN BİLİNMEYEN GERÇEKLERİ', scenes, captions, threeScenes = [], edit}) => {
+  const frame = useCurrentFrame();
   const totalFrames = Math.ceil(durationSec * FPS);
   const usable = scenes.length ? scenes : [{src: 'placeholder.svg'}];
   const step = totalFrames / usable.length;
@@ -75,18 +82,32 @@ export const DocumentaryReel: React.FC<DocumentaryProps> = ({durationSec, title 
     <AbsoluteFill style={{backgroundColor: '#080b10', color: 'white'}}>
       {usable.map((scene, i) => {
         const from = Math.floor(i * step);
-        const to = Math.min(totalFrames, Math.ceil((i + 1) * step));
-        return <Sequence key={`${i}-${scene.src}`} from={from} durationInFrames={Math.max(1, to - from)}><Scene src={scene.src} index={i} duration={to - from} /></Sequence>;
+        const to = Math.min(totalFrames, Math.floor((i + 1) * step)+14);
+        return <Sequence key={`${i}-${scene.src}`} from={from} durationInFrames={Math.max(1,to-from)}>
+          <Scene src={scene.src} label={scene.label} index={i} duration={to-from} dissolve={i?14:0} />
+        </Sequence>;
       })}
       {threeScenes.map((scene, i) => (
         <Sequence key={`three-${i}-${scene.kind}`} from={Math.round(scene.fromSec * FPS)} durationInFrames={Math.max(1, Math.round(scene.durationSec * FPS))}>
           <History3DScene kind={scene.kind} title={scene.title} labels={scene.labels} />
         </Sequence>
       ))}
-      <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(0,0,0,.34) 0%, transparent 26%, transparent 55%, rgba(0,0,0,.20) 72%, rgba(0,0,0,.76) 100%)', pointerEvents: 'none'}} />
-      <div style={{position: 'absolute', top: 42, left: 35, padding: '9px 14px', borderRadius: 8, background: 'rgba(0,0,0,.38)', fontFamily: 'Arial, sans-serif', fontSize: 20, fontWeight: 700, letterSpacing: 2}}>{title}</div>
-      <div style={{position: 'absolute', left: 0, right: 0, bottom: 250, display: 'flex', justifyContent: 'center'}}><ActiveCaption captions={captions} /></div>
-      <div style={{position: 'absolute', left: 34, right: 34, bottom: 64, height: 3, background: 'rgba(255,255,255,.25)'}}>
+      <AbsoluteFill style={{background:'linear-gradient(180deg,#081317b2 0%,transparent 23%,transparent 55%,#07111556 75%,#071115ec 100%)',pointerEvents:'none'}} />
+      <div style={{position:'absolute',top:72,left:54,borderLeft:'3px solid #c49a5d',paddingLeft:14,
+        color:'#fff4dc',font:'700 20px Arial',letterSpacing:3}}>{title}</div>
+      {edit && frame<81 && <div style={{position:'absolute',left:65,right:86,bottom:345,
+        opacity:interpolate(frame,[0,8,67,81],[.8,1,1,0],{extrapolateRight:'clamp'}),
+        textShadow:'0 3px 24px #061214,0 3px 55px #061214'}}>
+        <div style={{font:'700 29px Arial',letterSpacing:5,color:'#f4ca84',marginBottom:21}}>
+          {edit.topic==='piri-reis-kayip-kaynak'?'PİRİ REİS  /  1513':'TARİH BELGESELİ'}
+        </div>
+        <div style={{font:'bold 100px Georgia',lineHeight:1.03,color:'#fff4db'}}>
+          {edit.topic==='piri-reis-kayip-kaynak'?<>Bu haritanın<br/>kayıp bir kaynağı var.</>:edit.hook}
+        </div>
+      </div>}
+      {(!edit || frame>=81) && <div style={{position:'absolute',left:30,right:65,bottom:295,
+        display:'flex',justifyContent:'center'}}><ActiveCaption captions={captions} /></div>}
+      <div style={{position:'absolute',left:54,right:70,bottom:188,height:3,background:'rgba(255,255,255,.22)'}}>
         <Progress durationSec={durationSec} />
       </div>
     </AbsoluteFill>

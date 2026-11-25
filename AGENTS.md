@@ -28,15 +28,14 @@ Doğru, tarafsız, merak uyandırıcı, özlü. Kökenleri, dönemleri, devletle
 - Varsayılan taslak 60–75 saniye, 9:16, 1080×1920 ve 30 fps olmalı; Remotion sahne/altyazı hareketini, FFmpeg konuşma ve ses miksajını üretmeli.
 - En az 10 ayrı sahne ve her cümleyle ilgisi bulunan görsel gerekir. Mümkünse doğrulanmış açık lisanslı tarihî fotoğraf, eser, alan, harita veya arşiv görseli kullan; canlandırmaları gerçek arşiv görüntüsü gibi gösterme.
 - Altyazı konuşmaya zamanlanmalı ve kelime/ifade vurgusuyla hareket etmelidir. Anlatı Türkçe, coşkulu ama ölçülü belgesel tonunda olmalıdır.
-- Piper sentetiktir; insan anlatıcısı doğallığı sağladığını iddia etme. Üretilen ses düz veya robotik duyulursa teknik test geçse bile taslak yayın kalitesini geçmez.
+- Türkçe belgesel anlatıcısı yalnız Gemini Charon'dur. Telaffuz ve doğallık için insan incelemesi gerekir.
 - Gerçek kaynak doğrulaması yapılmadan savaş sayıları, komutan alıntıları ve kesin taktik iddiaları ekleme.
 - Ücretli video/ses modeli gerekiyorsa kullanıcı izni olmadan çağrı yapma.
 - `python -m scripts.release_check ...` teknik kontrolleri ve ardından insan görsel/ses kalitesi onayını gerektir.
 
 ## Varsayılan belgesel video biçimi
 - Varsayılan 1080×1920, 30 fps; 60–75 saniye ve 10–12 ayrı sahnedir.
-- Ücretli ses sağlayıcıları seçilebilir adaptörlerdir; varsayılan Piper, bulut ve faturalandırma kapalıdır. Kredi bittiğinde ücretli yedek sağlayıcıya geçiş yasaktır.
-- Google Chirp 3 HD/Azure için ayrıca `paid_services_enabled`, `cloud_voice_enabled`, ilgili sağlayıcı `enabled` değeri ve geçerli kimlik bilgisi gerekir. Üretim iş akışları bu ayarları otomatik açmaz.
+- Charon yeni kayıtları için faturalandırmasız Free Tier onayı gerekir. Kota veya hata durumunda üretimi durdur ve raporla.
 - Wikimedia Commons görsellerinde lisans adı, kaynak sayfası ve atıf korunur; 10 uygun fotoğraf bulunmazsa yerel temsili görseller kullanılır ve gerçek tarihî fotoğraf diye sunulmaz.
 - faster-whisper ve PySceneDetect isteğe bağlı, yerel QA kontrolleridir; varsayılan olarak kapalıdır ve model dosyalarını ağdan indirmez.
 - Yerel Task Observer JSONL dosyalarına gizli bilgileri ayıklayarak hata/geri bildirim yazar. Instagram Insights gelecekteki salt-okunur iskelettir; yayınlama uç noktası yoktur.
@@ -50,8 +49,7 @@ Doğru, tarafsız, merak uyandırıcı, özlü. Kökenleri, dönemleri, devletle
 - Kurgu Remotion ile 30 fps dikey kompozisyon, yavaş sinematik kamera hareketi, sahne geçişleri ve kelime/ifade vurgulu hareketli altyazı üretir; FFmpeg anlatım, müzik ve son H.264/AAC MP4 karışımını yapar.
 - En az 10 ayrı görsel sahne kullan. Öncelik, Wikimedia Commons üzerinden lisans/atıf verisi doğrulanmış kamu malı veya ticari kullanıma açık tarihî eser, arkeolojik alan, nesne, harita ve arşiv görüntüleridir. Dosya başına yazar, lisans ve kaynak sayfası `MEDIA_ATTRIBUTION.md` içine yazılır. Gerçek fotoğraf olmayan canlandırmaları görsel üzerinde **TEMSİLÎ CANLANDIRMA** olarak belirt; görseli arşiv fotoğrafı diye sunma.
 - Konuşma yönü: doğal Türkçe belgesel anlatıcısı; merak uyandıran sakin giriş, olgular net ve ölçülü, dönüm noktalarında canlı vurgu, kısa anlamlı duraklar. Bağırma, düz okuma ve habersiz ses efekti yapma.
-- Gerçek insan kaydı varsa onu tercih et. Ücretsiz çevrimdışı Piper yalnızca yedek TTS'dir; sentetik sesi doğal insan sesi diye tanımlama. Kullanıcı örneği `180010.mp4` ses kanalı içermediğinden bu örneğin ses tonuna dair talimat çıkarma; yalnız görsel kurgu yaklaşımını referans al.
-- Gerçek ses kaydı/Piper süresi 60–75 saniye değilse metni yeniden yaz; konuşmayı hızlandırıp/yavaşlatıp süreye zorla sığdırma.
+- Kullanıcının onayladığı Charon kaydını yalnız senaryo ve WAV doğrulaması eşleşince yeniden kullan. Konuşmayı hızlandırıp/yavaşlatarak süreye zorlama.
 - `scripts/instagram_publish.py` yalnızca açık insan onayı ve manuel çağrıyla çalıştırılabilir. GitHub `instagram-production` environment kurulu olmadan devreye almayın.
 - Ücretli API ve ücretli görsel/ses servislerini kullanıcı izni olmadan etkinleştirme. Wikimedia Commons sorguları ücretsiz ve anahtarsız medya aramasıdır; dış LLM anahtarı yoksa hiçbir LLM çağrısı yapma.
 - İnsan onayı, kaynak/lisans kontrolü ve ses/görüntü dinlemesi tamamlanmadan taslağı yayına hazır sayma. Instagram otomatik yayınını açma.
@@ -65,7 +63,7 @@ Doğru, tarafsız, merak uyandırıcı, özlü. Kökenleri, dönemleri, devletle
 - `scripts.editorial_board` haftalık karar raporunu üretir. Konu Avcısı, İçerik Stratejisti ve Tarih Doğruluk Denetçisi ayrı LLM istemleriyle birbirinin önerisini değerlendirir. AI Genel Yayın Yönetmeni gerekçeli karar ve karşı görüşü yazar. Yapılandırma yoksa rapor kurallı ön değerlendirmeyi açıkça etiketler.
 - Ücretsiz LLM için `ENABLE_FREE_LLM=1`, `OPENROUTER_API_KEY` ve `editorial_intelligence.free_llm_enabled` gerekir. Rota yalnızca sabit ücretsiz `:free` sürümleri ve `openrouter/free`. Ücretli yedek yoktur. `ENABLE_20_LLM_AGENTS=1` yerelde seçici uzman modunu açar. Yönetmen konu başına en fazla iki uzman görevlendirir ve görüşlerini karşılaştırır. Editoryal ve uzman çağrıları aynı kota sayacını ve önbelleği kullanır. Dört 3D görevi deterministik kalır.
 - Yeni fikirlerin kaynak ve anlatım incelemesini tamamla, sonra render kataloğuna ekle. Anadolu, Türk ve dünya tarihi arasında konu çeşitliliğini izle.
-- Rapor her fikir için görsel/animasyon, insan erkek Türkçe seslendirme (Piper yedek), kurgu, süre ve doğrudan servis maliyeti tahmini verir. 0 TL tahmini iş gücü ve donanımı kapsamaz.
+- Rapor her fikir için görsel, Charon seslendirmesi, kurgu, süre ve doğrudan servis maliyeti tahmini verir. 0 TL tahmini iş gücü ve donanımı kapsamaz.
 - Insights salt okunur ve isteğe bağlıdır. Tarih ve kategori bağlamını koruyarak veriyi `data/performance.jsonl` dosyasına kaydet. Ayrı Instagram yayın onayı ve ücretli hizmet onayı zorunludur.
 
 ## Canlı çağrı ve uçtan uca doğrulama

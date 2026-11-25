@@ -1,7 +1,7 @@
 """Zero-paid-API Turkish history Reels draft generator.
 
-Produces source-controlled claims, 5 original historical illustrations, offline
-Turkish Piper narration, estimated SRT, original music, and a narrated vertical MP4.
+Uses the source-bound script, Gemini Charon alone, aligned captions, and original
+sound design for a narrated vertical MP4.
 Output is for human approval ONLY. Nothing uploads to Instagram.
 """
 from __future__ import annotations
@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from scripts.run import ROOT, load_json, select_topic, build
 from scripts.illustrate import generate
-from scripts.speech import narrate_segments
+from scripts.gemini_tts import MODEL, VOICE, narrate
 from scripts.subtitles import create_timed as create_subtitles
 from scripts.audio_bed import create as create_bed
 from scripts.ai_agents import run_agents
@@ -74,7 +74,11 @@ def performance_script(topic):
 def audio_mix_command(rendered_video,narration,music,final):
     """Mux narration explicitly; Remotion renders visuals/captions without audio."""
     return ['ffmpeg','-v','error','-y','-i',str(rendered_video),'-i',str(narration),'-i',str(music),
-        '-filter_complex','[1:a]volume=1.0[voice];[2:a]volume=0.12[music];[voice][music]amix=inputs=2:duration=first:dropout_transition=0:normalize=0,alimiter=limit=0.98[a]',
+        '-filter_complex',
+        '[1:a]aformat=sample_rates=48000:channel_layouts=mono,asplit=2[voice][key];'
+        '[2:a]aformat=sample_rates=48000:channel_layouts=mono,volume=0.18[bed];'
+        '[bed][key]sidechaincompress=threshold=0.022:ratio=8:attack=14:release=430[duck];'
+        '[voice][duck]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.89:level=0:latency=1[a]',
         '-map','0:v:0','-map','[a]','-c:v','copy','-c:a','aac','-b:a','160k','-movflags','+faststart',str(final)]
 
 
@@ -94,29 +98,36 @@ def update_3d_role_results(role_modules,status):
     return result
 
 
-def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,voice_provider_override=None,
-               gemini_free_project=False, use_staged_experts=False):
+def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=None,voice_provider_override=None,
+               gemini_free_project=False, use_staged_experts=False, approved_voice=None):
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     settings=load_json(ROOT/'config'/'settings.json')
     record('production_started',{'topic':topic.get('id'),'out':str(out)})
     if settings.get('ai_paid_services_enabled',True) or settings.get('instagram_auto_publish_enabled',True) or not settings.get('human_approval_required',False):
         raise RuntimeError('Zero-cost mode and manual approval gate must remain enabled')
-    # 20 actual functional roles perform their tasks in the existing trusted pipeline.
-    if gemini_free_project and voice_provider_override != 'gemini_tts':
-        raise ValueError('--confirm-gemini-free-project yalnız --voice-provider gemini_tts ile geçerli.')
-    if voice_provider_override == 'gemini_tts':
-        if recordings_dir:
-            raise ValueError('Gemini seçimi insan ses kaydıyla birlikte kullanılamaz.')
-        from scripts.gemini_tts import free_project_key
-        free_project_key(gemini_free_project)
-        provider = 'gemini_tts'
-    else:
-        provider=select_provider(settings,voice_provider_override)
+    if recordings_dir or model_cache and not skip_narration:
+        raise ValueError('Yalnızca Gemini Charon anlatımı kullanılır.')
+    provider=select_provider(settings,voice_provider_override)
+    segments=performance_script(topic)
+    script='\n'.join(item['spoken'] for item in segments)
+    if approved_voice is None and topic['id']=='piri-reis-kayip-kaynak':
+        approved_voice=ROOT/'data'
+    voice_path=out/'narration.wav'
+    if not skip_narration:
+        try:
+            cues=narrate(segments,voice_path,gemini_free_project,approved_voice=approved_voice)
+            duration=media_duration(voice_path)
+            hook_seconds=round(cues[0]['end'],2)
+            if not 60<=duration<=75 or hook_seconds>3:
+                raise ValueError(f'Anlatım {duration:.2f} sn, açılış {hook_seconds:.2f} sn; süre koşulu sağlanmadı.')
+        except (RuntimeError, ValueError, OSError) as exc:
+            failure={'topic':topic['id'],'stage':'narration','status':'stopped','provider':provider,
+                     'voice':VOICE,'error':str(exc),'video_generated':False,'instagram_published':False}
+            (out/'VOICE_FAILURE.json').write_text(json.dumps(failure,ensure_ascii=False,indent=2),encoding='utf-8')
+            raise
     prev=build(topic,out,video=False)
     three_d_plan=plan_3d_scenes(topic,70)
     save_plan(three_d_plan,out/'3D_SCENE_PLAN.json')
-    segments=performance_script(topic)
-    script='\n'.join(item['spoken'] for item in segments)
     (out/'NARRATION_TR.txt').write_text(script,encoding='utf-8')
     # The coordinator researches and scores options every run. LLM use remains
     # a separate, explicit free-model opt-in; no key alone triggers a request.
@@ -191,33 +202,19 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
     if skip_narration:
         manifest['status']='awaiting_local_tts';(out/'AUTO_REPORT.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
         return manifest
-    voice_path=out/'narration.wav'
-    if recordings_dir:
-        voice_mode='human_recordings'
-    else:
-        voice_mode='free_offline_piper_synthetic' if provider=='piper' else provider
-    guide='İnsan seslendirmesi için her satırı ayrı kaydedin; 01.wav, 02.wav, ... adlarını kullanın.\n\n'
-    guide+='\n'.join(f"{i+1:02d}.wav — {item['spoken']}" for i,item in enumerate(segments))+'\n'
-    (out/'VOICE_RECORDING_GUIDE.txt').write_text(guide,encoding='utf-8')
-    if provider == 'gemini_tts':
-        from scripts.gemini_tts import MODEL, VOICE, narrate
-        cues = narrate(segments, voice_path, gemini_free_project)
-        manifest['voice_generation'] = {'model': MODEL, 'voice': VOICE, 'cloud_requests': 1,
-                                        'billing_guard': 'operator_confirms_unbilled_project',
-                                        'pace_and_pauses': 'model'}
-    else:
-        cues=narrate_segments(segments,voice_path,model_cache,recordings_dir,provider,settings)
-    duration=media_duration(voice_path)
-    hook_seconds=round(cues[0]['end'],2)
-    if (topic.get('narration') or provider == 'gemini_tts') and hook_seconds>3:
-        raise ValueError(f'Opening hook {hook_seconds}s exceeds 3s; shorten opening line')
+    voice_mode='approved_charon_recording' if approved_voice is not None else 'live_charon'
+    manifest['voice_generation'] = {'model':MODEL,'voice':VOICE,
+                                    'cloud_requests':0 if approved_voice is not None else 1,
+                                    'source':voice_mode,'pace_and_pauses':'model',
+                                    'billing_guard':'approved_take' if approved_voice is not None else 'operator_confirms_unbilled_project'}
     manifest['first_hook_seconds']=hook_seconds
-    if not 60<=duration<=75:raise ValueError(f'Voice length {duration:.1f}s outside 60-75s; expand/rewrite narration, never time-stretch')
     create_subtitles(cues,out/'subtitles.srt')
-    create_bed(duration,out/'original_soundtrack.wav')
+    create_bed(duration,out/'original_soundtrack.wav', maritime=topic['id']=='piri-reis-kayip-kaynak')
     rendered=out/'reel_with_voice.mp4'
     _, three_d_result=render_with_2d_fallback(render_reel,scenes,voice_path,out/'subtitles.srt',rendered,
-                                               three_scenes=three_d_plan.get('scenes',[]))
+                                               three_scenes=three_d_plan.get('scenes',[]),
+                                               edit={'title':topic['title'],'topic':topic['id'],
+                                                     'hook':segments[0]['caption']})
     three_d_render_status=three_d_result['status']
     if three_d_result.get('error'):
         (out/'THREE_D_RENDER_FAILURE.txt').write_text(three_d_result['error']+'\n2D fallback render succeeded.',encoding='utf-8')
@@ -235,11 +232,10 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
                    else 'Temsilî çizimleri tarih bağlamı ve etiketleri açısından incele; fotoğraf diye sunma')
     manifest.update({'status':'technical_draft_complete_review_required','video_generated':True,'voice_generated':True,
       'video_file':final.name,'seconds':round(duration,2),'technical_review':technical,'ready_for_instagram':False,
-      'visual_scene_count':len(list(scenes.glob('*.jpg'))),'subtitle_alignment':'local_asr_word_alignment' if provider=='gemini_tts' else 'actual_phrase_audio_timing',
+      'visual_scene_count':len(list(scenes.glob('*.jpg'))),'subtitle_alignment':'local_asr_compact_cues',
       'renderer':'Remotion scenes and animated captions; FFmpeg narration/music mux and H.264/AAC encoding',
-      'fps':30,'resolution':'1080x1920','narration_style':('Turkish documentary; Gemini chooses pace and pauses in one take' if provider=='gemini_tts'
-                         else 'Turkish documentary direction; short phrases, planned pauses, varied emphasis'),
-      'voice_source':voice_mode,'voice_provider':provider,'natural_voice_human_review_required':voice_mode!='human_recordings','optional_audits':optional_audits,
+      'fps':30,'resolution':'1080x1920','narration_style':'Turkish documentary Charon',
+      'voice_source':voice_mode,'voice_provider':provider,'natural_voice_human_review_required':True,'optional_audits':optional_audits,
       'three_d':{**three_d_plan,**three_d_result,'scene_count_rendered':len(three_d_plan.get('scenes',[])) if three_d_render_status=='rendered' else 0},
       'role_modules':update_3d_role_results(prev.get('roles_completed',[]),three_d_render_status),
       'target_duration_seconds':{'min':60,'max':75},
@@ -255,10 +251,9 @@ def main():
     p=argparse.ArgumentParser()
     p.add_argument('--topic',default='')
     p.add_argument('--out',default='output/auto')
-    p.add_argument('--model-cache',default='.cache/piper')
-    p.add_argument('--voice-recordings',default='',help='Optional folder with one human-recorded phrase per file: 01.wav, 02.wav, ...')
+    p.add_argument('--approved-voice',type=Path,help='Onaylı Charon WAV dosyası ve üretim kaydının bulunduğu klasör')
     p.add_argument('--skip-narration',action='store_true',help='Offline dry-run of 24 task modules, ten illustrations and the 3D scene plan')
-    p.add_argument('--voice-provider',default='',help='piper, gemini_tts, google_chirp3_hd or azure_speech')
+    p.add_argument('--voice-provider',choices=['gemini_tts'],default='gemini_tts')
     p.add_argument('--confirm-gemini-free-project', action='store_true',
                    help='Confirm this Gemini API key belongs to an AI Studio project without billing')
     p.add_argument('--use-staged-experts', action='store_true', help='Read the report produced by scripts.ai_agents')
@@ -269,8 +264,9 @@ def main():
     topic=select_topic(topics,a.topic,report)
     if topic is None:p.error('Unknown topic')
     try:
-        result=production(topic,a.out,a.model_cache,a.skip_narration,a.voice_recordings or None,
-                          a.voice_provider or None,a.confirm_gemini_free_project,a.use_staged_experts)
+        result=production(topic,a.out,skip_narration=a.skip_narration,voice_provider_override=a.voice_provider,
+                          gemini_free_project=a.confirm_gemini_free_project,use_staged_experts=a.use_staged_experts,
+                          approved_voice=a.approved_voice)
     except Exception as exc:
         record('production_failed',{'topic':topic.get('id'),'error':f'{type(exc).__name__}: {exc}'})
         raise
