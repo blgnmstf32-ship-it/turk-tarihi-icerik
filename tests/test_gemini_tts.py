@@ -1,5 +1,7 @@
 import base64
 import io
+import hashlib
+import json
 import tempfile
 import unittest
 import wave
@@ -29,6 +31,38 @@ def audio_response(raw):
 
 
 class GeminiNarrationTests(unittest.TestCase):
+    def test_approved_recording_is_bound_to_both_hashes_and_skips_api(self):
+        script = "Bir harita."
+        raw = gemini_wav()
+        sh = hashlib.sha256(script.encode()).hexdigest()
+        ah = hashlib.sha256(raw).hexdigest()
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(gemini_tts.APPROVED_AUDIO, {sh:ah}):
+            directory = Path(tmp)
+            (directory / "GEMINI_CHARON.wav").write_bytes(raw)
+            (directory / "GEMINI_RECEIPT.json").write_text(json.dumps({
+                "script_sha256":sh, "audio_sha256":ah, "model":gemini_tts.MODEL,
+                "voice":"Charon", "free_project_confirmed":True}))
+            with patch("scripts.gemini_tts.request_audio") as api, \
+                 patch("scripts.speech_audit.load_local_model"), \
+                 patch("scripts.speech_audit.transcribe_local",return_value={"words":[
+                   {"text":"Bir","start":0.2,"end":0.4},{"text":"harita","start":0.4,"end":0.9}]}):
+                output=directory / "narration.wav"
+                gemini_tts.narrate([{"spoken":script,"caption":script}],output,False,approved_voice=directory)
+                self.assertEqual(output.read_bytes(),raw)
+                api.assert_not_called()
+            with self.assertRaisesRegex(ValueError,"eşleşmedi"):
+                gemini_tts.approved_recording(directory, "Başka metin.")
+            (directory / "GEMINI_CHARON.wav").write_bytes(raw + b"tamper")
+            with self.assertRaisesRegex(ValueError,"eşleşmedi"):
+                gemini_tts.approved_recording(directory,script)
+
+    def test_compact_captions_split_at_recognized_words(self):
+        tokens = "Bir haritanın ardında hâlâ saklanan bir hikâye var".split()
+        phrase = " ".join(tokens)
+        words = [{"text":token,"start":i/2,"end":i/2+.3} for i,token in enumerate(tokens)]
+        cues = gemini_tts.align_captions([{"spoken":phrase,"caption":phrase}],words,65,compact=True)
+        self.assertEqual([cue["text"] for cue in cues], ["Bir haritanın ardında hâlâ saklanan","bir hikâye var"])
+        self.assertEqual(cues[1]["start"], words[5]["start"])
     def test_plain_provider_configuration_cannot_start_gemini(self):
         with patch.dict("os.environ", {"TURK_TARIHI_VOICE_PROVIDER": "gemini_tts"}, clear=True):
             with self.assertRaisesRegex(RuntimeError, "açık"):

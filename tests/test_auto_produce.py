@@ -18,9 +18,9 @@ class AutomaticProductionTests(unittest.TestCase):
         self.assertEqual(command[command.index('-i')+1],'visuals.mp4')
         self.assertEqual(command[command.index('-i',command.index('-i')+1)+1],'narration.wav')
         graph=command[command.index('-filter_complex')+1]
-        self.assertIn('[1:a]volume=1.0[voice]',graph)
-        self.assertIn('[2:a]volume=0.12[music]',graph)
-        self.assertIn('[voice][music]amix=',graph)
+        self.assertIn('[voice][key]',graph)
+        self.assertIn('[bed][key]sidechaincompress=',graph)
+        self.assertIn('[voice][duck]amix=',graph)
     def test_subtitle_estimated_times(self):
         with tempfile.TemporaryDirectory() as d:
             f=create('İlk cümle. İkinci cümle.',26,Path(d)/'v.srt')

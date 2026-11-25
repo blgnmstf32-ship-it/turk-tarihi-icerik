@@ -7,14 +7,17 @@ from scripts.instagram_insights import get_insights
 
 class ProviderSafetyTests(unittest.TestCase):
     def settings(self):
-        return {'billing_enabled':False,'paid_services_enabled':False,'cloud_voice_enabled':False,'voice_provider':'piper',
+        return {'billing_enabled':False,'paid_services_enabled':False,'cloud_voice_enabled':False,'voice_provider':'gemini_tts',
                 'cloud_voice':{'google_chirp3_hd':{'enabled':False},'azure_speech':{'enabled':False}},
                 'ai_image_provider':{'enabled':False}}
     def test_cloud_voice_fails_closed_without_paid_fallback(self):
         with self.assertRaisesRegex(RuntimeError,'otomatik geçiş yok'):
             select_provider(self.settings(),'google_chirp3_hd')
-    def test_piper_is_default_free_provider(self):
-        self.assertEqual(select_provider(self.settings()),'piper')
+    def test_charon_is_the_only_provider(self):
+        self.assertEqual(select_provider(self.settings()),'gemini_tts')
+        for provider in ("piper","azure_speech","google_chirp3_hd","human_recording"):
+            with self.subTest(provider=provider),self.assertRaises(RuntimeError):
+                select_provider(self.settings(),provider)
     def test_image_adapter_is_disabled(self):
         self.assertEqual(generate('historical image','unused.png',self.settings())['status'],'disabled')
     def test_observer_redacts_secret_fields(self):

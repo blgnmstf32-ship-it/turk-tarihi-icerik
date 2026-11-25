@@ -17,6 +17,8 @@ class VoiceComparisonTests(unittest.TestCase):
         self.assertNotIn("OPENROUTER", workflow)
         self.assertNotIn("editorial_board", workflow)
         self.assertNotIn("instagram_publish", workflow)
+        self.assertIn("approved_piri: true", workflow)
+        self.assertNotIn("Piper", workflow)
 
     def test_real_take_receipt_is_required_and_tied_to_audio_and_script(self):
         with TemporaryDirectory() as work:
