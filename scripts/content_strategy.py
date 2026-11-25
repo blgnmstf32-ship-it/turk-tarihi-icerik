@@ -94,7 +94,7 @@ def score_ideas(research, outcomes):
             "success_rationale": rationale, "risks": [seed["evidence_boundary"]],
             "estimated_cost_try": 0, "estimated_cost_basis": "Dış servis/varlık ücreti; iş gücü ve donanım hariç",
             "estimated_production_minutes": seed["effort_minutes"],
-            "production_plan": {"visual": seed["visual"], "voice": "Türkçe erkek anlatıcı kaydı öncelikli, yerel Piper yedek",
+            "production_plan": {"visual": seed["visual"], "voice": "Gemini Charon ile Türkçe belgesel anlatımı",
                                 "edit": "60–75 s dikey Reels; ilk 3 s açılış; Remotion, FFmpeg ve hareketli altyazı"}})
     return sorted(candidates, key=lambda row: (-row["potential_index"], row["id"]))
 
