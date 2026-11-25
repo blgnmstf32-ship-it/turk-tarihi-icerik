@@ -10,7 +10,10 @@ from scripts.run import select_topic
 from scripts.instagram_insights import fetch_read_only_insights
 
 class Response:
-    def __init__(self,content=None,data=None): self.content=content;self.data=data
+    def __init__(self,content=None,data=None):
+        self.content=content;self.data=data
+        self.status_code=200
+        self.headers={}
     def raise_for_status(self): pass
     def json(self): return self.data
 
@@ -69,6 +72,7 @@ class EditorialIntelligenceTests(unittest.TestCase):
             self.assertEqual(len(report['recommendations']),10)
             self.assertEqual(len(report['strategy']['categories_compared']),6)
             self.assertTrue((Path(d)/'EDITORIAL_DECISION_REPORT.md').exists())
+            self.assertEqual(report['status'], 'preliminary_only')
             self.assertFalse(report['coordinator_llm']['actual_llm_used'])
             self.assertFalse(report['instagram_publish_enabled'])
 
@@ -84,10 +88,11 @@ class EditorialIntelligenceTests(unittest.TestCase):
             self.assertFalse(kwargs['allow_redirects'])
             return Response(data={'model':'test/free','choices':[{'message':{'content':json.dumps({
                 'selected_idea_id':'example','rationale':'Kaynak var',
-                'research_queue':[{'source_url':'https://example.org/archive'}, {'source_url':'https://invented.example'}]
+                'research_queue':[{'title':'Arşiv','source_url':'https://example.org/archive'}, {'title':'Uydurma','source_url':'https://invented.example'}]
             })}}]})
-        with patch.dict('os.environ',{'ENABLE_FREE_LLM':'1','OPENROUTER_API_KEY':'mock'},clear=True):
-            result=review(settings, inputs, {}, post)
+        with tempfile.TemporaryDirectory() as tmp, patch.dict('os.environ',{'ENABLE_FREE_LLM':'1','OPENROUTER_API_KEY':'mock'},clear=True):
+            result=review(settings, inputs, {}, post, state_path=Path(tmp)/'state.db',
+                          quota_reader=lambda *_args, **_kwargs: Response(data={'data': {}}))
         self.assertTrue(result['actual_llm_used'])
         self.assertTrue(result['completed_discussion'])
         self.assertEqual(result['calls'],4)
@@ -101,8 +106,9 @@ class EditorialIntelligenceTests(unittest.TestCase):
     def test_editorial_review_stops_on_unexpected_cost(self):
         from unittest.mock import Mock
         mock = Mock(return_value=Response(data={'usage':{'cost':0.01}}))
-        with patch.dict('os.environ', {'ENABLE_FREE_LLM':'1','OPENROUTER_API_KEY':'test-key'}, clear=True):
-            result = review({'editorial_intelligence':{'free_llm_enabled':True}}, [{'id':'a'}], {}, mock)
+        with tempfile.TemporaryDirectory() as tmp, patch.dict('os.environ', {'ENABLE_FREE_LLM':'1','OPENROUTER_API_KEY':'test-key'}, clear=True):
+            result = review({'editorial_intelligence':{'free_llm_enabled':True}}, [{'id':'a'}], {}, mock,
+                            state_path=Path(tmp)/'state.db', quota_reader=lambda *_args, **_kwargs: Response(data={'data': {}}))
         self.assertEqual(result['calls'],1)
         self.assertFalse(result['completed_discussion'])
         self.assertFalse(result['paid_fallback'])

@@ -9,6 +9,7 @@ import subprocess
 from tempfile import TemporaryDirectory
 
 from scripts.auto_produce import performance_script
+from scripts.editorial_llm import discussion_completed
 from scripts.create_reel import collect_scenes, ffprobe, media_duration, subtitle_cues
 from scripts.run import ROOT, load_json, select_topic
 from scripts.speech_audit import compare_reference
@@ -21,7 +22,7 @@ def verify(out, explicit_topic=""):
     topic = select_topic(load_json(ROOT / "data/topics.json"), explicit_topic, board)
     research = board["research"]
     llm = board["coordinator_llm"]
-    llm_completed = llm.get("completed_discussion", False) and len(llm.get("stages", [])) == 4
+    llm_completed = discussion_completed(llm)
     stage = {}
 
     def assess(name, passed, **details):
@@ -35,7 +36,7 @@ def verify(out, explicit_topic=""):
     stage["ai_review"] = {"status": "passed" if llm_completed else "blocked" if llm.get("status") == "blocked" else "failed",
                          "calls": llm["calls"], "requirements_missing": llm.get("requirements_missing", []),
                          "completed_discussion": llm_completed,
-                         "role_statuses": [{k: item.get(k) for k in ("role", "status", "model", "http_status")}
+                         "role_statuses": [{k: item.get(k) for k in ("role", "status", "model", "http_status", "response_source", "error_type", "attempts")}
                                            for item in llm.get("stages", [])]}
     assess("topic_selection", bool(topic and topic["id"] == report["topic"]), rendered=report["topic"],
            expected=topic["id"] if topic else None,

@@ -23,7 +23,7 @@ permissions:
   contents: read
 concurrency:
   group: turk-tarihi-content-drafts
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   create-narrated-review-draft:
     runs-on: ubuntu-24.04
@@ -71,7 +71,16 @@ jobs:
           PY
       - name: Validate 24 task modules and safety gates
         run: python -m unittest discover -s tests -v
+      - name: Restore editorial responses and quota ledger
+        if: vars.ENABLE_FREE_LLM == '1'
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/editorial-llm.sqlite3
+          key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            editorial-llm-v1-
       - name: AI General Editor research and weekly strategy
+        id: editorial
         env:
           ENABLE_FREE_LLM: ${{ vars.ENABLE_FREE_LLM || '0' }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
@@ -80,6 +89,12 @@ jobs:
           flags=()
           if [[ "$ENABLE_FREE_LLM" == "1" ]]; then flags+=(--require-llm); fi
           python -m scripts.editorial_board --out output/auto/editorial "${flags[@]}"
+      - name: Save editorial responses even on a failed review
+        if: ${{ always() && vars.ENABLE_FREE_LLM == '1' && hashFiles('.cache/editorial-llm.sqlite3') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/editorial-llm.sqlite3
+          key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Produce selected narrated documentary video
         env:
           TOPIC_ID: ${{ inputs.topic || '' }}

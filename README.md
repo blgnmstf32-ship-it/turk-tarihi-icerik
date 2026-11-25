@@ -112,3 +112,5 @@ git push origin HEAD:main
 ```
 
 Komutlar bu projenin güncel yerel kopyasında çalıştırılır. Uzak `main` ilerlemişse önce değişiklikleri birleştirin. Gönderimden sonra GitHub'daki commit kimliğini ve ilk Actions sonucunu kontrol edin. Instagram yayını için ayrı insan onayı gerekir.
+
+Geçici OpenRouter hatalarında bir rol en fazla üç kez denenir. Çalıştırma başına sekiz, bu proje için UTC günü başına kırk üretim isteği sınırı vardır. OpenRouter kalan kotayı bildiriyorsa daha düşük sınır uygulanır. Uzun `Retry-After` değerinde iş akışı durur. Başarılı gerçek yanıtlar aynı girdilerle tekrar kullanılabilir. GitHub Actions, başarısız bir değerlendirmeden sonra da yanıtları ve istek sayacını saklar. Rapor önbellekten gelen rolleri ve yeni istekleri ayrı gösterir.

@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse, json
 from pathlib import Path
 from scripts.content_strategy import build_debate, load_learning, score_ideas, CATEGORY_LABELS, CONCEPT
-from scripts.editorial_llm import review
+from scripts.editorial_llm import discussion_completed, review
 from scripts.performance_learning import record_outcome
 from scripts.editorial_research import collect_public_research
 from scripts.instagram_insights import fetch_read_only_insights
@@ -33,6 +33,7 @@ def run_board(output, research_config=None, performance_path=None, research_fn=N
     candidates=score_ideas(research,outcomes)
     debate=build_debate(candidates,research,outcomes)
     llm=(llm_fn or _llm_review)(candidates,research)
+    llm_complete = discussion_completed(llm)
     category_comparison=[]
     for category, label in CATEGORY_LABELS.items():
         items=[c for c in candidates if c["category"]==category]
@@ -40,7 +41,7 @@ def run_board(output, research_config=None, performance_path=None, research_fn=N
             "mean_relative_index":round(sum(x["potential_index"] for x in items)/len(items),1) if items else None,
             "label":label,
             "sample_size":len([r for r in outcomes if r.get("category")==category])})
-    report={"coordinator":"AI Genel Yayın Yönetmeni","concept":CONCEPT,"status":"recommendations_ready",
+    report={"coordinator":"AI Genel Yayın Yönetmeni","concept":CONCEPT,"status":"recommendations_ready" if llm_complete else "preliminary_only",
         "research":research,"learning":{"source":"Instagram Insights read-only" if external_rows else str(performance_path),
            "records_used":len(outcomes),"new_insights_records_saved":new_records,
            "insights_status":insights.get("status"),"real_metrics_available":bool(outcomes),
@@ -86,13 +87,23 @@ def run_board(output, research_config=None, performance_path=None, research_fn=N
                 freshness = f" ({video['freshness']})" if video.get("freshness") else ""
                 lines.append(f"- Benzer [YouTube videosu]({video['url']}) • {metrics}{freshness}.")
     lines += ["", "## Ajan değerlendirmesi",
-        f"Gerçek LLM çalıştırması: {llm.get('calls', 0)} çağrı • {llm.get('status')}.",
+        f"OpenRouter: {llm.get('calls', 0)} yeni istek, {llm.get('cached_roles', 0)} onaylı kayıt • {llm.get('status')}.",
         "Yayın ve ücretli API kullanımı insan onayına bağlıdır."]
     if llm.get("requirements_missing"):
         lines.append("Eksik yapılandırma: " + ", ".join(llm["requirements_missing"]))
-    if not llm.get("completed_discussion"):
+    if not llm_complete:
         lines.append("Sıralama kurallı ön değerlendirmedir. Tamamlanmış LLM tartışması yok.")
     for stage in llm.get("stages", []):
+        model = stage.get("model") or "bilinmiyor"
+        http = stage.get("http_status") or "yok"
+        lines.append(f"- **{stage['role']}** • {stage['status']} • model: {model} • HTTP: {http}")
+        if stage.get("reason"):
+            lines.append(f"  Durma nedeni: {stage['reason']}.")
+        if stage.get("response_source") == "cache":
+            lines.append("  Aynı girdiye verilen önceki gerçek model yanıtı kullanıldı.")
+        for index, item in enumerate(stage.get("attempts", []), 1):
+            lines.append(f"  Deneme {index}: {item['status']}, HTTP {item.get('http_status') or 'yok'}, "
+                         f"model {item.get('model') or 'bilinmiyor'}.")
         if stage.get("status") == "proposal":
             answer = stage["answer"]
             lines.append(f"- **{stage['role']}** • {answer['rationale']}")
@@ -100,7 +111,7 @@ def run_board(output, research_config=None, performance_path=None, research_fn=N
                 lines.append(f"  Karşı görüş: {answer['counterargument']}")
             for lead in answer.get("research_queue", []):
                 lines.append(f"  Araştırma kuyruğu: {lead.get('title', 'Kaynak önerisi')} ({lead['source_url']})")
-    if llm.get("decision"):
+    if llm_complete and llm.get("decision"):
         lines.append(f"Önerilen hazır aday: {llm['decision'].get('selected_idea_id') or 'yok'}.")
     (out/"EDITORIAL_DECISION_REPORT.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
     return report
@@ -116,12 +127,7 @@ def main():
         "actual_llm_used":report["coordinator_llm"]["actual_llm_used"],"llm_calls":report["coordinator_llm"]["calls"],
         "report":str(Path(args.out)/"EDITORIAL_DECISION_REPORT.md")},ensure_ascii=False,indent=2))
 
-    discussion = report["coordinator_llm"]
-    if args.require_llm and not (
-        discussion.get("completed_discussion") and discussion.get("calls") == 4
-        and len(discussion.get("stages", [])) == 4
-        and all(stage.get("actual_llm_used") for stage in discussion["stages"])
-    ):
+    if args.require_llm and not discussion_completed(report["coordinator_llm"]):
         parser.exit(1, "Dört gerçek OpenRouter görüşü tamamlanamadı. Ayrıntılar karar raporunda.\n")
 
 

@@ -135,7 +135,7 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
     coordinator_called = any(stage['role']=='AI Genel Yayın Yönetmeni' and stage.get('actual_llm_used')
                              for stage in editorial_stages)
     execution_report={'coordinator':'AI Genel Yayın Yönetmeni','coordinator_actual_llm_used':coordinator_called,
-        'editorial_llm_stages':[{key:stage.get(key) for key in ('role','model','status','actual_llm_used')}
+        'editorial_llm_stages':[{key:stage.get(key) for key in ('role','model','status','actual_llm_used','http_status','response_source','error_type','attempts')}
                                 for stage in editorial_stages],
         'original_20_llm_calls':ai_result.get('calls',0),'original_20_llm_successes':ai_result.get('separate_llm_roles_completed',0),
         'paid_api_calls':0,'paid_fallback':False,'roles':execution_rows,
