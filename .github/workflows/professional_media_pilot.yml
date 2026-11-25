@@ -3,7 +3,11 @@ on:
   workflow_dispatch:
   push:
     branches: [professional-media-pilot]
-    paths: [.github/workflows/professional_media_pilot.yml]
+    paths:
+      - .github/workflows/professional_media_pilot.yml
+      - scripts/media_pilot.py
+      - scripts/media_tools.py
+      - media_pilot/**
 permissions:
   contents: read
   actions: read
