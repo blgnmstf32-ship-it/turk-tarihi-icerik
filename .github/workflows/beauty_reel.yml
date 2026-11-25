@@ -3,7 +3,13 @@ on:
   workflow_dispatch:
   push:
     branches: [beauty-reel-pilot]
-    paths: [.github/workflows/beauty_reel.yml]
+    paths:
+      - .github/workflows/beauty_reel.yml
+      - scripts/beauty_reel.py
+      - scripts/beauty_reel_design.py
+      - scripts/beauty_model.py
+      - data/beauty_reel_*
+      - remotion/BeautySkinScene.tsx
 permissions:
   actions: read
   contents: read
