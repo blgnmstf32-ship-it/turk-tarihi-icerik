@@ -60,11 +60,19 @@ class EditorialRecoveryTests(unittest.TestCase):
         self.assertEqual(result["stages"][1]["attempts"][0]["model"], MODEL)
         self.assertEqual(result["stages"][2]["attempts"][0]["status"], "empty_response")
         self.assertEqual([call.kwargs["json"]["model"] for call in post.call_args_list[:3]],
-                         list(FREE_ATTEMPT_MODELS))
+                         list(FREE_ATTEMPT_MODELS[:3]))
         self.assertTrue(all(call.kwargs["json"]["reasoning"] == {"effort": "none"}
-                            for call in post.call_args_list))
+                            for call in post.call_args_list[:3]))
         self.assertTrue(any(call.args[0] >= 4 for call in self.sleep.call_args_list))
         self.assertNotIn("test-secret-key", json.dumps(result))
+
+    def test_rate_limited_route_is_skipped_for_next_roles(self):
+        post = Mock(side_effect=[response(429), answer(), answer(), answer(), answer()])
+        result = self.run_review(post)
+        self.assertTrue(discussion_completed(result))
+        routes = [call.kwargs["json"]["model"] for call in post.call_args_list]
+        self.assertEqual(routes.count(FREE_ATTEMPT_MODELS[0]), 1)
+        self.assertEqual(routes[1:], [FREE_ATTEMPT_MODELS[1]] * 4)
 
     def test_http_200_with_upstream_rate_limit_reports_both_codes(self):
         limited = response(200, {"error": {"code": 429}}, {"Retry-After": "2"})
@@ -87,7 +95,7 @@ class EditorialRecoveryTests(unittest.TestCase):
         self.assertEqual(missing["http_status"], 404)
         self.assertEqual(empty["finish_reason"], "length")
         self.assertEqual(empty["reasoning_tokens"], empty["completion_tokens"])
-        self.assertEqual(success["requested_model"], "openrouter/free")
+        self.assertEqual(success["requested_model"], FREE_ATTEMPT_MODELS[2])
 
     def test_long_retry_after_stops_with_remaining_roles_unattempted(self):
         post = Mock(side_effect=[answer(), response(429, {"error": {"code": 429}}, {"Retry-After": "3600"})])

@@ -39,9 +39,14 @@ MAX_REQUESTS_PER_RUN = 8
 MAX_ATTEMPTS_PER_ROLE = 3
 MAX_WAIT_SECONDS = 15
 RETRYABLE_CODES = {408, 429, 500, 502, 503, 504}
-# Both pinned variants are advertised as free; the final attempt uses the free router.
-FREE_ATTEMPT_MODELS = ("google/gemma-4-31b-it:free", "google/gemma-4-26b-a4b-it:free", FREE_MODEL)
-CACHE_VERSION = "editorial-v2"
+FREE_ATTEMPT_MODELS = (
+    "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    "google/gemma-4-31b-it:free",
+    "google/gemma-4-26b-a4b-it:free",
+    FREE_MODEL,
+)
+RATE_LIMIT_COOLDOWN_SECONDS = 60
+CACHE_VERSION = "editorial-v3"
 DEFAULT_STATE = Path(__file__).resolve().parents[1] / ".cache/editorial-llm.sqlite3"
 SAFE_MODEL_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:/@+-]{0,179}\Z")
 API_KEY_PATTERN = re.compile(r"sk-or-v1-[A-Za-z0-9_-]+")
@@ -195,6 +200,22 @@ def _request_role(request, headers, payload, ids, urls, key):
     return {**attempt, "status": "proposal"}, answer, None
 
 
+def _candidate_prompt(candidate):
+    fields = ("id", "title", "category", "scope", "hook", "visual", "effort_minutes", "potential_reason",
+              "evidence_boundary", "sources", "potential_index")
+    excerpt = {name: candidate[name] for name in fields if name in candidate}
+    evidence = candidate.get("evidence", {})
+    if evidence:
+        excerpt["historical_samples"] = evidence.get("own_metric_samples", 0)
+        excerpt["trend_matches"] = evidence.get("trend_matches", [])[:2]
+        clip_fields = ("title", "url", "views", "likes", "comments", "shares")
+        excerpt["comparable_videos"] = [
+            {name: clip[name] for name in clip_fields if name in clip}
+            for clip in evidence.get("comparable_videos", [])[:2]
+        ]
+    return excerpt
+
+
 def _unattempted(role, reason):
     return {"role": role, "status": "not_attempted", "reason": reason, "model": None,
             "http_status": None, "actual_llm_used": False, "attempts": []}
@@ -228,8 +249,8 @@ def review(settings, candidates, research, requester=None, *, state_path=DEFAULT
 
     state = EditorialState(state_path)
     evidence = _redact({
-        "candidates": candidates, "trend_titles": research.get("trends", [])[:15],
-        "paper_leads": research.get("source_leads", []),
+        "candidates": [_candidate_prompt(candidate) for candidate in candidates],
+        "trend_titles": research.get("trends", [])[:10], "paper_leads": research.get("source_leads", [])[:12],
     }, key)
     run_id = run_id or os.getenv("GITHUB_RUN_ID")
     if run_id:
@@ -247,6 +268,8 @@ def review(settings, candidates, research, requester=None, *, state_path=DEFAULT
     remaining, quota_http = None, None
     quota_checked = False
     stopped = None
+    cooldown_until = {}
+    preferred = FREE_ATTEMPT_MODELS[0]
 
     for role, instruction in STAGES:
         if stopped:
@@ -274,7 +297,15 @@ def review(settings, candidates, research, requester=None, *, state_path=DEFAULT
                 remaining, quota_http = _remaining_quota(headers, reader)
                 quota_checked = True
             attempts = []
+            used_routes = set()
             for number in range(MAX_ATTEMPTS_PER_ROLE):
+                routes = dict.fromkeys((preferred, *FREE_ATTEMPT_MODELS))
+                now = time.monotonic()
+                route = next((model for model in routes if model not in used_routes
+                              and cooldown_until.get(model, 0) <= now), None)
+                if route is None:
+                    stopped = "free_routes_cooling_down_or_exhausted"
+                    break
                 if quota_http in {401, 403, 429}:
                     stopped = "quota_check_http_error"
                     break
@@ -284,10 +315,16 @@ def review(settings, candidates, research, requester=None, *, state_path=DEFAULT
                 calls += 1
                 if remaining is not None:
                     remaining -= 1
-                attempt_payload = {**payload, "model": FREE_ATTEMPT_MODELS[number]}
+                used_routes.add(route)
+                attempt_payload = {**payload, "model": route}
+                if route == FREE_MODEL:
+                    attempt_payload["reasoning"] = {"effort": "low", "exclude": True}
                 attempt, answer, wait = _request_role(request, headers, attempt_payload, ids, urls, key)
                 attempts.append(attempt)
+                if attempt["status"] == "rate_limited":
+                    cooldown_until[route] = time.monotonic() + max(RATE_LIMIT_COOLDOWN_SECONDS, wait or 0)
                 if answer is not None:
+                    preferred = attempt["model"] if attempt["model"] in FREE_ATTEMPT_MODELS else route
                     saved = {"status": "proposal", "model": attempt["model"], "http_status": attempt["http_status"],
                              "actual_llm_used": True, "answer": answer}
                     state.save(cache_key, saved)

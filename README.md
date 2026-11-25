@@ -69,7 +69,7 @@ Instagram Insights salt okunur ve varsayılan olarak kapalıdır. Yetkili bağla
 
 ### Dört gerçek model çağrısını doğrulama
 
-[OpenRouter Keys](https://openrouter.ai/settings/keys) üzerinden bir anahtar oluşturun. Depoda **Settings → Secrets and variables → Actions** altında `OPENROUTER_API_KEY` adlı secret ile `ENABLE_FREE_LLM` adlı `1` değerli değişkeni tanımlayın. Anahtar yalnızca haftalık rapor adımına verilir. İstek fiyatı sıfırla sınırlandırılır. Denemeler sırasıyla ücretsiz Gemma 4 31B, ücretsiz Gemma 4 26B ve `openrouter/free` üzerinden yapılır. Dört görüşten biri tamamlanmazsa etkinleştirilmiş iş akışı teşhis raporunu kaydeder ve başarısız olur.
+[OpenRouter Keys](https://openrouter.ai/settings/keys) üzerinden bir anahtar oluşturun. Depoda **Settings → Secrets and variables → Actions** altında `OPENROUTER_API_KEY` adlı secret ile `ENABLE_FREE_LLM` adlı `1` değerli değişkeni tanımlayın. Anahtar yalnızca haftalık rapor adımına verilir. İstek fiyatı sıfırla sınırlandırılır. Başlangıçta ücretsiz Nemotron 3 Nano Omni denenir. Yedek seçenekler ücretsiz Gemma 4 modelleri ve `openrouter/free` rotasıdır. 429 döndüren rota dinlendirilir ve bir rolün çalıştığı rota sonraki rol için tercih edilir. Dört görüşten biri tamamlanmazsa etkinleştirilmiş iş akışı teşhis raporunu kaydeder ve başarısız olur.
 
 Yerel deneme için anahtarı kabuğa gizli girin:
 
