@@ -17,6 +17,7 @@ import requests
 
 MODEL = "gemini-3.8-flash-tts"
 VOICE = "Charon"
+BEAUTY_VOICES = frozenset({"Sulafat", "Aoede", "Kore", "Leda", "Zephyr"})
 ALIGNMENT_MODEL = "small"
 # Approved by the owner after listening to voice-comparison run 45601433415.
 APPROVED_AUDIO = {
@@ -45,17 +46,26 @@ def free_project_key(confirmed):
     return key
 
 
-def request_audio(script, confirmed, requester=None):
+def request_audio(script, confirmed, requester=None, *, brand="tarih", voice=None):
+    voice = voice or (VOICE if brand == "tarih" else "Sulafat")
+    if not (brand == "tarih" and voice == VOICE or brand == "bakim" and voice in BEAUTY_VOICES):
+        raise ValueError("Anlatıcı sesi bu marka için yetkilendirilmemiş.")
     """One request; no retries, alternate model, credentials in URLs, or paid fallback."""
     key = free_project_key(confirmed)
+    if key == os.getenv("GEMINI_IMAGE_API_KEY", "").strip():
+        raise RuntimeError("Ücretli görsel anahtarı seslendirmede kullanılamaz.")
+    style = STYLE if brand == "tarih" else (
+        "Türkiye Türkçesi konuşan, doğal ve ölçülü bir kadın anlatıcı. Metni aynen oku. "
+        "İlk cümleyi ilk üç saniyede bitir. Sağlık vaatleri ekleme, müzik veya efekt üretme."
+    )
     payload = {
         "model": MODEL,
         "input": [{"type": "user_input", "content": [{
             "type": "text", "text": script,
-            "annotations": [{"type": "speech_metadata", "style": STYLE}],
+            "annotations": [{"type": "speech_metadata", "style": style}],
         }]}],
         "response_format": {"type": "audio"},
-        "generation_config": {"speech_config": [{"voice": VOICE}]},
+        "generation_config": {"speech_config": [{"voice": voice}]},
         "store": False,
     }
     try:

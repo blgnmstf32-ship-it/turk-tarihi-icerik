@@ -389,11 +389,13 @@ def _portfolio_tool(assigned):
 
 def review(settings, candidates, research, requester=None, *, state_path=DEFAULT_STATE,
            quota_reader=None, sleep=time.sleep, run_id=None):
+    from scripts.gemini_editorial import GeminiReviewSession, gemini_authorized
+    gemini = gemini_authorized() and bool(os.getenv("GEMINI_API_KEY", "").strip())
     enabled = settings.get("editorial_intelligence", {}).get("free_llm_enabled", False)
     key = os.getenv("OPENROUTER_API_KEY", "").strip()
     missing = [
         name for name, available in (("free_llm_enabled", enabled),
-            ("ENABLE_FREE_LLM=1", os.getenv("ENABLE_FREE_LLM") == "1"), ("OPENROUTER_API_KEY", key))
+            ("ENABLE_FREE_LLM=1", os.getenv("ENABLE_FREE_LLM") == "1"), (("GEMINI_API_KEY or OPENROUTER_API_KEY" if gemini_authorized() else "OPENROUTER_API_KEY"), gemini or key))
         if not available
     ]
     if missing:
@@ -415,7 +417,8 @@ def review(settings, candidates, research, requester=None, *, state_path=DEFAULT
     ids = {candidate["id"] for candidate in evidence["candidates"]}
     urls = {lead["url"] for lead in evidence["paper_leads"]}
     urls.update(source["url"] for candidate in evidence["candidates"] for source in candidate.get("sources", []))
-    session = FreeReviewSession(key, state, requester, quota_reader, sleep)
+    session = (GeminiReviewSession(key, state, requester=requester) if gemini
+               else FreeReviewSession(key, state, requester, quota_reader, sleep))
     stages, previous_roles = [], []
     for index, (role, instruction) in enumerate(STAGES):
         if stages and stages[-1]["status"] != "proposal":
@@ -449,6 +452,7 @@ def review(settings, candidates, research, requester=None, *, state_path=DEFAULT
 
     complete = _completed(stages)
     return {"status": "review_required" if complete else "incomplete", "calls": session.calls,
+            "gemini_calls": getattr(session, "gemini_attempts", 0),
             "cached_roles": session.cached_roles, "actual_llm_used": any(stage["actual_llm_used"] for stage in stages),
             "completed_discussion": complete, "model": FREE_MODEL, "paid_fallback": False,
             "stages": stages, "decision": stages[-1]["answer"] if complete else None,
