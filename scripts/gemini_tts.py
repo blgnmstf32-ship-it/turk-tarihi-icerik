@@ -1,4 +1,4 @@
-"""Optional Gemini narration for an explicitly confirmed, unbilled AI Studio project."""
+"""Gemini Charon narration from approved audio or an unbilled AI Studio project."""
 from __future__ import annotations
 
 import base64
@@ -20,7 +20,7 @@ VOICE = "Charon"
 ALIGNMENT_MODEL = "small"
 # Approved by the owner after listening to voice-comparison run 45601433415.
 APPROVED_AUDIO = {
-    "169a62476f05eb536c82d9b67c9dd8e4017d93324ca20e6a3dfcaee81f866":
+    "169a62476f05eb536c82d9b67c9dd7dc8e4017d93324ca20e6a3dfcaee81f866":
         "3c1b6e038fa28d36289146d63dcf0e0b5c17b56a62beb4b444ba7e4144d0d83b",
 }
 ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/interactions"
