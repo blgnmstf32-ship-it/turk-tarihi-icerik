@@ -1,6 +1,6 @@
 """Original schematic skin geometry. Run using Blender's background Python."""
 import argparse
-from math import radians
+from math import sin
 from pathlib import Path
 import sys
 
@@ -30,6 +30,7 @@ def block(name, at, size, color):
     bevel.segments = 4
     obj.modifiers.new("Weighted normals", "WEIGHTED_NORMAL")
     obj.data.materials.append(color)
+    return obj
 
 
 def sphere(name, location, scale, mat):
@@ -50,24 +51,38 @@ def point_at(obj, focus):
 def scene_for(out, frames, size):
     bpy.ops.wm.read_factory_settings(use_empty=True)
     scene = bpy.context.scene
-    base = material("Mauve plinth", (.12, .075, .18))
-    outer = material("Surface schematic", (.80, .36, .28))
-    middle = material("Mid-layer schematic", (.68, .20, .30))
-    deep = material("Deep layer schematic", (.79, .47, .19))
-    hair = material("Follicle concept", (.10, .045, .062), metallic=.15)
-    block("Platform", (0, 0, -.96), (5.2, 4.4, .25), base)
+    base = material("Mauve plinth", (.103, .053, .127))
+    outer = material("Intercellular lipid matrix", (.50, .23, .27), .52)
+    middle = material("Living epidermis schematic", (.56, .209, .26))
+    deep = material("Supporting tissue schematic", (.61, .31, .26))
+    tiles = [material(f"Corneocyte {i}", color, .40) for i, color in enumerate((
+        (.85, .50, .38), (.76, .40, .34), (.94, .58, .45), (.81, .43, .37),
+    ))]
+    droplet = material("Surface water", (.34, .65, .78), .19, .32)
+    block("Platform", (0, 0, -.76), (4.75, 3.58, .14), base)
     for name, z, thickness, color in (
-        ("Surface", .56, .28, outer), ("Middle", .04, .70, middle), ("Supporting tissue", -.58, .53, deep)
+        ("Dermis", -.50, .39, deep), ("Epidermis", -.12, .39, middle),
+        ("Lipid matrix", .22, .28, outer),
     ):
-        block(name, (0, 0, z), (4.8, 3.8, thickness), color)
-    for x, y in ((-1.05, -1.3), (.50, -1.79), (1.23, -.51)):
-        shaft = sphere("Hair concept", (x, y, .77), (.07, .08, .82), hair)
-        shaft.rotation_euler.y = radians(14)
-        sphere("Root schematic", (x-.16, y, .09), (.16, .12, .31), hair)
+        block(name, (0, 0, z), (4.5, 3.34, thickness), color)
+    # Offset the flattened cells within the matrix to show the brick-and-mortar arrangement.
+    for layer in range(3):
+        for row in range(5):
+            for col in range(6):
+                x = -.10 + (col - 2.5) * .70 + (.19 if (row+layer) % 2 else 0)
+                y = (row-2)*.63
+                cell = block("Corneocyte", (x, y, .15 + layer*.10),
+                             (.67, .59, .092), tiles[(col + 2*row + layer) % len(tiles)])
+                cell.rotation_euler.z = .052*sin(col*2.9 + row + layer)
+    for i, (x, y) in enumerate(((-1.45, .7), (-.65, -.65), (.10, .92), (.86, -.27), (1.57, .51))):
+        drop = sphere("Surface moisture", (x, y, .46), (.090, .075, .081), droplet)
+        drop.keyframe_insert("scale", frame=1)
+        drop.scale = (.16 + i*.007, .11 + i*.006, .040)
+        drop.keyframe_insert("scale", frame=frames)
     bpy.ops.object.camera_add()
     camera = bpy.context.object
     scene.camera = camera
-    for frame, location, lens in ((1, (6.6, -9.2, 5.6), 52), (frames, (4.5, -10.2, 4.4), 59)):
+    for frame, location, lens in ((1, (7.7, -10.2, 6.7), 34), (frames, (3.7, -9.9, 4.2), 40)):
         camera.location = location
         point_at(camera, (0, 0, .12))
         camera.data.lens = lens
@@ -91,7 +106,7 @@ def scene_for(out, frames, size):
     scene.world.node_tree.nodes["Background"].inputs["Color"].default_value = (.047, .022, .064, 1)
     scene.render.engine = "CYCLES"
     scene.cycles.device = "CPU"
-    scene.cycles.samples = 5
+    scene.cycles.samples = 7
     scene.cycles.use_denoising = False
     scene.render.image_settings.file_format = "PNG"
     scene.render.resolution_x, scene.render.resolution_y = size, round(size * 16/9)
@@ -100,7 +115,7 @@ def scene_for(out, frames, size):
     scene.render.fps = 30
     scene.render.filepath = str(out.resolve()) + "/skin-"
     scene.render.threads_mode = "FIXED"
-    scene.render.threads = 2
+    scene.render.threads = 4
     return scene
 
 

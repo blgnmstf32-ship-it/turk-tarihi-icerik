@@ -1,0 +1,242 @@
+{
+  "audio_sha256": "811b614f858a4e0ce112547adfdcad64e5af6084d095f975b5525c9f636eb333",
+  "script_sha256": "b67819ce3a7c79000d37d3d3db0c2cad9a284ca12a9f206a9cdbb8c0724e5289",
+  "timing_method": "Local faster-whisper-small Turkish word timestamps with script-based phrase boundaries",
+  "cues": [
+    {
+      "start": 0.0,
+      "end": 1.41,
+      "text": "Duştan sonra beklemeyin."
+    },
+    {
+      "start": 1.92,
+      "end": 3.76,
+      "text": "Cildiniz kuruluğa yatkınsa,"
+    },
+    {
+      "start": 3.76,
+      "end": 5.36,
+      "text": "nemlendiricinin ne zaman"
+    },
+    {
+      "start": 5.36,
+      "end": 6.65,
+      "text": "sürüldüğüne dikkat edin."
+    },
+    {
+      "start": 7.06,
+      "end": 8.88,
+      "text": "Amerikan Dermatoloji Akademisi,"
+    },
+    {
+      "start": 8.88,
+      "end": 10.2,
+      "text": "duştan sonra cilt"
+    },
+    {
+      "start": 10.2,
+      "end": 11.54,
+      "text": "hâlâ hafif nemliyken"
+    },
+    {
+      "start": 11.54,
+      "end": 13.23,
+      "text": "nemlendirici sürmeyi öneriyor."
+    },
+    {
+      "start": 13.72,
+      "end": 15.02,
+      "text": "Aynı öneri, ellerinizi"
+    },
+    {
+      "start": 15.02,
+      "end": 16.61,
+      "text": "yıkadıktan sonra da geçerli."
+    },
+    {
+      "start": 17.0,
+      "end": 18.3,
+      "text": "Duşu beş ila on dakika"
+    },
+    {
+      "start": 18.3,
+      "end": 19.59,
+      "text": "arasında tutmayı,"
+    },
+    {
+      "start": 19.72,
+      "end": 20.8,
+      "text": "sıcak su yerine"
+    },
+    {
+      "start": 20.8,
+      "end": 22.31,
+      "text": "ılık su kullanmayı öneriyor."
+    },
+    {
+      "start": 22.76,
+      "end": 24.62,
+      "text": "Kurulanırken havluyu cildinize"
+    },
+    {
+      "start": 24.62,
+      "end": 25.54,
+      "text": "sürtmek yerine"
+    },
+    {
+      "start": 25.54,
+      "end": 26.68,
+      "text": "yumuşakça dokundurun."
+    },
+    {
+      "start": 26.68,
+      "end": 29.01,
+      "text": "Akademinin bir diğer önerisi,"
+    },
+    {
+      "start": 29.18,
+      "end": 29.86,
+      "text": "kuru cilt için"
+    },
+    {
+      "start": 29.86,
+      "end": 30.72,
+      "text": "losyon yerine"
+    },
+    {
+      "start": 30.72,
+      "end": 31.84,
+      "text": "parfüm içermeyen bir"
+    },
+    {
+      "start": 31.84,
+      "end": 33.47,
+      "text": "krem veya merhem kullanmak."
+    },
+    {
+      "start": 33.74,
+      "end": 35.38,
+      "text": "Etikette parfüm içermediğini"
+    },
+    {
+      "start": 35.38,
+      "end": 36.79,
+      "text": "belirten ifadeyi arayın."
+    },
+    {
+      "start": 37.04,
+      "end": 38.72,
+      "text": "Bir ürünün kokusunu almamanız"
+    },
+    {
+      "start": 38.72,
+      "end": 40.22,
+      "text": "parfüm içermediği anlamına"
+    },
+    {
+      "start": 40.22,
+      "end": 40.99,
+      "text": "gelmeyebilir."
+    },
+    {
+      "start": 41.34,
+      "end": 42.46,
+      "text": "Kokuyu maskelemek için"
+    },
+    {
+      "start": 42.46,
+      "end": 44.07,
+      "text": "eklenen maddeler bulunabilir."
+    },
+    {
+      "start": 44.7,
+      "end": 45.96,
+      "text": "Elleriniz de kuruyorsa,"
+    },
+    {
+      "start": 45.96,
+      "end": 47.32,
+      "text": "bulaşık yıkarken veya"
+    },
+    {
+      "start": 47.32,
+      "end": 48.52,
+      "text": "elleriniz uzun süre"
+    },
+    {
+      "start": 48.52,
+      "end": 49.76,
+      "text": "suyla temas ederken"
+    },
+    {
+      "start": 49.76,
+      "end": 51.73,
+      "text": "eldiven kullanmayı düşünebilirsiniz."
+    },
+    {
+      "start": 51.92,
+      "end": 53.78,
+      "text": "Akademi, soğuk ve kuru havada"
+    },
+    {
+      "start": 53.78,
+      "end": 55.28,
+      "text": "elleri koruyan eldivenleri"
+    },
+    {
+      "start": 55.28,
+      "end": 55.78,
+      "text": "de öneriyor."
+    },
+    {
+      "start": 55.78,
+      "end": 57.9,
+      "text": "Kısacası, kuru cilt için"
+    },
+    {
+      "start": 57.9,
+      "end": 59.8,
+      "text": "ılık su, nazik kurulama"
+    },
+    {
+      "start": 59.8,
+      "end": 61.54,
+      "text": "ve cilt nemliyken bakım"
+    },
+    {
+      "start": 61.54,
+      "end": 62.87,
+      "text": "bir arada düşünülebilir."
+    },
+    {
+      "start": 63.44,
+      "end": 64.54,
+      "text": "Bu adımlara rağmen"
+    },
+    {
+      "start": 64.54,
+      "end": 66.06,
+      "text": "kuruluk geçmezse veya"
+    },
+    {
+      "start": 66.06,
+      "end": 67.66,
+      "text": "cildinizde yanma olursa"
+    },
+    {
+      "start": 67.66,
+      "end": 68.99,
+      "text": "bir dermatoloğa danışın."
+    },
+    {
+      "start": 69.28,
+      "end": 70.4,
+      "text": "Kaynak bağlantısını"
+    },
+    {
+      "start": 70.4,
+      "end": 71.42,
+      "text": "açıklamaya ekledik."
+    }
+  ]
+}

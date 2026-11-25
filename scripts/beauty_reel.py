@@ -1,0 +1,264 @@
+"""Build the source-bound skincare Reel using only the existing Sulafat and Nano Banana assets."""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+from tempfile import TemporaryDirectory
+import time
+import wave
+
+from PIL import Image
+
+from scripts.beauty_reel_design import SIZE, beauty_score, cover, overlay, still
+from scripts.create_reel import ffprobe, media_duration
+from scripts.subtitles import create_timed
+
+ROOT = Path(__file__).resolve().parents[1]
+DATA = ROOT / "data"
+ASSET_RUN = 45654042857
+FPS = 30
+BLENDER_FRAMES = 96
+BLENDER_FRAME_RATE = 12
+APPROVED_AUDIO = "811b614f858a4e0ce112547adfdcad64e5af6084d095f975b5525c9f636eb333"
+APPROVED_IMAGE = "a9b47437ed22774f968703d44acee1fe6c389bdef7509ea38eb7d9ea67c62ec1"
+VIDEO = "KURU_CILT_BAKIMI_REELS.mp4"
+COVER = "KURU_CILT_BAKIMI_KAPAK.jpg"
+THREE = {"cream": "BeautyCream", "barrier": "BeautySkinBarrier"}
+SHOTS = (
+    (0, "hook", "KURU CİLT BAKIMI", "Duştan sonra\nbeklemeyin.", "TEMSİLİ AI GÖRSELİ"),
+    (3, "damp", "UYGULAMA ZAMANI", "Doğru an\nne zaman?", None),
+    (7, "skin", "TEMSİLİ 3D KESİT", "Cildin\ndış tabakası", "STRATUM KORNEUM  ·  ÖLÇEK DIŞI"),
+    (15, "wash", "GÜNLÜK RUTİN", "Eller için de\ngeçerli", None),
+    (17, "timing", "DUŞ RUTİNİ", "Kısa ve ılık", None),
+    (22.65, "towel", "NAZİK KURULAMA", "Havluyu\nhafifçe dokundurun", "TEMSİLİ AI GÖRSELİ"),
+    (26.70, "cream", "NEMLENDİRİCİ SEÇİMİ", "Krem veya\nmerhem", "TEMSİLİ 3D ÜRÜN"),
+    (34.70, "label", "ÜRÜN ETİKETİ", "Parfüm içermez\nifadesini arayın", None),
+    (44.40, "gloves", "EL BAKIMI", "Suyla uzun\nsüre temas", None),
+    (51.90, "cold", "EL BAKIMI", "Soğukta da\nkoruma", None),
+    (55.70, "barrier", "TEMSİLİ 3D KESİT", "Cilt bariyeri ve\nsu kaybı", "ÖLÇEK DIŞI  ·  SU KAYBI ŞEMASI"),
+    (63.70, "sources", "KURU CİLT BAKIMI", "Kuruluk\nsürerse", None),
+)
+EMPHASIS = re.compile(
+    r"beklemeyin|hafif nemliyken|ılık su(?:yu)?|yumuşakça|parfüm içermeyen|"
+    r"krem veya merhem|eldiven\w*|dermatoloğa", re.IGNORECASE,
+)
+
+
+def read_json(path):
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def write_json(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def inputs(directory):
+    audio, picture = directory / "SULAFAT.wav", directory / "image-00.jpg"
+    narrator, art = (read_json(directory / f"{name}.json") for name in ("SULAFAT", "BAKIM_IMAGE"))
+    topic, timing = (read_json(DATA / f"beauty_reel_kuruluk{suffix}.json") for suffix in ("", "_timing"))
+    script = "\n".join(topic["script"])
+    script_sha = hashlib.sha256(script.encode()).hexdigest()
+    if not (digest(audio) == APPROVED_AUDIO == narrator.get("sha256") == timing.get("audio_sha256")
+            and script_sha == narrator.get("script_sha256") == timing.get("script_sha256")
+            and narrator.get("voice") == "Sulafat" and narrator.get("preview") is True):
+        raise ValueError("Sulafat kaydı, senaryo ve altyazı zamanları eşleşmiyor.")
+    if not (digest(picture) == APPROVED_IMAGE
+            and art.get("brand") == "bakim" and art.get("state") == "complete"
+            and any(row.get("sha256") == APPROVED_IMAGE for row in art.get("images", []))):
+        raise ValueError("Onaylı Nano Banana görseli doğrulanamadı.")
+    with Image.open(picture) as source:
+        if source.size != SIZE or source.format != "JPEG":
+            raise ValueError("Onaylı Nano Banana görselinin biçimi değişmiş.")
+    with wave.open(str(audio), "rb") as source:
+        duration = source.getnframes() / source.getframerate()
+    if not 60 <= duration <= 75 or abs(duration - narrator["seconds"]) > .02:
+        raise ValueError("Sulafat ses süresi üretim kaydıyla eşleşmiyor.")
+
+    cues = timing["cues"]
+    if not cues or " ".join(cue["text"] for cue in cues) != " ".join(topic["script"]):
+        raise ValueError("Altyazı metni senaryoyla eşleşmiyor.")
+    previous = 0
+    for cue in cues:
+        if not previous <= cue["start"] < cue["end"] <= duration or len(cue["text"]) > 48:
+            raise ValueError("Altyazı zamanları örtüşüyor, sınıra taşıyor veya metin çok uzun.")
+        previous = cue["end"]
+    if cues[0]["end"] > 3:
+        raise ValueError("Açılış ilk üç saniyeyi aşıyor.")
+    return audio, picture, narrator, art, duration, cues
+
+
+def command(args, *, cwd, log=None):
+    env = os.environ.copy()
+    env["NODE_OPTIONS"] = (env.get("NODE_OPTIONS", "") +
+                           f" --require={ROOT / 'scripts/remotion_node_compat.cjs'}").strip()
+    env["REMOTION_FORCE_LOOPBACK_NETWORK"] = "1"
+    result = subprocess.run(args, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                            text=True, timeout=900)
+    if log is not None:
+        log.write_text(result.stdout, encoding="utf-8")
+    if result.returncode:
+        raise RuntimeError(f"{args[0]} exited {result.returncode}: {result.stdout[-3200:]}")
+
+
+def ffmpeg(directory, *args):
+    command(["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y",
+             "-filter_threads", "2", "-filter_complex_threads", "2", *args], cwd=directory)
+
+
+def render_models(work, *, browser):
+    measured = {}
+    start = time.monotonic()
+    model = work / "blender"
+    command(["blender", "-b", "-noaudio", "--threads", "4", "--python-exit-code", "1",
+             "--python", str(ROOT / "scripts/beauty_model.py"), "--", "--out", str(model),
+             "--frames", str(BLENDER_FRAMES), "--width", "432"], cwd=ROOT, log=work/"blender.log")
+    measured["blender"] = round(time.monotonic()-start, 2)
+    if not all((model / f"skin-{i:04d}.png").is_file() for i in range(1, BLENDER_FRAMES+1)):
+        raise ValueError("Blender 3D dizisi eksik.")
+    for key, composition in THREE.items():
+        start = time.monotonic()
+        args = ["npx", "--no-install", "remotion", "render", "remotion/index.tsx",
+                composition, str(work / f"{key}.mp4"), "--codec=h264", "--crf=17",
+                "--concurrency=2", "--gl=angle", "--muted", "--license-key=free-license"]
+        if browser:
+            args.append(f"--browser-executable={browser}")
+        command(args, cwd=ROOT, log=work / f"{key}.log")
+        measured[key] = round(time.monotonic()-start, 2)
+    return measured
+
+
+def ass_time(seconds):
+    cs = round(seconds*100)
+    return f"{cs//360000}:{cs//6000%60:02}:{cs//100%60:02}.{cs%100:02}"
+
+
+def styled_captions(cues, path):
+    header = """[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Talk,DejaVu Sans,49,&H00E9F3FF,&H00E9F3FF,&H2C271422,&H2C271422,-1,0,0,0,100,100,0,0,3,17,0,2,116,116,350,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+"""
+    lines = [
+        f"Dialogue: 0,{ass_time(cue['start'])},{ass_time(cue['end'])},Talk,,0,0,0,,"
+        + r"{\fad(60,65)}"
+        + EMPHASIS.sub(lambda match: r"{\c&HBAEDFF&}" + match[0] + r"{\c&H00E9F3FF&}", cue["text"])
+        for cue in cues
+    ]
+    path.write_text(header + "\n".join(lines) + "\n", encoding="utf-8")
+
+
+def shot(work, index, frames, kind, picture, eyebrow, title, note):
+    out = f"shot-{index:02d}.mp4"
+    layer = work / "shot-overlay.png"
+    overlay(layer, eyebrow, title, visual_note=note)
+    length = frames / FPS
+    if kind == "skin":
+        source = ["-framerate", str(BLENDER_FRAME_RATE), "-i", "blender/skin-%04d.png"]
+        video = "fps=30,scale=1080:1920:flags=lanczos,tpad=stop_duration=0.08:stop_mode=clone"
+    elif kind in THREE:
+        source = ["-i", f"{kind}.mp4"]
+        video = "fps=30,scale=1080:1920:flags=lanczos,tpad=stop_duration=0.08:stop_mode=clone"
+    else:
+        still(kind, picture, work / "shot-background.jpg")
+        source = ["-i", "shot-background.jpg"]
+        factor = .00076 if kind == "hook" else .00025
+        video = (f"scale=2160:3840,zoompan=z='1.008+on*{factor}':x='iw/2-iw/zoom/2':"
+                 f"y='ih/2-ih/zoom/2':d={frames}:s=1080x1920:fps={FPS}")
+    # Match cuts between graphic/3D shots, with brief plum dips into the macro shots.
+    color = "0x291824"
+    dip_in = f",fade=t=in:st=0:d=0.13:color={color}" if kind in {"skin", "cream", "barrier", "sources"} else ""
+    dip_out = (f",fade=t=out:st={length-.17:.4f}:d=0.15:color={color}"
+               if index in {1, 5, 9, 10, 11} else "")
+    animation = (f"[0:v]{video}[bg];[bg][1:v]overlay=format=auto,setsar=1"
+                 f"{dip_in}{dip_out},format=yuv420p[v]")
+    ffmpeg(work, *source, "-i", layer.name, "-filter_complex", animation,
+           "-map", "[v]", "-frames:v", str(frames), "-an", "-c:v", "libx264",
+           "-threads", "3", "-preset", "veryfast", "-crf", "17", out)
+    return out
+
+
+def assemble(assets, out, *, browser=None):
+    audio, picture, voice, art, duration, cues = inputs(assets)
+    out.mkdir(parents=True, exist_ok=True)
+    with TemporaryDirectory(prefix="beauty-reel-") as tmp:
+        work = Path(tmp)
+        start = time.monotonic()
+        models = render_models(work, browser=browser)
+        cuts = [round(row[0]*FPS) for row in SHOTS] + [math.ceil(duration*FPS)]
+        clips = [shot(work, i, cuts[i+1]-cuts[i], kind, picture, eyebrow, title, note)
+                 for i, (_, kind, eyebrow, title, note) in enumerate(SHOTS)]
+        (work / "cuts.txt").write_text("".join(f"file '{name}'\n" for name in clips))
+        styled_captions(cues, work / "captions.ass")
+        beauty_score(duration, [i/FPS for i in cuts[1:-1]], work / "score.wav")
+        mix = ("[1:a]highpass=f=65,volume=1.15,aformat=channel_layouts=stereo,asplit[v][key];"
+               "[2:a]volume=.68[bed];[bed][key]sidechaincompress=threshold=.025:ratio=7:"
+               "attack=16:release=340[duck];[v][duck]amix=inputs=2:duration=first:normalize=0,"
+               "alimiter=limit=.88:level=false:latency=true,volume=-1.5dB[a]")
+        video = out / VIDEO
+        ffmpeg(work, "-f", "concat", "-safe", "1", "-i", "cuts.txt", "-i", str(audio), "-i", "score.wav",
+               "-vf", "ass=captions.ass", "-filter_complex", mix, "-map", "0:v", "-map", "[a]",
+               "-c:v", "libx264", "-threads", "4", "-pix_fmt", "yuv420p", "-preset", "fast", "-crf", "19",
+               "-c:a", "aac", "-b:a", "160k", "-ar", "48000", "-metadata:s:a:0", "language=tur",
+               "-movflags", "+faststart", str(video))
+        shutil.copyfile(work / "captions.ass", out / "KURU_CILT_BAKIMI.ass")
+        seconds = round(time.monotonic() - start, 2)
+
+    streams = {item["codec_type"]: item for item in ffprobe(video)["streams"]}
+    v, a = streams["video"], streams["audio"]
+    total = media_duration(video)
+    if (v["codec_name"] != "h264" or a["codec_name"] != "aac"
+            or (v["width"], v["height"]) != SIZE or v["avg_frame_rate"] != "30/1"
+            or abs(total-duration) > .12):
+        raise ValueError("Reels, MP4 biçim veya senkronizasyon kontrolünden geçmedi.")
+    cover(picture, out / COVER)
+    create_timed(cues, out / "KURU_CILT_BAKIMI.srt")
+    for name, file in (("aciklama", "ACIKLAMA.txt"), ("ilk_yorum", "SABIT_YORUM.txt")):
+        shutil.copyfile(DATA / f"beauty_reel_{name}.txt", out / file)
+    report = {
+        "status": "verified_for_review", "duration_seconds": round(total, 2), "resolution": list(SIZE),
+        "fps": FPS, "video_sha256": digest(video), "video_frames": int(v["nb_frames"]),
+        "media_run_id": ASSET_RUN, "voice": voice["voice"], "voice_model": voice["model"],
+        "voice_sha256": APPROVED_AUDIO, "image_model": art["model"], "image_sha256": APPROVED_IMAGE,
+        "new_provider_requests": 0, "new_api_cost_usd": 0,
+        "captions": len(cues), "alignment": "faster-whisper-small, hash-bound Turkish cues",
+        "opening_seconds": SHOTS[1][0], "shots": len(SHOTS), "blender_frames": BLENDER_FRAMES,
+        "threejs_shots": list(THREE), "render_wall_seconds": seconds, "model_render_wall_seconds": models,
+        "sound_rights": "Original programmatic score and effects, no external audio samples",
+        "audio_headroom_post_limiter_db": 1.5,
+        "instagram_auto_publish": False, "human_approval_required": True,
+    }
+    write_json(out / "DOGRULAMA.json", report)
+    print(json.dumps(report, ensure_ascii=False))
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--assets", required=True, type=Path)
+    parser.add_argument("--out", required=True, type=Path)
+    parser.add_argument("--browser", type=Path)
+    args = parser.parse_args()
+    assemble(args.assets.resolve(), args.out.resolve(), browser=args.browser)
+
+
+if __name__ == "__main__":
+    main()

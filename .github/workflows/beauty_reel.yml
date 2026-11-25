@@ -1,0 +1,66 @@
+name: Bakım · İlk Reels render ve doğrulama
+on:
+  workflow_dispatch:
+  push:
+    branches: [beauty-reel-pilot]
+    paths:
+      - .github/workflows/beauty_reel.yml
+      - scripts/beauty_reel.py
+      - scripts/beauty_reel_design.py
+      - scripts/beauty_model.py
+      - data/beauty_reel_*
+      - remotion/BeautySkinScene.tsx
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: beauty-reel-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Download the verified Sulafat and Nano Banana asset package
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45654042857
+          name: beauty-sulafat-and-nano-assets
+          path: output/beauty-assets
+      - name: Install local render dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends blender ffmpeg fonts-dejavu-core
+          python -m pip install -r requirements.txt
+          npm ci
+      - name: Run the Python suite and Remotion type checks
+        run: |
+          python -m unittest discover -s tests -v
+          npm run typecheck
+      - name: Render and verify the Reel using existing media
+        run: |
+          python -m scripts.beauty_reel --assets output/beauty-assets --out output/beauty-reel
+          ffmpeg -v error -xerror -i output/beauty-reel/KURU_CILT_BAKIMI_REELS.mp4 -f null -
+          {
+            printf '### Bakım Reels · üretim doğrulaması\n\n'
+            printf '\x60\x60\x60json\n'
+            cat output/beauty-reel/DOGRULAMA.json
+            printf '\x60\x60\x60\n'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: beauty-reel-kuru-cilt-${{ github.run_number }}
+          path: output/beauty-reel/
+          if-no-files-found: error
+          retention-days: 14
