@@ -110,6 +110,8 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
     provider=select_provider(settings,voice_provider_override)
     segments=performance_script(topic)
     script='\n'.join(item['spoken'] for item in segments)
+    if approved_voice is None and topic['id']=='piri-reis-kayip-kaynak':
+        approved_voice=ROOT/'data'
     voice_path=out/'narration.wav'
     if not skip_narration:
         try:
