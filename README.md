@@ -117,4 +117,4 @@ Dört editoryal görüş, uzmanlar ve yönetmen birlikte çalıştırma başına
 
 ## Piri Reis sinematik yeniden üretim
 
-Actions → **Piri Reis · Sinematik Charon** → **Run workflow**. Üretim, onaylı WAV ve senaryonun SHA-256 özeti eşleşirse önceki Charon kaydını kullanır. Bu yolda Gemini ve OpenRouter istekleri sıfırdır. Dinamik Atlas sahnesi temsili coğrafya şeması olarak etiketlenir. Onaylı kayıt GitHub'daki indirme paketinden veya önbellekten alınır. İkisi de erişilemiyorsa yerelde onaylı WAV ve `GEMINI_RECEIPT.json` dosyalarının bulunduğu klasörü `--approved-voice` ile verin.
+Actions → **Piri Reis · Sinematik Charon** → **Run workflow**. Üretim, `data/` altındaki onaylı WAV ve senaryonun SHA-256 özeti eşleşirse önceki Charon kaydını kullanır. Bu yolda Gemini ve OpenRouter istekleri sıfırdır. Dinamik Atlas sahnesi temsili coğrafya şeması olarak etiketlenir. `data/` altındaki kayıt GitHub Actions paketinin süresi dolsa da yeniden kullanılabilir. Yerel çalıştırmada başka bir klasördeki aynı onaylı WAV ve `GEMINI_RECEIPT.json` dosyalarını seçmek için `--approved-voice` kullanın.
