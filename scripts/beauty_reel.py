@@ -116,17 +116,16 @@ def ffmpeg(directory, *args):
              "-filter_threads", "2", "-filter_complex_threads", "2", *args], cwd=directory)
 
 
-def render_models(work, *, blender, browser):
+def render_models(work, *, browser):
     measured = {}
-    if blender:
-        start = time.monotonic()
-        model = work / "blender"
-        command(["blender", "-b", "-noaudio", "--threads", "4", "--python-exit-code", "1",
-                 "--python", str(ROOT / "scripts/beauty_model.py"), "--", "--out", str(model),
-                 "--frames", str(BLENDER_FRAMES), "--width", "432"], cwd=ROOT, log=work/"blender.log")
-        measured["blender"] = round(time.monotonic()-start, 2)
-        if not all((model / f"skin-{i:04d}.png").is_file() for i in range(1, BLENDER_FRAMES+1)):
-            raise ValueError("Blender 3D dizisi eksik.")
+    start = time.monotonic()
+    model = work / "blender"
+    command(["blender", "-b", "-noaudio", "--threads", "4", "--python-exit-code", "1",
+             "--python", str(ROOT / "scripts/beauty_model.py"), "--", "--out", str(model),
+             "--frames", str(BLENDER_FRAMES), "--width", "432"], cwd=ROOT, log=work/"blender.log")
+    measured["blender"] = round(time.monotonic()-start, 2)
+    if not all((model / f"skin-{i:04d}.png").is_file() for i in range(1, BLENDER_FRAMES+1)):
+        raise ValueError("Blender 3D dizisi eksik.")
     for key, composition in THREE.items():
         start = time.monotonic()
         args = ["npx", "--no-install", "remotion", "render", "remotion/index.tsx",
@@ -204,7 +203,7 @@ def assemble(assets, out, *, browser=None):
     with TemporaryDirectory(prefix="beauty-reel-") as tmp:
         work = Path(tmp)
         start = time.monotonic()
-        models = render_models(work, blender=True, browser=browser)
+        models = render_models(work, browser=browser)
         cuts = [round(row[0]*FPS) for row in SHOTS] + [math.ceil(duration*FPS)]
         clips = [shot(work, i, cuts[i+1]-cuts[i], kind, picture, eyebrow, title, note)
                  for i, (_, kind, eyebrow, title, note) in enumerate(SHOTS)]
@@ -214,7 +213,7 @@ def assemble(assets, out, *, browser=None):
         mix = ("[1:a]highpass=f=65,volume=1.15,aformat=channel_layouts=stereo,asplit[v][key];"
                "[2:a]volume=.68[bed];[bed][key]sidechaincompress=threshold=.025:ratio=7:"
                "attack=16:release=340[duck];[v][duck]amix=inputs=2:duration=first:normalize=0,"
-               "alimiter=limit=.88:level=false:latency=true[a]")
+               "alimiter=limit=.88:level=false:latency=true,volume=-1.5dB[a]")
         video = out / VIDEO
         ffmpeg(work, "-f", "concat", "-safe", "1", "-i", "cuts.txt", "-i", str(audio), "-i", "score.wav",
                "-vf", "ass=captions.ass", "-filter_complex", mix, "-map", "0:v", "-map", "[a]",
@@ -245,6 +244,7 @@ def assemble(assets, out, *, browser=None):
         "opening_seconds": SHOTS[1][0], "shots": len(SHOTS), "blender_frames": BLENDER_FRAMES,
         "threejs_shots": list(THREE), "render_wall_seconds": seconds, "model_render_wall_seconds": models,
         "sound_rights": "Original programmatic score and effects, no external audio samples",
+        "audio_headroom_post_limiter_db": 1.5,
         "instagram_auto_publish": False, "human_approval_required": True,
     }
     write_json(out / "DOGRULAMA.json", report)
