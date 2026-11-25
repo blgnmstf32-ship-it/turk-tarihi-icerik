@@ -200,8 +200,9 @@ def check_brand(brand, topic, evidence, output, session):
             ids = {role["id"] for role in batch}
             assignment = [{**role, "validation_focus": AUDIT_FOCUS[brand].get(role["id"])} for role in batch]
             answer = session.evaluate("Uzman grubu", GUARD +
-                ' Her rol için ayrı karar üret. Şema: {"roles":[{"role_id":1,"decision":"oner",'
-                '"rationale":"…","suggestion":"…","caveat":"…","source_numbers":[1]}]}. '
+                ' Her rol için ayrı karar üret. Sonuç {"roles":[...]} nesnesidir. '
+                'Her satırda role_id, decision, rationale, suggestion, caveat, source_numbers bulunmalı. '
+                'role_id tam olarak kendi assignments kaydındaki sayıdır. Örnek kimlik kopyalama. '
                 'Karar yalnız oner, incele veya beklet olabilir. Her gerekçe o role özgü olsun. '
                 'Her metin alanı bir kısa cümle olsun. Kaynak numarası yalnız 1 tabanlı verilen kaynak dizisine bağlıdır.',
                 {"topic": {"title": topic["title"], "facts": topic["facts"], "sources": topic["sources"]},
@@ -223,12 +224,111 @@ def check_brand(brand, topic, evidence, output, session):
             "research_statuses": evidence["statuses"]}
 
 
+def retry_individual(row, topic, evidence, session):
+    def validate(content):
+        answer, error = _parse(content)
+        if error:
+            return None, error
+        return_value, reason = parse_group(
+            json.dumps({"roles": [{**answer, "role_id": row["role_id"]}]}),
+            {row["role_id"]}, len(topic["sources"]))
+        if reason:
+            return None, reason
+        return return_value["roles"][str(row["role_id"])], None
+
+    return session.evaluate(row["role"], GUARD +
+        ' Yalnızca atanan bu tek uzman olarak yanıt ver. Kimlik veya dizi döndürme. '
+        'Tek JSON nesnesinde decision (oner, incele veya beklet), rationale, suggestion, caveat, '
+        'source_numbers (verilen kaynak dizisinin 1 tabanlı numaraları) alanlarını doldur. '
+        'Her metin alanı tek kısa cümle olsun.',
+        {"brand": evidence["brand"], "assignment": {"role": row["role"], "job": row["job"],
+         "priority": AUDIT_FOCUS[evidence["brand"]].get(row["role_id"])},
+         "topic": {"title": topic["title"], "facts": topic["facts"], "sources": topic["sources"]},
+         "research": research_brief(evidence)}, validate, max_tokens=1350,
+        namespace="specialist-individual-recheck-v1", requested_model=LITE)
+
+
+def retry_crossref_for_history(evidence):
+    if evidence["statuses"]["crossref"] != "unavailable":
+        return
+    doi = "10.1038/nature05357"
+    try:
+        response = requests.get(f"https://api.crossref.org/works/{doi}", timeout=(5, 15))
+        response.raise_for_status()
+        paper = response.json()["message"]
+        if paper["DOI"].casefold() != doi or not paper["title"][0]:
+            raise ValueError("Unexpected Crossref record")
+        evidence["source_leads"].append({"category": "antikythera", "title": paper["title"][0],
+                                        "url": f"https://doi.org/{doi}", "publisher": paper.get("publisher"),
+                                        "verification": "metadata_only_open_before_use"})
+        evidence["statuses"]["crossref"] = "lead_metadata"
+    except (requests.RequestException, KeyError, IndexError, ValueError, TypeError) as exc:
+        evidence["errors"].append({"source": "Crossref/direct_doi_retry", "error": type(exc).__name__})
+
+
+def completed(result, models):
+    return (len(models) == 3 and sum(r["coverages"].get("live", 0) for r in result) == 40
+            and all(r["manager"]["validated_live"] for r in result))
+
+
+def resume(output, previous):
+    starting = load_json(previous / "SUMMARY.json")
+    if starting["editorial_request_scope"] != "text_only" or starting["paid_media_requests"] != 0:
+        raise ValueError("Only a text-only validation report can be resumed.")
+    state = EditorialState(ROOT / ".cache/editorial-llm.sqlite3")
+    chosen, results = topics(), []
+    rechecks = []
+    additional = 0
+    write_json(output / "MODEL_ACCESS.json", load_json(previous / "MODEL_ACCESS.json"))
+    for brand in BRANDS:
+        saved = previous / brand
+        evidence, result = (load_json(saved / file) for file in ("ARASTIRMA.json", "UZMANLAR.json"))
+        if evidence["brand"] != brand or result["brand"] != brand or len(result["roles"]) != 20:
+            raise ValueError(f"Previous report for {brand} has a mismatched roster.")
+        if brand == "tarih":
+            retry_crossref_for_history(evidence)
+        destination = output / brand
+        destination.mkdir(parents=True, exist_ok=True)
+        session = GeminiReviewSession("", state, brand=brand, wait_for_slot=True, max_attempts=6)
+        for row in result["roles"]:
+            if row["state"] == "live":
+                continue
+            answer = retry_individual(row, chosen[brand], evidence, session)
+            rechecks.append({"brand": brand, "role_id": row["role_id"], **answer})
+            row["individual_retry"] = answer
+            if answer["status"] == "proposal" and answer.get("response_source") == "live":
+                row.update(state="live", output=answer["answer"], provider=answer["provider"], model=answer["model"])
+        additional += session.gemini_attempts
+        result["coverages"] = dict(Counter(row["state"] for row in result["roles"]))
+        result["research_statuses"] = evidence["statuses"]
+        write_json(destination / "UZMANLAR.json", result)
+        write_json(destination / "ARASTIRMA.json", evidence)
+        write_json(destination / "AI_AGENTS_STATUS.json", load_json(saved / "AI_AGENTS_STATUS.json"))
+        results.append(result)
+    counts = sum((Counter(row["coverages"]) for row in results), Counter())
+    starting.update(status="passed" if completed(results, starting["models_live_direct"]) else "incomplete",
+                    role_states=dict(counts),
+                    brand_results=[{key: r[key] for key in ("brand", "coverages", "manager", "research_statuses")} for r in results],
+                    gemini_attempts=starting["gemini_attempts"] + additional, retry_gemini_attempts=additional,
+                    retry_openrouter_attempts=0, retried_role_ids=[{"brand": r["brand"], "role_id": r["role_id"]} for r in rechecks])
+    write_json(output / "INDIVIDUAL_RECHECKS.json", rechecks)
+    return starting
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--resume", type=Path)
     args = parser.parse_args()
     output = args.out
     output.mkdir(parents=True, exist_ok=True)
+    if args.resume:
+        summary = resume(output, args.resume)
+        write_json(output / "SUMMARY.json", summary)
+        print(json.dumps(summary, ensure_ascii=False), flush=True)
+        if summary["status"] != "passed":
+            parser.exit(1, "Tekil kontrollerde eksik sonuç var. SUMMARY.json dosyasına bakın.\n")
+        return
     state = EditorialState(ROOT / ".cache/editorial-llm.sqlite3")
     key = os.getenv("OPENROUTER_API_KEY", "").strip()
     probe = GeminiReviewSession("", state, brand="validation", wait_for_slot=True, max_attempts=6)
@@ -254,8 +354,7 @@ def main():
     models_live = [m for m, row in checks.items() if row["status"] == "proposal"
                    and row.get("response_source") == "live" and row.get("model") == m]
     role_counts = sum((Counter(row["coverages"]) for row in results), Counter())
-    summary = {"status": "passed" if len(models_live) == 3 and role_counts["live"] == 40
-               and all(r["manager"]["validated_live"] for r in results) else "incomplete",
+    summary = {"status": "passed" if completed(results, models_live) else "incomplete",
                "models_live_direct": models_live, "role_states": dict(role_counts),
                "brand_results": [{k: r[k] for k in ("brand", "coverages", "manager", "research_statuses")} for r in results],
                "gemini_attempts": gemini_calls, "openrouter_attempts": router_calls,
