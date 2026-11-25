@@ -2,6 +2,7 @@ import React from 'react';
 import {Composition, registerRoot} from 'remotion';
 import {z} from 'zod';
 import {DocumentaryReel, DocumentaryProps, FPS, HEIGHT, WIDTH} from './DocumentaryReel';
+import {BeautySkinScene} from './BeautySkinScene';
 import {History3DScene} from './History3DScene';
 
 const schema = z.object({
@@ -26,6 +27,10 @@ const Root: React.FC = () => (
     defaultProps={{durationSec: 60, scenes: [], captions: [], threeScenes: []}}
     calculateMetadata={({props}) => ({durationInFrames: Math.ceil(props.durationSec * FPS)})}
   />
+  <Composition id="BeautySkinBarrier" component={BeautySkinScene} width={540} height={960}
+    fps={24} durationInFrames={192} defaultProps={{kind: 'barrier'}} />
+  <Composition id="BeautyCream" component={BeautySkinScene} width={540} height={960}
+    fps={24} durationInFrames={192} defaultProps={{kind: 'cream'}} />
   <Composition id="History3DPreview" component={History3DScene} width={WIDTH} height={HEIGHT} fps={FPS} durationInFrames={9 * FPS}
     defaultProps={{kind: 'battle_map', title: 'KUŞBAKIŞI 3D SAVAŞ HARİTASI', labels: ['SELÇUKLU ORDUSU', 'BİZANS ORDUSU']}} />
   </>
