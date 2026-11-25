@@ -1,0 +1,66 @@
+name: Gemini · Ücretsiz model erişimi ve Sulafat
+on:
+  push:
+    branches: [editorial-recovery]
+    paths: [.github/workflows/gemini_recovery_checks.yml]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      ENABLE_GEMINI_EDITORIAL: "1"
+      GEMINI_FREE_TIER_CONFIRMED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt
+      - name: Test the three free models in order with a bounded retry
+        run: |
+          if ! python -m scripts.provider_smoke free --out output/gemini-recovery; then
+            cp output/gemini-recovery/FREE_GEMINI_TEST.json output/gemini-recovery/FREE_GEMINI_FIRST_ATTEMPT.json
+            sleep 4
+            python -m scripts.provider_smoke free --out output/gemini-recovery
+          fi
+      - name: Verify live Turkish Sulafat narration
+        if: always()
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          from scripts.gemini_tts import MODEL, request_audio
+          from scripts.daily_editorial import write_json
+          lines = [
+              "Duştan sonra beklemeyin.",
+              "Cildiniz kuruluğa yatkınsa, nemlendiricinin ne zaman sürüldüğüne dikkat edin.",
+              "Amerikan Dermatoloji Akademisi, duştan sonra cilt hâlâ hafif nemliyken nemlendirici sürmeyi öneriyor. Aynı öneri, ellerinizi yıkadıktan sonra da geçerli.",
+              "Duşu beş ila on dakika arasında tutmayı, sıcak su yerine ılık su kullanmayı öneriyor. Kurulanırken havluyu cildinize sürtmek yerine yumuşakça dokundurun.",
+              "Akademinin bir diğer önerisi, kuru cilt için losyon yerine parfüm içermeyen bir krem veya merhem kullanmak. Etikette parfüm içermediğini belirten ifadeyi arayın.",
+              "Bir ürünün kokusunu almamanız parfüm içermediği anlamına gelmeyebilir. Kokuyu maskelemek için eklenen maddeler bulunabilir.",
+              "Bu adımlara rağmen kuruluk geçmezse veya cildinizde yanma olursa bir dermatoloğa danışın. Kaynak bağlantısını açıklamaya ekledik.",
+          ]
+          out = Path("output/gemini-recovery")
+          out.mkdir(parents=True, exist_ok=True)
+          script = "\n".join(lines)
+          try:
+              raw, duration = request_audio(script, True, brand="bakim", voice="Sulafat")
+          except (RuntimeError, ValueError) as exc:
+              write_json(out / "SULAFAT_FAILURE.json", {"status": "failed", "reason": str(exc)})
+              raise SystemExit(str(exc))
+          (out / "SULAFAT.wav").write_bytes(raw)
+          write_json(out / "SULAFAT.json", {"model": MODEL,"voice": "Sulafat", "preview": True,
+                     "seconds": duration, "cloud_requests": 1, "script_sha256": hashlib.sha256(script.encode()).hexdigest(),
+                     "sha256": hashlib.sha256(raw).hexdigest()})
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gemini-recovery-and-sulafat
+          path: |
+            output/gemini-recovery/*.json
+            output/gemini-recovery/*.wav
+          retention-days: 7
