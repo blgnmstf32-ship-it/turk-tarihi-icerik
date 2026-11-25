@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 
 import requests
 
-from scripts.editorial_llm import discussion_completed, review
+from scripts.editorial_llm import FREE_ATTEMPT_MODELS, discussion_completed, review
 from scripts.editorial_state import EditorialState
 
 
@@ -59,6 +59,10 @@ class EditorialRecoveryTests(unittest.TestCase):
         self.assertEqual(result["stages"][1]["attempts"][0]["status"], "invalid_json")
         self.assertEqual(result["stages"][1]["attempts"][0]["model"], MODEL)
         self.assertEqual(result["stages"][2]["attempts"][0]["status"], "empty_response")
+        self.assertEqual([call.kwargs["json"]["model"] for call in post.call_args_list[:3]],
+                         list(FREE_ATTEMPT_MODELS))
+        self.assertTrue(all(call.kwargs["json"]["reasoning"] == {"effort": "none"}
+                            for call in post.call_args_list))
         self.assertTrue(any(call.args[0] >= 4 for call in self.sleep.call_args_list))
         self.assertNotIn("test-secret-key", json.dumps(result))
 
@@ -70,6 +74,20 @@ class EditorialRecoveryTests(unittest.TestCase):
         self.assertEqual((first["status"], first["http_status"], first["upstream_error_code"]),
                          ("rate_limited", 200, 429))
         self.assertTrue(discussion_completed(result))
+
+    def test_empty_reasoning_response_and_missing_free_model_are_reported_and_retried(self):
+        empty = response(data={
+            "model": MODEL, "choices": [{"finish_reason": "length", "message": {"content": None}}],
+            "usage": {"completion_tokens": 850, "completion_tokens_details": {"reasoning_tokens": 850}},
+        })
+        post = Mock(side_effect=[response(404), empty, answer(), answer(), answer(), answer()])
+        result = self.run_review(post)
+        self.assertTrue(discussion_completed(result))
+        missing, empty, success = result["stages"][0]["attempts"]
+        self.assertEqual(missing["http_status"], 404)
+        self.assertEqual(empty["finish_reason"], "length")
+        self.assertEqual(empty["reasoning_tokens"], empty["completion_tokens"])
+        self.assertEqual(success["requested_model"], "openrouter/free")
 
     def test_long_retry_after_stops_with_remaining_roles_unattempted(self):
         post = Mock(side_effect=[answer(), response(429, {"error": {"code": 429}}, {"Retry-After": "3600"})])

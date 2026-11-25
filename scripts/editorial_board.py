@@ -103,7 +103,8 @@ def run_board(output, research_config=None, performance_path=None, research_fn=N
             lines.append("  Aynı girdiye verilen önceki gerçek model yanıtı kullanıldı.")
         for index, item in enumerate(stage.get("attempts", []), 1):
             lines.append(f"  Deneme {index}: {item['status']}, HTTP {item.get('http_status') or 'yok'}, "
-                         f"model {item.get('model') or 'bilinmiyor'}.")
+                         f"model {item.get('model') or 'bilinmiyor'} "
+                         f"(istenen {item.get('requested_model') or 'yok'}).")
         if stage.get("status") == "proposal":
             answer = stage["answer"]
             lines.append(f"- **{stage['role']}** • {answer['rationale']}")

@@ -83,7 +83,8 @@ class EditorialIntelligenceTests(unittest.TestCase):
         def post(url, **kwargs):
             payload=kwargs['json']
             requests.append(payload)
-            self.assertEqual(payload['model'],'openrouter/free')
+            self.assertEqual(payload['model'], 'google/gemma-4-31b-it:free')
+            self.assertEqual(payload['reasoning'], {'effort': 'none'})
             self.assertEqual(payload['provider']['max_price'], {'prompt':0, 'completion':0, 'request':0})
             self.assertFalse(kwargs['allow_redirects'])
             return Response(data={'model':'test/free','choices':[{'message':{'content':json.dumps({
