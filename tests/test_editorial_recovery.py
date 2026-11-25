@@ -74,6 +74,17 @@ class EditorialRecoveryTests(unittest.TestCase):
         self.assertEqual(routes.count(FREE_ATTEMPT_MODELS[0]), 1)
         self.assertEqual(routes[1:], [FREE_ATTEMPT_MODELS[1]] * 4)
 
+    def test_truncated_json_retries_the_same_free_route_with_larger_token_budget(self):
+        cut = response(data={"model": FREE_ATTEMPT_MODELS[0], "choices": [
+            {"finish_reason": "length", "message": {"content": "{\"rationale\":\"Kesildi"}}]})
+        post = Mock(side_effect=[cut, answer(model=FREE_ATTEMPT_MODELS[0]), answer(), answer(), answer()])
+        result = self.run_review(post)
+        self.assertTrue(discussion_completed(result))
+        first, second = [call.kwargs["json"] for call in post.call_args_list[:2]]
+        self.assertEqual(first["model"], second["model"])
+        self.assertEqual((first["max_tokens"], second["max_tokens"]), (1600, 3200))
+        self.assertEqual(result["calls"], 5)
+
     def test_http_200_with_upstream_rate_limit_reports_both_codes(self):
         limited = response(200, {"error": {"code": 429}}, {"Retry-After": "2"})
         post = Mock(side_effect=[limited, answer(), answer(), answer(), answer()])

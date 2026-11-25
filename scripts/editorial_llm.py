@@ -285,7 +285,9 @@ class FreeReviewSession:
             if not self.quota_checked:
                 self.remaining, self.quota_http = _remaining_quota(self.headers, self.reader)
                 self.quota_checked = True
-            for number, route in enumerate(self.routes()):
+            routes = self.routes()
+            expanded_route = None
+            for number, route in enumerate(routes):
                 if self.quota_http in {401, 403, 429}:
                     reason = "quota_check_http_error"
                     break
@@ -298,6 +300,12 @@ class FreeReviewSession:
                 if self.remaining is not None:
                     self.remaining -= 1
                 attempt_payload = {**payload, "model": route}
+                if expanded_route == route and number and routes[number - 1] == route:
+                    attempt_payload["max_tokens"] = min(4096, max_tokens * 2)
+                    attempt_payload["messages"] = [
+                        {**payload["messages"][0], "content": payload["messages"][0]["content"] +
+                         " Yanıtı doğrudan kısa ve geçerli bir JSON nesnesi olarak ver."}, payload["messages"][1],
+                    ]
                 if route == FREE_MODEL:
                     attempt_payload["reasoning"] = {"effort": "low", "exclude": True}
                 attempt, answer, wait = _request_role(self.request, self.headers, attempt_payload, parse_answer, self.key)
@@ -317,6 +325,13 @@ class FreeReviewSession:
                 if wait is not None and wait > MAX_WAIT_SECONDS:
                     reason = self.stop_reason = "retry_after_exceeds_window"
                     break
+                if (expanded_route is None and wait is None and attempt.get("finish_reason") == "length"
+                        and attempt.get("completion_tokens", max_tokens) >= max_tokens
+                        and attempt["status"] in {"invalid_json", "empty_response"} and max_tokens < 4096):
+                    # A truncated answer can succeed on the known-good route without switching providers.
+                    expanded_route = route
+                    routes.insert(number + 1, route)
+                    del routes[MAX_ATTEMPTS_PER_ROLE:]
                 if self.prior_calls + self.calls < limit and self.remaining != 0:
                     self.sleep(max(wait or 0, 2 ** number + random.uniform(0, 0.5)))
             else:
