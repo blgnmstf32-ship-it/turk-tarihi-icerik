@@ -54,7 +54,7 @@ API_KEY_PATTERN = re.compile(r"sk-or-v1-[A-Za-z0-9_-]+")
 
 def _redact(value, key):
     if isinstance(value, str):
-        return API_KEY_PATTERN.sub("[REDACTED]", value.replace(key, "[REDACTED]"))
+        return API_KEY_PATTERN.sub("[REDACTED]", value.replace(key, "[REDACTED]") if key else value)
     if isinstance(value, dict):
         return {_redact(k, key): _redact(v, key) for k, v in value.items()}
     if isinstance(value, list):
@@ -454,7 +454,9 @@ def review(settings, candidates, research, requester=None, *, state_path=DEFAULT
     return {"status": "review_required" if complete else "incomplete", "calls": session.calls,
             "gemini_calls": getattr(session, "gemini_attempts", 0),
             "cached_roles": session.cached_roles, "actual_llm_used": any(stage["actual_llm_used"] for stage in stages),
-            "completed_discussion": complete, "model": FREE_MODEL, "paid_fallback": False,
+            "completed_discussion": complete, "model": stages[-1].get("model") if complete else None,
+            "provider_priority": ["gemini_free", "openrouter_free"] if gemini else ["openrouter_free"],
+            "paid_fallback": False,
             "stages": stages, "decision": stages[-1]["answer"] if complete else None,
             "quota": {"daily_project_limit": LOCAL_DAILY_LIMIT, "max_calls_per_run": MAX_REQUESTS_PER_RUN,
                       "max_attempts_per_role": MAX_ATTEMPTS_PER_ROLE,

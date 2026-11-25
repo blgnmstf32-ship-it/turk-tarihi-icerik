@@ -142,3 +142,24 @@ class GeminiNarrationTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "missing"):
                 gemini_tts.narrate([{"spoken":"Bir cümle", "caption":"Bir cümle"}], Path(tmp) / "voice.wav", True)
             request.assert_not_called()
+
+    def test_same_verified_live_take_is_reused_without_second_paid_or_free_call(self):
+        segment = [{"spoken": "Bir harita.", "caption": "Bir harita."}]
+        tokens = {"words": [{"text": "Bir", "start": .2, "end": .4},
+                            {"text": "harita", "start": .4, "end": .8}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            env = {"GEMINI_API_KEY": "free", "GEMINI_AUDIO_CACHE": str(folder / "audio"),
+                   "GEMINI_QUOTA_DB": str(folder / "quota.sqlite3")}
+            with patch.dict("os.environ", env, clear=True), \
+                    patch("scripts.speech_audit.load_local_model"), \
+                    patch("scripts.speech_audit.transcribe_local", return_value=tokens), \
+                    patch("scripts.gemini_tts.request_audio", return_value=(gemini_wav(), 65)) as api:
+                before, after = {}, {}
+                gemini_tts.narrate(segment, folder / "one.wav", True, voice_info=before)
+                gemini_tts.narrate(segment, folder / "two.wav", True, voice_info=after)
+                api.assert_called_once()
+                self.assertEqual(before["source"], "live_charon")
+                self.assertEqual(after["source"], "cached_charon_recording")
+                self.assertEqual(after["cloud_requests"], 0)
+                self.assertEqual(before["audio_sha256"], after["audio_sha256"])

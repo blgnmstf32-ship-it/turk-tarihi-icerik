@@ -1,7 +1,8 @@
 """Shared conservative budgets. Paid reservations count before an API request is sent."""
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from calendar import monthrange
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 import sqlite3
 from zoneinfo import ZoneInfo
@@ -13,13 +14,22 @@ PACIFIC = ZoneInfo("America/Los_Angeles")
 IMAGE_PRICE = {"batch": (0.125, 0.75, 15), "standard": (0.25, 1.50, 30)}
 
 
-def image_quote(mode, count, input_tokens=768, output_text_tokens=64, image_tokens=1120):
+def image_quote(mode, count, input_tokens=768, output_text_tokens=768, image_tokens=1120):
     from math import ceil
 
     if count < 1:
         raise ValueError("Image count must be positive.")
     prompt, text, image = IMAGE_PRICE[mode]
     return count * ceil(prompt * input_tokens + text * output_text_tokens + image * image_tokens)
+
+
+def batch_plan(first_day, available_usd_micros, desired_per_day=35):
+    """Spread the remaining whole-image budget evenly across the remaining UTC dates."""
+    remaining_days = monthrange(first_day.year, first_day.month)[1] - first_day.day + 1
+    total = min(desired_per_day * remaining_days, max(0, available_usd_micros) // image_quote("batch", 1))
+    return [{"date": (first_day + timedelta(days=i)).isoformat(),
+             "image_count": (i + 1) * total // remaining_days - i * total // remaining_days}
+            for i in range(remaining_days)]
 
 
 class Budget:
@@ -46,19 +56,27 @@ class Budget:
             self.db.execute("ROLLBACK")
             raise
 
+    def committed_image_cost(self, day):
+        return self.db.execute("""
+            SELECT coalesce(sum(CASE WHEN substr(date,1,7)=? OR status IN ('pending','submitted','unknown')
+                                     THEN amount ELSE 0 END),0),
+                   coalesce(sum(CASE WHEN date=? THEN amount ELSE 0 END),0)
+            FROM usage WHERE project='gemini-image'""", (day[:7], day)).fetchone()
+
+    def image_schedule(self, first_day=None):
+        first_day = first_day or datetime.now(timezone.utc).date()
+        month_spent, _ = self.committed_image_cost(first_day.isoformat())
+        return batch_plan(first_day, MONTHLY_CAP - month_spent)
+
     def reserve_image(self, request_id, brand, model, mode, count, now=None):
         now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
         day = now.date().isoformat()
         amount = image_quote(mode, count)
         def allowed():
-            month_total, day_total = self.db.execute("""
-                SELECT coalesce(sum(CASE WHEN substr(date,1,7)=? OR status IN ('pending','submitted','unknown')
-                                         THEN amount ELSE 0 END),0),
-                       coalesce(sum(CASE WHEN date=? THEN amount ELSE 0 END),0)
-                FROM usage WHERE project='gemini-image'""", (day[:7], day)).fetchone()
+            month_total, day_total = self.committed_image_cost(day)
             return month_total + amount <= MONTHLY_CAP and day_total + amount <= DAILY_CAP
         return self._reserve((request_id, brand, "gemini-image", model, mode, day, now.timestamp(),
-                              768 * count, (64 + 1120) * count, amount, "pending", None), allowed)
+                              768 * count, (768 + 1120) * count, amount, "pending", None), allowed)
 
     def reserve_free(self, request_id, brand, model, tokens, limits, now=None):
         now = now or datetime.now(timezone.utc)
@@ -75,8 +93,8 @@ class Budget:
                               tokens, 0, 0, "pending", None), allowed)
 
     def entry(self, request_id):
-        row = self.db.execute("SELECT status, operation, amount FROM usage WHERE id=?", (request_id,)).fetchone()
-        return dict(zip(("status", "operation", "reserved_usd_micros"), row)) if row else None
+        row = self.db.execute("SELECT status, operation, amount, mode FROM usage WHERE id=?", (request_id,)).fetchone()
+        return dict(zip(("status", "operation", "reserved_usd_micros", "mode"), row)) if row else None
 
     def finish(self, request_id, status, *, operation=None, tokens=None, measured_cost=None):
         if status not in {"complete", "submitted", "unknown", "failed"}:

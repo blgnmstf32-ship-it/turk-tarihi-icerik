@@ -12,6 +12,7 @@ from pathlib import Path
 import re
 import tempfile
 import wave
+import uuid
 
 import requests
 
@@ -19,6 +20,7 @@ MODEL = "gemini-3.8-flash-tts"
 VOICE = "Charon"
 BEAUTY_VOICES = frozenset({"Sulafat", "Aoede", "Kore", "Leda", "Zephyr"})
 ALIGNMENT_MODEL = "small"
+LOCAL_LIMIT = (1, 12_000, 8)
 # Approved by the owner after listening to voice-comparison run 45601433415.
 APPROVED_AUDIO = {
     "169a62476f05eb536c82d9b67c9dd7dc8e4017d93324ca20e6a3dfcaee81f866":
@@ -175,7 +177,7 @@ def approved_recording(directory, script):
     return raw, duration
 
 
-def narrate(segments, output, confirmed, *, approved_voice=None):
+def narrate(segments, output, confirmed, *, approved_voice=None, voice_info=None):
     from scripts.speech_audit import load_local_model, transcribe_local
 
     if approved_voice is None:
@@ -183,13 +185,56 @@ def narrate(segments, output, confirmed, *, approved_voice=None):
     # Check the local alignment model before any external request.
     model = load_local_model(ALIGNMENT_MODEL)
     script = "\n".join(segment["spoken"] for segment in segments)
-    raw, duration = (approved_recording(approved_voice, script) if approved_voice is not None
-                     else request_audio(script, confirmed))
+    script_hash = hashlib.sha256(script.encode()).hexdigest()
+    metadata = {"model": MODEL, "voice": VOICE, "script_sha256": script_hash}
+    if approved_voice is not None:
+        raw, duration = approved_recording(approved_voice, script)
+        source, calls = "approved_charon_recording", 0
+    else:
+        from scripts.provider_budget import Budget
+        cache_key = hashlib.sha256(json.dumps([MODEL, VOICE, STYLE, script_hash]).encode()).hexdigest()
+        cache = Path(os.getenv("GEMINI_AUDIO_CACHE", ".cache/gemini-voice")) / cache_key
+        cache.mkdir(parents=True, exist_ok=True)
+        receipt, wav = cache / "receipt.json", cache / "narration.wav"
+        if receipt.is_file() and wav.is_file():
+            raw = wav.read_bytes()
+            saved = json.loads(receipt.read_text(encoding="utf-8"))
+            if (any(saved.get(k) != v for k, v in metadata.items())
+                    or saved.get("audio_sha256") != hashlib.sha256(raw).hexdigest()):
+                raise ValueError("Gemini ses önbelleği doğrulanamadı.")
+            with wave.open(io.BytesIO(raw), "rb") as stream:
+                duration = stream.getnframes() / stream.getframerate()
+            source, calls = "cached_charon_recording", 0
+        else:
+            budget = Budget(os.getenv("GEMINI_QUOTA_DB", ".cache/gemini-quota.sqlite3"))
+            request_id = uuid.uuid4().hex
+            estimate = len(script.encode()) + len(STYLE.encode())
+            if not budget.reserve_free(request_id, "tarih", MODEL, estimate, LOCAL_LIMIT):
+                raise RuntimeError("Gemini seslendirmesi yerel RPM/TPM/RPD kotasında durduruldu.")
+            try:
+                raw, duration = request_audio(script, confirmed)
+                budget.finish(request_id, "complete", tokens=(estimate, round(duration * 25)))
+            except (ValueError, RuntimeError, OSError):
+                budget.finish(request_id, "unknown")
+                raise
+            source, calls = "live_charon", 1
     output = Path(output)
     with tempfile.TemporaryDirectory(dir=output.parent) as work:
         audio = Path(work) / "gemini.wav"
         audio.write_bytes(raw)
         transcript = transcribe_local(audio, model=model)
         cues = align_captions(segments, transcript["words"], duration, compact=True)
+        metadata["audio_sha256"] = hashlib.sha256(raw).hexdigest()
+        if source == "live_charon" and cues[0]["end"] <= 3:
+            # A receipt is written last. Readers never trust a partially cached take.
+            with tempfile.TemporaryDirectory(dir=cache) as working:
+                temp_wav = Path(working) / wav.name
+                temp_receipt = Path(working) / receipt.name
+                temp_wav.write_bytes(raw)
+                temp_receipt.write_text(json.dumps(metadata), encoding="utf-8")
+                temp_wav.replace(wav)
+                temp_receipt.replace(receipt)
         audio.replace(output)
+    if voice_info is not None:
+        voice_info.update(metadata, source=source, cloud_requests=calls)
     return cues

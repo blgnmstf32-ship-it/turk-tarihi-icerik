@@ -1,0 +1,24 @@
+{
+  "tarih": {
+    "name": "Tarihin Bilinmeyen Gerçekleri",
+    "drafts": "output/tarih",
+    "reel_times": ["12:00", "16:00", "19:00"],
+    "story_times": ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:30", "21:00", "22:30"],
+    "timezone": "Europe/Istanbul",
+    "voice": "Charon",
+    "theme": {"base": "#15212a", "accent": "#e3bd79", "type": "DejaVu Sans"},
+    "model_library": "remotion/History3DScene.tsx"
+  },
+  "bakim": {
+    "name": "Güzellik ve Kişisel Bakım",
+    "drafts": "output/bakim",
+    "reel_times": ["13:00", "20:00"],
+    "story_times": ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00", "19:30", "21:00", "22:30"],
+    "timezone": "Europe/Istanbul",
+    "preview_voice": "Sulafat",
+    "approved_voice": null,
+    "voice_choices": ["Sulafat", "Aoede", "Kore", "Leda", "Zephyr"],
+    "theme": {"base": "#301d34", "accent": "#f0b9ae", "type": "DejaVu Serif"},
+    "model_library": "scripts/beauty_model.py"
+  }
+}

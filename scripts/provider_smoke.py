@@ -11,7 +11,7 @@ import time
 from scripts.daily_editorial import write_json
 from scripts.editorial_state import EditorialState
 from scripts.gemini_editorial import GeminiReviewSession
-from scripts.nano_banana import collect_batch, submit, MODEL
+from scripts.nano_banana import collect_batch, identity, submit, MODEL
 from scripts.provider_budget import Budget, image_quote
 
 LEDGER_REF = "refs/heads/provider-cost-ledger"
@@ -70,7 +70,7 @@ def free_checks(out):
 
         review = sessions.evaluate(role, 'Kısa JSON ver: {"draft_only":"evet"}.',
                                    {"subject": "tarih ve kişisel bakım için taslak editoryal inceleme"},
-                                   validate, namespace="provider-smoke-v1", max_tokens=768)
+                                   validate, namespace="provider-smoke-v1", max_tokens=768, primary_only=True)
         results.append({key: review.get(key) for key in
                         ("role", "status", "model", "provider", "response_source", "http_status", "attempts")})
     confirmed = sum(row["status"] == "proposal" and row["provider"] == "gemini" for row in results)
@@ -83,26 +83,43 @@ def free_checks(out):
         raise RuntimeError("Üç ücretsiz Gemini/Gemma model doğrulamasından en az biri başarısız.")
 
 
-def paid_check(out, mode, confirmed):
+def paid_check(out, mode, confirmed, *, collect_only=False):
     state = RemoteJournal(out / "private-budget.sqlite3")
     budget = Budget(state.path)
     quote = image_quote(mode, 1)
     write_json(out / "NANO_BANANA_QUOTE.json", {"model": MODEL, "count": 1, "mode": mode,
                "reserved_usd": quote / 1_000_000, "image_only": True, "instagram_auto_publish": False})
-    report = submit(budget, state.sync, "tarih", [PROMPT], out / "NANO_BANANA_SAMPLE.jpg",
-                    mode=mode, confirmed=confirmed)
-    write_json(out / "NANO_BANANA_TEST.json", report)
-    if report["state"] == "submitted":
-        for _ in range(10):
-            time.sleep(35)
-            result = collect_batch(budget, state.sync, report["id"], out, confirmed=confirmed)
-            if result["state"] == "complete":
-                report = {**report, **result}
-                write_json(out / "NANO_BANANA_TEST.json", report)
-                break
+    try:
+        if collect_only:
+            uid = identity("tarih", json.dumps([PROMPT], ensure_ascii=False))
+            prior = budget.entry(uid)
+            if not prior or not prior["operation"]:
+                raise RuntimeError("Sorgulanabilir Nano Banana pilot işi bulunamadı.")
+            report = {"id": uid, "operation": prior["operation"], "state": "submitted",
+                      "model": MODEL, "mode": prior["mode"], "cloud_requests": 0}
         else:
-            raise RuntimeError("Nano Banana Batch bekliyor. Aynı iş yeniden satın alınmadan tekrar sorgulanabilir.")
-    write_json(out / "NANO_BANANA_BUDGET.json", budget.report())
+            report = submit(budget, state.sync, "tarih", [PROMPT], out / "NANO_BANANA_SAMPLE.jpg",
+                            mode=mode, confirmed=confirmed)
+        write_json(out / "NANO_BANANA_TEST.json", report)
+        if report["state"] == "submitted":
+            for poll, delay in enumerate((0, 8, 16, 24, 35, 45, 55, 55, 55, 55), 1):
+                if delay:
+                    time.sleep(delay)
+                try:
+                    result = collect_batch(budget, state.sync, report["id"], out, confirmed=confirmed)
+                except RuntimeError as exc:
+                    if not any(f"HTTP {code}." in str(exc) for code in (429, 500, 502, 503, 504)):
+                        raise
+                    continue
+                report = {**report, **result, "poll_requests": poll}
+                write_json(out / "NANO_BANANA_TEST.json", report)
+                if result["state"] == "complete":
+                    break
+            else:
+                raise RuntimeError("Nano Banana Batch bekliyor. Aynı iş yeniden satın alınmadan tekrar sorgulanabilir.")
+    finally:
+        write_json(out / "NANO_BANANA_BUDGET.json", budget.report())
+        write_json(out / "NANO_BANANA_MONTH_PLAN.json", budget.image_schedule())
 
 
 def main():
@@ -111,15 +128,16 @@ def main():
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--mode", choices=("batch", "standard"), default="batch")
     parser.add_argument("--allow-one-paid-image", action="store_true")
+    parser.add_argument("--collect-only", action="store_true")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     try:
         if args.check == "free":
             free_checks(args.out)
         else:
-            if not args.allow_one_paid_image or os.getenv("GITHUB_REF_NAME") != "main":
+            if not args.allow_one_paid_image or (not args.collect_only and os.getenv("GITHUB_REF_NAME") != "main"):
                 raise RuntimeError("Ücretli test main ve bir görsel için açık onay gerektirir.")
-            paid_check(args.out, args.mode, args.allow_one_paid_image)
+            paid_check(args.out, args.mode, args.allow_one_paid_image, collect_only=args.collect_only)
     except (ValueError, RuntimeError, OSError, subprocess.SubprocessError) as exc:
         write_json(args.out / "PROVIDER_FAILURE.json", {"status": "failed", "reason": str(exc)})
         parser.exit(1, str(exc) + "\n")

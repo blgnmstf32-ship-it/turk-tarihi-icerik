@@ -61,7 +61,18 @@ def image_result(data, output):
     return {"width": width, "height": height, "input_tokens": usage.get("promptTokenCount"),
             "output_tokens": usage.get("candidatesTokenCount"), "image_tokens": counts.get("IMAGE"),
             "thinking_tokens": usage.get("thoughtsTokenCount", 0),
+            "model_version": data.get("modelVersion") if isinstance(data.get("modelVersion"), str) else None,
             "sha256": hashlib.sha256(Path(output).read_bytes()).hexdigest()}
+
+
+def measured_image_cost(mode, info):
+    values = [info.get(k) for k in ("input_tokens", "output_tokens", "image_tokens", "thinking_tokens")]
+    if any(type(value) is not int or value < 0 for value in values):
+        return None
+    inputs, outputs, images, thinking = values
+    if images > outputs or not images:
+        return None
+    return image_quote(mode, 1, input_tokens=inputs, output_text_tokens=outputs-images+thinking, image_tokens=images)
 
 
 def submit(budget, sync, brand, prompts, path, *, confirmed, mode="batch", requester=None):
@@ -99,7 +110,7 @@ def submit(budget, sync, brand, prompts, path, *, confirmed, mode="batch", reque
             raise RuntimeError(f"Nano Banana HTTP {status}. İstek otomatik tekrarlanmadı.")
         data = response.json()
         report = {"id": uid, "brand": brand, "model": MODEL, "mode": mode, "state": "submitted",
-                  "quoted_usd_micros": quote, "cloud_requests": 1}
+                  "quoted_usd_micros": quote, "cloud_requests": 1, "submit_http_status": response.status_code}
         if mode == "batch":
             operation = data["name"]
             if not re.fullmatch(r"batches/[a-zA-Z0-9_-]+", operation):
@@ -107,8 +118,11 @@ def submit(budget, sync, brand, prompts, path, *, confirmed, mode="batch", reque
             budget.finish(uid, "submitted", operation=operation)
             return {**report, "operation": operation}
         info = image_result(data, path)
-        budget.finish(uid, "complete", tokens=(info["input_tokens"], info["output_tokens"]))
-        return {**report, **info, "state": "complete", "output": path.name}
+        measured = measured_image_cost(mode, info)
+        budget.finish(uid, "complete", tokens=(info["input_tokens"], info["output_tokens"]),
+                      measured_cost=max(quote, measured) if measured is not None else None)
+        return {**report, **info, "state": "complete", "output": path.name,
+                "estimated_metered_usd_micros": measured}
     except (requests.RequestException, KeyError, ValueError, OSError, TypeError, IndexError, binascii.Error):
         budget.finish(uid, "unknown")
         raise RuntimeError("Nano Banana bağlantısı veya çıktısı doğrulanamadı. Rezervasyon korundu.") from None
@@ -116,7 +130,7 @@ def submit(budget, sync, brand, prompts, path, *, confirmed, mode="batch", reque
         sync()
 
 
-def collect_batch(budget, sync, uid, out, *, confirmed, requester=None):
+def collect_batch(budget, sync, uid, out, *, confirmed, expected_count=1, requester=None):
     entry = budget.entry(uid)
     if not entry or not entry["operation"] or entry["status"] not in {"submitted", "complete"}:
         raise RuntimeError("Geçerli bir Batch kaydı gerekli.")
@@ -130,24 +144,34 @@ def collect_batch(budget, sync, uid, out, *, confirmed, requester=None):
         if response.status_code != 200:
             raise RuntimeError(f"Batch durum kontrolü HTTP {response.status_code}.")
         data = response.json()
-        if not data.get("done"):
-            return {"id": uid, "operation": operation, "state": "submitted", "poll_requests": 1}
-        if "error" in data:
+        status = data.get("state") or data.get("metadata", {}).get("state")
+        if ("error" in data or status in {"JOB_STATE_FAILED", "JOB_STATE_EXPIRED", "JOB_STATE_CANCELLED",
+                                         "BATCH_STATE_FAILED", "BATCH_STATE_EXPIRED", "BATCH_STATE_CANCELLED"}):
             budget.finish(uid, "failed")
             sync()
             raise RuntimeError("Gemini Batch işini tamamlayamadı. Rezervasyon korundu.")
-        rows = data["response"]["inlinedResponses"]["inlinedResponses"]
-        if not rows or len(rows) > 35:
+        if not data.get("done") and status not in {"JOB_STATE_SUCCEEDED", "BATCH_STATE_SUCCEEDED"}:
+            return {"id": uid, "operation": operation, "state": "submitted", "poll_requests": 1}
+        result = data.get("dest") or data["response"]
+        rows = result["inlinedResponses"]
+        if isinstance(rows, dict):
+            rows = rows["inlinedResponses"]
+        if not 1 <= expected_count <= 35 or len(rows) != expected_count:
             raise ValueError("Batch görsel sonuç sayısı geçersiz.")
         images = []
         for row in rows:
             number = int(row["metadata"]["key"])
-            if number < 0 or number >= 35 or any(item["index"] == number for item in images):
+            if number < 0 or number >= expected_count or any(item["index"] == number for item in images):
                 raise ValueError("Batch sonucu anahtarı geçersiz.")
             images.append({"index": number, **image_result(row["response"], out / f"image-{number:02d}.jpg")})
+        estimates = [measured_image_cost(entry["mode"], image) for image in images]
+        measured = sum(estimates) if all(value is not None for value in estimates) else None
         budget.finish(uid, "complete", tokens=(
-            sum(x["input_tokens"] or 0 for x in images), sum(x["output_tokens"] or 0 for x in images)))
+            sum(x["input_tokens"] or 0 for x in images), sum(x["output_tokens"] or 0 for x in images)),
+            measured_cost=max(entry["reserved_usd_micros"], measured) if measured is not None else None)
         sync()
-        return {"id": uid, "operation": operation, "state": "complete", "poll_requests": 1, "images": images}
+        return {"id": uid, "operation": operation, "state": "complete", "poll_requests": 1,
+                "poll_http_status": response.status_code, "images": images, "requested_model": MODEL,
+                "estimated_metered_usd_micros": measured, "price_reference": PRICE_URL}
     except (requests.RequestException, KeyError, ValueError, IndexError, TypeError, OSError):
         raise RuntimeError("Batch durumu veya görseller doğrulanamadı. Rezervasyon korundu.") from None
