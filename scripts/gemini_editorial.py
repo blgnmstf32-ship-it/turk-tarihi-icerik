@@ -39,7 +39,7 @@ def gemini_authorized():
 
 class GeminiReviewSession:
     def __init__(self, key, state, *, prior_calls=0, requester=None, brand="tarih", quota_path=None,
-                 sleep=time.sleep):
+                 sleep=time.sleep, max_attempts=8, wait_for_slot=False):
         self.key = free_project_key(gemini_authorized())
         if self.key == os.getenv("GEMINI_IMAGE_API_KEY", "").strip():
             raise RuntimeError("Ücretsiz metin ve ücretli görsel anahtarları aynı olamaz.")
@@ -55,10 +55,14 @@ class GeminiReviewSession:
         self.stop_reason = None
         self.failed_models = set()
         self.sleep = sleep
+        self.max_attempts = max_attempts
+        self.wait_for_slot = wait_for_slot
 
     def evaluate(self, role, instruction, prompt, parse_answer, namespace="editorial-v1", max_tokens=1600,
-                 reserve_calls=0, result_tool=None, primary_only=False):
-        model = model_for(role, prompt)
+                 reserve_calls=0, result_tool=None, primary_only=False, requested_model=None):
+        model = requested_model or model_for(role, prompt)
+        if model not in LIMITS:
+            raise ValueError("Model is not in the free editorial allowlist.")
         full_input = instruction + "\n\n" + json.dumps(prompt, ensure_ascii=False, sort_keys=True)
         full_input = full_input.replace(self.key, "[REDACTED]")
         cache = "gemini:" + hashlib.sha256(json.dumps(
@@ -71,12 +75,17 @@ class GeminiReviewSession:
         routes = (model, model) if primary_only else (model, model, MODEL_ALTERNATIVES[model])
         attempts = []
         for index, route in enumerate(routes):
-            if route in self.failed_models or self.gemini_attempts >= 8:
+            if route in self.failed_models or self.gemini_attempts >= self.max_attempts - reserve_calls:
                 continue
             call_id = uuid.uuid4().hex
             if not self.budget.reserve_free(call_id, self.brand, route, reserved_tokens, LIMITS[route]):
-                self.failed_models.add(route)
-                continue
+                delay = self.budget.free_slot_delay(route, reserved_tokens, LIMITS[route])
+                if self.wait_for_slot and delay is not None and 0 < delay <= 61:
+                    self.sleep(delay)
+                    if not self.budget.reserve_free(call_id, self.brand, route, reserved_tokens, LIMITS[route]):
+                        continue
+                else:
+                    continue
             self.gemini_attempts += 1
             use_interactions = index == 1 and route != GEMMA
             answer, attempt = self._call(route, full_input, parse_answer, max_tokens, call_id,
@@ -91,7 +100,7 @@ class GeminiReviewSession:
             if status in {401, 403}:
                 self.failed_models.update(LIMITS)
                 break
-            retryable = status in TRANSIENT or status is None
+            retryable = status in TRANSIENT or status is None or status == 200
             delay = max(2 ** (index + 1), attempt.get("retry_after_seconds") or 0)
             if not retryable or delay > MAX_RETRY_DELAY or index == 1:
                 self.failed_models.add(route)
@@ -101,7 +110,7 @@ class GeminiReviewSession:
             "status": "gemini_local_quota_or_cooldown", "model": model,
             "actual_llm_used": False, "http_status": None, "requested_model": model}
 
-        if self.fallback:
+        if self.fallback and not primary_only:
             before_calls, before_cache = self.fallback.calls, self.fallback.cached_roles
             outcome = self.fallback.evaluate(role, instruction, prompt, parse_answer, namespace,
                                              max_tokens, reserve_calls, result_tool)

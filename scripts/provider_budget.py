@@ -92,6 +92,28 @@ class Budget:
         return self._reserve((request_id, brand, "gemini-free", model, "standard", day, now.timestamp(),
                               tokens, 0, 0, "pending", None), allowed)
 
+    def free_slot_delay(self, model, tokens, limits, now=None):
+        """Seconds until the next model minute slot, or None when today's budget is spent."""
+        now = now or datetime.now(timezone.utc)
+        day, end = now.astimezone(PACIFIC).date().isoformat(), now.timestamp()
+        rpm, tpm, rpd = limits
+        daily = self.db.execute("SELECT count(*) FROM usage WHERE project='gemini-free' AND model=? AND date=?",
+                                (model, day)).fetchone()[0]
+        if daily >= rpd or tokens > tpm:
+            return None
+        pending = self.db.execute("""
+            SELECT time, in_tokens FROM usage WHERE project='gemini-free' AND model=? AND time>?
+            ORDER BY time""", (model, end-60)).fetchall()
+        used = sum(amount for _, amount in pending)
+        delay, count = 0, len(pending)
+        for started, amount in pending:
+            if count < rpm and used + tokens <= tpm:
+                break
+            delay = max(delay, started + 60.1 - end)
+            count -= 1
+            used -= amount
+        return delay
+
     def entry(self, request_id):
         row = self.db.execute("SELECT status, operation, amount, mode FROM usage WHERE id=?", (request_id,)).fetchone()
         return dict(zip(("status", "operation", "reserved_usd_micros", "mode"), row)) if row else None
