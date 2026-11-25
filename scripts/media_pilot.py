@@ -29,7 +29,7 @@ from scripts.subtitles import create_timed
 PACKAGE = ROOT / "media_pilot"
 FPS = 30
 HASHES = {
-    "history_video": "fb000221e47741497ff6025f342098c067cf6e9189de557c7246fec2617a2084",
+    "history_video": "58ce9221ba434332c1246edcb29ddc504766404c3bd823debc4394fb1d972d3b",
     "beauty_video": "f660f1a0991cf8edb3b1af7e295ad0f456faa7cd3eb017238abc3652a59ef80c",
     "history_voice": "3c1b6e038fa28d36289146d63dcf0e0b5c17b56a62beb4b444ba7e4144d0d83b",
     "beauty_voice": "811b614f858a4e0ce112547adfdcad64e5af6084d095f975b5525c9f636eb333",
@@ -409,7 +409,11 @@ def main():
         retrieval = download_self_authored(Path(root))
     model = load_local_model(str(args.model))
     for brand, profile in read(PACKAGE/"profiles.json").items():
-        results[brand] = brand_pilot(args,brand,profile,args.out/brand,model)
+        try:
+            results[brand] = brand_pilot(args,brand,profile,args.out/brand,model)
+        except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as exc:
+            write(args.out/"FAILURE.json", {"brand": brand, "type":type(exc).__name__, "message":str(exc)})
+            raise
     note = {"status":"review_only","provider_cost_usd":0,"instagram_auto_publish":False,
             "daily_production":False,"yt_dlp":retrieval,"ffmpeg":run(["ffmpeg","-version"])[0].splitlines()[0],
             "brands":results}
