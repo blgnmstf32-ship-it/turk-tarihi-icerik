@@ -1,0 +1,94 @@
+name: Bakım · Sulafat ve tek Nano Banana sahnesi
+on:
+  push:
+    branches: [editorial-recovery]
+    paths: [.github/workflows/beauty_recovery_assets.yml]
+concurrency:
+  group: nano-shared-paid-job
+  cancel-in-progress: false
+jobs:
+  live-assets:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt
+      - name: Verify and save live Sulafat
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          from scripts.gemini_tts import MODEL, request_audio
+          from scripts.daily_editorial import write_json
+          lines = [
+              "Duştan sonra beklemeyin.",
+              "Cildiniz kuruluğa yatkınsa, nemlendiricinin ne zaman sürüldüğüne dikkat edin.",
+              "Amerikan Dermatoloji Akademisi, duştan sonra cilt hâlâ hafif nemliyken nemlendirici sürmeyi öneriyor. Aynı öneri, ellerinizi yıkadıktan sonra da geçerli.",
+              "Duşu beş ila on dakika arasında tutmayı, sıcak su yerine ılık su kullanmayı öneriyor. Kurulanırken havluyu cildinize sürtmek yerine yumuşakça dokundurun.",
+              "Akademinin bir diğer önerisi, kuru cilt için losyon yerine parfüm içermeyen bir krem veya merhem kullanmak. Etikette parfüm içermediğini belirten ifadeyi arayın.",
+              "Bir ürünün kokusunu almamanız parfüm içermediği anlamına gelmeyebilir. Kokuyu maskelemek için eklenen maddeler bulunabilir.",
+              "Elleriniz de kuruyorsa, bulaşık yıkarken veya elleriniz uzun süre suyla temas ederken eldiven kullanmayı düşünebilirsiniz. Akademi, soğuk ve kuru havada elleri koruyan eldivenleri de öneriyor.",
+              "Kısacası, kuru cilt için ılık su, nazik kurulama ve cilt nemliyken bakım bir arada düşünülebilir.",
+              "Bu adımlara rağmen kuruluk geçmezse veya cildinizde yanma olursa bir dermatoloğa danışın. Kaynak bağlantısını açıklamaya ekledik.",
+          ]
+          out = Path("output/beauty-assets")
+          out.mkdir(parents=True, exist_ok=True)
+          script = "\n".join(lines)
+          try:
+              raw, duration = request_audio(script, True, brand="bakim", voice="Sulafat")
+          except (RuntimeError, ValueError) as exc:
+              write_json(out / "SULAFAT_FAILURE.json", {"status": "failed", "reason": str(exc)})
+              raise SystemExit(str(exc))
+          (out / "SULAFAT.wav").write_bytes(raw)
+          write_json(out / "SULAFAT.json", {"model": MODEL, "voice": "Sulafat", "preview": True,
+                     "seconds": duration, "cloud_requests": 1, "script_sha256": hashlib.sha256(script.encode()).hexdigest(),
+                     "sha256": hashlib.sha256(raw).hexdigest()})
+          PY
+      - name: Request one reserved beauty Batch visual
+        env:
+          GEMINI_IMAGE_API_KEY: ${{ secrets.GEMINI_IMAGE_API_KEY != secrets.GEMINI_API_KEY && secrets.GEMINI_IMAGE_API_KEY || '' }}
+        run: |
+          python - <<'PY'
+          import time
+          from pathlib import Path
+          from scripts.daily_editorial import write_json
+          from scripts.nano_banana import MODEL, submit, collect_batch
+          from scripts.provider_budget import Budget
+          from scripts.provider_smoke import RemoteJournal
+          out = Path("output/beauty-assets")
+          prompt = "A vertical 9:16 editorial beauty photograph for a Turkish dermatologist-informed skin care video. A plain unlabeled moisturizer jar, folded cream towel and drops of water on warm lilac ceramic beside a softly lit bathroom basin. Plum accents and soft directional daylight, premium product styling, low contrast bottom third for subtitles, generous negative space, no letters or logos, no people, no before-and-after claims."
+          journal = RemoteJournal(out / "private-ledger.sqlite3")
+          budget = Budget(journal.path)
+          try:
+              report = submit(budget, journal.sync, "bakim", [prompt], out / "BAKIM_AI.jpg", confirmed=True)
+              write_json(out / "BAKIM_IMAGE.json", report)
+              for delay in (0, 12, 24, 36, 48, 55, 55, 55, 55):
+                  time.sleep(delay)
+                  result = collect_batch(budget, journal.sync, report["id"], out, confirmed=True)
+                  write_json(out / "BAKIM_IMAGE.json", {**report, **result})
+                  if result["state"] == "complete":
+                      break
+              else:
+                  raise RuntimeError("Bakım Batch işi beklemede. Yeniden gönderilmedi.")
+          except (RuntimeError, ValueError, OSError) as exc:
+              write_json(out / "BAKIM_IMAGE_FAILURE.json", {"status": "failed_or_pending", "reason": str(exc)})
+              raise SystemExit(str(exc))
+          finally:
+              write_json(out / "BUDGET.json", budget.report())
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: beauty-sulafat-and-nano-assets
+          path: |
+            output/beauty-assets/*.json
+            output/beauty-assets/*.wav
+            output/beauty-assets/*.jpg
+          retention-days: 7
