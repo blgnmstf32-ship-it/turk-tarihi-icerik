@@ -1,0 +1,81 @@
+name: Gemini · Model, bütçe ve Nano Banana doğrulaması
+on:
+  workflow_dispatch:
+    inputs:
+      free_tier:
+        description: Onaylı GEMINI_API_KEY faturalandırmasız projeye ait
+        type: boolean
+        default: false
+      one_paid_image:
+        description: Tek Nano Banana 2 Lite Batch görseli (yaklaşık 0,01694 USD rezervasyon)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: provider-integration-validation
+  cancel-in-progress: false
+
+jobs:
+  free-models:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -q
+      - name: Verify free Flash, Flash-Lite, and Gemma without fallback
+        env:
+          GEMINI_FREE_TIER_CONFIRMED: ${{ inputs.free_tier && '1' || '0' }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ENABLE_GEMINI_EDITORIAL: '1'
+        run: python -m scripts.provider_smoke free --out output/free-provider
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gemini-free-model-results
+          path: |
+            output/free-provider/FREE_GEMINI_TEST.json
+            output/free-provider/PROVIDER_FAILURE.json
+          if-no-files-found: warn
+          retention-days: 7
+  history:
+    if: inputs.free_tier == true
+    uses: ./.github/workflows/produce.yml
+    with:
+      topic: piri-reis-kayip-kaynak
+      approved_piri: true
+      daily: true
+  image:
+    if: always() && inputs.one_paid_image == true && github.ref == 'refs/heads/main' && needs.history.result == 'success'
+    needs: [free-models, history]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - name: Request one Nano Banana Batch image and verify the returned raster
+        env:
+          GEMINI_IMAGE_API_KEY: ${{ secrets.GEMINI_IMAGE_API_KEY != secrets.GEMINI_API_KEY && secrets.GEMINI_IMAGE_API_KEY || '' }}
+        run: python -m scripts.provider_smoke paid --mode batch --allow-one-paid-image --out output/paid-provider
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nano-banana-image-results
+          path: |
+            output/paid-provider/*.json
+            output/paid-provider/*.jpg
+          if-no-files-found: warn
+          retention-days: 14
