@@ -37,13 +37,20 @@ class EditorialIntelligenceTests(unittest.TestCase):
         ideas = score_ideas({}, [])
         requested = []
         def post(url, **kwargs):
-            data = json.loads(kwargs["json"]["messages"][1]["content"])
+            payload = kwargs["json"]
+            data = json.loads(payload["messages"][1]["content"])
             assigned = data.get("ranked_candidates", [])
             requested.append([candidate["id"] for candidate in assigned])
-            answer = {"rationale": "Kaynakları incele", "idea_reviews":[
-                {"idea_id": candidate["id"], "source_number": 1, "rationale": "Bir ayrıntıyı büyüt.",
-                 "open_question": "Nasıl doğrulanır?"} for candidate in assigned]}
-            return Response(data={"model":"test/free","choices":[{"message":{"content":json.dumps(answer)}}]})
+            answer = {"rationale": "Kaynakları incele"}
+            message = {"content": json.dumps(answer)}
+            if assigned:
+                schema = payload["tools"][0]["function"]["parameters"]["properties"]["idea_reviews"]
+                self.assertEqual(schema["required"], requested[-1])
+                answer["idea_reviews"] = {idea_id: {"rationale": "Bir ayrıntıyı büyüt.",
+                    "open_question": "Nasıl doğrulanır?"} for idea_id in requested[-1]}
+                message = {"content": None, "tool_calls":[{"function":{
+                    "name":"submit_idea_reviews", "arguments":json.dumps(answer)}}]}
+            return Response(data={"model":"test/free","choices":[{"message":message}]})
         with tempfile.TemporaryDirectory() as tmp, patch.dict("os.environ", {
                 "ENABLE_FREE_LLM":"1", "OPENROUTER_API_KEY":"test-key"}, clear=True):
             result = review({"editorial_intelligence":{"free_llm_enabled":True}}, ideas, {}, post,
