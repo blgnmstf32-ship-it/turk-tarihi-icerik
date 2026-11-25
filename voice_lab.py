@@ -1,4 +1,4 @@
-"""Independent, unpublished comparison of two readings of the verified Piri Reis script."""
+"""Legacy voice-test helpers. Production is now Charon-only."""
 from __future__ import annotations
 
 import argparse
@@ -20,7 +20,6 @@ from scripts.gemini_tts import MODEL as GEMINI_MODEL, VOICE, align_captions, req
 from scripts.illustrate import generate
 from scripts.release_check import check
 from scripts.run import ROOT, load_json
-from scripts.speech import MODEL as PIPER_MODEL, narrate_segments
 from scripts.speech_audit import load_local_model, transcribe_local
 from scripts.subtitles import create_timed
 
@@ -172,36 +171,5 @@ def render_side(name, out, scenes, voice, cues, segments, script, asr):
     return result
 
 
-def compare(out, model_cache):
-    topic, segments, script = topic_and_script()
-    receipt = validate_gemini_take(out, script)
-    gemini = out / "GEMINI_CHARON.wav"
-    piper = out / "PIPER.wav"
-    asr = load_local_model(ASR_MODEL)
-    gemini_cues = align_captions(segments, transcribe_local(gemini, model=asr)["words"], media_duration(gemini))
-    piper_cues = narrate_segments(segments, piper, model_cache)
-    if digest(gemini.read_bytes()) == digest(piper.read_bytes()):
-        raise ValueError("Karşılaştırma için iki ayrı kaynak ses gerekiyor.")
-    (out / "NARRATION_TR.txt").write_text(script + "\n", encoding="utf-8")
-    scenes, licensed = prepare_visuals(topic, out)
-    takes = {"Gemini Charon": render_side("GEMINI_CHARON", out, scenes, gemini, gemini_cues, segments, script, asr),
-             "Piper": render_side("PIPER", out, scenes, piper, piper_cues, segments, script, asr)}
-    json_file(out / "SES_KARSILASTIRMA.json", {"status": "technical_checks_passed", "topic": TOPIC_ID,
-              "openrouter_calls": 0, "gemini": receipt, "piper_model": PIPER_MODEL, "licensed_visuals": licensed,
-              "instagram_published": False, "human_approval_required": True,
-              "asr_model": ASR_MODEL, "takes": takes,
-              "human_checks": ["Piri Reis, Gelibolu, Kristof Kolomb ve Topkapı adlarının telaffuzu",
-                               "Belgesel tonu, vurgu ve anlamlı duraklar", "Son MP4 üzerinde altyazı uyumu"]})
-
-
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("stage", choices=("gemini", "compare"))
-    parser.add_argument("--out", type=Path, required=True)
-    parser.add_argument("--model-cache", type=Path, default=Path(".cache/piper"))
-    parser.add_argument("--confirm-gemini-free-project", action="store_true")
-    args = parser.parse_args()
-    if args.stage == "gemini":
-        gemini_take(args.out, args.confirm_gemini_free_project)
-    else:
-        compare(args.out, args.model_cache)
+    raise SystemExit("Karşılaştırma emekli edildi. Charon için scripts.auto_produce kullanın.")
