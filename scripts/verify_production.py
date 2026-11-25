@@ -15,7 +15,7 @@ from scripts.run import ROOT, load_json, select_topic
 from scripts.speech_audit import compare_reference
 
 
-def verify(out, explicit_topic=""):
+def verify(out, explicit_topic="", *, require_approved_charon=False, require_3d=False):
     out = Path(out)
     board = load_json(out / "editorial" / "EDITORIAL_DECISION_REPORT.json")
     report = load_json(out / "AUTO_REPORT.json")
@@ -62,13 +62,23 @@ def verify(out, explicit_topic=""):
     audio_path = out / "narration.wav"
     duration = media_duration(audio_path)
     captions = subtitle_cues(out / "subtitles.srt")
-    assess("narration", bool(report["voice_generated"] and 60 <= duration <= 75 and captions),
+    from scripts.gemini_tts import APPROVED_AUDIO, MODEL, VOICE
+    import hashlib
+    gen = report.get("voice_generation", {})
+    verified_reuse = (gen.get("source") == "approved_charon_recording" and gen.get("cloud_requests") == 0
+                      and APPROVED_AUDIO.get(hashlib.sha256(reference.strip().encode()).hexdigest()) ==
+                      hashlib.sha256(audio_path.read_bytes()).hexdigest())
+    assess("narration", bool(report["voice_generated"] and 60 <= duration <= 75 and captions
+                             and gen.get("model") == MODEL and gen.get("voice") == VOICE
+                             and (verified_reuse or (not require_approved_charon
+                                  and gen.get("source") == "live_charon" and gen.get("cloud_requests") == 1))),
            provider=report["voice_provider"], duration_seconds=round(duration, 2),
-           caption_cues=len(captions), gemini_live=report.get("voice_generation") is not None)
+           caption_cues=len(captions), gemini_live=gen.get("cloud_requests") == 1, approved_reuse=verified_reuse)
 
     scenes = collect_scenes(out / "scenes")
     licensed = report["licensed_visual_count"]
-    assess("visuals", len(scenes) >= 10 and (out / "MEDIA_ATTRIBUTION.md").is_file(),
+    assess("visuals", len(scenes) >= 10 and (out / "MEDIA_ATTRIBUTION.md").is_file()
+           and (not require_3d or report["three_d"]["status"] == "rendered"),
            distinct_input_scenes=len(scenes), licensed_visual_count=licensed, visual_kind=report["visual_kind"],
            realistic_visuals_gate=report["realistic_visuals_gate"], three_d_status=report["three_d"]["status"],
            three_d_scenes_rendered=report["three_d"]["scene_count_rendered"])
@@ -107,8 +117,11 @@ def main():
     parser.add_argument("--topic", default="")
     parser.add_argument("--require-llm", action="store_true")
     parser.add_argument("--require-specialists", action="store_true")
+    parser.add_argument("--require-approved-charon", action="store_true")
+    parser.add_argument("--require-3d", action="store_true")
     args = parser.parse_args()
-    result = verify(args.out, args.topic)
+    result = verify(args.out, args.topic, require_approved_charon=args.require_approved_charon,
+                    require_3d=args.require_3d)
     path = Path(args.out) / "E2E_REPORT.json"
     path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(path)

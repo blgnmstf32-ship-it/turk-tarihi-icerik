@@ -5,6 +5,8 @@ import base64
 import binascii
 from difflib import SequenceMatcher
 import io
+import hashlib
+import json
 import os
 from pathlib import Path
 import re
@@ -15,6 +17,12 @@ import requests
 
 MODEL = "gemini-3.8-flash-tts"
 VOICE = "Charon"
+ALIGNMENT_MODEL = "small"
+# Approved by the owner after listening to voice-comparison run 45601433415.
+APPROVED_AUDIO = {
+    "169a62476f05eb536c82d9b67c9dd8e4017d93324ca20e6a3dfcaee81f866":
+        "3c1b6e038fa28d36289146d63dcf0e0b5c17b56a62beb4b444ba7e4144d0d83b",
+}
 ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/interactions"
 STYLE = (
     "Türkiye Türkçesi konuşan, sıcak ve sinematik bir erkek belgesel anlatıcısı. "
@@ -86,7 +94,7 @@ def _tokens(text):
     return re.findall(r"[^\W_]+", text.translate(str.maketrans("Iİ", "ıi")).lower())
 
 
-def align_captions(segments, transcript_words, duration):
+def align_captions(segments, transcript_words, duration, *, compact=False):
     expected, spans = [], []
     for segment in segments:
         start = len(expected)
@@ -116,24 +124,62 @@ def align_captions(segments, transcript_words, duration):
         end = min(duration, times[-1][1])
         if end <= start:
             raise ValueError("Gemini altyazı zamanlaması geçersiz.")
-        cues.append({"start": start, "end": end, "text": segment["caption"]})
+        tokens = segment["caption"].split()
+        if compact and len(tokens) > 6 and [t for token in tokens for t in _tokens(token)] == expected[span.start:span.stop]:
+            chunks = [tokens[i:i + 5] for i in range(0, len(tokens), 5)]
+            if len(chunks[-1]) <= 2:
+                chunks[-2].extend(chunks.pop())
+            starts = [start]
+            offset = span.start
+            for chunk in chunks[:-1]:
+                offset += sum(len(_tokens(token)) for token in chunk)
+                # A missing boundary must not be replaced by a guessed word time.
+                if offset not in matched or not starts[-1] < matched[offset][0] < end:
+                    break
+                starts.append(matched[offset][0])
+            if len(starts) == len(chunks):
+                cues.extend({"start": a, "end": b, "text": " ".join(chunk)}
+                            for a, b, chunk in zip(starts, [*starts[1:], end], chunks))
+            else:
+                cues.append({"start": start, "end": end, "text": segment["caption"]})
+        else:
+            cues.append({"start": start, "end": end, "text": segment["caption"]})
         last_end = end
     return cues
 
 
-def narrate(segments, output, confirmed):
+def approved_recording(directory, script):
+    directory = Path(directory)
+    receipt = json.loads((directory / "GEMINI_RECEIPT.json").read_text(encoding="utf-8"))
+    raw = (directory / "GEMINI_CHARON.wav").read_bytes()
+    script_hash = hashlib.sha256(script.encode("utf-8")).hexdigest()
+    audio_hash = hashlib.sha256(raw).hexdigest()
+    if (APPROVED_AUDIO.get(script_hash) != audio_hash or receipt.get("audio_sha256") != audio_hash
+            or receipt.get("script_sha256") != script_hash or receipt.get("model") != MODEL
+            or receipt.get("voice") != VOICE or receipt.get("free_project_confirmed") is not True):
+        raise ValueError("Onaylı Charon kaydı, senaryo veya dosya doğrulaması eşleşmedi.")
+    with wave.open(io.BytesIO(raw), "rb") as stream:
+        duration = stream.getnframes() / stream.getframerate()
+    if not 60 <= duration <= 75:
+        raise ValueError("Onaylı Charon kaydının süresi üretim aralığında değil.")
+    return raw, duration
+
+
+def narrate(segments, output, confirmed, *, approved_voice=None):
     from scripts.speech_audit import load_local_model, transcribe_local
 
-    free_project_key(confirmed)
+    if approved_voice is None:
+        free_project_key(confirmed)
     # Check the local alignment model before any external request.
-    model = load_local_model("tiny")
+    model = load_local_model(ALIGNMENT_MODEL)
     script = "\n".join(segment["spoken"] for segment in segments)
-    raw, duration = request_audio(script, confirmed)
+    raw, duration = (approved_recording(approved_voice, script) if approved_voice is not None
+                     else request_audio(script, confirmed))
     output = Path(output)
     with tempfile.TemporaryDirectory(dir=output.parent) as work:
         audio = Path(work) / "gemini.wav"
         audio.write_bytes(raw)
         transcript = transcribe_local(audio, model=model)
-        cues = align_captions(segments, transcript["words"], duration)
+        cues = align_captions(segments, transcript["words"], duration, compact=True)
         audio.replace(output)
     return cues

@@ -49,7 +49,7 @@ def collect_scenes(folder):
     return images
 
 
-def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=1920,fps=30,three_scenes=None):
+def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=1920,fps=30,three_scenes=None,edit=None):
     """Render cinematic scene motion and active-word captions with Remotion."""
     scenes=collect_scenes(scenes_dir)
     audio=Path(audio_path).resolve();srt=Path(srt_path).resolve();out=Path(output_path).resolve()
@@ -69,15 +69,20 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=192
     copied=[]
     for src in scenes:
         shutil.copy2(src,public_dir/src.name)
-        copied.append({'src':f'scenes/{out.stem}/{src.name}'})
+        scene={'src':f'scenes/{out.stem}/{src.name}'}
+        if src.stem.endswith('_scene'):
+            scene['label']='TEMSİLÎ GÖRSEL'
+        copied.append(scene)
     three_scenes=three_scenes or []
-    allowed={'battle_map','city_flyover','siege','artifact_gears'}
+    allowed={'battle_map','city_flyover','siege','artifact_gears','atlantic_atlas'}
     for item in three_scenes:
         if item.get('kind') not in allowed:raise ValueError('Geçersiz 3D sahne türü')
         if item.get('from_sec',0)<0 or item.get('duration_sec',0)<=0:raise ValueError('3D sahne zamanlaması geçersiz')
         if item.get('from_sec',0)+item.get('duration_sec',0)>length:raise ValueError('3D sahne seslendirme süresinin dışına taşıyor')
     props={'durationSec':length,'title':'TARİHİN BİLİNMEYEN GERÇEKLERİ','scenes':copied,'captions':cues,
            'threeScenes':[{'kind':s['kind'],'title':s['title'],'labels':s.get('labels',[]),'fromSec':s['from_sec'],'durationSec':s['duration_sec']} for s in three_scenes]}
+    if edit:
+        props['edit']=edit
     with tempfile.TemporaryDirectory(prefix='turktarihi_remotion_') as td:
         props_path=Path(td)/'props.json'
         props_path.write_text(json.dumps(props,ensure_ascii=False),encoding='utf-8')
