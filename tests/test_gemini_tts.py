@@ -31,6 +31,16 @@ def audio_response(raw):
 
 
 class GeminiNarrationTests(unittest.TestCase):
+    def test_committed_piri_reis_take_matches_the_production_script(self):
+        from scripts.auto_produce import performance_script
+        from scripts.run import ROOT, load_json, select_topic
+
+        data = ROOT / "data"
+        topic = select_topic(load_json(data / "topics.json"), "piri-reis-kayip-kaynak")
+        script = "\n".join(part["spoken"] for part in performance_script(topic))
+        _, duration = gemini_tts.approved_recording(data, script)
+        self.assertAlmostEqual(duration, 67.6, places=1)
+
     def test_approved_recording_is_bound_to_both_hashes_and_skips_api(self):
         script = "Bir harita."
         raw = gemini_wav()
