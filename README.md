@@ -116,3 +116,15 @@ git push origin HEAD:main
 Komutlar bu projenin güncel yerel kopyasında çalıştırılır. Uzak `main` ilerlemişse önce değişiklikleri birleştirin. Gönderimden sonra GitHub'daki commit kimliğini ve ilk Actions sonucunu kontrol edin. Instagram yayını için ayrı insan onayı gerekir.
 
 Dört editoryal görüş, uzmanlar ve yönetmen birlikte çalıştırma başına sekiz, UTC günü başına kırk üretim isteğiyle sınırlıdır. Başarısız istekler de sayılır. Geçici OpenRouter hatalarında bir değerlendirme en fazla üç kez denenir. OpenRouter kalan kotayı bildiriyorsa daha düşük sınır uygulanır. Uzun `Retry-After` değerinde yeni istekler durur. Başarılı yanıtlar aynı girdilerle tekrar kullanılabilir. GitHub Actions, başarısız değerlendirmelerden sonra da yanıtları ve istek sayacını saklar.
+## Piri Reis ses karşılaştırması
+
+Actions → **Piri Reis · Gemini Charon ve Piper** → **Run workflow**. AI Studio'da
+`GEMINI_API_KEY` anahtarının faturalandırma hesabı bağlanmamış Free Tier
+projesine ait olduğunu kontrol edin ve onay kutusunu işaretleyin. Canlı adım
+Charon için bir istek yapar. Kota, erişim ya da ses doğrulama hatasında durur.
+
+Bu deneme mevcut Piri Reis senaryosunu ve aynı sahneleri iki ayrı MP4'e işler.
+Her sürüm kendi konuşmasına zamanlanmış altyazı kullanır. İndirme paketindeki
+`SES_KARSILASTIRMA.json` son MP4'lerdeki Türkçe konuşma ve altyazı zamanlamasını,
+ölçülen durakları ve temiz anlatıcı sesindeki perde aralığını gösterir.
+Telaffuz ve anlatım doğallığı için videolar ayrıca dinlenmelidir. İki çıktı da inceleme taslağıdır.
