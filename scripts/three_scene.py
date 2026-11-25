@@ -12,14 +12,16 @@ import re
 
 
 def classify_topic(topic: dict) -> str | None:
-    """Return battle_map, siege_city, or None using metadata then safe heuristics."""
+    """Choose a topic-appropriate visual explanation."""
     explicit = str(topic.get("visual_mode", "")).strip().lower()
-    if explicit in {"battle_map", "siege_city", "artifact_gears", "2d"}:
+    if explicit in {"battle_map", "siege_city", "city_flyover", "artifact_gears", "2d"}:
         return None if explicit == "2d" else explicit
     text = " ".join(str(topic.get(k, "")) for k in ("id", "title", "hook", "context"))
     text = re.sub(r"\s+", " ", text).casefold()
-    if any(word in text for word in ("fetih", "kuşatma", "kusatma", "şehir", "istanbul")):
+    if any(word in text for word in ("fetih", "kuşatma", "kusatma")):
         return "siege_city"
+    if "şehir" in text:
+        return "city_flyover"
     if any(word in text for word in ("savaş", "savas", "malazgirt", "muharebe", "meydan muharebesi", "battle")):
         return "battle_map"
     return None
@@ -43,20 +45,22 @@ def plan_3d_scenes(topic: dict, duration_seconds: float = 70) -> dict:
             "from_sec": 8.0,
             "duration_sec": 9.0,
             "title": "KUŞBAKIŞI 3D SAVAŞ HARİTASI • TEMSİLÎ CANLANDIRMA",
-            "motion": "Selçuklu ve Bizans birlikleri karşı yönlerden ilerler; kamera harita üzerinde yaklaşır.",
-            "labels": ["SELÇUKLU ORDUSU", "BİZANS ORDUSU"],
+            "motion": "İki temsili taraf gösterilir. Güzergâhlar ve arazi tarihî veri değildir.",
+            "labels": ["SELÇUKLU ORDUSU", "BİZANS ORDUSU"] if topic_id == "malazgirt-1071"
+                      else ["TEMSİLÎ TARAF A", "TEMSİLÎ TARAF B"],
         })
-    elif mode == "siege_city":
-        scenes.extend([
+    elif mode in {"city_flyover", "siege_city"}:
+        scenes.append(
             {"kind": "city_flyover", "from_sec": 8.0, "duration_sec": 7.0,
-             "title": "TARİHÎ ŞEHİR • TEMSİLÎ 3D CANLANDIRMA",
-             "motion": "Kamera surlarla çevrili temsili şehir üzerinde yavaşça alçalır.",
-             "labels": ["TEMSİLÎ ŞEHİR" ]},
-            {"kind": "siege", "from_sec": min(34.0, max(20.0, duration_seconds - 10.0)), "duration_sec": 7.0,
-             "title": "KUŞATMA DÜZENİ • TEMSİLÎ 3D CANLANDIRMA",
-             "motion": "Kuşatma hatları ve kuşatma kuleleri dış sur önünde görünür.",
-             "labels": ["SURLAR", "KUŞATMA HATTI"]},
-        ])
+             "title": "TARİHÎ ŞEHİR • TEMSİLÎ 3D ŞEMA",
+             "motion": "Kamera temsili şehir dokusu üzerinde yavaşça alçalır.",
+             "labels": ["TARİHÎ ŞEHİR PLANI DEĞİLDİR"]})
+        if mode == "siege_city":
+            scenes.append(
+                {"kind": "siege", "from_sec": min(34.0, max(20.0, duration_seconds - 10.0)), "duration_sec": 7.0,
+                 "title": "KUŞATMA DÜZENİ • TEMSİLÎ 3D CANLANDIRMA",
+                 "motion": "Surlar ve dış hatlar şematik olarak gösterilir.",
+                 "labels": ["SURLAR", "KUŞATMA HATTI"]})
     return {
         "topic_id": topic_id,
         "status": "planned" if scenes else "not_applicable_2d_only",

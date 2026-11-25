@@ -129,11 +129,13 @@ const Gear: React.FC<{x: number; y: number; radius: number; teeth: number; angle
 
 const ArtifactGears: React.FC = () => {
   const frame = useCurrentFrame();
-  return <ThreeCanvas width={1080} height={1920} dpr={1} camera={{position: [0, 1.1, 16 - frame / 300], fov: 53}} gl={{antialias: false}}>
+  const angle = interpolate(frame, [0, 240], [-0.28, 0.14], {extrapolateRight: 'clamp'});
+  return <ThreeCanvas width={1080} height={1920} dpr={1} camera={{position: [0, 1.1, 16 - frame / 250], fov: 53}} gl={{antialias: true}}>
     <color attach="background" args={['#101c20']} />
     <ambientLight intensity={1.2} />
     <directionalLight position={[-5, 7, 12]} intensity={3.4} />
-    <group rotation={[-0.24, -0.2, -0.42]}>
+    <directionalLight position={[4, -2, 3]} intensity={1.1} color="#99c8e4" />
+    <group rotation={[-0.24, angle, -0.42]}>
       <Gear x={-1.8} y={0.7} radius={2.3} teeth={22} angle={frame / 80} color="#c4935a" />
       <Gear x={2.15} y={0.7} radius={1.65} teeth={16} angle={-frame / 80 * 22 / 16} color="#8fa698" />
     </group>

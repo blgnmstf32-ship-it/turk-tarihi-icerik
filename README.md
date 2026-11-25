@@ -63,13 +63,15 @@ python -m scripts.performance_learning --out output/editorial
 
 GitHub Actions için `OPENROUTER_API_KEY` adında bir depo secret'ı ve `ENABLE_FREE_LLM=1` adında bir depo değişkeni gerekir. Yerelde aynı isimlerle ortam değişkeni kullanılır. Proje ayarı ücretsiz modeli destekler. Anahtar veya opt-in yoksa rapor hangi alanın eksik olduğunu gösterir.
 
-Konu Avcısı, İçerik Stratejisti, Tarih Doğruluk Denetçisi ve AI Genel Yayın Yönetmeni, sırasıyla birbirinin görüşüne yanıt veren dört ayrı `openrouter/free` isteği alır. Gerçek model ve çağrı durumu raporlanır. Yeni fikirlerin bağlantıları taranmış kaynak kayıtlarıyla eşlenir ve araştırma kuyruğuna gider. Doğrulanmış anlatımlar otomatik olarak değiştirilmez. Ücretsiz rota hata verirse ücretli yedek yoktur. 20 rolün isteğe bağlı model önerileri ayrıca `ENABLE_20_LLM_AGENTS=1` ister ve haftalık workflow'da kapalıdır. Dört 3D rolü üretim otomasyonudur.
+Konu Avcısı, İçerik Stratejisti, Tarih Doğruluk Denetçisi ve AI Genel Yayın Yönetmeni sırayla dört ücretsiz model görüşü verir. Stratejist, altı kategorideki ilk 10 aday için özgün bir anlatım açısı, gerekçe, kaynak ve açık araştırma sorusu önerir. Karar raporu, her adayda ayrı model değerlendirmesi bulunup bulunmadığını gösterir. Tarihî iddialar için kaynak okuması ve insan incelemesi gerekir.
+
+AI Genel Yayın Yönetmeni seçilen video için mevcut 20 uzmandan en çok ikisini görevlendirir. Gelen önerileri kaynak listesiyle ve birbirleriyle karşılaştırır. Uzman görüşleri taslak raporunda kalır, doğrulanmış senaryoyu doğrudan değiştirmez. Dört 3D görevi kurallı üretimle yürür. `AI_AGENT_EXECUTION_REPORT.json` her rolün LLM durumunu, gerçek modeli, HTTP denemelerini ve ilgili kurallı görevin çalışıp çalışmadığını gösterir. Yerel uzman çağrıları için `ENABLE_20_LLM_AGENTS=1` ayarlanır. GitHub Actions uzman adımını mevcut `ENABLE_FREE_LLM=1` ayarına göre açar. Elle çalıştırırken `require_specialists` seçeneği uzman ve yönetmen karşılaştırmasını doğrular.
 
 Instagram Insights salt okunur ve varsayılan olarak kapalıdır. Yetkili bağlantı veya yerel geçmiş sağlanırsa gerçek izlenme, izlenme süresi, paylaşım ve etkileşim ölçümleri ayrı analiz edilir. Erişilemeyen metrikler boş kalır. `EDITORIAL_DECISION_REPORT.md/.json` ve `AI_AGENT_EXECUTION_REPORT.json` çalışma sonucunu saklar.
 
 ### Dört gerçek model çağrısını doğrulama
 
-[OpenRouter Keys](https://openrouter.ai/settings/keys) üzerinden bir anahtar oluşturun. Depoda **Settings → Secrets and variables → Actions** altında `OPENROUTER_API_KEY` adlı secret ile `ENABLE_FREE_LLM` adlı `1` değerli değişkeni tanımlayın. Anahtar yalnızca haftalık rapor adımına verilir. İstek fiyatı sıfırla sınırlandırılır. Başlangıçta ücretsiz Nemotron 3 Nano Omni denenir. Yedek seçenekler ücretsiz Gemma 4 modelleri ve `openrouter/free` rotasıdır. 429 döndüren rota dinlendirilir ve bir rolün çalıştığı rota sonraki rol için tercih edilir. Dört görüşten biri tamamlanmazsa etkinleştirilmiş iş akışı teşhis raporunu kaydeder ve başarısız olur.
+[OpenRouter Keys](https://openrouter.ai/settings/keys) üzerinden bir anahtar oluşturun. Depoda **Settings → Secrets and variables → Actions** altında `OPENROUTER_API_KEY` adlı secret ile `ENABLE_FREE_LLM` adlı `1` değerli değişkeni tanımlayın. Anahtar editoryal ve uzman adımlarına verilir. İstek fiyatı sıfırla sınırlandırılır. Başlangıçta ücretsiz Nemotron 3 Nano Omni denenir. Yedek seçenekler ücretsiz Gemma 4 modelleri ve `openrouter/free` rotasıdır. 429 döndüren rota dinlendirilir ve bir rolün çalıştığı rota sonraki rol için tercih edilir. Dört görüşten biri tamamlanmazsa etkinleştirilmiş iş akışı teşhis raporunu kaydeder ve başarısız olur.
 
 Yerel deneme için anahtarı kabuğa gizli girin:
 
@@ -98,7 +100,7 @@ python -m scripts.verify_production --out output/gemini --topic antikythera-disl
 unset GEMINI_API_KEY
 ```
 
-API kota, erişim veya yanıt hatasında durur. Gemini yalnız açık yerel komutla seçilir. Haftalık iş akışı Piper kullanır. Ücretsiz katmana yalnız yayınlanabilir nitelikte, hassas bilgi içermeyen senaryo gönderin.
+API kota, erişim veya yanıt hatasında durur. GitHub Actions'ta Gemini denemek için faturalandırılmamış Free Tier proje anahtarını `GEMINI_API_KEY` secret'ı olarak ekleyip **Run workflow** ekranında `confirm_gemini_free_project` kutusunu seçin. Zamanlanmış üretim Piper kullanır. Ücretsiz katmana yalnız yayınlanabilir nitelikte, hassas bilgi içermeyen senaryo gönderin.
 
 ### GitHub yazma erişimi
 
@@ -113,4 +115,4 @@ git push origin HEAD:main
 
 Komutlar bu projenin güncel yerel kopyasında çalıştırılır. Uzak `main` ilerlemişse önce değişiklikleri birleştirin. Gönderimden sonra GitHub'daki commit kimliğini ve ilk Actions sonucunu kontrol edin. Instagram yayını için ayrı insan onayı gerekir.
 
-Geçici OpenRouter hatalarında bir rol en fazla üç kez denenir. Çalıştırma başına sekiz, bu proje için UTC günü başına kırk üretim isteği sınırı vardır. OpenRouter kalan kotayı bildiriyorsa daha düşük sınır uygulanır. Uzun `Retry-After` değerinde iş akışı durur. Başarılı gerçek yanıtlar aynı girdilerle tekrar kullanılabilir. GitHub Actions, başarısız bir değerlendirmeden sonra da yanıtları ve istek sayacını saklar. Rapor önbellekten gelen rolleri ve yeni istekleri ayrı gösterir.
+Dört editoryal görüş, uzmanlar ve yönetmen birlikte çalıştırma başına sekiz, UTC günü başına kırk üretim isteğiyle sınırlıdır. Başarısız istekler de sayılır. Geçici OpenRouter hatalarında bir değerlendirme en fazla üç kez denenir. OpenRouter kalan kotayı bildiriyorsa daha düşük sınır uygulanır. Uzun `Retry-After` değerinde yeni istekler durur. Başarılı yanıtlar aynı girdilerle tekrar kullanılabilir. GitHub Actions, başarısız değerlendirmelerden sonra da yanıtları ve istek sayacını saklar.

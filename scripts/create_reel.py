@@ -41,8 +41,8 @@ def collect_scenes(folder):
     if not folder.is_dir():raise ValueError(f'Sahne klasörü bulunamadı: {folder}')
     images=sorted(p for p in folder.iterdir() if p.suffix.lower() in VALID_IMAGE_EXTS)
     if len(images)<10:raise ValueError('Belgesel biçimi için en az 10 farklı sahne görseli gerekiyor')
-    if len({hashlib.sha256(p.read_bytes()).hexdigest() for p in images})<10:
-        raise ValueError('Belgesel biçimi için en az 10 gerçekten farklı görsel gerekiyor')
+    if len({hashlib.sha256(p.read_bytes()).hexdigest() for p in images}) != len(images):
+        raise ValueError('Belgesel biçimi için her sahnede farklı bir görsel gerekiyor')
     for p in images:
         with Image.open(p) as im:
             im.verify()

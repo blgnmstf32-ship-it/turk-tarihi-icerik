@@ -5,7 +5,7 @@ from scripts.editorial_research import collect_public_research
 from scripts.content_strategy import score_ideas, build_debate, load_learning
 from scripts.performance_learning import record_outcome
 from scripts.editorial_board import run_board
-from scripts.editorial_llm import review
+from scripts.editorial_llm import _answer, review
 from scripts.run import select_topic
 from scripts.instagram_insights import fetch_read_only_insights
 
@@ -18,6 +18,18 @@ class Response:
     def json(self): return self.data
 
 class EditorialIntelligenceTests(unittest.TestCase):
+    def test_portfolio_needs_a_source_from_the_same_candidate(self):
+        ideas = score_ideas({}, [])
+        sources = {idea["id"]: idea["sources"][0]["url"] for idea in ideas}
+        rows = [{"idea_id": idea, "source_url": url, "rationale": "Özgün bir anlatım açısı.",
+                 "open_question": "Hangi kanıtı incelemeli?"} for idea, url in sources.items()]
+        mismatched = {**rows[0], "idea_id": rows[1]["idea_id"]}
+        self.assertNotEqual(rows[0]["source_url"], rows[1]["source_url"])
+        answer, error = _answer(json.dumps({"rationale": "Katalog", "idea_reviews": [mismatched, *rows]}),
+                                set(sources), set(sources.values()), "test-key", ideas)
+        self.assertIsNone(error)
+        self.assertEqual(answer["idea_reviews"], rows)
+
     def test_public_trends_and_competitor_feeds_are_parsed_with_provenance(self):
         trend='<rss><channel><item><title>Türk tarihi harita</title><link>https://trends.example/item</link></item></channel></rss>'.encode()
         atom='''<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:yt="http://www.youtube.com/xml/schemas/2015"><entry><yt:videoId>abc</yt:videoId><media:group><media:community><media:statistics views="1234"/></media:community></media:group><title>Harita ve tarih</title>
@@ -154,7 +166,10 @@ class EditorialIntelligenceTests(unittest.TestCase):
         self.assertIn('actions/upload-artifact@v4',workflow)
         self.assertIn('python -m scripts.verify_production', workflow)
         self.assertIn('--require-llm', workflow)
-        self.assertNotIn('GEMINI_API_KEY', workflow)
+        self.assertIn("github.event_name == 'workflow_dispatch' && inputs.confirm_gemini_free_project == true", workflow)
+        self.assertIn('--voice-provider gemini_tts --confirm-gemini-free-project', workflow)
+        self.assertIn('python -m scripts.ai_agents', workflow)
+        self.assertIn('--require-specialists', workflow)
         self.assertNotIn('instagram_publish.py',workflow)
         self.assertIn("ENABLE_20_LLM_AGENTS: '0'",workflow)
 

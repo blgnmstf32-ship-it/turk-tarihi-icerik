@@ -5,7 +5,7 @@ Turkish Piper narration, estimated SRT, original music, and a narrated vertical 
 Output is for human approval ONLY. Nothing uploads to Instagram.
 """
 from __future__ import annotations
-import argparse, json, os, shutil, subprocess, sys
+import argparse, json, shutil, subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from scripts.run import ROOT, load_json, select_topic, build
@@ -94,7 +94,8 @@ def update_3d_role_results(role_modules,status):
     return result
 
 
-def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,voice_provider_override=None,gemini_free_project=False):
+def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,voice_provider_override=None,
+               gemini_free_project=False, use_staged_experts=False):
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     settings=load_json(ROOT/'config'/'settings.json')
     record('production_started',{'topic':topic.get('id'),'out':str(out)})
@@ -121,26 +122,48 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
     # a separate, explicit free-model opt-in; no key alone triggers a request.
     editorial_path=out/'editorial'/'EDITORIAL_DECISION_REPORT.json'
     editorial_report=load_json(editorial_path) if editorial_path.exists() else run_board(out/'editorial')
-    ai_result=run_agents(topic,load_json(ROOT/'config'/'agents.json'),out) if os.getenv('ENABLE_20_LLM_AGENTS')=='1' else {
-        'enabled':False,'reason':'ENABLE_20_LLM_AGENTS is not explicitly set to 1','calls':0,
-        'separate_llm_roles_completed':0,'actual_llm_used':False}
-    llm_roles={row.get('role_id'):row for row in ai_result.get('roles',[])}
-    execution_rows=[]
-    for role in load_json(ROOT/'config'/'agents.json'):
-        row=llm_roles.get(role['id'])
-        execution_rows.append({'id':role['id'],'name':role['name'],'actual_llm_used':bool(row and row.get('status')=='suggestion_review_required'),
-            'execution':'free_llm_suggestion' if row and row.get('status')=='suggestion_review_required' else 'deterministic_automation',
-            'status':row.get('status') if row else 'no_llm_call'})
+    agents = load_json(ROOT/'config/agents.json')
+    expert_path = out/'AI_AGENTS_STATUS.json'
+    staged = load_json(expert_path) if use_staged_experts else {}
+    # CI supplies the report from the isolated specialist step. Local opt-in runs it here.
+    if use_staged_experts and (staged.get('topic') != topic['id'] or 'dispatch' not in staged):
+        raise ValueError('Uzman raporu seçilen konuya ait değil.')
+    ai_result = staged if use_staged_experts else run_agents(topic, agents, out, settings=settings,
+                                                            editorial=editorial_report)
     editorial_stages = editorial_report.get('coordinator_llm', {}).get('stages', [])
     coordinator_called = any(stage['role']=='AI Genel Yayın Yönetmeni' and stage.get('actual_llm_used')
                              for stage in editorial_stages)
     execution_report={'coordinator':'AI Genel Yayın Yönetmeni','coordinator_actual_llm_used':coordinator_called,
         'editorial_llm_stages':[{key:stage.get(key) for key in ('role','model','status','actual_llm_used','http_status','response_source','error_type','attempts')}
                                 for stage in editorial_stages],
-        'original_20_llm_calls':ai_result.get('calls',0),'original_20_llm_successes':ai_result.get('separate_llm_roles_completed',0),
-        'paid_api_calls':0,'paid_fallback':False,'roles':execution_rows,
-        'note':'20 görev modülü gerçek LLM çağrısı değildir; yalnızca free_llm_enabled=true, OPENROUTER_API_KEY ve ENABLE_20_LLM_AGENTS=1 birlikte verilirse öneri amaçlı LLM çağrısı yapılır. 3D görevleri deterministiktir.'}
-    (out/'AI_AGENT_EXECUTION_REPORT.json').write_text(json.dumps(execution_report,ensure_ascii=False,indent=2),encoding='utf-8')
+        'specialist_calls_including_editor':ai_result['calls'],
+        'original_20_llm_calls':sum(len(row['attempts']) for row in ai_result['roles']),
+        'original_20_llm_successes':ai_result['separate_llm_roles_completed'],
+        'coordinator_dispatch':ai_result['dispatch'], 'coordinator_comparison':ai_result['comparison'],
+        'paid_api_calls':0,'paid_fallback':False}
+
+    def write_execution_report(render_status=None):
+        suggestions = {row['role_id']: row for row in ai_result['roles']}
+        rules = {row['id']: row['result'] for row in prev.get('roles_completed', [])}
+        rows = []
+        for role in agents:
+            role_id = role['id']
+            llm = suggestions.get(role_id, {'status': 'not_run', 'reason': 'deterministic_3d_module',
+                                           'actual_llm_used': False, 'attempts': []})
+            ran_rules = role_id in rules and (role_id <= 22 or
+                (role_id == 23 and render_status in {'rendered','fallback_2d_after_3d_failure'}) or
+                (role_id == 24 and render_status is not None))
+            kind = ('real_llm' if llm['actual_llm_used'] else
+                    'deterministic_automation' if ran_rules else 'not_run')
+            rows.append({'id': role_id, 'name': role['name'], 'actual_llm_used': llm['actual_llm_used'],
+                         'execution': kind, 'status': llm['status'] if llm['status'] != 'not_run' else
+                         ('automation_completed' if ran_rules else 'not_run'),
+                         'automation': {'status': 'completed', 'result': rules[role_id]} if ran_rules else {'status': 'not_run'},
+                         'llm': llm})
+        execution_report['roles'] = rows
+        (out/'AI_AGENT_EXECUTION_REPORT.json').write_text(json.dumps(execution_report,ensure_ascii=False,indent=2),encoding='utf-8')
+
+    write_execution_report()
     scenes=out/'scenes';generate(topic,scenes)
     licensed_visuals=[]
     if not skip_narration:
@@ -222,6 +245,7 @@ def production(topic,out,model_cache,skip_narration=False,recordings_dir=None,vo
       'target_duration_seconds':{'min':60,'max':75},
       'human_review_checklist':['Tarihî olguları birincil/akademik kaynakta doğrula',visual_review,
         'Türkçe sesin anlaşılır olup olmadığını dinle','Altyazı zamanını gözle kontrol et','Instagram yayın onayını ayrıca ver']})
+    write_execution_report(three_d_render_status)
     (out/'AUTO_REPORT.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
     record('production_finished',{'topic':topic.get('id'),'status':manifest.get('status'),'technical_gate':technical.get('technical_gate'),'duration':duration,'voice_provider':provider})
     return manifest
@@ -237,6 +261,7 @@ def main():
     p.add_argument('--voice-provider',default='',help='piper, gemini_tts, google_chirp3_hd or azure_speech')
     p.add_argument('--confirm-gemini-free-project', action='store_true',
                    help='Confirm this Gemini API key belongs to an AI Studio project without billing')
+    p.add_argument('--use-staged-experts', action='store_true', help='Read the report produced by scripts.ai_agents')
     a=p.parse_args()
     editorial_path = Path(a.out)/"editorial"/"EDITORIAL_DECISION_REPORT.json"
     report = load_json(editorial_path) if editorial_path.exists() else run_board(editorial_path.parent)
@@ -244,7 +269,8 @@ def main():
     topic=select_topic(topics,a.topic,report)
     if topic is None:p.error('Unknown topic')
     try:
-        result=production(topic,a.out,a.model_cache,a.skip_narration,a.voice_recordings or None,a.voice_provider or None,a.confirm_gemini_free_project)
+        result=production(topic,a.out,a.model_cache,a.skip_narration,a.voice_recordings or None,
+                          a.voice_provider or None,a.confirm_gemini_free_project,a.use_staged_experts)
     except Exception as exc:
         record('production_failed',{'topic':topic.get('id'),'error':f'{type(exc).__name__}: {exc}'})
         raise

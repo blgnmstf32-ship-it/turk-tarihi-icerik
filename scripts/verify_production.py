@@ -38,6 +38,17 @@ def verify(out, explicit_topic=""):
                          "completed_discussion": llm_completed,
                          "role_statuses": [{k: item.get(k) for k in ("role", "status", "model", "http_status", "response_source", "error_type", "attempts")}
                                            for item in llm.get("stages", [])]}
+    experts = report.get("ai_editor", {})
+    results = [row for row in experts.get("roles", []) if row.get("role_id") and row.get("status") == "proposal"
+               and row.get("actual_llm_used") and row.get("model")]
+    dispatch, comparison = experts.get("dispatch") or {}, experts.get("comparison") or {}
+    assess("specialists", bool(results and dispatch.get("status") == "proposal"
+           and comparison.get("status") == "proposal" and comparison.get("actual_llm_used")
+           and sorted(comparison.get("answer", {}).get("considered_role_ids", [])) == sorted(row["role_id"] for row in results)
+           and llm["calls"] + experts.get("calls", 0) <= experts.get("max_combined_calls", 0)),
+           selected_role_ids=[row["role_id"] for row in (dispatch.get("answer") or {}).get("assignments", [])],
+           completed_role_ids=[row["role_id"] for row in results], specialist_calls=experts.get("calls", 0),
+           comparison_status=comparison.get("status"), comparison_source=comparison.get("response_source"))
     assess("topic_selection", bool(topic and topic["id"] == report["topic"]), rendered=report["topic"],
            expected=topic["id"] if topic else None,
            method="manual_topic" if explicit_topic else "editorial_report_and_prepared_catalogue")
@@ -95,13 +106,15 @@ def main():
     parser.add_argument("--out", required=True)
     parser.add_argument("--topic", default="")
     parser.add_argument("--require-llm", action="store_true")
+    parser.add_argument("--require-specialists", action="store_true")
     args = parser.parse_args()
     result = verify(args.out, args.topic)
     path = Path(args.out) / "E2E_REPORT.json"
     path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(path)
+    optional = {"ai_review": args.require_llm, "specialists": args.require_specialists}
     for name, stage in result["stages"].items():
-        if stage["status"] != "passed" and (name != "ai_review" or args.require_llm):
+        if stage["status"] != "passed" and optional.get(name, True):
             parser.exit(1, f"Aşama doğrulanamadı: {name}\n")
 
 

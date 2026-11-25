@@ -34,6 +34,12 @@ def run_board(output, research_config=None, performance_path=None, research_fn=N
     debate=build_debate(candidates,research,outcomes)
     llm=(llm_fn or _llm_review)(candidates,research)
     llm_complete = discussion_completed(llm)
+    idea_reviews = {row["idea_id"]: {**row, "role": stage["role"], "model": stage["model"],
+                                    "response_source": stage.get("response_source")}
+                    for stage in llm.get("stages", []) if stage.get("status") == "proposal"
+                    for row in stage["answer"].get("idea_reviews", [])}
+    for candidate in candidates:
+        candidate["idea_assessment"] = idea_reviews.get(candidate["id"])
     category_comparison=[]
     for category, label in CATEGORY_LABELS.items():
         items=[c for c in candidates if c["category"]==category]
@@ -53,6 +59,8 @@ def run_board(output, research_config=None, performance_path=None, research_fn=N
         "strategy":{"categories_compared":category_comparison,
             "ranking_method":"Göreli pilot önceliği. Görsel plan, süre, doğrudan trend eşleşmesi, karşılaştırılabilir izlenme ve yeterli geçmiş ölçümü kullanılır."},
         "recommendations":candidates,"deterministic_prescreen":debate,"coordinator_llm":llm,
+        "idea_review_coverage":{"llm_assessed":sum(bool(c["idea_assessment"]) for c in candidates),
+                                "total":len(candidates)},
         "decision":"İlk sıradaki fikri 1 küçük pilot olarak test et; bu rapor yayın kararı değildir.",
         "estimated_paid_cost_try":0,"human_approval_required":True,"instagram_publish_enabled":False,
         "paid_api_services_enabled":False}
@@ -86,6 +94,13 @@ def run_board(output, research_config=None, performance_path=None, research_fn=N
                     if video[key] is not None)
                 freshness = f" ({video['freshness']})" if video.get("freshness") else ""
                 lines.append(f"- Benzer [YouTube videosu]({video['url']}) • {metrics}{freshness}.")
+        assessment = candidate["idea_assessment"]
+        if assessment:
+            lines.extend([f"- {assessment['role']} görüşü: {assessment['rationale']}",
+                          f"- Açık araştırma sorusu: {assessment['open_question']}",
+                          f"- İncelenecek [kaynak]({assessment['source_url']})."])
+        else:
+            lines.append("- Bu konu için modelden ayrı bir görüş alınamadı. Yukarıdaki değerlendirme kurallı ön elemedir.")
     lines += ["", "## Ajan değerlendirmesi",
         f"OpenRouter: {llm.get('calls', 0)} yeni istek, {llm.get('cached_roles', 0)} onaylı kayıt • {llm.get('status')}.",
         "Yayın ve ücretli API kullanımı insan onayına bağlıdır."]

@@ -17,6 +17,14 @@ on:
         required: false
         type: string
         default: ''
+      require_specialists:
+        description: 'En az bir gerçek uzman görüşünü ve yönetmen karşılaştırmasını doğrula'
+        type: boolean
+        default: false
+      confirm_gemini_free_project:
+        description: 'Gemini TTS dene; GEMINI_API_KEY faturalandırmasız Free Tier projesine ait'
+        type: boolean
+        default: false
   schedule:
     - cron: '17 9 * * 2' # Türkiye 12:17; GitHub schedule gecikebilir
 permissions:
@@ -89,6 +97,12 @@ jobs:
           flags=()
           if [[ "$ENABLE_FREE_LLM" == "1" ]]; then flags+=(--require-llm); fi
           python -m scripts.editorial_board --out output/auto/editorial "${flags[@]}"
+      - name: Assign and compare selected free-model specialists
+        env:
+          TOPIC_ID: ${{ inputs.topic || '' }}
+          ENABLE_20_LLM_AGENTS: ${{ vars.ENABLE_FREE_LLM || '0' }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python -m scripts.ai_agents --topic "$TOPIC_ID" --out output/auto
       - name: Save editorial responses even on a failed review
         if: ${{ always() && vars.ENABLE_FREE_LLM == '1' && hashFiles('.cache/editorial-llm.sqlite3') != '' }}
         uses: actions/cache/save@v4
@@ -96,17 +110,33 @@ jobs:
           path: .cache/editorial-llm.sqlite3
           key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Produce selected narrated documentary video
+        if: inputs.confirm_gemini_free_project != true
         env:
           TOPIC_ID: ${{ inputs.topic || '' }}
           ENABLE_FREE_LLM: '0'
           ENABLE_20_LLM_AGENTS: '0'
           HF_HOME: ${{ github.workspace }}/.cache/huggingface
-        run: python -m scripts.auto_produce --topic "$TOPIC_ID" --out output/auto --model-cache .cache/piper
+        run: python -m scripts.auto_produce --topic "$TOPIC_ID" --out output/auto --model-cache .cache/piper --use-staged-experts
+      - name: Produce requested Gemini Free Tier narration
+        if: github.event_name == 'workflow_dispatch' && inputs.confirm_gemini_free_project == true
+        env:
+          TOPIC_ID: ${{ inputs.topic || '' }}
+          HF_HOME: ${{ github.workspace }}/.cache/huggingface
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python -m scripts.auto_produce --topic "$TOPIC_ID" --out output/auto --use-staged-experts \
+            --voice-provider gemini_tts --confirm-gemini-free-project
       - name: Verify MP4, format, and Turkish speech
         env:
           HF_HOME: ${{ github.workspace }}/.cache/huggingface
           TOPIC_ID: ${{ inputs.topic || '' }}
-        run: python -m scripts.verify_production --out output/auto --topic "$TOPIC_ID"
+          REQUIRE_LLM: ${{ vars.ENABLE_FREE_LLM || '0' }}
+          REQUIRE_SPECIALISTS: ${{ inputs.require_specialists || false }}
+        run: |
+          flags=()
+          if [[ "$REQUIRE_LLM" == "1" ]]; then flags+=(--require-llm); fi
+          if [[ "$REQUIRE_SPECIALISTS" == "true" ]]; then flags+=(--require-specialists); fi
+          python -m scripts.verify_production --out output/auto --topic "$TOPIC_ID" "${flags[@]}"
       - name: Save review package and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
