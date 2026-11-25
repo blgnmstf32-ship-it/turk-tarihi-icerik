@@ -1,0 +1,48 @@
+name: Editoryal kurtarma · Yama özeti ve kalite doğrulaması
+on:
+  push:
+    branches: [editorial-recovery]
+    paths: [.github/workflows/apply_editorial_recovery.yml]
+permissions:
+  contents: read
+jobs:
+  recover:
+    if: github.ref == 'refs/heads/editorial-recovery'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Check exact recovery patch and supported source paths
+        run: |
+          set -euo pipefail
+          printf "%s  %s\n" 2601d1030a0db2046416bb5937e91dfa0a7655382653057e27e916bfac24f9da editorial-content-recovery.patch | sha256sum -c
+          git apply --check --index editorial-content-recovery.patch
+          git apply --index editorial-content-recovery.patch
+          git diff --cached --name-only | while IFS= read -r path; do
+            case "$path" in
+              scripts/*|tests/*|config/*|data/*|URETIM_DURUMU.md) ;;
+              *) echo "Unexpected recovery path: $path"; exit 1 ;;
+            esac
+          done
+      - name: Verify recovered Python and Remotion code
+        run: |
+          python -m pip install -r requirements.txt
+          python -m unittest discover -s tests -q
+          npm ci
+          npm run typecheck
+          git diff --cached --check
+      - name: Commit the tested recovery to the development branch
+        run: |
+          git rm editorial-content-recovery.patch
+          git -c user.name=github-actions -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "Recover tested editorial source and content files"
+          git rev-parse HEAD^{tree}
+          git push origin HEAD:refs/heads/editorial-recovery

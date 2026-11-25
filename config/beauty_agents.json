@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "name": "Genel Yayın Yönetmeni",
+    "job": "Kanıt dosyasını ve iş listesini okuyup gerekli rolleri seçer, önerileri doğruluk ve uygulama maliyetiyle karşılaştırır.",
+    "input": "kanıt dosyası ve uzman matrisi",
+    "output": "görev atamaları ve gerekçeli karar"
+  },
+  {
+    "id": 2,
+    "name": "İçerik Stratejisti",
+    "job": "Kanıt, özgünlük ve güvenlik düzeyine göre konu sıralaması önerir.",
+    "input": "adaylar ve performans ölçüleri",
+    "output": "gerekçeli öncelik listesi"
+  },
+  {
+    "id": 3,
+    "name": "Konu Avcısı",
+    "job": "Güncel bakım sorularından kaynaklandırılabilir farklı konu açıları bulur.",
+    "input": "RSS ve konu arşivi",
+    "output": "tekilleştirilmiş adaylar"
+  },
+  {
+    "id": 4,
+    "name": "Alan Araştırmacısı",
+    "job": "İddiaların AAD, FDA veya hakemli yayınlardaki dayanağını belirler.",
+    "input": "konu ve kaynak alıntıları",
+    "output": "iddia kanıt eşleme listesi"
+  },
+  {
+    "id": 5,
+    "name": "Kaynak Doğrulama Uzmanı",
+    "job": "Kanıtın sınırlarıyla klinik vaatleri ve bağlam dışı genellemeleri işaretler.",
+    "input": "senaryo ve kaynaklar",
+    "output": "kaynak ve iddia uyarıları"
+  },
+  {
+    "id": 6,
+    "name": "Rakip Analizi Uzmanı",
+    "job": "Erişilebilen rakip formatlarını inceleyip özgün bir yaklaşım önerir.",
+    "input": "kamuya açık örnekler",
+    "output": "kaynaklı biçim karşılaştırması"
+  },
+  {
+    "id": 7,
+    "name": "Trend Araştırma Uzmanı",
+    "job": "Arama sinyallerinin dönemini, coğrafyasını ve güven düzeyini ayırır.",
+    "input": "trend RSS ve zaman damgası",
+    "output": "güncel konu eşleşmeleri"
+  },
+  {
+    "id": 8,
+    "name": "Instagram SEO Uzmanı",
+    "job": "Doğal Türkçe anahtar kelimeleri başlık ve açıklamaya dağıtır.",
+    "input": "konu, arama terimleri ve taslak",
+    "output": "açıklama terimleri ve amaçları"
+  },
+  {
+    "id": 9,
+    "name": "Hashtag Uzmanı",
+    "job": "Hacim ve erişim uydurmadan az sayıda ilgili etiket seçer.",
+    "input": "anahtar kelimeler ve gözlenmiş etiketler",
+    "output": "önerilen etiketler ve kanıt durumu"
+  },
+  {
+    "id": 10,
+    "name": "Senaryo Yazarı",
+    "job": "İlk üç saniye açılışını ve kaynakları koruyan kısa konuşma kurgusunu yazar.",
+    "input": "onay bekleyen kaynaklı brif",
+    "output": "zamanlanabilir Türkçe senaryo"
+  },
+  {
+    "id": 11,
+    "name": "Hikâye Tasarım Uzmanı",
+    "job": "Tek bilgi taşıyan, ses gerektirmeyen, 9:16 kartlar planlar.",
+    "input": "kanıt kümesi ve marka kimliği",
+    "output": "kısa kart metni ve görsel yönerge"
+  },
+  {
+    "id": 12,
+    "name": "Görsel Üretim Uzmanı",
+    "job": "Satın alma yetkisi vermeden dikey görsel istemi ve reddetme ölçütü yazar.",
+    "input": "sahne brifi ve kaynak sınırı",
+    "output": "anatomik hataya ve yanıltıcı sonuca karşı kontrollü istem"
+  },
+  {
+    "id": 13,
+    "name": "3D Animasyon Uzmanı",
+    "job": "Cilt, folikül veya ürün hareketi için ölçek dışı bilimsel şema planlar.",
+    "input": "konu ve görsel kütüphane",
+    "output": "geometri, kamera ve açık canlandırma etiketi"
+  },
+  {
+    "id": 14,
+    "name": "Sanat Yönetmeni",
+    "job": "Renk, yazı tipi ve sahne çeşitlemesini markaya uygun seçer.",
+    "input": "senaryo, künye ve görseller",
+    "output": "görsel stil yönergesi"
+  },
+  {
+    "id": 15,
+    "name": "Video Kurgu Uzmanı",
+    "job": "Sahne temposu, kurgu geçişleri ve altyazı güvenli alanını önerir.",
+    "input": "ses, sahne listesi ve altyazı",
+    "output": "kurgu zaman çizelgesi"
+  },
+  {
+    "id": 16,
+    "name": "Seslendirme Yönetmeni",
+    "job": "Deneme sesiyle telaffuz, vurgu ve duraklama işaretlerini kontrol eder.",
+    "input": "anlatıcı seçimi ve senaryo",
+    "output": "ses okuma yönergesi ve riskli sözcükler"
+  },
+  {
+    "id": 17,
+    "name": "Ses ve Müzik Uzmanı",
+    "job": "Konuşma baskınlığı ve lisans kayıtlarını kontrol eder.",
+    "input": "konuşma ve fon miks bilgisi",
+    "output": "miks seviyesi ve lisans kontrolü"
+  },
+  {
+    "id": 18,
+    "name": "Kapak ve Başlık Uzmanı",
+    "job": "Yayın vaadi taşımayan, tek sorulu bir kapak ve doğru bir başlık seçer.",
+    "input": "sahne kareleri ve kaynaklı özet",
+    "output": "kapak yerleşimi ve kısa başlık"
+  },
+  {
+    "id": 19,
+    "name": "Paylaşım ve Performans Uzmanı",
+    "job": "Örnek sayısı yeterliyse İstanbul saatine göre zaman önerisi çıkarır.",
+    "input": "gerçek Insights ölçüleri ve takvim",
+    "output": "örnek büyüklüğüyle gerekçeli saat"
+  },
+  {
+    "id": 20,
+    "name": "Kalite Kontrol Uzmanı",
+    "job": "Kaynak, ses, altyazı, anatomik şema ve yayın onayı eksiklerini bildirir.",
+    "input": "üretim çıktı ve denetim dosyaları",
+    "output": "geçiş koşulları ve engel listesi"
+  }
+]

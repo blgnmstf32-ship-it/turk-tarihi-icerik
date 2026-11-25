@@ -1,0 +1,44 @@
+name: Nano Banana · Tek görsel Batch doğrulaması
+on:
+  push:
+    branches: [editorial-recovery]
+    paths: [.github/workflows/nano_batch_recovery.yml]
+concurrency:
+  group: nano-shared-paid-job
+  cancel-in-progress: false
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 13
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt
+      - name: Reserve and verify one owner-authorized image
+        env:
+          GEMINI_IMAGE_API_KEY: ${{ secrets.GEMINI_IMAGE_API_KEY != secrets.GEMINI_API_KEY && secrets.GEMINI_IMAGE_API_KEY || '' }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from scripts.provider_smoke import paid_check
+          from scripts.daily_editorial import write_json
+          output = Path("output/nano-probe")
+          output.mkdir(parents=True, exist_ok=True)
+          try:
+              paid_check(output, "batch", True)
+          except (RuntimeError, ValueError, OSError) as exc:
+              write_json(output / "FAILURE.json", {"status": "failed_or_pending", "reason": str(exc)})
+              raise SystemExit(str(exc))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nano-banana-batch-probe
+          path: |
+            output/nano-probe/*.json
+            output/nano-probe/*.jpg
+          retention-days: 7

@@ -44,6 +44,11 @@
       "Bunlar, kalan parçalardan ve üzerlerindeki işaretlerden çıkarılan sonuçlar. Ön yüzün tam düzeni içinse farklı modeller var.",
       "Bu yüzden hareketli çizim, çalışma ilkesini anlatan temsili bir canlandırma. Kayıp parçaların kesin biçimini göstermiyor.",
       "Bir batıktan çıkan bronz parçalar, bize şunu gösteriyor: Antik çağda gökyüzünün döngüleri, dişlilerle hesaplanabiliyordu."
+    ],
+    "instagram_keywords": [
+      "Antikythera mekanizması",
+      "antik dişliler",
+      "tutulma hesabı"
     ]
   },
   {
@@ -87,6 +92,11 @@
       "Bu fark önemli. Kaynağın adını okumak mümkün. Kaynağın eksik sayfasını kesin olarak çizmek mümkün değil.",
       "Topkapı Sarayı’nda korunan parça, hem gördüğümüz çizgileri hem de göremediğimiz bir kaynak zincirini düşündürüyor.",
       "Bir haritaya bakıyoruz. Aynı zamanda, kaybolmuş bir haritanın izini sürüyoruz."
+    ],
+    "instagram_keywords": [
+      "Piri Reis",
+      "1513 haritası",
+      "Osmanlı haritacılığı"
     ]
   },
   {
@@ -130,6 +140,11 @@
       "Anlaşmazlık ancak sınır konusunda verilen uluslararası kararla kapandı.",
       "Bugün öykü, Domuz Savaşı adıyla hatırlanıyor. Ada üzerindeki yıllanmış sınır sorunu, tek bir bahçedeki olayla görünür olmuştu.",
       "Ulusal Park Servisi’nin kaydına göre, bu sözde savaşın tek kaybı domuzdu."
+    ],
+    "instagram_keywords": [
+      "Domuz Savaşı",
+      "San Juan Adası",
+      "1859 sınır krizi"
     ]
   },
   {
@@ -306,5 +321,250 @@
       "early Turkish Republic archival photograph",
       "Ankara 1923 historical building"
     ]
+  },
+  {
+    "id": "ani-belgesel",
+    "story_group": "ani",
+    "title": "Ani: İpek Yolu’nun kıyısında değil, üzerinde",
+    "hook": "Bu kent neden burada?",
+    "category": "kayip_sehir",
+    "color": "gold",
+    "visual_mode": "siege_city",
+    "date": "10–11. yüzyıl",
+    "era": "Orta Çağ",
+    "scope": "anadolu",
+    "instagram_keywords": [
+      "Ani",
+      "İpek Yolu",
+      "Orta Çağ kentleri"
+    ],
+    "visual_search_queries": [
+      "Ani archaeological site",
+      "Ani Kars citadel",
+      "Ani Cathedral Turkey",
+      "Akhurian river Ani"
+    ],
+    "context": "Ani’nin yerini anlamak için kente ve ticaret güzergâhına aynı anda bakmak gerekir.",
+    "evidence_boundary": "İpek Yolu bir ağdı. Ani’nin gelişimini tek bir kervan yoluyla açıklamak kentin çok katmanlı geçmişini eksik bırakır.",
+    "facts": [
+      "Ani, onuncu ve on birinci yüzyıllarda Bagratlı Ermeni Krallığı’nın başkentiydi. İpek Yolu’nun bir kolu, kentin büyümesinde etkili oldu.",
+      "Ani’nin dinî, askerî ve sivil yapıları, kentin el değiştirdiği yüzyıllarda farklı mimari geleneklerin nasıl yan yana geldiğini gösteriyor.",
+      "Ani, Türkiye’nin kuzeydoğusunda derin bir vadiye bakan bir plato üzerinde kuruldu. Vadinin bir bölümü bugün Türkiye ile Ermenistan arasında doğal sınır oluşturuyor."
+    ],
+    "narration": [
+      "Bu kent neden burada?",
+      "Kars yakınlarında, derin bir vadinin üzerinde Orta Çağ’ın önemli kentlerinden biri yükseliyordu.",
+      "Bugün Ani dediğimiz yer, onuncu ve on birinci yüzyıllarda Bagratlı Ermeni Krallığı’nın başkentiydi.",
+      "Ama hikâye yalnızca bir başkentin hikâyesi değil. Ani, İpek Yolu ağının bir kolu üzerinde büyüdü.",
+      "Bir haritada önce vadiyi, sonra platoyu bulun. Kentin çevresiyle kurduğu ilişkiyi bu yükseklikten okuyabilirsiniz.",
+      "Kalın duvarlar kentin askerî geçmişini anlatır. Dinî ve sivil yapılar ise aynı yerde farklı geleneklerin izini taşır.",
+      "Kent el değiştirdi. Yüzyılların izi tek bir bina ya da tek bir duvarla sınırlı kalmadı.",
+      "Bu yüzden Ani’yi anlamak için taşlara tek tek bakmak kadar, onları yan yana görmek gerekir.",
+      "Bugün sessiz görünen bu plato, bir zamanlar farklı coğrafyaları birbirine bağlayan bir güzergâhın üzerindeydi.",
+      "Sence bir kentin hikâyesini en iyi duvarları mı anlatır, içinden geçen yollar mı?"
+    ],
+    "sources": [
+      {
+        "title": "UNESCO · Ani",
+        "url": "https://whc.unesco.org/en/list/1518/"
+      }
+    ],
+    "image_prompt": "Kars, Türkiye — Orta Çağ; temsilî belgesel illüstrasyonu, tarihî arşiv iddiası yok."
+  },
+  {
+    "id": "catalhoyuk-belgesel",
+    "story_group": "catalhoyuk",
+    "title": "Çatalhöyük’te evin kapısı neredeydi?",
+    "hook": "Kapı çatıda!",
+    "category": "kesif",
+    "color": "teal",
+    "visual_mode": "2d",
+    "date": "Neolitik ve Kalkolitik",
+    "era": "Neolitik Çağ",
+    "scope": "anadolu",
+    "instagram_keywords": [
+      "Çatalhöyük",
+      "Neolitik Anadolu",
+      "arkeolojik yerleşim"
+    ],
+    "visual_search_queries": [
+      "Çatalhöyük archaeological site",
+      "Çatalhöyük houses",
+      "Çatalhöyük wall painting",
+      "Konya Çatalhöyük excavation"
+    ],
+    "context": "Çatalhöyük’te evin bulunduğu yer kadar, insanların eve nasıl girdiği de yerleşimin düzenini anlamaya yardım ediyor.",
+    "evidence_boundary": "Bugünkü sokak ve konut kavramları Neolitik yerleşime doğrudan aktarılamaz. Canlandırma şemaları kazı planının birebir kopyası değildir.",
+    "facts": [
+      "Çatalhöyük’te evler birbirine bitişikti. Yerleşimde sokak yerine damlar üzerinden dolaşılıyor, yapılara çatıdan giriliyordu.",
+      "Çatalhöyük’ün doğu ve batı höyükleri farklı dönemleri belgeliyor. Doğu höyüğünde Neolitik, batı höyüğünde Kalkolitik yerleşim izleri var.",
+      "Doğu höyüğündeki duvar resimleri, kabartmalar ve heykeller, yerleşik yaşama geçiş döneminin gündelik ve simgesel dünyasına ışık tutuyor."
+    ],
+    "narration": [
+      "Kapı çatıda!",
+      "Bir yerleşime girdiğini düşün. Önünde bir sokak yok, ama evler hemen yanında yükseliyor.",
+      "Konya’daki Çatalhöyük’ün Neolitik yerleşiminde yapılar sırt sırta duruyordu.",
+      "UNESCO’nun tanımına göre evlere giriş çatıdan sağlanıyordu. Mahalleye bakmanın yolu da bu yüzden biraz değişiyor.",
+      "Bugün bir semti sokaklarından tanırız. Buradaysa çatıların ilişkisi, yapıları tek tek okumak kadar önemli.",
+      "Doğu ve batı höyükleri aynı döneme ait birer kopya değil. Doğu höyüğü Neolitik, batı höyüğü Kalkolitik yaşamı anlamaya yardım ediyor.",
+      "Doğu höyüğünde duvar resimleri, kabartmalar ve heykeller bulundu. Bunlar evlerin yalnızca barınmak için kullanıldığını düşünmemize engel oluyor.",
+      "Yine de tek bir resimden bütün yerleşim hakkında kesin bir hikâye çıkaramayız.",
+      "Çatalhöyük’ün düşündürdüğü şey basit: Bir evin girişine bakmak, bir topluluğun mekânı nasıl kullandığına dair ipucu verebilir.",
+      "Sen olsan bu yerleşimin izini damlardan mı sürerdin, duvarlardan mı?"
+    ],
+    "sources": [
+      {
+        "title": "UNESCO · Çatalhöyük",
+        "url": "https://whc.unesco.org/en/list/1405/"
+      }
+    ],
+    "image_prompt": "Konya, Türkiye — Neolitik Çağ; temsilî belgesel illüstrasyonu, tarihî arşiv iddiası yok."
+  },
+  {
+    "id": "nan-madol-belgesel",
+    "story_group": "nan-madol",
+    "title": "Nan Madol’un taş adaları",
+    "hook": "Adalar örülebilir mi?",
+    "category": "kayip_sehir",
+    "color": "teal",
+    "visual_mode": "2d",
+    "date": "MS 1200–1500",
+    "era": "MS 1200–1500",
+    "scope": "dunya",
+    "instagram_keywords": [
+      "Nan Madol",
+      "Pohnpei",
+      "Pasifik arkeolojisi"
+    ],
+    "visual_search_queries": [
+      "Nan Madol basalt walls",
+      "Nan Madol Pohnpei",
+      "Pohnpei Micronesia coast",
+      "Nan Madol aerial"
+    ],
+    "context": "Nan Madol’daki kalıntılar, ada yerleşimiyle tören mimarisinin aynı taş dokuda buluştuğunu gösteriyor.",
+    "evidence_boundary": "Yaklaşık tarihler taş yapı kalıntılarına ilişkindir. İnşaatın bütün yöntemleri ve ayrıntıları için bu kayıttan kesin sonuç çıkarılamaz.",
+    "facts": [
+      "Pohnpei açıklarındaki Nan Madol, bazalt ve mercan taşlarıyla çevrelenmiş yüzden fazla adacıktan oluşuyor.",
+      "Nan Madol’daki saray, tapınak, mezar ve konut kalıntıları Saudeleur hanedanının tören merkezinden geriye kaldı.",
+      "UNESCO, Nan Madol’daki taş yapıların inşasını yaklaşık 1200 ile 1500 arasına tarihlendiriyor. Adacıklar Pohnpei’nin güneydoğu kıyısı açıklarında yer alıyor."
+    ],
+    "narration": [
+      "Adalar örülebilir mi?",
+      "Pasifik’te Pohnpei’nin güneydoğu kıyısına yaklaşın. Suyun içinde, birbirinden kopuk görünen taş çizgilerle karşılaşacaksınız.",
+      "Burası Nan Madol. Yüzden fazla küçük adacık, bazalt ve mercan taşlarından yapılmış duvarlarla çevrili.",
+      "İlk bakışta bu duvarlar birbirinin tekrarı gibi duruyor. Ama geriye kalan yapıların işlevleri aynı değildi.",
+      "UNESCO kaydı saray, tapınak, mezar ve konut kalıntılarından söz ediyor. Bunlar Saudeleur hanedanının tören merkezinin parçalarıydı.",
+      "Taş yapıların tarihi yaklaşık bin iki yüz ile bin beş yüz arasına uzanıyor.",
+      "Bütünü anlamak için tek bir duvara bakmak yetmez. Kıyıyı, suyu ve yapıların yan yana gelişini de görmek gerekir.",
+      "Bugün gördüğümüz izler, yapımın her ayrıntısını söylemiyor. Ama farklı amaçlara ayrılan alanları suyun ortasında birlikte düşünmemizi sağlıyor.",
+      "Nan Madol, tek bir anıttan çok daha geniş bir tarih anlatıyor.",
+      "Bu görüntüde ilk dikkatinizi çeken şey ne: suyun içindeki düzen mi, taş duvarlar mı?"
+    ],
+    "sources": [
+      {
+        "title": "UNESCO · Nan Madol",
+        "url": "https://whc.unesco.org/en/list/1503/"
+      }
+    ],
+    "image_prompt": "Pohnpei, Mikronezya — MS 1200–1500; temsilî belgesel illüstrasyonu, tarihî arşiv iddiası yok."
+  },
+  {
+    "id": "safranbolu-belgesel",
+    "story_group": "safranbolu",
+    "title": "Safranbolu bir kervan kentiyken",
+    "hook": "Bu kent neden duraktı?",
+    "category": "az_bilinen_olay",
+    "color": "gold",
+    "visual_mode": "2d",
+    "date": "13–20. yüzyıl başı",
+    "era": "Osmanlı Dönemi",
+    "scope": "anadolu",
+    "instagram_keywords": [
+      "Safranbolu",
+      "Osmanlı kervan yolları",
+      "tarihî Safranbolu"
+    ],
+    "visual_search_queries": [
+      "Safranbolu old town",
+      "Safranbolu Cinci Han",
+      "Safranbolu Ottoman houses",
+      "Safranbolu Eski Hamam"
+    ],
+    "context": "Safranbolu'nun yapılarını, doğu ile batı arasındaki ticaret güzergâhındaki konumuyla birlikte okumak gerekir.",
+    "evidence_boundary": "Kervanlar ve ticaret kentin gelişimini anlamak için bir anahtar. Tüm yapıların aynı tarihte veya aynı amaçla yapıldığı söylenemez.",
+    "facts": [
+      "Safranbolu, on üçüncü yüzyıldan demiryolunun bölge ticaretini dönüştürdüğü yirminci yüzyıl başına kadar doğu ile batı arasındaki güzergâhta önemli bir kervan durağıydı.",
+      "Safranbolu’daki Eski Cami, Eski Hamam ve Süleyman Paşa Medresesi UNESCO kaydına göre 1322’de inşa edildi.",
+      "Safranbolu mimarisi özellikle on yedinci yüzyılda Osmanlı İmparatorluğu’nun başka kentlerindeki yapılaşmayı etkiledi."
+    ],
+    "narration": [
+      "Bu kent neden duraktı?",
+      "Dar sokaklar ve ahşap evler, Safranbolu’yu anlatmanın bir yolu. Başka bir yol ise kente uzaktan, bir kervan güzergâhından bakmak.",
+      "UNESCO kaydına göre burası on üçüncü yüzyıldan demiryolunun yaygınlaştığı döneme kadar doğu ve batı arasında önemli bir duraktı.",
+      "Yolun kentle kesiştiği yerde uzun bir yapı tarihi de var.",
+      "Eski Cami, Eski Hamam ve Süleyman Paşa Medresesi bin üç yüz yirmi ikiye tarihleniyor.",
+      "Bu üç yapı bir döneme işaret ediyor. Safranbolu mimarisinin etkisi ise sonraki yüzyıllarda da sürdü.",
+      "Özellikle on yedinci yüzyılda, buradaki mimari Osmanlı İmparatorluğu’nun başka kentlerindeki yapılaşmaya da yansıdı.",
+      "Bugün bir cepheye yakından bakmakla kentin eski ticaret ağındaki yerini görmek aynı hikâyenin farklı parçaları.",
+      "Bir dahaki sefere Safranbolu’yu düşündüğünde yalnızca evleri değil, kente varan yolları da hatırla.",
+      "Sence bir kentin mirasını en çok yapıları mı korur, hikâyesini taşıyan yollar mı?"
+    ],
+    "sources": [
+      {
+        "title": "UNESCO · Safranbolu",
+        "url": "https://whc.unesco.org/en/list/614/"
+      }
+    ],
+    "image_prompt": "Karabük, Türkiye — Osmanlı Dönemi; temsilî belgesel illüstrasyonu, tarihî arşiv iddiası yok."
+  },
+  {
+    "id": "shushtar-belgesel",
+    "story_group": "shushtar",
+    "title": "Şuşter’de suyun çalıştırdığı kent",
+    "hook": "Su nasıl çalıştırılır?",
+    "category": "kesif",
+    "color": "teal",
+    "visual_mode": "2d",
+    "date": "Ahameniş Dönemi’ne uzanan kökler",
+    "era": "Antik Çağ’dan günümüze",
+    "scope": "dunya",
+    "instagram_keywords": [
+      "Şuşter",
+      "antik su mühendisliği",
+      "Gargar kanalı"
+    ],
+    "visual_search_queries": [
+      "Shushtar Historical Hydraulic System",
+      "Gargar canal Shushtar",
+      "Shushtar watermills",
+      "Karun river Shushtar"
+    ],
+    "context": "Şuşter’de kanallar, değirmenler ve su seviyesini ölçen yapılar birlikte çalışan bir altyapının parçalarıydı.",
+    "evidence_boundary": "Sistemin köklerinin Ahameniş dönemine uzanması, bugünkü her parçanın o tarihte yapıldığı anlamına gelmez.",
+    "facts": [
+      "Şuşter’de Karun Nehri’nden ayrılan Gargar kanalı, suyu bir tünel ağıyla değirmenlere taşıyan tarihî sistemin bir parçası.",
+      "Şuşter’in tarihî su şebekesinde değirmenlerin yanı sıra su seviyesinin ölçüldüğü bir kule ve sistemi yöneten bir kale bulunuyor.",
+      "Şuşter’de Karun’un akışı iki ana kanala yönlendirildi. UNESCO, bu hidrolik düzenin köklerini Ahameniş dönemine kadar izliyor."
+    ],
+    "narration": [
+      "Su nasıl çalıştırılır?",
+      "İran’ın Huzistan bölgesindeki Şuşter’de bir nehre bakınca, aslında birbirine bağlanan bir dizi yapı görürsünüz.",
+      "Karun Nehri’nin akışı iki ana kanala yönlendirildi. Bunlardan birinin adı Gargar.",
+      "Gargar kanalından ayrılan su tüneller boyunca ilerledi ve değirmenlere ulaştı.",
+      "Sistemde yalnızca kanallar ve değirmenler yoktu. Su seviyesinin ölçüldüğü bir kule, bentler, köprüler ve havuzlar da bulunuyordu.",
+      "UNESCO, bu altyapının köklerini Ahameniş dönemine kadar izliyor.",
+      "Bu tarih, bütün parçaların aynı çağda yapılmış olduğunu göstermiyor. Bugünkü yapılar, suyu yönlendirmeye yönelik uzun bir geçmişin izlerini taşıyor.",
+      "Gargar kanalı bugün de kente su sağlıyor. Kayaya yakın bir noktada aşağıdaki havzaya doğru dökülen su, sistemin en görünür parçası.",
+      "Şuşter’in en ilginç yanı, suyun yolunu değiştirirken kentin çalışma biçiminin de değişmesi.",
+      "Böyle bir sistemi gezerken önce neyi izlerdiniz: suyun kaynağını mı, ulaştığı değirmeni mi?"
+    ],
+    "sources": [
+      {
+        "title": "UNESCO · Şuşter Su Sistemi",
+        "url": "https://whc.unesco.org/en/list/1315/"
+      }
+    ],
+    "image_prompt": "Huzistan, İran — Antik Çağ’dan günümüze; temsilî belgesel illüstrasyonu, tarihî arşiv iddiası yok."
   }
 ]

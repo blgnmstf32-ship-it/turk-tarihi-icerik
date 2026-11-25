@@ -54,7 +54,7 @@ API_KEY_PATTERN = re.compile(r"sk-or-v1-[A-Za-z0-9_-]+")
 
 def _redact(value, key):
     if isinstance(value, str):
-        return API_KEY_PATTERN.sub("[REDACTED]", value.replace(key, "[REDACTED]"))
+        return API_KEY_PATTERN.sub("[REDACTED]", value.replace(key, "[REDACTED]") if key else value)
     if isinstance(value, dict):
         return {_redact(k, key): _redact(v, key) for k, v in value.items()}
     if isinstance(value, list):
@@ -389,11 +389,13 @@ def _portfolio_tool(assigned):
 
 def review(settings, candidates, research, requester=None, *, state_path=DEFAULT_STATE,
            quota_reader=None, sleep=time.sleep, run_id=None):
+    from scripts.gemini_editorial import GeminiReviewSession, gemini_authorized
+    gemini = gemini_authorized() and bool(os.getenv("GEMINI_API_KEY", "").strip())
     enabled = settings.get("editorial_intelligence", {}).get("free_llm_enabled", False)
     key = os.getenv("OPENROUTER_API_KEY", "").strip()
     missing = [
         name for name, available in (("free_llm_enabled", enabled),
-            ("ENABLE_FREE_LLM=1", os.getenv("ENABLE_FREE_LLM") == "1"), ("OPENROUTER_API_KEY", key))
+            ("ENABLE_FREE_LLM=1", os.getenv("ENABLE_FREE_LLM") == "1"), (("GEMINI_API_KEY or OPENROUTER_API_KEY" if gemini_authorized() else "OPENROUTER_API_KEY"), gemini or key))
         if not available
     ]
     if missing:
@@ -415,7 +417,8 @@ def review(settings, candidates, research, requester=None, *, state_path=DEFAULT
     ids = {candidate["id"] for candidate in evidence["candidates"]}
     urls = {lead["url"] for lead in evidence["paper_leads"]}
     urls.update(source["url"] for candidate in evidence["candidates"] for source in candidate.get("sources", []))
-    session = FreeReviewSession(key, state, requester, quota_reader, sleep)
+    session = (GeminiReviewSession(key, state, requester=requester) if gemini
+               else FreeReviewSession(key, state, requester, quota_reader, sleep))
     stages, previous_roles = [], []
     for index, (role, instruction) in enumerate(STAGES):
         if stages and stages[-1]["status"] != "proposal":
@@ -449,8 +452,11 @@ def review(settings, candidates, research, requester=None, *, state_path=DEFAULT
 
     complete = _completed(stages)
     return {"status": "review_required" if complete else "incomplete", "calls": session.calls,
+            "gemini_calls": getattr(session, "gemini_attempts", 0),
             "cached_roles": session.cached_roles, "actual_llm_used": any(stage["actual_llm_used"] for stage in stages),
-            "completed_discussion": complete, "model": FREE_MODEL, "paid_fallback": False,
+            "completed_discussion": complete, "model": stages[-1].get("model") if complete else None,
+            "provider_priority": ["gemini_free", "openrouter_free"] if gemini else ["openrouter_free"],
+            "paid_fallback": False,
             "stages": stages, "decision": stages[-1]["answer"] if complete else None,
             "quota": {"daily_project_limit": LOCAL_DAILY_LIMIT, "max_calls_per_run": MAX_REQUESTS_PER_RUN,
                       "max_attempts_per_role": MAX_ATTEMPTS_PER_ROLE,

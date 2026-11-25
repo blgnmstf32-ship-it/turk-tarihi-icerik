@@ -1,4 +1,4 @@
-name: Tarihin Bilinmeyen Gerçekleri · Haftalık rapor ve Reels
+name: Tarihin Bilinmeyen Gerçekleri · Editoryal rapor ve Reels
 on:
   workflow_call:
     inputs:
@@ -6,6 +6,9 @@ on:
         type: string
         default: ''
       approved_piri:
+        type: boolean
+        default: false
+      daily:
         type: boolean
         default: false
   workflow_dispatch:
@@ -24,7 +27,7 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '17 9 * * 2' # Türkiye 12:17; GitHub schedule gecikebilir
+    - cron: '17 9 * * 2' # Existing review workflow, 12:17 Türkiye
 permissions:
   contents: read
 concurrency:
@@ -73,10 +76,13 @@ jobs:
       - name: Validate 24 task modules and safety gates
         run: python -m unittest discover -s tests -v
       - name: Restore editorial responses and quota ledger
-        if: inputs.approved_piri != true && vars.ENABLE_FREE_LLM == '1'
+        if: inputs.approved_piri != true
         uses: actions/cache/restore@v4
         with:
-          path: .cache/editorial-llm.sqlite3
+          path: |
+            .cache/editorial-llm.sqlite3
+            .cache/gemini-quota.sqlite3
+            .cache/gemini-voice
           key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             editorial-llm-v1-
@@ -85,30 +91,58 @@ jobs:
         env:
           ENABLE_FREE_LLM: ${{ inputs.approved_piri != true && vars.ENABLE_FREE_LLM || '0' }}
           OPENROUTER_API_KEY: ${{ inputs.approved_piri != true && secrets.OPENROUTER_API_KEY || '' }}
+          GEMINI_API_KEY: ${{ inputs.approved_piri != true && secrets.GEMINI_API_KEY || '' }}
+          GEMINI_FREE_TIER_CONFIRMED: ${{ vars.GEMINI_FREE_TIER_CONFIRMED || '0' }}
+          ENABLE_GEMINI_EDITORIAL: ${{ inputs.approved_piri != true && vars.GEMINI_FREE_TIER_CONFIRMED || '0' }}
           YOUTUBE_DATA_API_KEY: ${{ secrets.YOUTUBE_DATA_API_KEY }}
+          DAILY: ${{ inputs.daily }}
         run: |
           flags=()
-          if [[ "$ENABLE_FREE_LLM" == "1" ]]; then flags+=(--require-llm); fi
+          if [[ "$ENABLE_FREE_LLM" == "1" && "$DAILY" != "true" ]]; then flags+=(--require-llm); fi
           python -m scripts.editorial_board --out output/auto/editorial "${flags[@]}"
+      - name: Prepare tomorrow’s review calendar and ten source-based Stories
+        id: plan
+        if: inputs.daily == true
+        env:
+          DEMO: ${{ inputs.approved_piri }}
+          INSTAGRAM_INSIGHTS_ENABLED: ${{ inputs.approved_piri != true && vars.INSTAGRAM_INSIGHTS_ENABLED || '0' }}
+          IG_INSIGHTS_ACCESS_TOKEN: ${{ secrets.IG_INSIGHTS_ACCESS_TOKEN }}
+          INSTAGRAM_MEDIA_MAP: ${{ vars.INSTAGRAM_MEDIA_MAP || '[]' }}
+        run: |
+          mkdir -p output/state
+          printf '{}\n' > output/state/previous.json
+          printf 'absent\n' > output/state/parent
+          flags=()
+          if [[ "$DEMO" == "true" ]]; then
+            flags+=(--demo)
+          else
+            if git ls-remote --exit-code origin refs/heads/editorial-ledger > /dev/null; then
+              git fetch --no-tags origin refs/heads/editorial-ledger
+              git rev-parse FETCH_HEAD > output/state/parent
+              git show FETCH_HEAD:editorial-ledger.json > output/state/previous.json
+            else
+              result=$?
+              if [[ "$result" != "2" ]]; then exit "$result"; fi
+            fi
+          fi
+          topic=$(python -m scripts.daily_editorial prepare --out output/auto --ledger output/state/previous.json "${flags[@]}")
+          echo "topic=$topic" >> "$GITHUB_OUTPUT"
       - name: Assign and compare selected free-model specialists
         env:
-          TOPIC_ID: ${{ inputs.topic || '' }}
+          TOPIC_ID: ${{ steps.plan.outputs.topic || inputs.topic || '' }}
           ENABLE_20_LLM_AGENTS: ${{ inputs.approved_piri != true && vars.ENABLE_FREE_LLM || '0' }}
           OPENROUTER_API_KEY: ${{ inputs.approved_piri != true && secrets.OPENROUTER_API_KEY || '' }}
+          GEMINI_API_KEY: ${{ inputs.approved_piri != true && secrets.GEMINI_API_KEY || '' }}
+          GEMINI_FREE_TIER_CONFIRMED: ${{ vars.GEMINI_FREE_TIER_CONFIRMED || '0' }}
+          ENABLE_GEMINI_EDITORIAL: ${{ inputs.approved_piri != true && vars.GEMINI_FREE_TIER_CONFIRMED || '0' }}
         run: python -m scripts.ai_agents --topic "$TOPIC_ID" --out output/auto
-      - name: Save editorial responses even on a failed review
-        if: ${{ always() && inputs.approved_piri != true && vars.ENABLE_FREE_LLM == '1' && hashFiles('.cache/editorial-llm.sqlite3') != '' }}
-        uses: actions/cache/save@v4
-        with:
-          path: .cache/editorial-llm.sqlite3
-          key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Produce the documentary with Gemini Charon
         env:
-          TOPIC_ID: ${{ inputs.topic || '' }}
+          TOPIC_ID: ${{ steps.plan.outputs.topic || inputs.topic || '' }}
           HF_HOME: ${{ github.workspace }}/.cache/huggingface
           GEMINI_API_KEY: ${{ inputs.approved_piri != true && secrets.GEMINI_API_KEY || '' }}
           APPROVED_PIRI: ${{ inputs.approved_piri }}
-          FREE_TIER_CONFIRMED: ${{ inputs.confirm_gemini_free_project || (github.event_name == 'schedule' && vars.GEMINI_FREE_TIER_CONFIRMED == '1') }}
+          FREE_TIER_CONFIRMED: ${{ inputs.confirm_gemini_free_project || ((inputs.daily == true || github.event_name == 'schedule') && vars.GEMINI_FREE_TIER_CONFIRMED == '1') }}
         run: |
           flags=()
           if [[ "$APPROVED_PIRI" == "true" ]]; then
@@ -117,11 +151,20 @@ jobs:
             flags+=(--confirm-gemini-free-project)
           fi
           python -m scripts.auto_produce --topic "$TOPIC_ID" --out output/auto --use-staged-experts "${flags[@]}"
+      - name: Save editorial responses even on a failed review
+        if: ${{ always() && inputs.approved_piri != true && (hashFiles('.cache/editorial-llm.sqlite3') != '' || hashFiles('.cache/gemini-quota.sqlite3') != '') }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .cache/editorial-llm.sqlite3
+            .cache/gemini-quota.sqlite3
+            .cache/gemini-voice
+          key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Verify MP4, format, and Turkish speech
         env:
           HF_HOME: ${{ github.workspace }}/.cache/huggingface
-          TOPIC_ID: ${{ inputs.topic || '' }}
-          REQUIRE_LLM: ${{ inputs.approved_piri != true && vars.ENABLE_FREE_LLM || '0' }}
+          TOPIC_ID: ${{ steps.plan.outputs.topic || inputs.topic || '' }}
+          REQUIRE_LLM: ${{ inputs.daily != true && inputs.approved_piri != true && vars.ENABLE_FREE_LLM || '0' }}
           REQUIRE_SPECIALISTS: ${{ inputs.require_specialists || false }}
         run: |
           flags=()
@@ -131,6 +174,10 @@ jobs:
           if [[ "$REQUIRE_LLM" == "1" ]]; then flags+=(--require-llm); fi
           if [[ "$REQUIRE_SPECIALISTS" == "true" ]]; then flags+=(--require-specialists); fi
           python -m scripts.verify_production --out output/auto --topic "$TOPIC_ID" "${flags[@]}"
+      - name: Verify the review package and extract a vertical Reel cover
+        if: inputs.daily == true
+        run: |
+          python -m scripts.daily_editorial verify --out output/auto --ledger output/state/previous.json --next-ledger output/state/editorial-ledger.json
       - name: Save review package and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -140,4 +187,14 @@ jobs:
             output/auto/**
             output/observer/**
           retention-days: 14
-          if-no-files-found: warn
+          if-no-files-found: error
+      - name: Upload verified draft history
+        if: inputs.daily == true && inputs.approved_piri != true
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-ledger-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            output/state/editorial-ledger.json
+            output/state/parent
+          retention-days: 1
+          if-no-files-found: error

@@ -1,0 +1,64 @@
+name: Tarihin Bilinmeyen Gerçekleri · Pilot · 1 Reels + 10 hikâye
+on:
+  workflow_dispatch:
+    inputs:
+      demo:
+        description: 'Doğrulama: onaylı Piri Reis sesini kullan, üretim geçmişini değiştirme'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-editorial-package
+  cancel-in-progress: false
+
+jobs:
+  render:
+    if: github.ref == 'refs/heads/main' || inputs.demo == true
+    uses: ./.github/workflows/produce.yml
+    with:
+      daily: true
+      approved_piri: ${{ inputs.demo == true }}
+    secrets: inherit
+
+  track:
+    if: github.ref == 'refs/heads/main' && inputs.demo != true
+    needs: render
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: editorial-ledger-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/verified-draft-ledger
+      - name: Record verified topics and fingerprints without writing to main
+        env:
+          LEDGER: ${{ runner.temp }}/verified-draft-ledger
+        run: |
+          expected=$(cat "$LEDGER/parent")
+          if [[ "$expected" == "absent" ]]; then
+            git switch --orphan draft-ledger
+            if git ls-remote --exit-code origin refs/heads/editorial-ledger >/dev/null; then
+              echo 'Taslak geçmişi çalışma sırasında oluşturuldu.'
+              exit 1
+            else
+              result=$?
+              if [[ "$result" != "2" ]]; then exit "$result"; fi
+            fi
+          else
+            git fetch --no-tags origin refs/heads/editorial-ledger
+            if [[ "$(git rev-parse FETCH_HEAD)" != "$expected" ]]; then
+              echo 'Taslak geçmişi değişti. Başka taslağın üzerine yazılmadı.'
+              exit 1
+            fi
+            git switch --detach FETCH_HEAD
+          fi
+          cp "$LEDGER/editorial-ledger.json" editorial-ledger.json
+          git add editorial-ledger.json
+          git -c user.name=github-actions -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "Record verified editorial draft ${GITHUB_RUN_ID}"
+          git push origin HEAD:refs/heads/editorial-ledger

@@ -14,6 +14,15 @@
       "channel_id": "UCvpQ-l09fCVxJd3urZbxzHg"
     }
   ],
+  "public_competitor_editorial_examples": [
+    {"name": "TRT Belgesel", "format": "Anadolu ve Osmanlı mirasını yapı veya nesne üzerinden açıklayan tarih serileri", "source": "https://www.trtbelgesel.com.tr/tarih", "reviewed_on": "2026-11-25"},
+    {"name": "History Hit", "format": "Belge ve mekânı bir tarih sorusuyla birlikte sunan tematik içerik", "source": "https://www.historyhit.com/", "reviewed_on": "2026-11-25"},
+    {"name": "British Museum", "format": "Eser merkezli kısa anlatım ve açık koleksiyon künyesi", "source": "https://www.britishmuseum.org/collection/object/Y_EA24", "reviewed_on": "2026-11-25"}
+  ],
+  "public_instagram_hashtag_examples": [
+    {"topic_id": "piri-reis-kayip-kaynak", "tag": "#PiriReis", "source": "https://pictame.com/en/discover/hashtag/piri-reis-haritasi", "reviewed_on": "2026-11-25", "measurement": "public_index_usage_only"},
+    {"topic_id": "antikythera-disli", "tag": "#AntikytheraMechanism", "source": "https://jolygram.com/en/tag/ancienttechnology", "reviewed_on": "2026-11-25", "measurement": "public_index_usage_only"}
+  ],
   "research_timeout_seconds": 8,
   "historical_data_file": "data/performance.jsonl",
   "comparison_videos": [

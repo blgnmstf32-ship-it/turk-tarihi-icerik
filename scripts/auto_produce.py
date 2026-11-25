@@ -113,9 +113,10 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
     if approved_voice is None and topic['id']=='piri-reis-kayip-kaynak':
         approved_voice=ROOT/'data'
     voice_path=out/'narration.wav'
+    voice_info={}
     if not skip_narration:
         try:
-            cues=narrate(segments,voice_path,gemini_free_project,approved_voice=approved_voice)
+            cues=narrate(segments,voice_path,gemini_free_project,approved_voice=approved_voice,voice_info=voice_info)
             duration=media_duration(voice_path)
             hook_seconds=round(cues[0]['end'],2)
             if not 60<=duration<=75 or hook_seconds>3:
@@ -202,10 +203,8 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
     if skip_narration:
         manifest['status']='awaiting_local_tts';(out/'AUTO_REPORT.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
         return manifest
-    voice_mode='approved_charon_recording' if approved_voice is not None else 'live_charon'
-    manifest['voice_generation'] = {'model':MODEL,'voice':VOICE,
-                                    'cloud_requests':0 if approved_voice is not None else 1,
-                                    'source':voice_mode,'pace_and_pauses':'model',
+    voice_mode=voice_info['source']
+    manifest['voice_generation'] = {**voice_info,'pace_and_pauses':'model',
                                     'billing_guard':'approved_take' if approved_voice is not None else 'operator_confirms_unbilled_project'}
     manifest['first_hook_seconds']=hook_seconds
     create_subtitles(cues,out/'subtitles.srt')

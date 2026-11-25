@@ -9,7 +9,8 @@ def normalize_media_insights(payload, metadata):
         try:return float(value) if value is not None else None
         except (ValueError,TypeError):return None
     return {"source":"instagram_graph_api_read_only","content_id":metadata.get("content_id",metadata.get("media_id")),
-        "topic_id":metadata.get("topic_id"),"category":metadata.get("category"),"views":number(metrics.get("views")),
+        "topic_id":metadata.get("topic_id"),"category":metadata.get("category"),
+        "published_at":metadata.get("published_at"),"format":metadata.get("format"),"views":number(metrics.get("views")),
         "reach":number(metrics.get("reach")),"shares":number(metrics.get("shares")),
         "avg_watch_seconds":number(metrics.get("ig_reels_avg_watch_time")),"follows":number(metrics.get("follows")),
         "captured_at_utc":__import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
