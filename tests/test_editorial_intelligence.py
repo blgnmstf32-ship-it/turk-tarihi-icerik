@@ -29,6 +29,28 @@ class EditorialIntelligenceTests(unittest.TestCase):
                                 set(sources), set(sources.values()), "test-key", ideas)
         self.assertIsNone(error)
         self.assertEqual(answer["idea_reviews"], rows)
+        self.assertEqual(_answer(json.dumps({"rationale": "Katalog", "idea_reviews": rows[:-1]}),
+                                 set(sources), set(sources.values()), "test-key", ideas)[1],
+                         "incomplete_portfolio_review")
+
+    def test_live_portfolio_requests_partition_ten_ideas_without_extra_calls(self):
+        ideas = score_ideas({}, [])
+        requested = []
+        def post(url, **kwargs):
+            data = json.loads(kwargs["json"]["messages"][1]["content"])
+            assigned = data.get("ranked_candidates", [])
+            requested.append([candidate["id"] for candidate in assigned])
+            answer = {"rationale": "Kaynakları incele", "idea_reviews":[
+                {"idea_id": candidate["id"], "source_number": 1, "rationale": "Bir ayrıntıyı büyüt.",
+                 "open_question": "Nasıl doğrulanır?"} for candidate in assigned]}
+            return Response(data={"model":"test/free","choices":[{"message":{"content":json.dumps(answer)}}]})
+        with tempfile.TemporaryDirectory() as tmp, patch.dict("os.environ", {
+                "ENABLE_FREE_LLM":"1", "OPENROUTER_API_KEY":"test-key"}, clear=True):
+            result = review({"editorial_intelligence":{"free_llm_enabled":True}}, ideas, {}, post,
+                            state_path=Path(tmp)/"state.db", quota_reader=lambda *_a, **_kw: Response(data={}))
+        self.assertTrue(result["completed_discussion"])
+        self.assertEqual([len(batch) for batch in requested], [5, 5, 0, 0])
+        self.assertEqual(requested[0] + requested[1], [idea["id"] for idea in ideas])
 
     def test_public_trends_and_competitor_feeds_are_parsed_with_provenance(self):
         trend='<rss><channel><item><title>Türk tarihi harita</title><link>https://trends.example/item</link></item></channel></rss>'.encode()
