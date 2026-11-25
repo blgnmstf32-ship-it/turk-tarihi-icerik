@@ -27,7 +27,6 @@ on:
     - cron: '17 9 * * 2' # Türkiye 12:17; GitHub schedule gecikebilir
 permissions:
   contents: read
-  actions: read
 concurrency:
   group: turk-tarihi-content-drafts
   cancel-in-progress: false
@@ -103,27 +102,6 @@ jobs:
         with:
           path: .cache/editorial-llm.sqlite3
           key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
-      - name: Restore the approved Charon take
-        if: inputs.approved_piri == true
-        id: charon-cache
-        uses: actions/cache@v4
-        with:
-          path: .cache/approved-charon
-          key: charon-approved-3c1b6e038fa28d36289146d63dcf0e0b5c17b56a62beb4b444ba7e4144d0d83b
-      - name: Retrieve the owner-approved Charon take
-        if: inputs.approved_piri == true && steps.charon-cache.outputs.cache-hit != 'true'
-        uses: actions/download-artifact@v4
-        with:
-          github-token: ${{ github.token }}
-          repository: ${{ github.repository }}
-          run-id: 45601433415
-          name: piri-reis-voice-comparison-1-attempt-1
-          path: .cache/voice-source
-      - name: Stage the approved narration and provenance
-        if: inputs.approved_piri == true && steps.charon-cache.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p .cache/approved-charon
-          cp .cache/voice-source/GEMINI_CHARON.wav .cache/voice-source/GEMINI_RECEIPT.json .cache/approved-charon/
       - name: Produce the documentary with Gemini Charon
         env:
           TOPIC_ID: ${{ inputs.topic || '' }}
@@ -134,7 +112,7 @@ jobs:
         run: |
           flags=()
           if [[ "$APPROVED_PIRI" == "true" ]]; then
-            flags+=(--approved-voice .cache/approved-charon)
+            flags+=(--approved-voice data)
           elif [[ "$FREE_TIER_CONFIRMED" == "true" ]]; then
             flags+=(--confirm-gemini-free-project)
           fi
