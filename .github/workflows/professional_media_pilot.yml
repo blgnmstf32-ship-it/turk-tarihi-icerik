@@ -1,0 +1,99 @@
+name: Profesyonel medya · CPU pilot karşılaştırması
+on:
+  workflow_dispatch:
+  push:
+    branches: [professional-media-pilot]
+    paths:
+      - .github/workflows/professional_media_pilot.yml
+      - scripts/media_pilot.py
+      - scripts/media_tools.py
+      - media_pilot/**
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: media-pilot-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  media:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      DO_NOT_TRACK: "1"
+      HYPERFRAMES_NO_TELEMETRY: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            media_pilot/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install isolated CPU components without npm lifecycle hooks
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core
+          python -m pip install -r requirements-media-pilot.txt
+          npm ci --ignore-scripts --no-audit
+          npm --prefix media_pilot ci --ignore-scripts --no-audit
+          npm --prefix media_pilot audit --omit=dev --audit-level=high
+          python -m pip check
+      - name: Verify the existing application and the isolated media routes
+        run: |
+          npm run typecheck
+          python -m unittest discover -s tests -q
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45649575775
+          name: tarihin-bilinmeyen-gercekleri-4
+          path: output/media-input/history
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45702177750
+          name: beauty-reel-kuru-cilt-2
+          path: output/media-input/beauty
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45654042857
+          name: beauty-sulafat-and-nano-assets
+          path: output/media-input/beauty-assets
+      - name: Download pinned Whisper small weights and browser
+        run: |
+          set -euo pipefail
+          mkdir -p output/media-input/whisper-small
+          base=https://huggingface.co/Systran/faster-whisper-small/resolve/536b0662742c02347bc0e980a01041f333bce120
+          for file in model.bin config.json tokenizer.json vocabulary.txt; do
+            curl --fail --silent --show-error --retry 2 --location "$base/$file" -o "output/media-input/whisper-small/$file"
+          done
+          (cd output/media-input/whisper-small && sha256sum -c <<'SHAS'
+          3e305921506d8872816023e4c273e75d2419fb89b24da97b4fe7bce14170d671  model.bin
+          b55496ac7940a7ae47d2c01eab40edfd8701feec1229d9cce3b40014383fb828  config.json
+          fb7b63191e9bb045082c79fd742a3106a12c99513ab30df4a0d47fa6cb6fd0ab  tokenizer.json
+          34ce3fe1c5041027b3f8d42912270993f986dbc4bb34cf27f951e34a1e453913  vocabulary.txt
+          SHAS
+          )
+          npx --no-install remotion browser ensure
+      - name: Render, normalize and compare both brands on CPU
+        run: |
+          set -euo pipefail
+          browser=$(find node_modules/.remotion -name chrome-headless-shell -type f | head -n 1)
+          test -x "$browser"
+          python -m scripts.media_pilot --history output/media-input/history --beauty output/media-input/beauty \
+            --beauty-assets output/media-input/beauty-assets --model output/media-input/whisper-small \
+            --browser "$browser" --out output/media-pilot
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: professional-media-pilot-${{ github.run_number }}
+          path: output/media-pilot/
+          retention-days: 14
+          if-no-files-found: error
