@@ -62,3 +62,10 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - `adapter` mevcut girişin belge kaydıdır. Çalıştırma izni mevcut üretim ve insan onayı kapılarında kalır. `historical_pass` yalnız bağlantılı eski gerçek çalıştırmanın kapsamını gösterir. `adapter_contract_only` medyasız denetimdir. VMAF ölçümü için destekli koşucu ve hizalı referans gerektiğinde yeni kanıtı ayrıca kaydet.
 - Yeni ortak Skill için Codex ve Gemini CLI belgelerinde tanımlanan `.agents/skills/<ad>/SKILL.md` yolunu değerlendir. Dosya adı, lisans, içeriğin güvenlik incelemesi ve Cisco/Gitleaks PR sonuçları kontrol edilir. Mevcut eski Codex yolu korunur. Registry, editoryal uzmanlara tam dosyaları veya harici komutları aktarmadan ilgili kayıtları sağlar.
 - Yeni video aracı veya Scene Director bu aşamada eklenmedi. Medya, ücretli API ve Instagram yayın akışları bu teslimin dışında kalır.
+
+## Gemini bilgi kayıtları
+
+- `python -m scripts.skill_registry --brand tarih --role 8` veya `--brand bakim --role 16` ile ilgili Gemini notlarını bul. JSON'da `gemini:` kimlikleri bilgi kaydıdır. Adaptörleri boştur ve çalışma yetkisi taşımazlar.
+- Kayıtlar sabit Google revizyonuna ve ilgili belgeye bağlanır. Yenileme gerektiğinde upstream değişikliği ağsız Cisco ve Gitleaks kontrolünden geçir. Yalnız görevle ilgili bilgiyi Türkçe özetle. Ham Skill, kurulum komutu, uzak bağlantı, CLI ve SDK seçeneklerini otomatik etkinleştirme.
+- Yeni model veya API sürümünü belge örneğinden üretime alma. Ücretsiz hesap erişimi ve mevcut kota kapıları ayrı doğrulanır. Sunucudaki bağlam önbelleği yerel SQLite yanıt önbelleğinden ayrıdır. Tarihte Charon ve bakımda Sulafat için önce onaylı kayıt kullanılır. Görsel ve medya servisi çağrıları önceki onay kapsamına bağlıdır.
+- `python -m scripts.quality_checks` sekiz bilgi notunu ve 40 uzman eşleşmesini medyasız doğrular. Codex ve Gemini CLI uyumluluğu bu teslimde belge incelemesidir. Dış paketlerin canlı servis testi bu aşamaya dahil değildir.

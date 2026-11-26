@@ -43,6 +43,60 @@
     "opening-presets": {"task": "AnimeFX kaynak fikrinin yerel kareye bağlı satır/maske açılışı", "license": "Yerel kod için açık izin kaydı yok; AnimeFX bağımlılık olarak kullanılmaz", "mode": "optional", "hardware": "CPU, mevcut video zaman çizelgesi", "adapter": "scripts/motion_toolkit.py:select_opening_effect", "test": "adapter_contract_only", "evidence": "tests/test_motion_toolkit.py", "alternative": "media:gsap", "motion_review_name": "animefx"},
     "local-parallax": {"task": "Onaylı durağan görüntüyü yerel 2.5D katmanlarla hareketlendir", "license": "Yerel kod için açık izin kaydı yok; görüntü ve katmanlar ayrı denetlenir", "mode": "optional", "hardware": "CPU, onaylı görüntü ve yerel derinlik verisi veya elle hazırlanmış katman", "adapter": "scripts/final_media_qa.py:authored_map_layers", "test": "historical_pass", "evidence": "final_media", "note": "Gerçek pilot elle hazırlanmış katman kullandı. Model çıkarımı bu kanıta dahil değil.", "alternative": null, "role_keys": {"tarih": [11, 13], "bakim": [13, 14]}}
   },
+  "gemini_knowledge": {
+    "repository": "google-gemini/gemini-skills",
+    "revision": "c4d0c62c1240e08a90546186bf320600ab6a039a",
+    "skill_path": "skills/gemini-api-dev/SKILL.md",
+    "license": "Apache-2.0",
+    "notes": {
+      "api": {
+        "task": "Gemini metin çağrısında Interactions yanıtında model çıktı adımlarını, mevcut generateContent uyumluluk yolunda ise aday gövdesini kontrol et. Boş veya geçersiz cevabı başarı sayma. Sağlayıcı erişim ve maliyet denetimleri mevcut yönlendiricide kalır.",
+        "docs": ["https://ai.google.dev/gemini-api/docs/interactions-overview"],
+        "role_keys": {"tarih": [1, 19, 20], "bakim": [1, 2, 19, 20]}
+      },
+      "model-selection": {
+        "task": "Göreve uygun modeli yetenek, gecikme ve proje kotasına göre değerlendir. Belgedeki yeni model adı veya örneği ücretsiz erişim kanıtı değildir. Onaylı Gemini, Cloudflare ve ücretsiz OpenRouter sırasını kullan.",
+        "docs": ["https://ai.google.dev/gemini-api/docs/models", "https://ai.google.dev/gemini-api/docs/pricing"],
+        "role_keys": {"tarih": [1, 2, 3, 4, 5, 18, 20], "bakim": [1, 2, 3, 4, 5, 20]}
+      },
+      "structured-json": {
+        "task": "Göreve özgü küçük bir JSON şeması tanımla. Ayrıştırmadan sonra rol kimliğini, izinli kararları, kaynak numaralarını ve Türkçe metni mevcut denetimle doğrula. Şema uyumu, iddianın doğruluğunu kanıtlamaz.",
+        "docs": ["https://ai.google.dev/gemini-api/docs/structured-output"],
+        "role_keys": {
+          "tarih": [2, 4, 5, 6, 7, 9, 10, 16, 18, 19, 20],
+          "bakim": [1, 2, 4, 5, 6, 7, 8, 9, 10, 18, 19, 20]
+        }
+      },
+      "context": {
+        "task": "Editoryal model girdisine yalnız görev, ilgili kaynaklar ve gerekli kanıt sınırını koy. Kaynak URL'lerini, sayıları ve sağlık uyarılarını koru. Mevcut store=false ayarıyla sunucuya bağlı oturum zinciri ve arka plan yürütme önerme.",
+        "docs": ["https://ai.google.dev/gemini-api/docs/interactions-overview", "https://ai.google.dev/gemini-api/docs/long-context"],
+        "role_keys": {
+          "tarih": [1, 2, 3, 4, 5, 6, 7, 9, 10, 17, 18],
+          "bakim": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 18]
+        }
+      },
+      "cache": {
+        "task": "Doğrulanmış yerel yanıtı mevcut marka, rol ve girdi özetiyle yeniden kullan. Sağlayıcının örtük bağlam önbelleği ile yerel yanıt önbelleğini ayır. Sağlayıcı isabetini yalnız kullanım alanı dönerse raporla. Açık sunucu önbelleği oluşturma.",
+        "docs": ["https://ai.google.dev/gemini-api/docs/caching"],
+        "role_keys": {"tarih": [1, 8, 19, 20], "bakim": [1, 2, 16, 19, 20]}
+      },
+      "multimodal": {
+        "task": "Mevcut onaylı bir görsel, ses veya videoyu incelerken gözlemi çıkarımdan ayır. Mümkünse kare veya zaman belirt. Lisans, tarihî doğruluk ve sağlık iddiaları için bağımsız kanıt iste. Önce yerel kalite araçlarını kullan. Harici dosya yükleme yetkisi verme.",
+        "docs": ["https://ai.google.dev/gemini-api/docs/video-understanding", "https://ai.google.dev/gemini-api/docs/files"],
+        "role_keys": {"tarih": [3, 11, 12, 13, 15, 16, 17, 18], "bakim": [4, 5, 11, 12, 13, 14, 15, 20]}
+      },
+      "tts": {
+        "task": "Onaylı kaydı ve metin/dosya özetlerini önce denetle. Türkçe telaffuz, durak, vurgu ve altyazı eşleşmesini ayrı değerlendir. Tarihte Charon, bakım pilotunda Sulafat profili geçerli. Ücretli veya başka bir sese otomatik geçiş yok.",
+        "docs": ["https://ai.google.dev/gemini-api/docs/speech-generation"],
+        "role_keys": {"tarih": [8, 14, 15, 16], "bakim": [10, 15, 16, 17, 20]}
+      },
+      "image-generation": {
+        "task": "Önce hakları ve dosya özeti onaylı mevcut görseli değerlendir. Yeni bir üretim ayrıca yetkilendirilirse mevcut görsel projesi ve bütçe kapıları geçerli. 9:16 kadraj, tarihî temsili görüntü etiketi ve bilimsel doğruluk kontrolünü planla.",
+        "docs": ["https://ai.google.dev/gemini-api/docs/image-generation", "https://ai.google.dev/gemini-api/docs/pricing"],
+        "role_keys": {"tarih": [11, 12, 13, 15, 16, 17], "bakim": [11, 12, 13, 14, 15, 18, 20]}
+      }
+    }
+  },
   "evidence": {
     "cpu_pilot": "https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45711789803",
     "final_media": "https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45828936221",
