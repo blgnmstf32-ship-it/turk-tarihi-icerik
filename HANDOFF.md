@@ -54,3 +54,11 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - Gerçek test çıkış koduyla `python -m scripts.context_output unittest LOG --exit-code KOD` çalıştır. Actions'ta `offline-quality-logs` paketinde hem ham hem önizleme dosyasını açabilirsin. Hata veya eksik bitiş kaydında tam log korunur. Önizleme aracı arızalanırsa ham log gösterilir ve iş başarısız olur.
 - Sağlık uyarısı, kaynak/URL ve sayısal ölçüm kaybında değişikliği kabul etme. [Çıktı testlerini](scripts/context_output_contracts.py) medyasız çalıştır. Yerel token ölçümlerini yalnız ölçülmüş metin ve tokenizer ile birlikte bildir. Üretim ortamındaki kota ve faturalandırma için bu oranları kullanma.
 - RTK veya Context Mode için global hook ve MCP kurulumu yapılmadı. GitHub Actions ve Work zaten yerel Python önizlemesini çalıştırır. Yeni bir ortamda Codex/Gemini CLI eklenti desteğini ayrıca doğrula.
+
+## Skill Registry kullanımı
+
+- Toplamı `python -m scripts.skill_registry --summary` ile, bir uzmanın JSON kaydını `python -m scripts.skill_registry --brand tarih --role 13` ile al. GitHub Actions veya başka Python kodu `registry_view("bakim", 20)` ile aynı veri görünümünü okuyabilir. Tam katalog için `registry_view()` kullan.
+- Görev metnini ve uzman eşlemesini kendi kaynak kataloğunda güncelle. [Skill Registry yapılandırmasına](config/skill_registry.json) lisans, yerel adaptör, önkoşul, alternatif ve kanıt gibi ek alanları gir. Kimlikler ad alanı, depo ve beceri adından üretilir. İki marka aynı sayısal rolü paylaşabildiğinden tam uzman anahtarını kullan.
+- `adapter` mevcut girişin belge kaydıdır. Çalıştırma izni mevcut üretim ve insan onayı kapılarında kalır. `historical_pass` yalnız bağlantılı eski gerçek çalıştırmanın kapsamını gösterir. `adapter_contract_only` medyasız denetimdir. VMAF ölçümü için destekli koşucu ve hizalı referans gerektiğinde yeni kanıtı ayrıca kaydet.
+- Yeni ortak Skill için Codex ve Gemini CLI belgelerinde tanımlanan `.agents/skills/<ad>/SKILL.md` yolunu değerlendir. Dosya adı, lisans, içeriğin güvenlik incelemesi ve Cisco/Gitleaks PR sonuçları kontrol edilir. Mevcut eski Codex yolu korunur. Registry, editoryal uzmanlara tam dosyaları veya harici komutları aktarmadan ilgili kayıtları sağlar.
+- Yeni video aracı veya Scene Director bu aşamada eklenmedi. Medya, ücretli API ve Instagram yayın akışları bu teslimin dışında kalır.

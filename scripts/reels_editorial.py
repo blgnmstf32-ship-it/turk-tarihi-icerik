@@ -28,11 +28,13 @@ def playbook():
 
 
 def specialist_guidance(role, brand):
+    from scripts.skill_registry import editorial_method
+
     guide = playbook()
     focus = role.get("reels_review", {})
     return {
         "task": focus.get("task"),
-        "method": guide["techniques"].get(focus.get("technique")),
+        "method": editorial_method(focus.get("technique")),
         "brand_strategy": guide["brands"][brand]["topic_strategy"],
     }
 

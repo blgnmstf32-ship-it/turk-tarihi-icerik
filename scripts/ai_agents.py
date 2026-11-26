@@ -14,6 +14,7 @@ from scripts.editorial_state import EditorialState
 from scripts.motion_toolkit import role_guidance
 from scripts.animation_styles import plan_for, style_guidance
 from scripts.reels_editorial import EDITOR_RULE, playbook, specialist_guidance
+from scripts.skill_registry import review_options
 
 ROOT = Path(__file__).resolve().parents[1]
 EDITOR = "AI Genel Yayın Yönetmeni"
@@ -174,15 +175,12 @@ def run_agents(topic, agents, output, requester=None, settings=None, *, editoria
                                 "reels_guidance": specialist_guidance(role, brand)}
             check = lambda content: _suggestion(content, len(sources))
             if media_review:
-                from scripts.media_tools import options
                 guidance = role_guidance(brand, role_id)
                 if guideline := style_guidance(brand, role_id):
                     guidance.update(animation=animation, animation_policy=guideline)
                 if guidance["techniques"] or guidance["tools"] or "animation" in guidance:
                     specialist_input["motion_guidance"] = guidance
-                optional = {name: row["use"] for name, row in guidance["tools"].items()
-                            if row["status"] == "optional"}
-                allowed_tools = {**options(brand, role_id), **optional}
+                allowed_tools = review_options(brand, role_id)
                 if allowed_tools:
                     specialist_input["media_tool_options"] = allowed_tools
                     specialist_input["media_tool_request"] = (
