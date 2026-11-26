@@ -46,3 +46,9 @@ Kaynak güvenliği için becerilerin metni veri olarak okunur. Otomatik indirme,
 | `motion_cli glb SOURCE RECEIPT OUTPUT` | Kendi dokuları içinde taşıyan yerel GLB için `dedup` ve `prune`. İncelenen CLI sürümü 4.5.1. |
 
 Operatör JSON kaydında `sha256`, `source`, `license`, `attribution` ve `commercial_use_reviewed: true` alanlarını doldurur. Atlas kaydı `year`, rembg ONNX kaydı `model_family: "u2netp"` ister. Gerekli isteğe bağlı bağımlılıklar ana iş akışına kurulmaz. VMAF ve DeepFilterNet için derleme/model bulunabilirliği yerel makineye bağlıdır. Günlük render ve Instagram yayın akışlarının tetikleyicileri değişmez.
+
+## Otomatik seçim ve geri dönüş
+
+Her iki markanın mevcut Reels üretim akışı, konuya göre yerel bir efekt seçer. Tarihte keşif ve mekanizma konularında, bakımda katman şeması başlığında satır açılışı kullanılır. Diğer konular mevcut kurguyla devam eder. Onaylı atlas veya derinlik dosyası isteğe bağlıdır. Bu katman ya da efekt başarısız olduğunda mevcut kurgu yeniden denenir. Rapor seçimi ve geri dönüşü ayrı gösterir.
+
+VMAF isteğe bağlı, önceden hizalanmış referansla `--vmaf-reference` ve `--vmaf-aligned` seçenekleriyle çalışır. Referans, FFmpeg veya libvmaf yoksa sonuç `not_measured` olur ve puan alanı yazılmaz. Diğer araçlar gerektiğinde, yerel önkoşulları karşılayan operatör komutlarıyla kullanılır.
