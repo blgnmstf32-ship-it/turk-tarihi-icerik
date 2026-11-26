@@ -30,7 +30,7 @@ export type DocumentaryProps = {
   scenes: {src: string; label?: string; depthLayers?: DepthLayer[]}[];
   captions: CaptionCue[];
   edit?: {title: string; topic: string; hook: string; effect?: OptionalEffect;
-    animation?: {style: 'continuous_camera' | 'paper_collage' | 'hand_drawn'; insert?: string}};
+    animation?: {style: 'continuous_camera' | 'paper_collage' | 'hand_drawn'; insert?: string; continuous?: boolean}};
   threeScenes?: {kind: History3DKind; title: string; labels?: string[]; fromSec: number; durationSec: number; atlas?: HistoricalOverlay}[];
 };
 
@@ -112,7 +112,7 @@ export const DocumentaryReel: React.FC<DocumentaryProps> = ({durationSec, title 
       })}
       {threeScenes.map((scene, i) => (
         <Sequence key={`three-${i}-${scene.kind}`} from={Math.round(scene.fromSec * FPS)} durationInFrames={Math.max(1, Math.round(scene.durationSec * FPS))}>
-          <History3DScene kind={scene.kind} title={scene.title} labels={scene.labels} atlas={scene.atlas} continuous={edit?.animation?.style === 'continuous_camera'} />
+          <History3DScene kind={scene.kind} title={scene.title} labels={scene.labels} atlas={scene.atlas} continuous={edit?.animation?.style === 'continuous_camera' || edit?.animation?.continuous === true} />
         </Sequence>
       ))}
       {edit?.animation?.style === 'paper_collage' && edit.animation.insert && <Sequence from={96} durationInFrames={150}>

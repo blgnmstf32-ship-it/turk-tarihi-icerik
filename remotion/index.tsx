@@ -14,7 +14,7 @@ const schema = z.object({
   edit: z.object({title: z.string(), topic: z.string(), hook: z.string(),
     effect: z.enum(['lines-reveal','mask-reveal']).optional(),
     animation: z.object({style: z.enum(['continuous_camera','paper_collage','hand_drawn']),
-      insert: z.string().optional()}).optional(),
+      insert: z.string().optional(), continuous: z.boolean().optional()}).optional(),
   }).optional(),
   threeScenes: z.array(z.object({kind: z.enum(['battle_map', 'city_flyover', 'siege', 'artifact_gears', 'atlantic_atlas']), title: z.string(), labels: z.array(z.string()).optional(), fromSec: z.number(), durationSec: z.number()})).optional(),
 });
