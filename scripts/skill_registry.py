@@ -173,6 +173,24 @@ def _inventory():
                    source={"path": "config/reels_playbook.json", "key": name}, license={"code": NO_LICENSE},
                    metadata={"test": "guidance_contract_only", "evidence": "offline_quality"}, evidence=evidence))
 
+    gemini = manifest["gemini_knowledge"]
+    if not re.fullmatch(r"[0-9a-f]{40}", gemini["revision"]):
+        raise ValueError("Gemini knowledge source must be pinned to a full Git revision")
+    for name, note in gemini["notes"].items():
+        add(_entry(
+            f"gemini:{_id(name)}", note["task"], _roles(note["role_keys"]),
+            source={
+                "repository": gemini["repository"], "revision": gemini["revision"],
+                "path": gemini["skill_path"], "license_path": "LICENSE", "docs": note["docs"],
+            },
+            license={"code": gemini["license"], "scope": "upstream_reference"},
+            metadata={
+                "security": "curated_reference_only",
+                "test": "guidance_contract_only", "evidence": "tests/test_gemini_skill_notes.py",
+                "note": "Yerel Türkçe inceleme notu. Üst paket, SDK, CLI ve servis çalıştırması bu kayda dahil değildir.",
+            },
+        ))
+
     for pack in skill_index():
         owner, repo = pack["repository"].split("/")
         for row in pack["skills"]:
