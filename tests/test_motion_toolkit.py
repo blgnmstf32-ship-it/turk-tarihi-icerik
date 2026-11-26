@@ -115,3 +115,89 @@ class MotionToolkitTests(TestCase):
         self.assertTrue(command[-2].endswith("scripts/motion_diagrams.py"))
         with self.assertRaises(ValueError):
             motion_quality.manim_command("../external", "example")
+
+    def test_all_forty_techniques_reach_the_primary_expert_roles(self):
+        catalogue = {(pack["repository"], row["path"])
+                     for pack in motion_toolkit.skill_index() for row in pack["skills"]
+                     if row["decision"] == "adapt"}
+        attached = {(row["repository"], row["path"])
+                    for brand in ("tarih", "bakim") for role in range(1, 21)
+                    for row in motion_toolkit.role_guidance(brand, role)["technique_sources"]}
+        self.assertEqual(len(catalogue), 40)
+        self.assertEqual(attached, catalogue)
+
+    def test_opening_selection_depends_on_the_topic_without_a_tool_install(self):
+        select = motion_toolkit.select_opening_effect
+        self.assertEqual(select("tarih", {"category": "kesif"}), "lines-reveal")
+        self.assertEqual(select("tarih", {"visual_mode": "artifact_gears"}), "lines-reveal")
+        self.assertEqual(select("bakim", {"visual_mode": "layer_diagram"}), "lines-reveal")
+        self.assertIsNone(select("tarih", {"visual_mode": "atlantic_atlas"}))
+        self.assertIsNone(select("bakim", {"category": "genel_bakim"}))
+        with self.assertRaises(ValueError):
+            select("tarih", {}, requested="mask-reveal", parallax=True)
+
+    def test_history_optional_failure_keeps_the_base_atlas_scene(self):
+        from scripts.auto_produce import render_motion_or_base
+        from unittest.mock import Mock
+
+        base = {"kind": "atlantic_atlas"}
+        overlay = {**base, "historical_overlay": {"year": 1513}}
+        render = Mock(side_effect=[FileNotFoundError("optional layer missing"), "base-render"])
+        asset, three_d, report = render_motion_or_base(
+            render, "scenes", plan={"scenes": [overlay]}, edit={"effect": "lines-reveal", "hook": "Kanıt"},
+            parallax_dir="optional-layers")
+        self.assertEqual((asset, three_d["status"]), ("base-render", "rendered"))
+        self.assertEqual(report["status"], "optional_render_skipped")
+        self.assertEqual(render.call_args_list[0].kwargs["three_scenes"], [overlay])
+        self.assertEqual(render.call_args_list[1].kwargs, {"three_scenes": [base], "edit": {"hook": "Kanıt"}})
+
+    def test_history_uses_selected_effect_when_available_without_a_second_render(self):
+        from scripts.auto_produce import render_motion_or_base
+        from unittest.mock import Mock
+
+        render = Mock(return_value="optional-render")
+        effect = motion_toolkit.select_opening_effect("tarih", {"category": "kesif"})
+        _, _, report = render_motion_or_base(render, plan={"scenes": []}, edit={"effect": effect})
+        self.assertEqual(report["status"], "applied")
+        self.assertEqual(render.call_args.kwargs["edit"]["effect"], "lines-reveal")
+        render.assert_called_once()
+
+    def test_beauty_optional_title_retries_the_unmodified_scene(self):
+        from scripts import beauty_reel
+
+        with patch.object(beauty_reel, "shot", side_effect=[RuntimeError("optional failure"), "base"]) as render:
+            clip, report = beauty_reel.reviewed_shot("scene", title_effect="lines-reveal")
+        self.assertEqual(clip, "base")
+        self.assertEqual(report["status"], "optional_render_skipped")
+        self.assertEqual(render.call_args_list[0].kwargs, {"title_effect": "lines-reveal"})
+        self.assertEqual(render.call_args_list[1].kwargs, {})
+
+    def test_beauty_title_preset_animates_a_repeating_input_without_writing_images(self):
+        from scripts import beauty_reel
+
+        with patch.object(beauty_reel, "overlay"), patch.object(beauty_reel, "ffmpeg") as render:
+            beauty_reel.shot(Path("out"), 2, 60, "skin", Path("approved.jpg"),
+                             "Giriş", "Başlık", "Şema", title_effect="lines-reveal")
+        args = render.call_args.args
+        self.assertIn("-loop", args)
+        self.assertIn("alpha=1", args[args.index("-filter_complex") + 1])
+
+    def test_unavailable_vmaf_reports_no_score_and_does_not_read_the_video(self):
+        with patch.object(motion_quality, "_execute", return_value=" ... vmafmotion V->V") as run:
+            result = motion_quality.vmaf_report("reference.mp4", "encoded.mp4", aligned=True)
+        self.assertEqual(result, {"status": "not_measured", "reason": "libvmaf_unavailable"})
+        run.assert_called_once_with(["ffmpeg", "-hide_banner", "-filters"])
+        with patch.object(motion_quality, "_execute", side_effect=FileNotFoundError) as run:
+            result = motion_quality.optional_vmaf("reference.mp4", "encoded.mp4", aligned=True)
+        self.assertEqual(result, {"status": "not_measured", "reason": "ffmpeg_unavailable"})
+        run.assert_called_once()
+
+    def test_missing_or_failed_reference_never_yields_a_vmaf_score(self):
+        with patch.object(motion_quality, "vmaf_report") as measure:
+            result = motion_quality.optional_vmaf(None, "encoded.mp4")
+        self.assertEqual(result, {"status": "not_measured", "reason": "no_aligned_reference"})
+        measure.assert_not_called()
+        with patch.object(motion_quality, "vmaf_report", side_effect=ValueError):
+            result = motion_quality.optional_vmaf("reference.mp4", "encoded.mp4", aligned=True)
+        self.assertNotIn("vmaf_mean", result)
+        self.assertEqual(result["status"], "not_measured")
