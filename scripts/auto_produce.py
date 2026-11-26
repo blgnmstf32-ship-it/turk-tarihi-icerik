@@ -100,7 +100,8 @@ def update_3d_role_results(role_modules,status):
 
 
 def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=None,voice_provider_override=None,
-               gemini_free_project=False, use_staged_experts=False, approved_voice=None):
+               gemini_free_project=False, use_staged_experts=False, approved_voice=None, *,
+               atlas_overlay=None, parallax_dir=None, opening_effect=None):
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     settings=load_json(ROOT/'config'/'settings.json')
     record('production_started',{'topic':topic.get('id'),'out':str(out)})
@@ -109,6 +110,17 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
     if recordings_dir or model_cache and not skip_narration:
         raise ValueError('Yalnızca Gemini Charon anlatımı kullanılır.')
     provider=select_provider(settings,voice_provider_override)
+    # Validate an optional geographic asset before reaching narration.
+    three_d_plan = plan_3d_scenes(topic, 70)
+    if atlas_overlay:
+        from scripts.motion_atlas import read_atlas
+        atlas = next((scene for scene in three_d_plan["scenes"] if scene["kind"] == "atlantic_atlas"), None)
+        if atlas is None:
+            raise ValueError("Bu konu Atlas sahnesi içermiyor.")
+        read_atlas(atlas_overlay["geojson"], atlas_overlay["receipt"], atlas_overlay["year"])
+        atlas["historical_overlay"] = atlas_overlay
+    if opening_effect not in (None, "lines-reveal", "mask-reveal") or (parallax_dir and opening_effect == "mask-reveal"):
+        raise ValueError("İzinli ve birbiriyle uyumlu açılış seçenekleri gerekli.")
     segments=performance_script(topic)
     if approved_voice is None and topic['id']=='piri-reis-kayip-kaynak':
         approved_voice=ROOT/'data'
@@ -148,7 +160,6 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
             (out/'VOICE_FAILURE.json').write_text(json.dumps(failure,ensure_ascii=False,indent=2),encoding='utf-8')
             raise
     prev=build(topic,out,video=False)
-    three_d_plan=plan_3d_scenes(topic,70)
     save_plan(three_d_plan,out/'3D_SCENE_PLAN.json')
     (out/'NARRATION_TR.txt').write_text(script,encoding='utf-8')
     # The coordinator researches and scores options every run. LLM use remains
@@ -237,8 +248,9 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
     rendered=out/'reel_with_voice.mp4'
     _, three_d_result=render_with_2d_fallback(render_reel,scenes,voice_path,out/'subtitles.srt',rendered,
                                                three_scenes=three_d_plan.get('scenes',[]),
+                                               parallax_dir=parallax_dir,
                                                edit={'title':topic['title'],'topic':topic['id'],
-                                                     'hook':segments[0]['caption']})
+                                                     'hook':segments[0]['caption'], 'effect':opening_effect})
     three_d_render_status=three_d_result['status']
     if three_d_result.get('error'):
         (out/'THREE_D_RENDER_FAILURE.txt').write_text(three_d_result['error']+'\n2D fallback render succeeded.',encoding='utf-8')
@@ -281,7 +293,17 @@ def main():
     p.add_argument('--confirm-gemini-free-project', action='store_true',
                    help='Confirm this Gemini API key belongs to an AI Studio project without billing')
     p.add_argument('--use-staged-experts', action='store_true', help='Read the report produced by scripts.ai_agents')
+    p.add_argument('--atlas-geojson', type=Path)
+    p.add_argument('--atlas-receipt', type=Path)
+    p.add_argument('--atlas-year', type=int)
+    p.add_argument('--parallax-dir', type=Path, help='Onaylı ilk görselle eşleşen yerel derinlik katmanı dizini')
+    p.add_argument('--opening-effect', choices=['lines-reveal', 'mask-reveal'])
     a=p.parse_args()
+    atlas_fields = (a.atlas_geojson, a.atlas_receipt, a.atlas_year)
+    if any(field is not None for field in atlas_fields) and any(field is None for field in atlas_fields):
+        p.error('Atlas verisi, lisans kaydı ve yıl birlikte gerekli.')
+    atlas = ({'geojson': str(a.atlas_geojson.resolve()), 'receipt': str(a.atlas_receipt.resolve()),
+              'year': a.atlas_year} if a.atlas_geojson else None)
     editorial_path = Path(a.out)/"editorial"/"EDITORIAL_DECISION_REPORT.json"
     report = load_json(editorial_path) if editorial_path.exists() else run_board(editorial_path.parent)
     topics=load_json(ROOT/'data'/'topics.json')
@@ -290,7 +312,8 @@ def main():
     try:
         result=production(topic,a.out,skip_narration=a.skip_narration,voice_provider_override=a.voice_provider,
                           gemini_free_project=a.confirm_gemini_free_project,use_staged_experts=a.use_staged_experts,
-                          approved_voice=a.approved_voice)
+                          approved_voice=a.approved_voice, atlas_overlay=atlas,
+                          parallax_dir=a.parallax_dir, opening_effect=a.opening_effect)
     except Exception as exc:
         record('production_failed',{'topic':topic.get('id'),'error':f'{type(exc).__name__}: {exc}'})
         raise
