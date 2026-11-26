@@ -1,0 +1,4 @@
+{
+  "lines-reveal": {"animefx_id": "text.linesReveal", "duration_ms": 720, "stagger_ms": 130, "distance_px": 24},
+  "mask-reveal": {"animefx_id": "image.maskReveal", "duration_ms": 1100}
+}

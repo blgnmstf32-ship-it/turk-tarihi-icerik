@@ -10,7 +10,11 @@ const here = dirname(fileURLToPath(import.meta.url));
 const escape = (value) => value.replace(/[&<>"']/g, (char) => (
   {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[char]);
 
-export function prepare(directory, brand) {
+const motionPresets = JSON.parse(readFileSync(join(here, 'motion_presets.json'), 'utf8'));
+
+export function prepare(directory, brand, effect = '') {
+  if (effect && !Object.hasOwn(motionPresets, effect)) throw new Error('Unsupported motion effect');
+  const preset = motionPresets[effect];
   const profiles = JSON.parse(readFileSync(join(here, 'profiles.json'), 'utf8'));
   const scene = profiles[brand];
   if (!scene) throw new Error('Unknown brand');
@@ -37,7 +41,9 @@ export function prepare(directory, brand) {
   <div id="pilot" data-composition-id="pilot" data-start="0" data-duration="${seconds}" data-width="${WIDTH}" data-height="${HEIGHT}">
     <img id="asset" class="clip" src="background.jpg" data-start="0" data-duration="${seconds}" data-track-index="1" alt="">
     <div class="veil"></div><div id="copy"><div class="eyebrow">${escape(scene.label)}</div>
-    <h1>${scene.title.map(escape).join('<br>')}</h1><div class="subtitle">${escape(scene.subtitle)}</div></div>
+    <h1>${effect === 'lines-reveal'
+      ? scene.title.map(line => '<span style="display:block;overflow:hidden"><span class="review-line" style="display:block">' + escape(line) + '</span></span>').join('')
+      : scene.title.map(escape).join('<br>')}</h1><div class="subtitle">${escape(scene.subtitle)}</div></div>
     <div class="credit">${escape(scene.credit)}</div><div class="track"><div id="progress"></div></div>
     <div id="motif"></div>
   </div>
@@ -49,6 +55,8 @@ export function prepare(directory, brand) {
   timeline.fromTo('#asset',{scale:1.035},{scale:1.125,duration:${seconds},ease:'none'},0)
     .fromTo('#copy',{y:22,opacity:0},{y:0,opacity:1,duration:.65,ease:'power2.out'},.08)
     .fromTo('#progress',{scaleX:0},{scaleX:1,duration:${seconds},ease:'none'},0);
+  ${effect === 'lines-reveal' ? `timeline.fromTo('.review-line',{y:${preset.distance_px},opacity:0},{y:0,opacity:1,duration:${preset.duration_ms / 1000},stagger:${preset.stagger_ms / 1000},ease:'expo.out'},.08);` : ''}
+  ${effect === 'mask-reveal' ? `timeline.fromTo('#asset',{clipPath:'circle(0% at 50% 50%)'},{clipPath:'circle(75% at 50% 50%)',duration:${preset.duration_ms / 1000},ease:'expo.out'},0);` : ''}
   ${brand === 'beauty' ? `const state={frame:0};
     const motif=lottie.loadAnimation({container:document.getElementById('motif'),renderer:'svg',autoplay:false,loop:false,animationData:${JSON.stringify(moisture)}});
     motif.addEventListener('DOMLoaded',()=>motif.goToAndStop(state.frame,true));
@@ -65,5 +73,5 @@ export function prepare(directory, brand) {
   }
 }
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
-  prepare(resolve(process.argv[2]), process.argv[3]);
+  prepare(resolve(process.argv[2]), process.argv[3], process.argv[4]);
 }
