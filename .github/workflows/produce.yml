@@ -90,8 +90,10 @@ jobs:
         id: editorial
         env:
           ENABLE_FREE_LLM: ${{ inputs.approved_piri != true && vars.ENABLE_FREE_LLM || '0' }}
+          CLOUDFLARE_API_TOKEN: ${{ inputs.approved_piri != true && secrets.CLOUDFLARE_API_TOKEN || '' }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ inputs.approved_piri != true && secrets.CLOUDFLARE_ACCOUNT_ID || '' }}
           OPENROUTER_API_KEY: ${{ inputs.approved_piri != true && secrets.OPENROUTER_API_KEY || '' }}
-          GEMINI_API_KEY: ${{ inputs.approved_piri != true && secrets.GEMINI_API_KEY || '' }}
+          GEMINI_API_KEY: ${{ inputs.approved_piri != true && secrets.GEMINI_API_KEY != secrets.GEMINI_IMAGE_API_KEY && secrets.GEMINI_API_KEY || '' }}
           GEMINI_FREE_TIER_CONFIRMED: ${{ vars.GEMINI_FREE_TIER_CONFIRMED || '0' }}
           ENABLE_GEMINI_EDITORIAL: ${{ inputs.approved_piri != true && vars.GEMINI_FREE_TIER_CONFIRMED || '0' }}
           YOUTUBE_DATA_API_KEY: ${{ secrets.YOUTUBE_DATA_API_KEY }}
@@ -131,8 +133,10 @@ jobs:
         env:
           TOPIC_ID: ${{ steps.plan.outputs.topic || inputs.topic || '' }}
           ENABLE_20_LLM_AGENTS: ${{ inputs.approved_piri != true && vars.ENABLE_FREE_LLM || '0' }}
+          CLOUDFLARE_API_TOKEN: ${{ inputs.approved_piri != true && secrets.CLOUDFLARE_API_TOKEN || '' }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ inputs.approved_piri != true && secrets.CLOUDFLARE_ACCOUNT_ID || '' }}
           OPENROUTER_API_KEY: ${{ inputs.approved_piri != true && secrets.OPENROUTER_API_KEY || '' }}
-          GEMINI_API_KEY: ${{ inputs.approved_piri != true && secrets.GEMINI_API_KEY || '' }}
+          GEMINI_API_KEY: ${{ inputs.approved_piri != true && secrets.GEMINI_API_KEY != secrets.GEMINI_IMAGE_API_KEY && secrets.GEMINI_API_KEY || '' }}
           GEMINI_FREE_TIER_CONFIRMED: ${{ vars.GEMINI_FREE_TIER_CONFIRMED || '0' }}
           ENABLE_GEMINI_EDITORIAL: ${{ inputs.approved_piri != true && vars.GEMINI_FREE_TIER_CONFIRMED || '0' }}
         run: python -m scripts.ai_agents --topic "$TOPIC_ID" --out output/auto
