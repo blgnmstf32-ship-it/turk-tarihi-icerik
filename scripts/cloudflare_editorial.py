@@ -12,12 +12,12 @@ import requests
 BASE = "https://api.cloudflare.com/client/v4/accounts"
 GEMMA = "@cf/google/gemma-4-26b-a4b-it"
 GLM = "@cf/zai-org/glm-4.7-flash"
-QWEN = "@cf/qwen/qwen3-30b-a3b-fp8"
-PRODUCTION_MODELS = (GEMMA, QWEN)
-READ_TIMEOUTS = {GEMMA: 38, QWEN: 20, GLM: 20}
+GPT_OSS = "@cf/openai/gpt-oss-20b"
+PRODUCTION_MODELS = (GEMMA, GPT_OSS)
+READ_TIMEOUTS = {GEMMA: 38, GPT_OSS: 20, GLM: 20}
 MODEL_COOLDOWN = 60
 # Documented neurons per million input/output tokens (rounded up for GLM).
-RATES = {GEMMA: (9091, 27273), QWEN: (4625, 30475), GLM: (5500, 36400)}
+RATES = {GEMMA: (9091, 27273), GPT_OSS: (18182, 27273), GLM: (5500, 36400)}
 FREE_NEURONS = 10_000
 LOCAL_NEURONS = 9_000
 MAX_RUN_CALLS = 8
@@ -158,8 +158,6 @@ class CloudflareEditorial:
             {"role": "system", "content": instruction + " Araç çağırma. Şemaya uyan tek Türkçe JSON nesnesi döndür."},
             {"role": "user", "content": json.dumps(prompt, ensure_ascii=False, sort_keys=True)},
         ]
-        if model == QWEN:
-            messages[-1]["content"] += "\n/no_think"
         messages = redact_text(messages)
         size = len(json.dumps(messages, ensure_ascii=False).encode("utf-8")) + 256
         if size > 60_000 or max_tokens < 1:
@@ -171,6 +169,9 @@ class CloudflareEditorial:
         payload = {"model": model, "messages": messages, "max_completion_tokens": max_tokens,
                    "temperature": 0.35, "stream": False, "store": False,
                    "options": {"rejectIfBusy": True}, "chat_template_kwargs": {"enable_thinking": False}}
+        if model == GPT_OSS:
+            payload.pop("chat_template_kwargs")
+            payload["reasoning_effort"] = "low"
         started = time.monotonic()
         actual = None
         self.calls += 1
@@ -196,8 +197,6 @@ class CloudflareEditorial:
                 attempt.update(input_tokens=inp, output_tokens=out, estimated_used_neurons=actual)
             choice = data["choices"][0]
             raw = choice["message"].get("content")
-            if model == QWEN and isinstance(raw, str):
-                raw = re.sub(r"^\s*<think>.*?</think>\s*", "", raw, count=1, flags=re.S)
             attempt["truncated"] = choice.get("finish_reason") == "length"
             if attempt["truncated"]:
                 attempt["actual_llm_used"] = bool(raw)
@@ -229,7 +228,7 @@ class CloudflareEditorial:
         finally:
             if attempt.get("status") in {
                 "cloudflare_connect_timeout", "cloudflare_read_timeout", "cloudflare_timeout",
-                "cloudflare_connection_error", "cloudflare_http_403", "cloudflare_http_404",
+                "cloudflare_connection_error", "cloudflare_http_403", "cloudflare_http_404", "cloudflare_http_410",
                 "cloudflare_http_429", "cloudflare_http_500", "cloudflare_http_502",
                 "cloudflare_http_503", "cloudflare_http_504",
             }:

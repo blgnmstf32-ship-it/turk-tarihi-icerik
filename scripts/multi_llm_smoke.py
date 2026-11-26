@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from unittest.mock import patch
 
-from scripts.cloudflare_editorial import FREE_NEURONS, GEMMA, GLM, LOCAL_NEURONS, QWEN, turkish_json_parser
+from scripts.cloudflare_editorial import FREE_NEURONS, GEMMA, GLM, LOCAL_NEURONS, GPT_OSS, turkish_json_parser
 from scripts.editorial_state import EditorialState
 from scripts.gemini_editorial import GeminiReviewSession
 
@@ -18,13 +18,14 @@ CASES = (
         "facts": ["Antikythera düzeneği parçalarında dişliler vardır.",
                   "Verilen kaynak bu parçaları açıklar; mucidi kesinleştirmez."],
         "instruction": "Dişli düzeneği için iki cümlelik kaynaklı araştırma özeti yaz. "
-                       "Mucidin kesin olarak bilinmediğini ayrı bir sınır cümlesinde açıkla.",
+                       "boundary alanında mucidin kesin olarak bilinmediğini tek cümleyle açıkla.",
     }),
     ("İçerik Stratejisti", {
         "facts": ["Tanıtım videosu temsili bir cilt katmanı şeması kullanır.",
                   "Şema klinik sonuç veya tedavi başarısı göstermez."],
         "instruction": "Cilt katmanları şeması için merak uyandıran bir Türkçe açılış ve kısa senaryo yaz. "
-                       "Şemanın temsili olduğunu, tedavi sonucu göstermediğini sınırda belirt.",
+                       "boundary alanına tek Türkçe cümle yaz ve iki sınırı aynı cümlede açıkça belirt: "
+                       "şema temsilidir ve tedavi sonucu göstermez.",
     }),
 )
 
@@ -103,7 +104,7 @@ def run(state, quota_path, run_id):
     optional = []
     if cloud and cloud.plan_status == "verified_free":
         role, prompt = CASES[1]
-        for model in (QWEN, GLM):
+        for model in (GPT_OSS, GLM):
             answer, attempt = cloud.probe(model, INSTRUCTION, prompt, turkish_json_parser(parse_case), 768)
             optional.append(case_result(1, model, {
                 "role": role, "model": model, "provider": "cloudflare_workers_ai",
