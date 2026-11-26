@@ -1,4 +1,4 @@
-"""Measure two Workers Free text models with Turkish briefs and a simulated Gemini 429."""
+"""Verify the primary Workers Free route and report optional models separately."""
 from __future__ import annotations
 
 import argparse
@@ -8,24 +8,31 @@ import re
 from pathlib import Path
 from unittest.mock import patch
 
-from scripts.cloudflare_editorial import FREE_NEURONS, GEMMA, GLM, LOCAL_NEURONS
+from scripts.cloudflare_editorial import FREE_NEURONS, GEMMA, GLM, LOCAL_NEURONS, QWEN, turkish_json_parser
 from scripts.editorial_state import EditorialState
 from scripts.gemini_editorial import GeminiReviewSession
 
 
 CASES = (
-    ("Alan Araştırmacısı", GEMMA, {
+    ("Alan Araştırmacısı", {
         "facts": ["Antikythera düzeneği parçalarında dişliler vardır.",
                   "Verilen kaynak bu parçaları açıklar; mucidi kesinleştirmez."],
         "instruction": "Dişli düzeneği için iki cümlelik kaynaklı araştırma özeti yaz. "
                        "Mucidin kesin olarak bilinmediğini ayrı bir sınır cümlesinde açıkla.",
     }),
-    ("İçerik Stratejisti", GLM, {
+    ("İçerik Stratejisti", {
         "facts": ["Tanıtım videosu temsili bir cilt katmanı şeması kullanır.",
                   "Şema klinik sonuç veya tedavi başarısı göstermez."],
         "instruction": "Cilt katmanları şeması için merak uyandıran bir Türkçe açılış ve kısa senaryo yaz. "
                        "Şemanın temsili olduğunu, tedavi sonucu göstermediğini sınırda belirt.",
     }),
+)
+
+
+INSTRUCTION = (
+    'Verilen iki olgu dışında kaynak, tarih, sayı ve tedavi iddiası ekleme. '
+    'Türkçe olarak şu alanları ver: {"hook":"...","text":"...","boundary":"...","fact_ids":[1,2]}. '
+    'Hook 3–16 kelime olsun. Sınırı kısa ve açık bir olumsuz cümle ile ifade et.'
 )
 
 
@@ -64,6 +71,16 @@ def parse_case(raw):
     return data, None
 
 
+
+def case_result(case_index, expected, result):
+    answer = result.get("answer")
+    checks = checks_for(case_index, answer) if answer else {}
+    return {**result, "expected_model": expected, "quality_checks": checks,
+            "quality_checks_passed": sum(checks.values()),
+            "case_passed": (result.get("provider") == "cloudflare_workers_ai"
+                            and result.get("model") == expected and result.get("response_source") == "live"
+                            and bool(checks) and all(checks.values()))}
+
 def run(state, quota_path, run_id):
     calls = []
 
@@ -78,20 +95,22 @@ def run(state, quota_path, run_id):
         router = GeminiReviewSession("", state, routed=True, quota_path=quota_path,
                                      requester=fake_gemini, brand="multi-llm-smoke", max_attempts=1)
         rows = []
-        for i, (role, model, prompt) in enumerate(CASES):
-            result = router.evaluate(role,
-                'Verilen iki olgu dışında kaynak, tarih ve tedavi iddiası ekleme. Türkçe olarak şu alanları ver: '
-                '{"hook":"...","text":"...","boundary":"...","fact_ids":[1]}.',
-                prompt, parse_case, namespace=f"multi-llm-smoke-v1:{run_id}", max_tokens=768)
-            answer = result.get("answer")
-            checks = checks_for(i, answer) if answer else {}
-            rows.append({**result, "expected_model": model, "quality_checks": checks,
-                         "quality_checks_passed": sum(checks.values())})
+        for i, (role, prompt) in enumerate(CASES):
+            result = router.evaluate(role, INSTRUCTION, prompt, parse_case,
+                                     namespace=f"multi-llm-smoke-v2:{run_id}", max_tokens=768)
+            rows.append(case_result(i, GEMMA, result))
     cloud = router.cloudflare
-    passed = (calls == [429] and all(
-        row.get("provider") == "cloudflare_workers_ai" and row.get("model") == row["expected_model"]
-        and row.get("response_source") == "live" and row["quality_checks"]
-        and all(row["quality_checks"].values()) for row in rows))
+    optional = []
+    if cloud and cloud.plan_status == "verified_free":
+        role, prompt = CASES[1]
+        for model in (QWEN, GLM):
+            answer, attempt = cloud.probe(model, INSTRUCTION, prompt, turkish_json_parser(parse_case), 768)
+            optional.append(case_result(1, model, {
+                "role": role, "model": model, "provider": "cloudflare_workers_ai",
+                "status": attempt["status"], "answer": answer, "attempts": [attempt],
+                "response_source": "live" if answer is not None else None,
+            }))
+    passed = calls == [429] and all(row["case_passed"] for row in rows)
     return {
         "status": "passed" if passed else "incomplete", "workers_free_check": cloud.plan_status if cloud else "credentials_missing",
         "workers_billing_http_status": cloud.plan_http if cloud else None,
@@ -101,6 +120,7 @@ def run(state, quota_path, run_id):
         "workers_daily_free_neurons": FREE_NEURONS, "software_daily_neuron_cap": LOCAL_NEURONS,
         "workers_usage": state.cloudflare_report(), "inference_usd": 0,
         "media_created": False, "instagram_published": False, "cases": rows,
+        "optional_model_checks": optional,
     }
 
 
