@@ -12,6 +12,7 @@ from scripts.editorial_llm import (
 )
 from scripts.editorial_state import EditorialState
 from scripts.motion_toolkit import role_guidance
+from scripts.animation_styles import plan_for, style_guidance
 from scripts.reels_editorial import EDITOR_RULE, playbook, specialist_guidance
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -124,6 +125,7 @@ def run_agents(topic, agents, output, requester=None, settings=None, *, editoria
         "tedavi vaadi veya uydurma kaynak ekleme. Yalnız insan incelemesi için öneri sun. "
     )
     policy += EDITOR_RULE + " "
+    animation = plan_for(brand, topic)
     namespace = "specialists-v1" if brand == "tarih" else "specialists-v1:bakim"
     dispatch = comparison = None
     session = None
@@ -157,7 +159,8 @@ def run_agents(topic, agents, output, requester=None, settings=None, *, editoria
             "İhtiyaç yoksa boş dizi ver.",
             {"topic": context, "weekly_decision": decision, "specialists": list(candidates.values()),
              "reels_strategy": playbook()["brands"][brand],
-             "motion_advice": role_guidance(brand) if media_review else {}},
+             "motion_advice": {**role_guidance(brand), "animation": animation,
+                               "animation_policy": style_guidance(brand)} if media_review else {}},
             lambda content: _dispatch(content, candidates, limit), namespace=namespace)
         selected = (dispatch.get("answer") or {}).get("assignments", [])
         if dispatch["status"] != "proposal":
@@ -173,7 +176,9 @@ def run_agents(topic, agents, output, requester=None, settings=None, *, editoria
             if media_review:
                 from scripts.media_tools import options
                 guidance = role_guidance(brand, role_id)
-                if guidance["techniques"] or guidance["tools"]:
+                if guideline := style_guidance(brand, role_id):
+                    guidance.update(animation=animation, animation_policy=guideline)
+                if guidance["techniques"] or guidance["tools"] or "animation" in guidance:
                     specialist_input["motion_guidance"] = guidance
                 optional = {name: row["use"] for name, row in guidance["tools"].items()
                             if row["status"] == "optional"}
@@ -211,7 +216,7 @@ def run_agents(topic, agents, output, requester=None, settings=None, *, editoria
                                                     or (comparison or {}).get("actual_llm_used")),
                             "attempts": [*dispatch.get("attempts", []), *(comparison or {}).get("attempts", [])]}
     result = {
-        "topic": topic["id"], "enabled": enabled, "calls": session.calls - counts[0] if session else 0,
+        "topic": topic["id"], "animation_plan": animation, "enabled": enabled, "calls": session.calls - counts[0] if session else 0,
         "gemini_calls": getattr(session, "gemini_attempts", 0) - counts[1] if session else 0,
         "cloudflare_calls": getattr(session, "cloudflare_calls", 0) - counts[3] if session else 0,
         "cached_reviews": session.cached_roles - counts[2] if session else 0,

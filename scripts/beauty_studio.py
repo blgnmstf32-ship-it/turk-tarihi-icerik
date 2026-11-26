@@ -117,7 +117,7 @@ def build_preview(out, day, *, use_llm=False):
         item = items[0]
         role_result = run_agents({"id": item["id"], "title": item["title"], "facts": [item["text"]],
                      "sources": [{"title": item["source"], "url": item["url"]}]},
-                     load_json(ROOT / "config/beauty_agents.json"), target, brand=BRAND)
+                     load_json(ROOT / "config/beauty_agents.json"), target, brand=BRAND, media_review=True)
     status = {"brand": BRAND, "date": day.isoformat(), "timezone": profile["timezone"], "stories": rows,
               "preview_voice": profile["preview_voice"], "approved_voice": profile["approved_voice"],
               "real_reels_produced": 0, "paid_images_produced": 0,

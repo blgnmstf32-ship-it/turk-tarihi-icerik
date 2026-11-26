@@ -106,7 +106,17 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=192
                            'durationSec':s['duration_sec'], **({'atlas': atlas_overlays[i]} if i in atlas_overlays else {})}
                           for i,s in enumerate(three_scenes)]}
     if edit:
-        props['edit']=edit
+        props['edit'] = {key: value for key, value in edit.items() if value is not None and key != "animation"}
+        animation = edit.get("animation")
+        if animation:
+            style = animation["style"]
+            if style not in {"continuous_camera", "paper_collage", "hand_drawn"}:
+                raise ValueError("İzinli animasyon stili gerekli.")
+            props["edit"]["animation"] = {"style": style}
+            if style == "paper_collage":
+                shutil.copy2(animation["insert"], public_dir / "editorial-collage.mp4")
+                props["edit"]["animation"]["insert"] = f"scenes/{out.stem}/editorial-collage.mp4"
+
     with tempfile.TemporaryDirectory(prefix='turktarihi_remotion_') as td:
         props_path=Path(td)/'props.json'
         props_path.write_text(json.dumps(props,ensure_ascii=False),encoding='utf-8')
