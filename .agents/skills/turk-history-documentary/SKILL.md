@@ -1,6 +1,7 @@
 ---
 name: turk-history-documentary
 description: Produce sourced, low-cost Turkish history documentary videos with the repository's 20 editorial roles, Remotion, FFmpeg, licensed Wikimedia assets, and strict approval gates.
+license: LicenseRef-No-License-Granted
 ---
 
 # Turkish History Documentary Production
