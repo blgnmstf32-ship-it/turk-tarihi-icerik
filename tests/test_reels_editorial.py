@@ -5,7 +5,7 @@ from tempfile import TemporaryDirectory
 from unittest import TestCase
 from unittest.mock import patch
 
-from scripts import auto_produce, beauty_reel, reels_editorial
+from scripts import auto_produce, beauty_reel, reels_editorial, run
 from scripts.instagram_insights import normalize_media_insights
 from scripts.performance_learning import reels_benchmarks
 
@@ -87,6 +87,26 @@ class ReelsEditorialTests(TestCase):
             self.assertTrue((Path(tmp) / "REELS_EDITORIAL_REVIEW.json").is_file())
             voice.assert_not_called()
             image.assert_not_called()
+
+    def test_selected_history_scenario_is_the_script_sent_to_narration(self):
+        data = json.loads((ROOT / "data/topics.json").read_text())[0]
+        with TemporaryDirectory() as tmp, patch.object(auto_produce, "record"), \
+                patch.object(auto_produce, "narrate", side_effect=RuntimeError("stop at voice")) as voice:
+            with self.assertRaisesRegex(RuntimeError, "stop at voice"):
+                auto_produce.production(data, tmp)
+            report = json.loads((Path(tmp) / "REELS_EDITORIAL_REVIEW.json").read_text())
+            self.assertFalse(report["fixed_recording"])
+            self.assertEqual([row["spoken"] for row in voice.call_args.args[0]], report["best"]["spoken"])
+
+    def test_silent_video_preview_uses_review_before_images(self):
+        data = json.loads((ROOT / "data/topics.json").read_text())[0]
+        with TemporaryDirectory() as tmp, patch.object(run, "render_card", side_effect=RuntimeError("stop at image")):
+            with self.assertRaisesRegex(RuntimeError, "stop at image"):
+                run.build(data, tmp, video=True)
+            report = json.loads((Path(tmp) / "REELS_EDITORIAL_REVIEW.json").read_text())
+            manifest_voiceover = (Path(tmp) / "voiceover.txt").read_text()
+            self.assertEqual(len(report["finalists"]), 15)
+            self.assertEqual(manifest_voiceover, " ".join(report["best"]["spoken"]))
 
     def test_approved_charon_path_keeps_the_exact_recorded_script(self):
         data = next(row for row in json.loads((ROOT / "data/topics.json").read_text())
