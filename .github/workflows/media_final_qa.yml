@@ -130,6 +130,7 @@ jobs:
             if [[ -f "$file" ]]; then
               printf '### %s\n\n```json\n' "$report" >> "$GITHUB_STEP_SUMMARY"
               cat "$file" >> "$GITHUB_STEP_SUMMARY"
+              if [[ "$report" == PERFORMANCE ]]; then cat "$file"; fi
               printf '\n```\n\n' >> "$GITHUB_STEP_SUMMARY"
             fi
           done
