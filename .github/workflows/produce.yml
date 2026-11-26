@@ -73,7 +73,7 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements-audio-audit.txt 'av>=11,<18'
       - name: Cache free Turkish speech audit model
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .cache/huggingface
           key: faster-whisper-charon-tiny-small-cpu-v1
@@ -90,7 +90,7 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Restore editorial responses and quota ledger
         if: inputs.approved_piri != true
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: |
             .cache/editorial-llm.sqlite3
@@ -170,7 +170,7 @@ jobs:
           python -m scripts.auto_produce --topic "$TOPIC_ID" --out output/auto --use-staged-experts "${flags[@]}"
       - name: Save editorial responses even on a failed review
         if: ${{ always() && inputs.approved_piri != true && (hashFiles('.cache/editorial-llm.sqlite3') != '' || hashFiles('.cache/gemini-quota.sqlite3') != '') }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: |
             .cache/editorial-llm.sqlite3

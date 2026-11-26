@@ -25,7 +25,7 @@ jobs:
       - name: Check dispatch, quota and renderer-independent safety
         run: python -m unittest discover -s tests -q
       - name: Restore the shared main-branch editorial responses and quota ledger
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: |
             .cache/editorial-llm.sqlite3
@@ -45,7 +45,7 @@ jobs:
           python -m scripts.specialist_validation --out output/specialist-validation
       - name: Save the shared ledger even after partial results
         if: ${{ always() && hashFiles('.cache/editorial-llm.sqlite3') != '' }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: |
             .cache/editorial-llm.sqlite3
