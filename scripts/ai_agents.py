@@ -10,6 +10,7 @@ from scripts.editorial_llm import (
     DEFAULT_STATE, MAX_REQUESTS_PER_RUN, FreeReviewSession, discussion_completed,
 )
 from scripts.editorial_state import EditorialState
+from scripts.motion_toolkit import role_guidance
 from scripts.reels_editorial import EDITOR_RULE, playbook, specialist_guidance
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -152,7 +153,8 @@ def run_agents(topic, agents, output, requester=None, settings=None, *, editoria
             "Kaynak yorumu, anlatım veya görsel plan konusunda incelemeye değer bir başlık varsa en az bir uzman seç. "
             "İhtiyaç yoksa boş dizi ver.",
             {"topic": context, "weekly_decision": decision, "specialists": list(candidates.values()),
-             "reels_strategy": playbook()["brands"][brand]},
+             "reels_strategy": playbook()["brands"][brand],
+             "motion_advice": role_guidance(brand) if media_review else {}},
             lambda content: _dispatch(content, candidates, limit), namespace=namespace)
         selected = (dispatch.get("answer") or {}).get("assignments", [])
         if dispatch["status"] != "proposal":
@@ -167,12 +169,18 @@ def run_agents(topic, agents, output, requester=None, settings=None, *, editoria
             check = lambda content: _suggestion(content, len(sources))
             if media_review:
                 from scripts.media_tools import options
-                allowed_tools = options(brand, role_id)
+                guidance = role_guidance(brand, role_id)
+                if guidance["techniques"] or guidance["tools"]:
+                    specialist_input["motion_guidance"] = guidance
+                optional = {name: row["use"] for name, row in guidance["tools"].items()
+                            if row["status"] == "optional"}
+                allowed_tools = {**options(brand, role_id), **optional}
                 if allowed_tools:
                     specialist_input["media_tool_options"] = allowed_tools
                     specialist_input["media_tool_request"] = (
                         "İhtiyaç varsa JSON içine media_tool alanında listelenen bir araç seç. "
-                        "Araç gerekmiyorsa alanı boş bırak. Dosya indirme, kod veya URL talimatı verme.")
+                        "Araç gerekmiyorsa alanı boş bırak. Bu sadece öneridir; kurulum veya çalıştırma izni vermez. "
+                        "Dosya indirme, kod veya URL talimatı verme.")
                     check = lambda content: _media_advice(content, len(sources), allowed_tools)
             outcome = session.evaluate(role["name"], policy +
                 "Editoryal görev, yöntem ve marka stratejisini verilen Reels rehberine bağla. " +

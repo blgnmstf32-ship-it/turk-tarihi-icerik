@@ -5,10 +5,13 @@ import * as THREE from 'three';
 import {AbsoluteFill} from 'remotion';
 
 export type History3DKind = 'battle_map' | 'city_flyover' | 'siege' | 'artifact_gears' | 'atlantic_atlas';
+export type HistoricalOverlay = {lines: [number, number][][]; year: number; attribution: string};
+
 export type History3DSceneProps = {
   kind: History3DKind;
   title: string;
   labels?: string[];
+  atlas?: HistoricalOverlay;
 };
 
 const Ground: React.FC = () => (
@@ -156,8 +159,17 @@ const coasts = [
   coast([[3.1,2.2],[4.5,2.5],[5.2,1.7],[5.85,.55],[6.25,.5],[5.65,-.75],[5.15,-1.8],[4.6,-3.1],[3.95,-3.65],[3.35,-1.8],[3.45,-.5],[2.55,-.45],[1.85,.3],[2.05,1.4]]),
 ];
 
-const AtlanticAtlas: React.FC = () => {
+const AtlanticAtlas: React.FC<{atlas?: HistoricalOverlay}> = ({atlas}) => {
   const frame = useCurrentFrame();
+  const boundaryGeometry = React.useMemo(() => {
+    if (!atlas) return;
+    const geometry = new THREE.BufferGeometry();
+    const segments = atlas.lines.flatMap(line => line.slice(1).flatMap(([x, y], index) =>
+      [line[index][0], line[index][1], .03, x, y, .03]));
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(segments, 3));
+    return geometry;
+  }, [atlas]);
+  React.useEffect(() => () => boundaryGeometry?.dispose(), [boundaryGeometry]);
   const travel = interpolate(frame, [0,264], [0,1], {extrapolateRight:'clamp'});
   const reveal = interpolate(frame, [0,55,210], [.35,1,.85], {extrapolateRight:'clamp'});
   return <AbsoluteFill>
@@ -171,29 +183,32 @@ const AtlanticAtlas: React.FC = () => {
           <planeGeometry args={[14,14]} /><meshStandardMaterial color="#173c41" roughness={.88} />
         </mesh>
         <gridHelper args={[14,14,'#9c8c6b','#416c67']} rotation={[Math.PI/2,0,0]} position={[0,0,-.19]} />
-        {coasts.map((shape,i) =>
+        {boundaryGeometry ? <lineSegments geometry={boundaryGeometry}>
+          <lineBasicMaterial color="#f6dca5" transparent opacity={reveal} />
+        </lineSegments> : coasts.map((shape,i) =>
           <mesh key={i}>
             <extrudeGeometry args={[shape,{depth:.12,steps:1,bevelEnabled:true,bevelThickness:.04,bevelSize:.05,bevelSegments:1}]} />
             <meshStandardMaterial color={i<2?'#a88155':'#ba985e'} metalness={.27} roughness={.7}
               emissive="#916137" emissiveIntensity={.13*reveal} />
           </mesh>
         )}
-        {[-2,2.2].map((x,i) => <mesh key={x} position={[x,.72,.03]} scale={1+.18*Math.sin((frame-i*34)/20)}>
+        {!atlas && [-2,2.2].map((x,i) => <mesh key={x} position={[x,.72,.03]} scale={1+.18*Math.sin((frame-i*34)/20)}>
           <ringGeometry args={[.12,.17,30]} /><meshBasicMaterial color="#ffdc93" transparent opacity={reveal} />
         </mesh>)}
       </group>
     </ThreeCanvas>
     <div style={{position:'absolute',top:622,left:60,right:60,display:'flex',justifyContent:'space-between',
       color:'#fff5d9',font:'700 25px Arial',letterSpacing:4,textShadow:'0 2px 12px #0a171b'}}>
-      <span>AMERİKALAR</span><span>AVRUPA · AFRİKA</span>
+      {atlas ? <span>{atlas.year} · YAKLAŞIK SINIRLAR · {atlas.attribution}</span> :
+        <><span>AMERİKALAR</span><span>AVRUPA · AFRİKA</span></>}
     </div>
   </AbsoluteFill>;
 };
 
-export const History3DScene: React.FC<History3DSceneProps> = ({kind, title, labels = []}) => (
+export const History3DScene: React.FC<History3DSceneProps> = ({kind, title, labels = [], atlas}) => (
   <AbsoluteFill style={{backgroundColor: '#17211e'}}>
     {kind === 'battle_map' ? <BattleMap /> : kind === 'artifact_gears' ? <ArtifactGears /> :
-      kind === 'atlantic_atlas' ? <AtlanticAtlas /> : <City siege={kind === 'siege'} />}
+      kind === 'atlantic_atlas' ? <AtlanticAtlas atlas={atlas} /> : <City siege={kind === 'siege'} />}
     <div style={{position: 'absolute', left: 30, right: 30, top: 130, textAlign: 'center', color: '#fff0d4', font: '800 32px Arial, sans-serif', letterSpacing: 1.5, textShadow: '0 3px 14px #000', background: 'rgba(5,9,12,.56)', borderRadius: 12, padding: '14px 18px'}}>{title}</div>
     <div style={{position: 'absolute', left: 24, right: 24, top: 210, display: 'flex', justifyContent: 'space-evenly', gap: 12}}>
       {labels.map((label) => <span key={label} style={{font: '700 21px Arial, sans-serif', letterSpacing: 0.5, color: '#fff2d5', background: 'rgba(6,9,11,.72)', padding: '9px 12px', borderRadius: 9}}>{label}</span>)}

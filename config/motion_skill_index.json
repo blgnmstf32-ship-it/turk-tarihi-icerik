@@ -1,0 +1,518 @@
+[
+  {
+    "repository": "iart-ai/ad-video-skills",
+    "commit": "cc8071678f4225ee7bdccc4506f2468722bb3515",
+    "skills": [
+      {
+        "name": "ad-creative-video",
+        "path": "skills/ad-creative-video/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "launch-video",
+        "path": "skills/launch-video/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "testimonial-video",
+        "path": "skills/testimonial-video/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      }
+    ]
+  },
+  {
+    "repository": "Hmzbo/animation-skills",
+    "commit": "42dd41ec0b700999d2d013f19affa3c72333f265",
+    "skills": [
+      {
+        "name": "manim",
+        "path": "skills/oss/manim/SKILL.md",
+        "decision": "adapt",
+        "note": "Diyagram adımlarında değişen öğeyi tek tek vurgula."
+      },
+      {
+        "name": "motion-canvas",
+        "path": "skills/oss/motion-canvas/SKILL.md",
+        "decision": "adapt",
+        "note": "Kamera, dönüşüm ve sahne zamanını kareye bağla."
+      },
+      {
+        "name": "threejs",
+        "path": "skills/oss/threejs/SKILL.md",
+        "decision": "adapt",
+        "note": "Kamera yolu ve kaynakları temiz bırak."
+      },
+      {
+        "name": "wgpu-shaders",
+        "path": "skills/oss/wgpu-shaders/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "gsap-motion",
+        "path": "skills/proprietary-free/gsap-motion/SKILL.md",
+        "decision": "adapt",
+        "note": "HTML zaman çizelgesini kareye hizala."
+      },
+      {
+        "name": "remotion",
+        "path": "skills/source-available/remotion/SKILL.md",
+        "decision": "adapt",
+        "note": "Metin ve katmanları kare bazlı kompozisyona bağla."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/b-roll-skills",
+    "commit": "bcd56742a8a99edaa699a6f7bc5a45922a8ec567",
+    "skills": [
+      {
+        "name": "talking-head-b-roll",
+        "path": "skills/talking-head-b-roll/SKILL.md",
+        "decision": "adapt",
+        "note": "B-roll konu veya kanıt değiştiğinde girsin, portre ya da ses üretme."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/data-animation-skills",
+    "commit": "6570c0c4fbc9daa8d7ac1f1163a890352344206b",
+    "skills": [
+      {
+        "name": "animated-infographic",
+        "path": "skills/animated-infographic/SKILL.md",
+        "decision": "adapt",
+        "note": "Bir karede tek ölçü. Birim ve kaynak ekranda kalsın."
+      },
+      {
+        "name": "chart-animation",
+        "path": "skills/chart-animation/SKILL.md",
+        "decision": "adapt",
+        "note": "Kademeli gösterim eksen, ölçek veya örneklem değerini değiştirmesin."
+      },
+      {
+        "name": "presentation-video",
+        "path": "skills/presentation-video/SKILL.md",
+        "decision": "adapt",
+        "note": "Konu başına tek görsel mesaj ve okunacak kadar tutuş."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/ecommerce-video-skills",
+    "commit": "a430fbbb7660783c421ad0a145bcc1c98d6f0b7b",
+    "skills": [
+      {
+        "name": "photo-slideshow",
+        "path": "skills/photo-slideshow/SKILL.md",
+        "decision": "adapt",
+        "note": "Lisanslı görsele küçük kaydırma. Arşiv ve canlandırmayı ayır."
+      },
+      {
+        "name": "product-demo-video",
+        "path": "skills/product-demo-video/SKILL.md",
+        "decision": "adapt",
+        "note": "Kullanım adımını yakın çekimde göster. Etki ve tedavi vaadinden kaçın."
+      },
+      {
+        "name": "promo-video",
+        "path": "skills/promo-video/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/explainer-video-skills",
+    "commit": "3c13a1bc360c08503f24f9c9a99fda6d3d35de56",
+    "skills": [
+      {
+        "name": "diagram-animation",
+        "path": "skills/diagram-animation/SKILL.md",
+        "decision": "adapt",
+        "note": "Aşamaları neden-sonuç sırasına göre vurgula."
+      },
+      {
+        "name": "explainer-video",
+        "path": "skills/explainer-video/SKILL.md",
+        "decision": "adapt",
+        "note": "Önce sorun veya kanıt, sonra mekanizma ve sonuç."
+      },
+      {
+        "name": "isometric-animation",
+        "path": "skills/isometric-animation/SKILL.md",
+        "decision": "adapt",
+        "note": "Şema perspektifinin ölçek veya derinlik ölçüsü olmadığını belirt."
+      },
+      {
+        "name": "whiteboard-animation",
+        "path": "skills/whiteboard-animation/SKILL.md",
+        "decision": "adapt",
+        "note": "Çizimin yönü izleyicinin okuma yönünü izlesin."
+      },
+      {
+        "name": "wrapped-video",
+        "path": "skills/wrapped-video/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/freelance-motion-skills",
+    "commit": "9f294eb6df73cde7e2dea235f42275df11a16466",
+    "skills": [
+      {
+        "name": "brand-motion-guidelines",
+        "path": "skills/brand-motion-guidelines/SKILL.md",
+        "decision": "adapt",
+        "note": "Markaya özel giriş, renk ve tipografi sınırını kayıt altına al."
+      },
+      {
+        "name": "client-revisions",
+        "path": "skills/client-revisions/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "creative-brief",
+        "path": "skills/creative-brief/SKILL.md",
+        "decision": "adapt",
+        "note": "Çekim planına izleyici vaadi ve kanıt yükümlülüğünü yaz."
+      },
+      {
+        "name": "motion-pricing",
+        "path": "skills/motion-pricing/SKILL.md",
+        "decision": "reference_only",
+        "note": "Ücretli servis veya üretimin kapsamı dışında olan biçim."
+      },
+      {
+        "name": "video-delivery-specs",
+        "path": "skills/video-delivery-specs/SKILL.md",
+        "decision": "adapt",
+        "note": "Teslimde kare hızı, en-boy ve sıkıştırma kaydını kontrol et."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/generative-illustration-skills",
+    "commit": "e7d62437c875fc8ad5eff6e90fe0e25b30e43933",
+    "skills": [
+      {
+        "name": "generative-illustration",
+        "path": "skills/generative-illustration/SKILL.md",
+        "decision": "reference_only",
+        "note": "Ücretli servis veya üretimin kapsamı dışında olan biçim."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/javascript-animation-skills",
+    "commit": "060f7467a6e5ae5b57c90c9cb1b3508c13b88e49",
+    "skills": [
+      {
+        "name": "javascript-animation",
+        "path": "skills/javascript-animation/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "soundtrack",
+        "path": "skills/soundtrack/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/kinetic-typography-skills",
+    "commit": "2b79c81230c6647a344844f9ed53b6fa07f3f1f9",
+    "skills": [
+      {
+        "name": "kinetic-typography",
+        "path": "skills/kinetic-typography/SKILL.md",
+        "decision": "adapt",
+        "note": "Kısa giriş hareketi sonrası metni okuma boyunca sabitle."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/lower-thirds-skills",
+    "commit": "58d3623da95a2c97a4890a2d3f6d9d67e040b3d7",
+    "skills": [
+      {
+        "name": "lower-thirds",
+        "path": "skills/lower-thirds/SKILL.md",
+        "decision": "adapt",
+        "note": "Kimlik veya kaynak etiketini dikey güvenli alanda sabit tut."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/manim-skills",
+    "commit": "3e989cb044f6a6fed8c07b06dddade6e3463d7ac",
+    "skills": [
+      {
+        "name": "manim",
+        "path": "skills/manim/SKILL.md",
+        "decision": "adapt",
+        "note": "Diyagram adımlarında değişen öğeyi tek tek vurgula."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/map-animation-skills",
+    "commit": "c8ef8463f5a4a8aa35ff0c6c17f42e52bbf588a5",
+    "skills": [
+      {
+        "name": "map-animation",
+        "path": "skills/map-animation/SKILL.md",
+        "decision": "adapt",
+        "note": "Coğrafi hareketi anlatı için kullan. Dönem ve sınır belirsizliğini göster."
+      }
+    ]
+  },
+  {
+    "repository": "jmwdpk/motion-canvas-skills",
+    "commit": "d90f87c44bc7109147d094603e33da43c217799b",
+    "skills": [
+      {
+        "name": "animation-basics",
+        "path": "animation-basics/SKILL.md",
+        "decision": "adapt",
+        "note": "Easing ve bekleme ile odak değişimini ayır."
+      },
+      {
+        "name": "motion-canvas",
+        "path": "motion-canvas/SKILL.md",
+        "decision": "adapt",
+        "note": "Kamera, dönüşüm ve sahne zamanını kareye bağla."
+      },
+      {
+        "name": "motion-canvas-agent",
+        "path": "motion-canvas-agent/SKILL.md",
+        "decision": "reference_only",
+        "note": "Ağ üzerinden editör denetimi."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/motion-design-skills",
+    "commit": "b85e50c4cef5ff17aa2187a10d49d2dae9226c74",
+    "skills": [
+      {
+        "name": "after-effects",
+        "path": "skills/after-effects/SKILL.md",
+        "decision": "reference_only",
+        "note": "Ücretli servis veya üretimin kapsamı dışında olan biçim."
+      },
+      {
+        "name": "animation-principles",
+        "path": "skills/animation-principles/SKILL.md",
+        "decision": "adapt",
+        "note": "Beklenti, odak ve yerleşmeyi ağırlık ve anlam için kullan."
+      },
+      {
+        "name": "beat-sync-editing",
+        "path": "skills/beat-sync-editing/SKILL.md",
+        "decision": "adapt",
+        "note": "Kesme konuşma cümlesi ve anlam sınırına bağlı kalsın."
+      },
+      {
+        "name": "color-motion",
+        "path": "skills/color-motion/SKILL.md",
+        "decision": "adapt",
+        "note": "Rengi veri ve çağ bilgisi için tutarlı kodla."
+      },
+      {
+        "name": "logo-animation",
+        "path": "skills/logo-animation/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "motion-art-direction",
+        "path": "skills/motion-art-direction/SKILL.md",
+        "decision": "adapt",
+        "note": "Bir ana hareket ve tutarlı tipografi seç."
+      },
+      {
+        "name": "motion-background",
+        "path": "skills/motion-background/SKILL.md",
+        "decision": "adapt",
+        "note": "Hafif arka plan hareketi altyazının önüne geçmesin."
+      },
+      {
+        "name": "remotion-video",
+        "path": "skills/remotion-video/SKILL.md",
+        "decision": "adapt",
+        "note": "Sahne sürelerini mutlak kare numarasıyla belirle."
+      },
+      {
+        "name": "shot-composition",
+        "path": "skills/shot-composition/SKILL.md",
+        "decision": "adapt",
+        "note": "Dikey alanda net ön plan ve negatif alan kur."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/talking-head-skills",
+    "commit": "eac1f6b01467f6f95d8ab7602310ba0ff67ed91b",
+    "skills": [
+      {
+        "name": "talking-head",
+        "path": "skills/talking-head/SKILL.md",
+        "decision": "reference_only",
+        "note": "Ücretli servis veya üretimin kapsamı dışında olan biçim."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/text-message-video-skills",
+    "commit": "10ae6bb32e89519c904b8f7950479ff655f839aa",
+    "skills": [
+      {
+        "name": "text-message-animation",
+        "path": "skills/text-message-animation/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/tiktok-video-skills",
+    "commit": "88e7152fc2710fa16852d013959cfd988a8adc8b",
+    "skills": [
+      {
+        "name": "caption-animation",
+        "path": "skills/caption-animation/SKILL.md",
+        "decision": "adapt",
+        "note": "Sözcük vurgusunu anlam ve okuma süresiyle sınırla."
+      },
+      {
+        "name": "countdown-video",
+        "path": "skills/countdown-video/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "lower-thirds",
+        "path": "skills/lower-thirds/SKILL.md",
+        "decision": "adapt",
+        "note": "Kimlik veya kaynak etiketini dikey güvenli alanda sabit tut."
+      },
+      {
+        "name": "short-form-video",
+        "path": "skills/short-form-video/SKILL.md",
+        "decision": "adapt",
+        "note": "İlk görsel vaadi, kanıt ve kapanışı aynı konuya bağla."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/web-animation-skills",
+    "commit": "ed3a045192679b24d32090ee7a983871311ababd",
+    "skills": [
+      {
+        "name": "60fps-animation",
+        "path": "skills/60fps-animation/SKILL.md",
+        "decision": "adapt",
+        "note": "Render zamanı tek kaynak. Projenin mevcut kare hızını sabit tut."
+      },
+      {
+        "name": "accessible-animation",
+        "path": "skills/accessible-animation/SKILL.md",
+        "decision": "adapt",
+        "note": "Okuma ve hareket aynı anda yarışmasın. Erişilebilir durağan durum bırak."
+      },
+      {
+        "name": "ascii-animation",
+        "path": "skills/ascii-animation/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "glassmorphism",
+        "path": "skills/glassmorphism/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "gsap-web",
+        "path": "skills/gsap-web/SKILL.md",
+        "decision": "adapt",
+        "note": "Zaman çizelgesini duraklatıp kare konumuna göre ilerlet."
+      },
+      {
+        "name": "lottie-animation",
+        "path": "skills/lottie-animation/SKILL.md",
+        "decision": "adapt",
+        "note": "Şemayı küçük vektör hareketiyle anlat, bağımsız döngü başlatma."
+      },
+      {
+        "name": "micro-interaction",
+        "path": "skills/micro-interaction/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "page-transition-animation",
+        "path": "skills/page-transition-animation/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "svg-animation",
+        "path": "skills/svg-animation/SKILL.md",
+        "decision": "adapt",
+        "note": "İkonu veya rotayı tek doğrulanmış öğe etrafında aç."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/webgl-animation-skills",
+    "commit": "0041933813688c357804f7b13dcb85095c5a3210",
+    "skills": [
+      {
+        "name": "particle-system",
+        "path": "skills/particle-system/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "shader-glsl",
+        "path": "skills/shader-glsl/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "threejs-animation",
+        "path": "skills/threejs-animation/SKILL.md",
+        "decision": "adapt",
+        "note": "Yerel 3B sahnede tek kamera ve tek zaman denetimi kullan."
+      }
+    ]
+  },
+  {
+    "repository": "iart-ai/youtube-video-skills",
+    "commit": "7838388571a3a6301bf5633e91941f9dfed0abfd",
+    "skills": [
+      {
+        "name": "audiogram",
+        "path": "skills/audiogram/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      },
+      {
+        "name": "youtube-intro-outro",
+        "path": "skills/youtube-intro-outro/SKILL.md",
+        "decision": "reference_only",
+        "note": "Mevcut iş akışında gerekli olmayan veya aynı işi tekrarlayan biçim."
+      }
+    ]
+  }
+]

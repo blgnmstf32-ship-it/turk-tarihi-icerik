@@ -49,9 +49,18 @@ def collect_scenes(folder):
     return images
 
 
-def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=1920,fps=30,three_scenes=None,edit=None):
+def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=1920,fps=30,three_scenes=None,edit=None,*,parallax_dir=None):
     """Render cinematic scene motion and active-word captions with Remotion."""
     scenes=collect_scenes(scenes_dir)
+    effect = (edit or {}).get("effect")
+    if effect not in (None, "lines-reveal", "mask-reveal"):
+        raise ValueError("İzinli açılış efektlerinden birini seç.")
+    if parallax_dir and effect == "mask-reveal":
+        raise ValueError("Aynı açılışta maske veya derinlik hareketinden birini seç.")
+    depth_layers = []
+    if parallax_dir:
+        from scripts.motion_layers import reviewed_parallax
+        depth_layers = reviewed_parallax(scenes[0], parallax_dir)
     audio=Path(audio_path).resolve();srt=Path(srt_path).resolve();out=Path(output_path).resolve()
     if not audio.is_file() or not srt.is_file(): raise ValueError('Seslendirme ve SRT altyazı dosyaları gereklidir')
     if '-->' not in srt.read_text(encoding='utf-8'):raise ValueError('Altyazı dosyası geçerli SRT değil')
@@ -73,14 +82,29 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=192
         if src.stem.endswith('_scene'):
             scene['label']='TEMSİLÎ GÖRSEL'
         copied.append(scene)
+    if depth_layers:
+        layer_path = public_dir / "motion-layers"
+        layer_path.mkdir(exist_ok=True)
+        copied[0]["depthLayers"] = []
+        for source, travel in depth_layers:
+            shutil.copy2(source, layer_path / source.name)
+            copied[0]["depthLayers"].append({"src":f"scenes/{out.stem}/motion-layers/{source.name}", "travelPx":travel})
     three_scenes=three_scenes or []
+    atlas_overlays = {}
     allowed={'battle_map','city_flyover','siege','artifact_gears','atlantic_atlas'}
-    for item in three_scenes:
+    for index, item in enumerate(three_scenes):
         if item.get('kind') not in allowed:raise ValueError('Geçersiz 3D sahne türü')
         if item.get('from_sec',0)<0 or item.get('duration_sec',0)<=0:raise ValueError('3D sahne zamanlaması geçersiz')
         if item.get('from_sec',0)+item.get('duration_sec',0)>length:raise ValueError('3D sahne seslendirme süresinin dışına taşıyor')
+        if request := item.get("historical_overlay"):
+            if item["kind"] != "atlantic_atlas":
+                raise ValueError("Tarihî GeoJSON katmanı yalnız Atlas sahnesinde desteklenir.")
+            from scripts.motion_atlas import read_atlas
+            atlas_overlays[index] = read_atlas(request["geojson"], request["receipt"], request["year"])["atlas"]
     props={'durationSec':length,'title':'TARİHİN BİLİNMEYEN GERÇEKLERİ','scenes':copied,'captions':cues,
-           'threeScenes':[{'kind':s['kind'],'title':s['title'],'labels':s.get('labels',[]),'fromSec':s['from_sec'],'durationSec':s['duration_sec']} for s in three_scenes]}
+           'threeScenes':[{'kind':s['kind'],'title':s['title'],'labels':s.get('labels',[]),'fromSec':s['from_sec'],
+                           'durationSec':s['duration_sec'], **({'atlas': atlas_overlays[i]} if i in atlas_overlays else {})}
+                          for i,s in enumerate(three_scenes)]}
     if edit:
         props['edit']=edit
     with tempfile.TemporaryDirectory(prefix='turktarihi_remotion_') as td:
