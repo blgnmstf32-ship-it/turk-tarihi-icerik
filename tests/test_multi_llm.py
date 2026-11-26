@@ -163,3 +163,18 @@ class MultiLlmTests(TestCase):
         self.assertEqual(google.call_count, 2)
         cf.assert_not_called()
         self.pricing.assert_not_called()
+
+    def test_cloudflare_billing_denial_preserves_the_gemini_alternative(self):
+        self.billing.return_value = response(403)
+        cf = mock.Mock()
+        content = json.dumps(GOOD, ensure_ascii=False)
+        google = mock.Mock(side_effect=[
+            response(503), response(503),
+            response(body={"candidates": [{"content": {"parts": [{"text": content}]}}]}),
+        ])
+        result = self.session(google, cf).evaluate(
+            "Alan Araştırmacısı", "Kısa Türkçe öneri", {}, validate)
+        self.assertEqual(result["provider"], "gemini")
+        self.assertEqual(google.call_count, 3)
+        cf.assert_not_called()
+        self.billing.assert_called_once()
