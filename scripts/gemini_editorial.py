@@ -119,9 +119,6 @@ class GeminiReviewSession:
         routes = (model, model) if primary_only else (model, model, MODEL_ALTERNATIVES[model])
         if not self.key or self.gemini_quota_exhausted and not primary_only:
             routes = ()
-        elif self.cloudflare and not primary_only:
-            # One backoff retry for transient failures, then give the next provider a chance.
-            routes = (model, model)
         attempts = []
         for index, route in enumerate(routes):
             if route in self.failed_models or self.gemini_attempts >= self.max_attempts - reserve_calls:
@@ -147,9 +144,6 @@ class GeminiReviewSession:
                     self.state.save(cache, settled)
                 return accept({**settled, "role": role, "response_source": "live", "attempts": attempts})
             status = attempt["http_status"]
-            if status == 429 and self.cloudflare and not primary_only:
-                self.gemini_quota_exhausted = True
-                break
             if status in {401, 403}:
                 self.failed_models.update(LIMITS)
                 break
@@ -157,6 +151,11 @@ class GeminiReviewSession:
             delay = max(2 ** (index + 1), attempt.get("retry_after_seconds") or 0)
             if not retryable or delay > MAX_RETRY_DELAY or index == 1:
                 self.failed_models.add(route)
+            # A blocked Cloudflare plan must not take away the existing Gemini alternative.
+            if (self.cloudflare and not primary_only and (status == 429 or index == 1)
+                    and self.cloudflare.check_plan()):
+                self.gemini_quota_exhausted = status == 429
+                break
             if index + 1 < len(routes) and retryable and delay <= MAX_RETRY_DELAY:
                 self.sleep(delay)
         if self.cloudflare and not primary_only:

@@ -74,7 +74,7 @@ def run(state, quota_path, run_id):
     with patch.dict(os.environ, {"GEMINI_API_KEY": "synthetic-gemini-benchmark-key",
                                 "ENABLE_GEMINI_EDITORIAL": "1", "GEMINI_FREE_TIER_CONFIRMED": "1"}):
         router = GeminiReviewSession("", state, routed=True, quota_path=quota_path,
-                                     requester=fake_gemini, brand="multi-llm-smoke")
+                                     requester=fake_gemini, brand="multi-llm-smoke", max_attempts=1)
         rows = []
         for i, (role, model, prompt) in enumerate(CASES):
             result = router.evaluate(role,
