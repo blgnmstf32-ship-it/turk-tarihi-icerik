@@ -20,6 +20,8 @@ from scripts.beauty_reel_design import SIZE, beauty_score, cover, overlay, still
 from scripts.create_reel import ffprobe, media_duration
 from scripts.subtitles import create_timed
 from scripts.reels_editorial import write_review
+from scripts.motion_toolkit import opening_presets, select_opening_effect
+from scripts.motion_quality import optional_vmaf
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
@@ -168,7 +170,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     path.write_text(header + "\n".join(lines) + "\n", encoding="utf-8")
 
 
-def shot(work, index, frames, kind, picture, eyebrow, title, note):
+def shot(work, index, frames, kind, picture, eyebrow, title, note, *, title_effect=None):
     out = f"shot-{index:02d}.mp4"
     layer = work / "shot-overlay.png"
     overlay(layer, eyebrow, title, visual_note=note)
@@ -190,19 +192,40 @@ def shot(work, index, frames, kind, picture, eyebrow, title, note):
     dip_in = f",fade=t=in:st=0:d=0.13:color={color}" if kind in {"skin", "cream", "barrier", "sources"} else ""
     dip_out = (f",fade=t=out:st={length-.17:.4f}:d=0.15:color={color}"
                if index in {1, 5, 9, 10, 11} else "")
-    animation = (f"[0:v]{video}[bg];[bg][1:v]overlay=format=auto,setsar=1"
+    title_input, overlay_args = "[1:v]", "format=auto"
+    title_filter = ""
+    if title_effect == "lines-reveal":
+        preset = opening_presets()[title_effect]
+        reveal = preset["duration_ms"] / 1000
+        distance = preset["distance_px"]
+        title_filter = f"[1:v]format=rgba,fade=t=in:st=0:d={reveal}:alpha=1[title];"
+        title_input = "[title]"
+        overlay_args += f":y='{distance}*pow(max(1-t/{reveal},0),3)'"
+    animation = (f"[0:v]{video}[bg];{title_filter}[bg]{title_input}overlay={overlay_args},setsar=1"
                  f"{dip_in}{dip_out},format=yuv420p[v]")
-    ffmpeg(work, *source, "-i", layer.name, "-filter_complex", animation,
+    title_source = ["-loop", "1", "-framerate", str(FPS)] if title_effect == "lines-reveal" else []
+    ffmpeg(work, *source, *title_source, "-i", layer.name, "-filter_complex", animation,
            "-map", "[v]", "-frames:v", str(frames), "-an", "-c:v", "libx264",
            "-threads", "3", "-preset", "veryfast", "-crf", "17", out)
     return out
 
 
-def assemble(assets, out, *, browser=None):
+def reviewed_shot(*args, title_effect=None):
+    if not title_effect:
+        return shot(*args), {"status": "base_selected"}
+    try:
+        return shot(*args, title_effect=title_effect), {"status": "applied", "effect": title_effect}
+    except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as exc:
+        return shot(*args), {"status": "optional_render_skipped", "effect": title_effect,
+                             "reason": type(exc).__name__}
+
+
+def assemble(assets, out, *, browser=None, vmaf_reference=None, vmaf_aligned=False):
     topic = read_json(DATA / "beauty_reel_kuruluk.json")
     review_topic = {**topic, "hook": topic["script"][0], "category": "kuru_cilt",
                     "visual_mode": "layer_diagram", "instagram_keywords": ["nemlendirici", "kuru cilt", "cilt bariyeri"]}
     review = write_review(out, review_topic, "bakim", topic["script"], fixed_recording=True)
+    title_effect = select_opening_effect("bakim", review_topic)
     audio, picture, voice, art, duration, cues = inputs(assets)
     out.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(prefix="beauty-reel-") as tmp:
@@ -210,8 +233,15 @@ def assemble(assets, out, *, browser=None):
         start = time.monotonic()
         models = render_models(work, browser=browser)
         cuts = [round(row[0]*FPS) for row in SHOTS] + [math.ceil(duration*FPS)]
-        clips = [shot(work, i, cuts[i+1]-cuts[i], kind, picture, eyebrow, title, note)
-                 for i, (_, kind, eyebrow, title, note) in enumerate(SHOTS)]
+        clips = []
+        motion_result = {"status": "base_selected"}
+        for i, (_, kind, eyebrow, title, note) in enumerate(SHOTS):
+            effect = title_effect if kind == "skin" else None
+            clip, result = reviewed_shot(work, i, cuts[i+1]-cuts[i], kind, picture, eyebrow, title, note,
+                                         title_effect=effect)
+            clips.append(clip)
+            if effect:
+                motion_result = result
         (work / "cuts.txt").write_text("".join(f"file '{name}'\n" for name in clips))
         styled_captions(cues, work / "captions.ass")
         beauty_score(duration, [i/FPS for i in cuts[1:-1]], work / "score.wav")
@@ -246,6 +276,8 @@ def assemble(assets, out, *, browser=None):
         "voice_sha256": APPROVED_AUDIO, "image_model": art["model"], "image_sha256": APPROVED_IMAGE,
         "new_provider_requests": 0, "new_api_cost_usd": 0,
         "reels_editorial_review": "REELS_EDITORIAL_REVIEW.json", "editorial_index": review["best"]["total"],
+        "motion_tools": motion_result,
+        "vmaf": optional_vmaf(vmaf_reference, video, aligned=vmaf_aligned),
         "captions": len(cues), "alignment": "faster-whisper-small, hash-bound Turkish cues",
         "opening_seconds": SHOTS[1][0], "shots": len(SHOTS), "blender_frames": BLENDER_FRAMES,
         "threejs_shots": list(THREE), "render_wall_seconds": seconds, "model_render_wall_seconds": models,
@@ -262,8 +294,11 @@ def main():
     parser.add_argument("--assets", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--browser", type=Path)
+    parser.add_argument("--vmaf-reference", type=Path)
+    parser.add_argument("--vmaf-aligned", action="store_true")
     args = parser.parse_args()
-    assemble(args.assets.resolve(), args.out.resolve(), browser=args.browser)
+    assemble(args.assets.resolve(), args.out.resolve(), browser=args.browser,
+             vmaf_reference=args.vmaf_reference, vmaf_aligned=args.vmaf_aligned)
 
 
 if __name__ == "__main__":

@@ -24,13 +24,52 @@ def skill_index():
 
 
 ROLE_TECHNIQUES = {
-    "tarih": {11: ("shot-composition", "map-animation"), 13: ("motion-art-direction", "animation-principles"),
-              14: ("accessible-animation",), 15: ("beat-sync-editing", "caption-animation"),
-              16: ("video-delivery-specs",), 22: ("threejs-animation", "map-animation")},
-    "bakim": {1: ("creative-brief", "brand-motion-guidelines"), 13: ("manim", "diagram-animation"),
-              14: ("motion-art-direction", "color-motion"), 15: ("beat-sync-editing", "caption-animation"),
-              16: ("accessible-animation",), 17: ("video-delivery-specs",), 20: ("video-delivery-specs",)},
+    "tarih": {
+        6: ("short-form-video", "kinetic-typography"),
+        7: ("explainer-video", "presentation-video", "whiteboard-animation"),
+        11: ("shot-composition", "map-animation", "animated-infographic", "photo-slideshow"),
+        12: ("lower-thirds", "svg-animation"),
+        13: ("motion-art-direction", "animation-principles", "motion-background", "color-motion", "gsap-web",
+             "threejs-animation", "threejs"),
+        14: ("accessible-animation",),
+        15: ("beat-sync-editing", "caption-animation", "talking-head-b-roll", "remotion-video", "remotion"),
+        16: ("video-delivery-specs", "60fps-animation"),
+        22: ("threejs-animation", "threejs", "map-animation", "isometric-animation", "motion-canvas"),
+    },
+    "bakim": {
+        1: ("creative-brief", "brand-motion-guidelines"),
+        10: ("explainer-video", "short-form-video"),
+        11: ("animated-infographic", "lottie-animation", "product-demo-video"),
+        12: ("photo-slideshow", "svg-animation"),
+        13: ("manim", "diagram-animation", "isometric-animation", "threejs", "chart-animation"),
+        14: ("motion-art-direction", "color-motion", "animation-basics", "gsap-motion"),
+        15: ("beat-sync-editing", "caption-animation", "remotion", "motion-canvas"),
+        16: ("accessible-animation",),
+        17: ("video-delivery-specs",),
+        18: ("lower-thirds", "kinetic-typography"),
+        20: ("video-delivery-specs",),
+    },
 }
+
+
+@lru_cache(maxsize=1)
+def opening_presets():
+    return json.loads((ROOT / "media_pilot/motion_presets.json").read_text(encoding="utf-8"))
+
+
+def select_opening_effect(brand, topic, *, parallax=False, requested=None):
+    """Select an offline preset from topic metadata. Explicit approved choices win."""
+    if requested is not None:
+        if requested not in opening_presets() or (requested == "mask-reveal" and parallax):
+            raise ValueError("İzinli ve birbiriyle uyumlu açılış seçenekleri gerekli.")
+        return requested
+    if brand == "bakim" and topic.get("visual_mode") == "layer_diagram":
+        return "lines-reveal"
+    if brand == "tarih" and topic.get("visual_mode") == "artifact_gears":
+        return "lines-reveal"
+    if brand == "tarih" and topic.get("category") in {"mekanizma", "kesif"}:
+        return "lines-reveal"
+    return None
 
 
 def role_guidance(brand, role_id=None):
@@ -42,8 +81,14 @@ def role_guidance(brand, role_id=None):
     assignment_notes = ({identifier: [name for name in tools if registry()["tools"][name]["status"] == "optional"]
                          for identifier, tools in brand_spec["roles"].items() if int(identifier) <= 20}
                         if role_id is None else {})
+    sources = [
+        {"name": row["name"], "repository": pack["repository"], "path": row["path"], "commit": pack["commit"]}
+        for pack in skill_index() for row in pack["skills"]
+        if row["decision"] == "adapt" and row["name"] in names
+    ]
     return {
         "editorial_direction": brand_spec["editor"],
+        "technique_sources": sources,
         "assignment_options": assignment_notes,
         "techniques": {row["name"]: row["note"] for pack in skill_index() for row in pack["skills"]
                        if row["decision"] == "adapt" and row["name"] in names},

@@ -46,20 +46,25 @@ def video_shape(path):
 
 def parse_vmaf(payload):
     mean = payload["pooled_metrics"]["vmaf"]["mean"]
-    if type(mean) not in (int, float) or not isfinite(mean):
-        raise ValueError("Invalid VMAF score.")
-    return {"vmaf_mean": mean, "frames": len(payload["frames"]), "model": "libvmaf_builtin",
+    frames = payload["frames"]
+    if type(mean) not in (int, float) or not isfinite(mean) or not isinstance(frames, list) or not frames:
+        raise ValueError("Invalid VMAF result or no measured frames.")
+    return {"status": "measured", "vmaf_mean": mean, "frames": len(frames), "model": "libvmaf_builtin",
             "scope": "compression_relative_to_aligned_reference"}
 
 
 def vmaf_report(reference, encoded, *, aligned=False):
     if aligned is not True:
         raise ValueError("Confirm frame alignment with the reference.")
+    try:
+        filters = _execute(["ffmpeg", "-hide_banner", "-filters"])
+    except (OSError, subprocess.SubprocessError):
+        return {"status": "not_measured", "reason": "ffmpeg_unavailable"}
+    if not re.search(r"\blibvmaf\b", filters):
+        return {"status": "not_measured", "reason": "libvmaf_unavailable"}
     reference, encoded = (_path(value, VIDEO_SUFFIXES) for value in (reference, encoded))
     if reference == encoded or video_shape(reference) != video_shape(encoded):
         raise ValueError("Use distinct videos with matching dimensions, fps and frame counts.")
-    if not re.search(r"\blibvmaf\b", _execute(["ffmpeg", "-hide_banner", "-filters"])):
-        raise RuntimeError("This FFmpeg build does not include libvmaf.")
     graph = ("[0:v]settb=AVTB,setpts=PTS-STARTPTS,format=yuv420p[d];"
              "[1:v]settb=AVTB,setpts=PTS-STARTPTS,format=yuv420p[r];"
              "[d][r]libvmaf=log_fmt=json:log_path=vmaf.json:n_threads=2")
@@ -68,6 +73,15 @@ def vmaf_report(reference, encoded, *, aligned=False):
                   "-protocol_whitelist", "file", "-i", str(reference), "-filter_complex", graph,
                   "-an", "-f", "null", "-"], cwd=tmp, timeout=600)
         return parse_vmaf(json.loads((Path(tmp) / "vmaf.json").read_text(encoding="utf-8")))
+
+
+def optional_vmaf(reference, encoded, *, aligned=False):
+    if reference is None or not aligned:
+        return {"status": "not_measured", "reason": "no_aligned_reference"}
+    try:
+        return vmaf_report(reference, encoded, aligned=True)
+    except (OSError, ValueError, KeyError, RuntimeError, subprocess.SubprocessError) as exc:
+        return {"status": "not_measured", "reason": type(exc).__name__}
 
 
 def inspect_glb(path):

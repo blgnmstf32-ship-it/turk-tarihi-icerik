@@ -20,6 +20,8 @@ from scripts.commons_media import fetch_visuals,write_attribution
 from scripts.voice_provider import select_provider
 from scripts.task_observer import record
 from scripts.three_scene import plan_3d_scenes, render_with_2d_fallback, save_plan
+from scripts.motion_toolkit import select_opening_effect
+from scripts.motion_quality import optional_vmaf
 from scripts.editorial_board import run_board
 from scripts.reels_editorial import write_review
 
@@ -99,9 +101,30 @@ def update_3d_role_results(role_modules,status):
     return result
 
 
+def render_motion_or_base(render_fn, *args, plan, edit, parallax_dir=None):
+    """Keep essential rendering separate so optional failures fall back to the existing edit."""
+    scenes = plan["scenes"]
+    baseline = [{key: value for key, value in scene.items() if key != "historical_overlay"} for scene in scenes]
+    opening = edit.get("effect")
+    optional = bool(opening or parallax_dir or scenes != baseline)
+    report = {"status": "base_selected", "opening_effect": opening,
+              "atlas_overlay": scenes != baseline, "parallax": bool(parallax_dir)}
+    if optional:
+        try:
+            result = render_fn(*args, three_scenes=scenes, edit=edit, parallax_dir=parallax_dir)
+            report["status"] = "applied"
+            status = "rendered" if scenes else "not_applicable_2d_only"
+            return result, {"status": status, "fallback_used": False}, report
+        except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as exc:
+            report.update(status="optional_render_skipped", reason=type(exc).__name__)
+    base_edit = {key: value for key, value in edit.items() if key != "effect"}
+    result, three_d = render_with_2d_fallback(render_fn, *args, three_scenes=baseline, edit=base_edit)
+    return result, three_d, report
+
+
 def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=None,voice_provider_override=None,
                gemini_free_project=False, use_staged_experts=False, approved_voice=None, *,
-               atlas_overlay=None, parallax_dir=None, opening_effect=None):
+               atlas_overlay=None, parallax_dir=None, opening_effect=None, vmaf_reference=None, vmaf_aligned=False):
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     settings=load_json(ROOT/'config'/'settings.json')
     record('production_started',{'topic':topic.get('id'),'out':str(out)})
@@ -112,15 +135,20 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
     provider=select_provider(settings,voice_provider_override)
     # Validate an optional geographic asset before reaching narration.
     three_d_plan = plan_3d_scenes(topic, 70)
+    atlas_status = "not_requested"
     if atlas_overlay:
         from scripts.motion_atlas import read_atlas
         atlas = next((scene for scene in three_d_plan["scenes"] if scene["kind"] == "atlantic_atlas"), None)
-        if atlas is None:
-            raise ValueError("Bu konu Atlas sahnesi içermiyor.")
-        read_atlas(atlas_overlay["geojson"], atlas_overlay["receipt"], atlas_overlay["year"])
-        atlas["historical_overlay"] = atlas_overlay
-    if opening_effect not in (None, "lines-reveal", "mask-reveal") or (parallax_dir and opening_effect == "mask-reveal"):
-        raise ValueError("İzinli ve birbiriyle uyumlu açılış seçenekleri gerekli.")
+        atlas_status = "not_applicable"
+        if atlas is not None:
+            try:
+                read_atlas(atlas_overlay["geojson"], atlas_overlay["receipt"], atlas_overlay["year"])
+            except (OSError, ValueError, TypeError, KeyError):
+                atlas_status = "rejected_license_or_asset"
+            else:
+                atlas["historical_overlay"] = atlas_overlay
+                atlas_status = "reviewed_asset"
+    opening_effect = select_opening_effect("tarih", topic, parallax=bool(parallax_dir), requested=opening_effect)
     segments=performance_script(topic)
     if approved_voice is None and topic['id']=='piri-reis-kayip-kaynak':
         approved_voice=ROOT/'data'
@@ -231,6 +259,7 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
         'ready_for_instagram':False,'editorial_decision_report':'editorial/EDITORIAL_DECISION_REPORT.md',
         'ai_agent_execution_report':'AI_AGENT_EXECUTION_REPORT.json',
         'reels_editorial_review':'REELS_EDITORIAL_REVIEW.json',
+        'motion_tools':{'status':'planned', 'opening_effect':opening_effect, 'atlas_preflight':atlas_status},
         'editorial_index':review['best']['total'],
         'applied_hook_family':selected['hook_family'] if apply_review else None,
         'applied_scenario':selected['scenario'] if apply_review else None,
@@ -246,18 +275,18 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
     create_subtitles(cues,out/'subtitles.srt')
     create_bed(duration,out/'original_soundtrack.wav', maritime=topic['id']=='piri-reis-kayip-kaynak')
     rendered=out/'reel_with_voice.mp4'
-    _, three_d_result=render_with_2d_fallback(render_reel,scenes,voice_path,out/'subtitles.srt',rendered,
-                                               three_scenes=three_d_plan.get('scenes',[]),
-                                               parallax_dir=parallax_dir,
-                                               edit={'title':topic['title'],'topic':topic['id'],
-                                                     'hook':segments[0]['caption'], 'effect':opening_effect})
+    _, three_d_result, motion_result = render_motion_or_base(
+        render_reel, scenes, voice_path, out/'subtitles.srt', rendered, plan=three_d_plan,
+        parallax_dir=parallax_dir, edit={'title':topic['title'], 'topic':topic['id'],
+                                         'hook':segments[0]['caption'], 'effect':opening_effect})
+    manifest['motion_tools'] = {**motion_result, 'atlas_preflight':atlas_status}
     three_d_render_status=three_d_result['status']
     if three_d_result.get('error'):
         (out/'THREE_D_RENDER_FAILURE.txt').write_text(three_d_result['error']+'\n2D fallback render succeeded.',encoding='utf-8')
     final=out/'REVIEW_REQUIRED_REEL.mp4'
     subprocess.run(audio_mix_command(rendered,voice_path,out/'original_soundtrack.wav',final),check=True,capture_output=True,text=True)
     technical=check(final,voice_path,out/'subtitles.srt',scenes)
-    optional_audits={}
+    optional_audits={'vmaf':optional_vmaf(vmaf_reference, final, aligned=vmaf_aligned)}
     if settings.get('speech_audit_enabled',False):
         from scripts.speech_audit import compare_subtitles
         optional_audits['speech']=compare_subtitles(voice_path,out/'subtitles.srt')
@@ -298,6 +327,8 @@ def main():
     p.add_argument('--atlas-year', type=int)
     p.add_argument('--parallax-dir', type=Path, help='Onaylı ilk görselle eşleşen yerel derinlik katmanı dizini')
     p.add_argument('--opening-effect', choices=['lines-reveal', 'mask-reveal'])
+    p.add_argument('--vmaf-reference', type=Path)
+    p.add_argument('--vmaf-aligned', action='store_true')
     a=p.parse_args()
     atlas_fields = (a.atlas_geojson, a.atlas_receipt, a.atlas_year)
     if any(field is not None for field in atlas_fields) and any(field is None for field in atlas_fields):
@@ -313,7 +344,8 @@ def main():
         result=production(topic,a.out,skip_narration=a.skip_narration,voice_provider_override=a.voice_provider,
                           gemini_free_project=a.confirm_gemini_free_project,use_staged_experts=a.use_staged_experts,
                           approved_voice=a.approved_voice, atlas_overlay=atlas,
-                          parallax_dir=a.parallax_dir, opening_effect=a.opening_effect)
+                          parallax_dir=a.parallax_dir, opening_effect=a.opening_effect,
+                          vmaf_reference=a.vmaf_reference, vmaf_aligned=a.vmaf_aligned)
     except Exception as exc:
         record('production_failed',{'topic':topic.get('id'),'error':f'{type(exc).__name__}: {exc}'})
         raise
