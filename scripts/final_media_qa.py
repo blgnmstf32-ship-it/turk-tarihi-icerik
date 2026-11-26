@@ -20,7 +20,7 @@ from scripts import animation_styles, media_pilot
 from scripts.auto_produce import audio_mix_command, performance_script, render_motion_or_base
 from scripts.beauty_reel import VIDEO, assemble, inputs
 from scripts.create_reel import collect_scenes, ffprobe, media_duration, render_reel, subtitle_cues
-from scripts.daily_editorial import STORY_CATALOGUE, render_story
+from scripts.daily_editorial import STORY_CATALOGUE, render_story, story_candidates
 from scripts.beauty_studio import draw_story
 from scripts.gemini_tts import approved_recording
 from scripts.motion_layers import reviewed_parallax
@@ -326,10 +326,13 @@ def project(args):
     after = clock.measure("analysis_after", metrics, new, subtitle_cues(new_srt), model)
     video_quality = clock.measure("vmaf", vmaf, new, named)
     story = clock.measure("one_story_sample", story_sample, args.brand, named)
-    write(named / "FINAL_QA.json", {"status": "human_review_required", "brand": args.brand, "media": final,
+    report = {"status": "human_review_required", "brand": args.brand, "media": final,
         "approved_voice_sha256": digest(voice), "before_sha256": digest(old), "before": before, "after": after,
         "vmaf": video_quality, "animation": art, "story_sample": story, "paid_api_calls": 0,
-        "instagram_auto_publish": False, "comparison_excerpt_seconds_per_version": 8})
+        "instagram_auto_publish": False, "comparison_excerpt_seconds_per_version": 8}
+    write(named / "FINAL_QA.json", report)
+    print(json.dumps({key: report[key] for key in ("brand", "media", "before", "after", "vmaf", "story_sample")},
+                     ensure_ascii=False), flush=True)
 
 
 def story_sample(brand, out):
@@ -339,7 +342,8 @@ def story_sample(brand, out):
 
         draw_story(target, media_pilot.read(PROFILES)["bakim"], media_pilot.read(DATA)[0])
     else:
-        render_story(target, media_pilot.read(STORY_CATALOGUE)[0])
+        catalogue = media_pilot.read(STORY_CATALOGUE)
+        render_story(target, story_candidates(catalogue)[0])
     with Image.open(target) as image:
         return {"resolution": list(image.size), "design_probe_only": True}
 
