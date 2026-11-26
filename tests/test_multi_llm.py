@@ -212,13 +212,14 @@ class MultiLlmTests(TestCase):
         router = self.session(mock.Mock(return_value=response(429)), cf)
         task = ("Alan Araştırmacısı", "Kısa Türkçe öneri", {"id": "a"}, validate)
         result = router.evaluate(*task)
-        self.assertEqual(result["model"], cloud.QWEN)
+        self.assertEqual(result["model"], cloud.GPT_OSS)
         self.assertEqual([a["http_status"] for a in result["attempts"]], [429, 429, 200])
         next_result = router.evaluate(task[0], task[1], {"id": "b"}, validate)
-        self.assertEqual(next_result["model"], cloud.QWEN)
+        self.assertEqual(next_result["model"], cloud.GPT_OSS)
         self.assertEqual(next_result["attempts"][0]["status"], "cloudflare_model_cooldown")
         self.assertEqual([call.kwargs["json"]["model"] for call in cf.call_args_list],
-                         [cloud.GEMMA, cloud.QWEN, cloud.QWEN])
+                         [cloud.GEMMA, cloud.GPT_OSS, cloud.GPT_OSS])
+        self.assertEqual(cf.call_args.kwargs["json"]["reasoning_effort"], "low")
 
     def test_bad_alternate_response_does_not_cool_the_provider(self):
         cf = mock.Mock(side_effect=[cloud_answer({"answer": "English output only for this task."}),
@@ -256,7 +257,7 @@ class MultiLlmTests(TestCase):
         self.assertEqual(report["simulated_gemini_responses"], [429])
         self.assertEqual(report["real_cloudflare_model_calls"], 4)
         self.assertTrue(all(row["case_passed"] for row in report["cases"]))
-        qwen, glm = report["optional_model_checks"]
-        self.assertTrue(qwen["case_passed"])
+        gpt_oss, glm = report["optional_model_checks"]
+        self.assertTrue(gpt_oss["case_passed"])
         self.assertFalse(glm["case_passed"])
         self.assertEqual(glm["attempts"][0]["status"], "cloudflare_read_timeout")
