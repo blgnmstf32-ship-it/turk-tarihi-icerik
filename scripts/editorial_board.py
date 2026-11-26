@@ -4,7 +4,7 @@ import argparse, json
 from pathlib import Path
 from scripts.content_strategy import build_debate, load_learning, score_ideas, CATEGORY_LABELS, CONCEPT
 from scripts.editorial_llm import discussion_completed, review
-from scripts.performance_learning import record_outcome
+from scripts.performance_learning import record_outcome, reels_benchmarks
 from scripts.editorial_research import collect_public_research
 from scripts.instagram_insights import fetch_read_only_insights
 
@@ -23,13 +23,13 @@ def run_board(output, research_config=None, performance_path=None, research_fn=N
     insights=(insights_fn or fetch_read_only_insights)()
     external_rows=insights.get("records",[]) if insights.get("status")=="ok" else []
     persisted=load_learning(performance_path)
-    known={(r.get("content_id"),str(r.get("captured_at_utc",""))[:10]) for r in persisted}
+    known={(r.get("brand"),r.get("content_id"),str(r.get("captured_at_utc",""))[:10]) for r in persisted}
     new_records=0
     for row in external_rows:
-        marker=(row.get("content_id"),str(row.get("captured_at_utc",""))[:10])
+        marker=(row.get("brand"),row.get("content_id"),str(row.get("captured_at_utc",""))[:10])
         if row.get("content_id") and row.get("category") and marker not in known:
             record_outcome(row,performance_path);known.add(marker);new_records+=1
-    outcomes=load_learning(performance_path)
+    outcomes=[row for row in load_learning(performance_path) if row.get("brand") in (None, "tarih")]
     candidates=score_ideas(research,outcomes)
     debate=build_debate(candidates,research,outcomes)
     llm=(llm_fn or _llm_review)(candidates,research)
@@ -50,6 +50,7 @@ def run_board(output, research_config=None, performance_path=None, research_fn=N
     report={"coordinator":"AI Genel Yayın Yönetmeni","concept":CONCEPT,"status":"recommendations_ready" if llm_complete else "preliminary_only",
         "research":research,"learning":{"source":"Instagram Insights read-only" if external_rows else str(performance_path),
            "records_used":len(outcomes),"new_insights_records_saved":new_records,
+           "reels_cohorts":reels_benchmarks(outcomes,"tarih"),
            "insights_status":insights.get("status"),"real_metrics_available":bool(outcomes),
            "account_follower_change_metrics":insights.get("account_metrics",[]),
            "media_metric_coverage":{key:sum(1 for r in external_rows if r.get(key) is not None)

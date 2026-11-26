@@ -1,0 +1,33 @@
+{
+  "version": "2026-11-26",
+  "priority": "Önce bilgi doğruluğu, bilimsel güvenilirlik, telif ve insan onayı. Editoryal puan bir viral olma olasılığı değildir.",
+  "techniques": {
+    "topic": "Kaynakla desteklenen tek bir açı ve somut izleyici faydası seç. Google Trends ve rakip formatını sinyal ve örnek olarak kaydet, Instagram izlenmesine çevirmeye çalışma.",
+    "hook": "İlk üç saniyede konuyu, kanıt ipucunu veya yanıtlanabilir soruyu aç. Uzun logo açılışını kes. Beş açılışı vaat ve ilk görsel açısından karşılaştır.",
+    "retention": "Kanıtı veya ilk yararı erken ver, bölümleri yeni anlam taşıyan görsel ya da cümleyle ilerlet. Süreyi anlatının ihtiyacına göre kısalt. Benzer konularda süre bandını ölç.",
+    "story": "Vaat, kanıt, bağlam, yanıt sırasını koru. Üç senaryoyu karşılaştır. Merak boşluğunu kapat; sonda başlangıca bağlanmak için cevabı saklama.",
+    "visuals": "Her çekim bir ayrıntıyı, ilişkiyi veya ölçeği açıklasın. Önce planı kur, sonra gerekli araçları seç. Yeniden canlandırmayı, şemayı ve ölçek sınırını açıkça etiketle.",
+    "edit": "Görsel süreyi anlatımdaki anlam değişimine bağla. Konum veya ölçekte yavaş hareket; bölüm yer değiştirince gerekçeli kesme veya eşlemeli geçiş. Altyazıyı konuşmayla zamanla.",
+    "audio": "Onaylı anlatıcıyı, doğru telaffuzu ve anlaşılır miksajı koru. Efekt yalnız anlamlı anlarda, müzik konuşmanın altında. Lisansı ve kaynak kaydını sakla.",
+    "sharing": "Paylaşmak için somut neden, kaydetmek için kaynak veya kısa kontrol listesi sun. Seri vaadini tek bir doğal takip çağrısıyla anlat; etkileşim tuzağı kurma.",
+    "discovery": "Konuyu doğal Türkçe anahtar ifadeyle kapak, başlık ve açıklamanın başında tutarlı adlandır. Az sayıda ilgili etiket kullan, üst sınır 5. Etiket hacmi verisi yoksa belirt.",
+    "measurement": "Yalnız kendi markasının gerçek, saatli Insights kaydını kullan. Aynı yaş penceresinde süre, hook ve senaryo gruplarını karşılaştır. Eksik metrik bilinmiyor; gözlem nedensellik veya garanti göstermez.",
+    "rights": "Kaynağı aç, iddia ve görseli ayrı doğrula. Ticari izin, atıf ve türev koşulunu kontrol et. Viral hedef hiçbir onayı atlayamaz."
+  },
+  "brands": {
+    "tarih": {
+      "topic_strategy": "Nesne, harita, belge veya arkeolojik bulgu üzerinden tek bir az bilinen tarih sorusu. Türk ve dünya tarihini dönüşümlü araştır. Efsane, yorum ve kaydı ayrı işaretle.",
+      "hook_families": ["arşiv_ipucu", "açık_soru", "kanıt_önce", "bağlam", "sonuç_vaadi"],
+      "scenarios": ["nesne_izinde", "kanıt_adım_adım", "bağlam_ve_sonuç"],
+      "follow_promise": "Kaynaklı tarih dosyaları",
+      "visual_direction": "Önce lisanslı belge, yakın plan nesne ve okunaklı harita. Rota, kent planı veya mekanizma için mekânsal ilişki anlaşılmıyorsa kısa Three.js/Blender temsili."
+    },
+    "bakim": {
+      "topic_strategy": "Tek rutin sorusu, uygulama koşulu veya mit. Dermatoloji kaynağına dayan. İstisna ve kişiden kişiye değişen sonuçlar görünür kalsın; teşhis veya tedavi vaadi verme.",
+      "hook_families": ["uygulama_anı", "açık_soru", "kanıt_önce", "rutin_bağlamı", "uygulanabilir_çıkarım"],
+      "scenarios": ["uygulama_önce", "kanıt_ve_mekanizma", "rutin_ve_sınır"],
+      "follow_promise": "Kaynaklı bakım rehberleri",
+      "visual_direction": "Önce kısa uygulama veya doğrulanmış etiket örneği. Bariyer ve saç yapısı için ölçek dışı Three.js/Blender şeması; 2B süreç için Lottie."
+    }
+  }
+}

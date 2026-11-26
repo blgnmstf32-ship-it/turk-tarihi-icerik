@@ -19,6 +19,7 @@ from PIL import Image
 from scripts.beauty_reel_design import SIZE, beauty_score, cover, overlay, still
 from scripts.create_reel import ffprobe, media_duration
 from scripts.subtitles import create_timed
+from scripts.reels_editorial import write_review
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
@@ -198,6 +199,10 @@ def shot(work, index, frames, kind, picture, eyebrow, title, note):
 
 
 def assemble(assets, out, *, browser=None):
+    topic = read_json(DATA / "beauty_reel_kuruluk.json")
+    review_topic = {**topic, "hook": topic["script"][0], "category": "kuru_cilt",
+                    "visual_mode": "layer_diagram", "instagram_keywords": ["nemlendirici", "kuru cilt", "cilt bariyeri"]}
+    review = write_review(out, review_topic, "bakim", topic["script"], fixed_recording=True)
     audio, picture, voice, art, duration, cues = inputs(assets)
     out.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(prefix="beauty-reel-") as tmp:
@@ -240,6 +245,7 @@ def assemble(assets, out, *, browser=None):
         "media_run_id": ASSET_RUN, "voice": voice["voice"], "voice_model": voice["model"],
         "voice_sha256": APPROVED_AUDIO, "image_model": art["model"], "image_sha256": APPROVED_IMAGE,
         "new_provider_requests": 0, "new_api_cost_usd": 0,
+        "reels_editorial_review": "REELS_EDITORIAL_REVIEW.json", "editorial_index": review["best"]["total"],
         "captions": len(cues), "alignment": "faster-whisper-small, hash-bound Turkish cues",
         "opening_seconds": SHOTS[1][0], "shots": len(SHOTS), "blender_frames": BLENDER_FRAMES,
         "threejs_shots": list(THREE), "render_wall_seconds": seconds, "model_render_wall_seconds": models,

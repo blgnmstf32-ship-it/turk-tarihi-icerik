@@ -15,6 +15,7 @@ except ModuleNotFoundError:
 ROOT=Path(__file__).resolve().parent.parent
 from scripts.content_strategy import CONCEPT, score_ideas
 from scripts.three_scene import plan_3d_scenes, save_plan
+from scripts.reels_editorial import write_review
 
 
 def load_json(path):
@@ -63,8 +64,10 @@ def build(topic,outdir,video=True):
     act(5,'Tartışmalı yorumlar bağlam notuna ayrıldı',lambda:topic.get('context') is not None or (_ for _ in ()).throw(ValueError('Bağlam eksik')))
 
     # Editorial steps
-    hook=act(6,'Açılış cümlesi üretildi',lambda:topic['hook'])
-    script=act(7,'Üç tarihî bilgiyle senaryo derlendi',lambda:[hook,*topic['facts']])
+    draft_script = [topic['hook'], *topic['facts']]
+    review = write_review(outdir, topic, "tarih", topic.get("narration") or draft_script) if video else None
+    hook=act(6,'Açılış cümlesi üretildi',lambda:review['best']['opening'] if review else topic['hook'])
+    script=act(7,'Üç tarihî bilgiyle senaryo derlendi',lambda:review['best']['spoken'] if review else draft_script)
     voiceover=act(8,'Seslendirme metni hazırlandı',lambda:' '.join(script))
     caption=act(9,'Instagram açıklaması oluşturuldu',lambda: '\n\n'.join([f"{topic['title']} — {topic['date']}",*topic['facts'], f"Tarihî bağlam: {topic['context']}", 'Kaynaklar: '+', '.join(s['title'] for s in sources)]))
     hashtags=act(10,'Konuya özgü etiketler eklendi',lambda:'#TarihinBilinmeyenGerçekleri #Tarih #TarihReels' + (' #TürkTarihi' if topic.get('scope')=='turk' else ''))
@@ -75,7 +78,7 @@ def build(topic,outdir,video=True):
 
     # Media: license-free template art; explicit prompt retained if upgrading to image/video AI.
     storyboard=act(11,'3 sahne planlandı',lambda:[f"Açılış: {hook}",topic['facts'][0],topic['facts'][1]+' '+topic['facts'][2]])
-    poster=act(12,'4:5 özgün poster üretildi',lambda:render_card(outdir/'post_1080x1350.png',topic,topic['date'],topic['title'],topic['hook'],portrait=False,kind='post'))
+    poster=act(12,'4:5 özgün poster üretildi',lambda:render_card(outdir/'post_1080x1350.png',topic,topic['date'],topic['title'],hook,portrait=False,kind='post'))
     prompt=act(13,'İsteğe bağlı sinematik illüstrasyon promptu kaydedildi',lambda:topic['image_prompt'])
     (outdir/'visual_prompt.txt').write_text(prompt+'\n\nUyarı: Yapay canlandırmadır; tarihî belge veya gerçek fotoğraf gibi sunma.',encoding='utf-8')
     audio=act(14,'Telifsiz seslendirme/müzik yönergesi yazıldı',lambda:'Öneri: özgün anlatım kaydı; lisansı doğrulanmış müzik. Otomatik olarak telifli kayıt indirme/kullanma.')
@@ -120,6 +123,8 @@ def build(topic,outdir,video=True):
     act(23,'Remotion Three.js render katmanı kuyruğa alındı; Blender opsiyonel',lambda:{'status':'queued' if three_d_plan.get('scenes') else '2d_only'})
     act(24,'Render başarısızlığında mevcut 2D sahnelere dönme doğrulandı',lambda:{'fallback':'2d','manual_review_required':True})
     package={'topic_id':topic['id'],'topic_title':topic['title'],'concept':CONCEPT,'evidence_boundary':topic.get('evidence_boundary',topic.get('context')),'produced_at_utc':datetime.now(timezone.utc).isoformat(),'approval':approval,'actual_automatic_historical_source_verification':False,'sources_for_manual_review':sources,'roles_completed':done,'n_roles':len(done),'three_d_scene_plan':three_d_plan,'cost':report,'publication':'NONE','files':{'post':poster.name,'mp4':None,'silent_preview_only':mp4.name if mp4 else None,'ready_for_instagram':False,'missing':['Türkçe insan kalitesinde seslendirme','En az 5 dönem uyumlu sahne','SFX ve müzik lisansı','Hareketli video ve altyazı','İnsan tarih doğrulaması'],'caption':'caption.txt','voiceover':'voiceover.txt','sources':'sources.json'}}
+    if review:
+        package['reels_editorial_review'] = 'REELS_EDITORIAL_REVIEW.json'
     (outdir/'draft_manifest.json').write_text(json.dumps(package,ensure_ascii=False,indent=2),encoding='utf-8')
     (outdir/'STORYBOARD.md').write_text('# Sahne planı\n\n'+'\n\n'.join(f'{i}. {s}' for i,s in enumerate(storyboard,1))+'\n\n**Kaynak kontrolü ve insan onayı olmadan yayınlanmaz.**',encoding='utf-8')
     return package
