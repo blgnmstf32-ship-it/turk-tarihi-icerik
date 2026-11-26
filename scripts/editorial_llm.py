@@ -389,15 +389,17 @@ def _portfolio_tool(assigned):
 
 def review(settings, candidates, research, requester=None, *, state_path=DEFAULT_STATE,
            quota_reader=None, sleep=time.sleep, run_id=None):
+    from scripts.cloudflare_editorial import cloudflare_available, redact_text
     from scripts.gemini_editorial import GeminiReviewSession, gemini_authorized
     gemini = gemini_authorized() and bool(os.getenv("GEMINI_API_KEY", "").strip())
     enabled = settings.get("editorial_intelligence", {}).get("free_llm_enabled", False)
     key = os.getenv("OPENROUTER_API_KEY", "").strip()
-    missing = [
-        name for name, available in (("free_llm_enabled", enabled),
-            ("ENABLE_FREE_LLM=1", os.getenv("ENABLE_FREE_LLM") == "1"), (("GEMINI_API_KEY or OPENROUTER_API_KEY" if gemini_authorized() else "OPENROUTER_API_KEY"), gemini or key))
-        if not available
-    ]
+    cloud = cloudflare_available()
+    missing = [name for name, available in (
+        ("free_llm_enabled", enabled),
+        ("ENABLE_FREE_LLM=1", os.getenv("ENABLE_FREE_LLM") == "1"),
+        ("OPENROUTER_API_KEY", gemini or cloud or key),
+    ) if not available]
     if missing:
         return {"status": "blocked", "requirements_missing": missing, "calls": 0,
                 "actual_llm_used": False, "completed_discussion": False,
@@ -405,10 +407,10 @@ def review(settings, candidates, research, requester=None, *, state_path=DEFAULT
                 "paid_fallback": False}
 
     state = EditorialState(state_path)
-    evidence = _redact({
+    evidence = redact_text({
         "candidates": [_candidate_prompt(candidate) for candidate in candidates],
         "trend_titles": research.get("trends", [])[:10], "paper_leads": research.get("source_leads", [])[:12],
-    }, key)
+    })
     run_id = run_id or os.getenv("GITHUB_RUN_ID")
     if run_id:
         snapshot = f"{CACHE_VERSION}:input:{run_id}"
@@ -417,8 +419,8 @@ def review(settings, candidates, research, requester=None, *, state_path=DEFAULT
     ids = {candidate["id"] for candidate in evidence["candidates"]}
     urls = {lead["url"] for lead in evidence["paper_leads"]}
     urls.update(source["url"] for candidate in evidence["candidates"] for source in candidate.get("sources", []))
-    session = (GeminiReviewSession(key, state, requester=requester) if gemini
-               else FreeReviewSession(key, state, requester, quota_reader, sleep))
+    session = GeminiReviewSession(key, state, routed=True, requester=requester,
+                                  quota_reader=quota_reader, sleep=sleep)
     stages, previous_roles = [], []
     for index, (role, instruction) in enumerate(STAGES):
         if stages and stages[-1]["status"] != "proposal":
@@ -452,10 +454,10 @@ def review(settings, candidates, research, requester=None, *, state_path=DEFAULT
 
     complete = _completed(stages)
     return {"status": "review_required" if complete else "incomplete", "calls": session.calls,
-            "gemini_calls": getattr(session, "gemini_attempts", 0),
+            "gemini_calls": session.gemini_attempts, "cloudflare_calls": session.cloudflare_calls,
             "cached_roles": session.cached_roles, "actual_llm_used": any(stage["actual_llm_used"] for stage in stages),
             "completed_discussion": complete, "model": stages[-1].get("model") if complete else None,
-            "provider_priority": ["gemini_free", "openrouter_free"] if gemini else ["openrouter_free"],
+            "provider_priority": session.provider_priority,
             "paid_fallback": False,
             "stages": stages, "decision": stages[-1]["answer"] if complete else None,
             "quota": {"daily_project_limit": LOCAL_DAILY_LIMIT, "max_calls_per_run": MAX_REQUESTS_PER_RUN,

@@ -4,10 +4,11 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import time
 from pathlib import Path
 
 from scripts.editorial_llm import (
-    DEFAULT_STATE, MAX_REQUESTS_PER_RUN, FreeReviewSession, discussion_completed,
+    DEFAULT_STATE, MAX_REQUESTS_PER_RUN, discussion_completed,
 )
 from scripts.editorial_state import EditorialState
 from scripts.motion_toolkit import role_guidance
@@ -106,11 +107,12 @@ def run_agents(topic, agents, output, requester=None, settings=None, *, editoria
         settings = json.loads((ROOT / "config/settings.json").read_text(encoding="utf-8"))
     llm = (editorial or {}).get("coordinator_llm", {})
     board_calls = llm.get("calls", 0)
+    from scripts.cloudflare_editorial import cloudflare_available
     from scripts.gemini_editorial import GeminiReviewSession, gemini_authorized
     gemini = gemini_authorized() and bool(os.getenv("GEMINI_API_KEY", "").strip())
     key = os.getenv("OPENROUTER_API_KEY", "").strip()
     enabled = bool(settings.get("editorial_intelligence", {}).get("free_llm_enabled")
-                   and os.getenv("ENABLE_20_LLM_AGENTS") == "1" and (gemini or key))
+                   and os.getenv("ENABLE_20_LLM_AGENTS") == "1" and (gemini or cloudflare_available() or key))
     roster = {role["id"]: role for role in agents if 1 <= role["id"] <= 20}
     manager_id = next((i for i, role in roster.items() if role["name"] == "Genel Yayın Yönetmeni"), None)
     candidates = {i: role for i, role in roster.items() if i != manager_id}
@@ -125,16 +127,17 @@ def run_agents(topic, agents, output, requester=None, settings=None, *, editoria
     namespace = "specialists-v1" if brand == "tarih" else "specialists-v1:bakim"
     dispatch = comparison = None
     session = None
-    counts = (0, 0, 0)
+    counts = (0, 0, 0, 0)
     if enabled:
         reels_signals = (editorial or {}).get("learning", {}).get("reels_cohorts")
         if not reels_signals or reels_signals.get("brand") != brand:
             reels_signals = {"brand": brand, "status": "insufficient_real_data"}
         state = EditorialState(state_path)
-        args = {"sleep": sleep} if sleep is not None else {}
-        session = gemini_session or (GeminiReviewSession(key, state, requester=requester, prior_calls=board_calls, brand=brand)
-                   if gemini else FreeReviewSession(key, state, requester, quota_reader, prior_calls=board_calls, **args))
-        counts = (session.calls, getattr(session, "gemini_attempts", 0), session.cached_roles)
+        session = gemini_session or GeminiReviewSession(
+            key, state, routed=True, requester=requester, quota_reader=quota_reader,
+            prior_calls=board_calls, brand=brand, sleep=sleep or time.sleep)
+        counts = (session.calls, getattr(session, "gemini_attempts", 0), session.cached_roles,
+                  getattr(session, "cloudflare_calls", 0))
         sources = topic.get("sources", [])
         context = {field: topic[field] for field in (
             "id", "title", "category", "scope", "date", "era", "facts", "context",
@@ -210,6 +213,7 @@ def run_agents(topic, agents, output, requester=None, settings=None, *, editoria
     result = {
         "topic": topic["id"], "enabled": enabled, "calls": session.calls - counts[0] if session else 0,
         "gemini_calls": getattr(session, "gemini_attempts", 0) - counts[1] if session else 0,
+        "cloudflare_calls": getattr(session, "cloudflare_calls", 0) - counts[3] if session else 0,
         "cached_reviews": session.cached_roles - counts[2] if session else 0,
         "editorial_calls": board_calls, "max_combined_calls": MAX_REQUESTS_PER_RUN,
         "separate_llm_roles_completed": sum(row["status"] == "proposal" for row in rows.values()),
