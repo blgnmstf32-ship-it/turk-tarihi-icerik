@@ -40,3 +40,10 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - Yeni bir Skill'i eklerken önce metnini, yardımcı dosyalarını ve lisansını incele. PR kontrolünü görmeden Skill'i ya da kurulum betiğini çalıştırma. Cisco'nun yüksek ve kritik bulguları, depo komut politikası ve Gitleaks eşleşmeleri işi durdurur. Kurulum veya tarayıcı hatasında sonuç eksik kabul edilir. Açık kaynak sayfasına verilmiş bir bağlantı tek başına ağ komutu sayılmaz.
 - [Gitleaks geçmiş istisnaları](config/gitleaks-history.ignore) doğrulanmış beş önbellek etiketiyle sınırlıdır. Yeni bir eşleşmede önce kaynağı incele. Gerçek anahtarsa iptal et ve erişimini yenile. Sırf kontrolü geçirmek için genel kural veya klasör istisnası ekleme.
 - Güvenlik araçlarını güncellerken sürüm ve hash kayıtlarını birlikte kontrol et. Güvenlik testleri medya iş akışından bağımsızdır. Medya değişmedikçe 15 medya testinin son kanıtı Actions 45828936221'dir.
+
+## Bağımlılık ve Actions denetimini devralma
+
+- [Dependency Security](.github/workflows/dependency_security.yml) iş akışı PyPI ve npm açık kayıtlarını kullanır. Proje paketlerine ait Python wheel'leri yalnız çözümleme için okunur ve npm kurulum betikleri çalıştırılmaz. Üretim secret'ı bu işlere eklenmez. Ağ veya tarayıcı hatası başarılı tarama sayılmaz.
+- [İzin denetimi](scripts/dependency_security.py) workflow düzeyinde salt okuma ve iş düzeyinde gerekçeli iki yazma alanı arar. Bir işin izin ihtiyacı değişirse önce tetikleyiciyi ve dal koşulunu incele. [Altı denetim testi](scripts/dependency_security_contracts.py) yetki yükseltme, gizli bilgi aktarımı ve onaysız paket kaynağı durumlarını kapsar.
+- Dependabot önerileri PR olarak gelir. Medya veya üretim bağımlılığı değişirse birleştirmeden önce uyumluluk kontrolü yap. Denetim araçlarının karma sabitli dosyalarını güncellerken tekrarlanabilir wheel kurulumu ve ilgili tarama işini birlikte doğrula.
+- İki yerel Skill açık dağıtım izni içermez. İzin doğrulanmadan açık kaynak lisansı atama. Bu kapsamda otomatik Instagram yayını açılmadı ve yeni medya üretilmedi.
