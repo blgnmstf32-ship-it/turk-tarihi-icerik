@@ -40,3 +40,11 @@ Ortalama altyazı farkı ASR zamanlarıyla karşılaştırıldı. OpenCV göster
 - Günlük 3 tarih ve 2 güzellik Reels ile 20 hikâyenin birlikte gerçek yük deneyi. Ölçülen montaj, foley ve miks süreleriyle, aynı girdi tipleri için tek koşucuda yaklaşık 21 dakika hesaplanır. Bu tahmin araştırma, kaynak indirme, yeni anlatım, tekrarlar ve incelemeyi kapsamaz. Hikâye ölçümü marka başına tek yerel tasarım örneğidir.
 - VMAF ancak libvmaf destekli bir makine ve hizalı referans bulunduğunda ölçülebilir. Freesound ticari işte kapalıdır. İsteğe bağlı araçların durumu ve lisansları [katalogda](config/MOTION_TOOLKIT.md) kayıtlıdır.
 - Actions giriş paketlerinin süresi dolmadan onaylı dosyalar, özetleri ve kaynak/izin kayıtları kalıcı erişimde tutulmalı. Uygulama adımları [HANDOFF.md](HANDOFF.md) içindedir.
+
+## Skill ve gizli bilgi güvenliği
+
+26 Kasım 2026. [Skill Security Actions](.github/workflows/skill_security.yml), PR'larda ve `main` dalına gönderimlerde üretimden ayrı çalışır. Cisco Skill Scanner 2.3.2, Git'e kayıtlı `SKILL.md` paketlerini statik ve davranışsal analizle denetler. Depo kuralları yaygın dış bağlantı komutlarını, özyinelemeli silme ve kabuğa borulanan komutları ek olarak engeller. Gitleaks 8.30.1, geçerli commit'ten erişilen Git geçmişini tarar. NVIDIA SkillEvaluator 1.2.1 değerlendirildi. Statik taramaları mevcut kontrollerle örtüştüğü ve canlı değerlendirme ayrı sağlayıcılar ile çalışma ortamı gerektirdiği için eklenmedi.
+
+Taramalar ve altı güvenlik testi ağsız Linux ağ alanında çalışır. Skill dosyaları veri olarak okunur. Üretim API anahtarları tarayıcılara verilmez. Beş eski Actions önbellek etiketi, içerikleri doğrulandıktan sonra yalnız ilgili geçmiş eşleşmenin kimliğiyle istisna edildi. Mevcut iki Skill dosyasındaki lisans alanı eksikliği bilgi düzeyinde raporlanır. Hak sahipliği doğrulanınca alan eklenebilir. Statik denetim tek başına bir Skill'in güvenliğini garanti etmez.
+
+- [Cisco 2.3.2 ve Apache-2.0 lisansı](https://pypi.org/project/cisco-ai-skill-scanner/2.3.2/) · [NVIDIA 1.2.1 ve Apache-2.0 lisansı](https://github.com/NVIDIA/SkillEvaluator/tree/v1.2.1) · [Gitleaks v8.30.1 ve MIT lisansı](https://github.com/gitleaks/gitleaks/tree/v8.30.1)
