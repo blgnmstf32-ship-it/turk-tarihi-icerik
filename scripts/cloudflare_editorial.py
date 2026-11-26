@@ -12,8 +12,12 @@ import requests
 BASE = "https://api.cloudflare.com/client/v4/accounts"
 GEMMA = "@cf/google/gemma-4-26b-a4b-it"
 GLM = "@cf/zai-org/glm-4.7-flash"
+GPT_OSS = "@cf/openai/gpt-oss-20b"
+PRODUCTION_MODELS = (GEMMA, GPT_OSS)
+READ_TIMEOUTS = {GEMMA: 38, GPT_OSS: 20, GLM: 20}
+MODEL_COOLDOWN = 60
 # Documented neurons per million input/output tokens (rounded up for GLM).
-RATES = {GEMMA: (9091, 27273), GLM: (5500, 36400)}
+RATES = {GEMMA: (9091, 27273), GPT_OSS: (18182, 27273), GLM: (5500, 36400)}
 FREE_NEURONS = 10_000
 LOCAL_NEURONS = 9_000
 MAX_RUN_CALLS = 8
@@ -73,12 +77,6 @@ def turkish_json_parser(parser):
     return validate
 
 
-def preferred_model(role):
-    return GEMMA if any(word in role.lower() for word in (
-        "araştır", "senaryo", "doğrula", "yönetmeni", "bilim"
-    )) else GLM
-
-
 def neurons(model, inputs, outputs):
     inp, out = RATES[model]
     return math.ceil((inp * inputs + out * outputs) / 1_000_000)
@@ -117,6 +115,7 @@ class CloudflareEditorial:
         self.calls = self.plan_checks = 0
         self.plan_status = self.plan_http = None
         self.stopped = False
+        self.cooldown_until = {}
 
     def check_plan(self):
         if self.plan_status is None:
@@ -131,8 +130,19 @@ class CloudflareEditorial:
                 self.plan_status = "free_plan_unverified"
         return self.plan_status == "verified_free"
 
-    def evaluate(self, role, instruction, prompt, parse_answer, max_tokens, reserve_calls, *, model=None):
-        model = model or preferred_model(role)
+    def evaluate(self, instruction, prompt, parse_answer, max_tokens, reserve_calls):
+        attempts = []
+        for model in PRODUCTION_MODELS:
+            answer, attempt = self.probe(model, instruction, prompt, parse_answer, max_tokens, reserve_calls)
+            attempts.append(attempt)
+            if answer is not None or self.stopped or attempt["status"] in {
+                "cloudflare_unavailable", "free_plan_unverified", "cloudflare_run_limit",
+                "cloudflare_daily_limit", "cloudflare_input_limit",
+            }:
+                return answer, attempts
+        return None, attempts
+
+    def probe(self, model, instruction, prompt, parse_answer, max_tokens, reserve_calls=0):
         attempt = {"provider": "cloudflare_workers_ai", "model": model, "http_status": None,
                    "actual_llm_used": False, "network_attempted": False}
         if not cloudflare_available() or model not in RATES or self.stopped:
@@ -141,6 +151,8 @@ class CloudflareEditorial:
             return None, {**attempt, "status": self.plan_status, "billing_http_status": self.plan_http}
         if self.calls >= MAX_RUN_CALLS - reserve_calls:
             return None, {**attempt, "status": "cloudflare_run_limit"}
+        if self.cooldown_until.get(model, 0) > time.monotonic():
+            return None, {**attempt, "status": "cloudflare_model_cooldown"}
         max_tokens = min(max_tokens, MAX_OUTPUT)
         messages = [
             {"role": "system", "content": instruction + " Araç çağırma. Şemaya uyan tek Türkçe JSON nesnesi döndür."},
@@ -157,16 +169,20 @@ class CloudflareEditorial:
         payload = {"model": model, "messages": messages, "max_completion_tokens": max_tokens,
                    "temperature": 0.35, "stream": False, "store": False,
                    "options": {"rejectIfBusy": True}, "chat_template_kwargs": {"enable_thinking": False}}
+        if model == GPT_OSS:
+            payload.pop("chat_template_kwargs")
+            payload["reasoning_effort"] = "low"
         started = time.monotonic()
         actual = None
         self.calls += 1
         attempt.update(network_attempted=True, reserved_neurons=reserved, paid_usd=0)
         try:
             response = self.request(f"{BASE}/{self.account}/ai/v1/chat/completions", headers=self.headers,
-                                    json=payload, timeout=(6, 38), allow_redirects=False)
+                                    json=payload, timeout=(6, READ_TIMEOUTS[model]), allow_redirects=False)
             attempt["http_status"] = response.status_code
             if response.status_code != 200:
-                self.stopped = response.status_code in {401, 402, 403, 429}
+                if response.status_code in {401, 402}:
+                    self.stopped = True
                 attempt["status"] = f"cloudflare_http_{response.status_code}"
                 return None, attempt
             data = response.json()
@@ -193,9 +209,29 @@ class CloudflareEditorial:
             answer, reason = parse_answer(raw)
             attempt["status"] = "proposal" if answer is not None else reason or "invalid_schema"
             return answer, attempt
+        except requests.ConnectTimeout:
+            attempt["status"] = "cloudflare_connect_timeout"
+            return None, attempt
+        except requests.ReadTimeout:
+            attempt["status"] = "cloudflare_read_timeout"
+            return None, attempt
+        except requests.Timeout:
+            attempt["status"] = "cloudflare_timeout"
+            return None, attempt
+        except requests.ConnectionError:
+            attempt["status"] = "cloudflare_connection_error"
+            return None, attempt
         except (requests.RequestException, ValueError, TypeError, AttributeError, KeyError, IndexError):
-            attempt["status"] = "cloudflare_response_or_connection_error"
+            attempt["status"] = ("cloudflare_invalid_response" if attempt["http_status"] == 200
+                                 else "cloudflare_request_error")
             return None, attempt
         finally:
+            if attempt.get("status") in {
+                "cloudflare_connect_timeout", "cloudflare_read_timeout", "cloudflare_timeout",
+                "cloudflare_connection_error", "cloudflare_http_403", "cloudflare_http_404", "cloudflare_http_410",
+                "cloudflare_http_429", "cloudflare_http_500", "cloudflare_http_502",
+                "cloudflare_http_503", "cloudflare_http_504",
+            }:
+                self.cooldown_until[model] = time.monotonic() + MODEL_COOLDOWN
             attempt["elapsed_ms"] = round((time.monotonic() - started) * 1000)
             self.state.finish_cloudflare(uid, actual)

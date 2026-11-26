@@ -5,12 +5,12 @@ Genel Yayın Yönetmeni ve iki markanın uzmanları aynı metin katmanını kull
 | Sağlayıcı | Model seçimi | Kota ve maliyet denetimi |
 | --- | --- | --- |
 | Gemini | Flash, Flash Lite ve Gemma mevcut uzman eşlemesini kullanır. | Faturalandırmasız proje onayı ve model bazında RPM, TPM, RPD. Kullanılabilir gerçek kota Google AI Studio projesine bağlıdır. Ücretli görsel projesiyle aynı anahtar reddedilir. |
-| Workers AI | Araştırma, senaryo ve yönetmen görevlerinde Gemma 4 26B A4B. Diğer kısa editoryal görevlerde GLM 4.7 Flash. | Hesap abonelikleri Billing Read isteğiyle doğrulanır. Workers Free 10.000 nöron/gün (00.00 UTC). İki markaya ortak yazılım sınırı 9.000 nöron ve oturum başına 8 deneme. Belirsiz veya ücretli bir abonelikte inference kapalı kalır. |
+| Workers AI | Gemma 4 26B A4B birincil. GPT-OSS 20B, Gemma kullanılamazsa ikinci rotadır. GLM 4.7 Flash yalnız tanılama testine alınır. | Hesap abonelikleri Billing Read isteğiyle doğrulanır. Workers Free 10.000 nöron/gün (00.00 UTC). İki markaya ortak yazılım sınırı 9.000 nöron ve oturum başına 8 deneme. Belirsiz veya ücretli bir abonelikte inference kapalı kalır. |
 | OpenRouter | Mevcut ücretsiz model listesi ve `openrouter/free`. | İki markaya ortak 40 deneme/gün, mevcut birleştirilmiş çalıştırma sınırı ve sıfır fiyat parametreleri. |
 
 Cloudflare hesabının kendi kota limiti, bu depo dışında harcanan nöronları da kapsar. Yerel defter gönderimden önce ihtiyatlı bir nöron rezervi yazar. Sağlayıcı token tüketimini döndürürse tahmini gerçek nöron ayrı tutulur. Zaman aşımına uğramış veya ölçülemeyen isteğin rezervi korunur. Hesap doğrulaması yetki gerektirir. Workers AI model çalıştırma ve en az Billing Read izinleri yeterlidir. Ödeme veya abonelik değiştirme iznine gerek yoktur.
 
-Gemini 429, Cloudflare yapılandırılmışsa bu oturumda Google çağrılarını durdurur. 503, zaman aşımı veya geçersiz gövde için Gemini bir kez daha denenir. Cloudflare bir görevde bir kez denenir ve başarısızlık mevcut sınırlı OpenRouter rotasına geçer. Türkçe metin denetimi, Cloudflare rotası açıkken yönlendirilen yanıtların diline dair yerel bir sezgisel kontrol sağlar. Mevcut rol şemaları ve kaynak doğrulaması ayrıca uygulanır.
+Gemini 429, Cloudflare yapılandırılmışsa bu oturumda Google çağrılarını durdurur. 503, zaman aşımı veya geçersiz gövde için Gemini bir kez daha denenir. Cloudflare her görevde model başına bir deneme yapar. Geçici hata yalnız ilgili modeli 60 saniye soğumaya alır. İki ücretsiz model de başarısızsa mevcut sınırlı OpenRouter rotası devreye girer. Türkçe metin denetimi, Cloudflare rotası açıkken yönlendirilen yanıtların diline dair yerel bir sezgisel kontrol sağlar. Mevcut rol şemaları ve kaynak doğrulaması ayrıca uygulanır.
 
 Başarılı görüşler marka, rol ve girdi özetiyle ortak SQLite dosyasında tutulur. İşlenen görev bütün rotalarda başarısız olursa nedeni ve görev kimliği kuyruğa yazılır. Aynı girdiyle yeniden çalıştırma başarısız görevi yeniden dener ve başarılı görüşleri önbellekten alır. Editoryal kurul aynı Actions çalıştırmasının yeniden denemesinde ilk girdi anlık görüntüsünü kullanır. İş akışları aynı eşzamanlılık grubunda ve Actions önbellek anahtarında buluşur. GitHub önbelleğinin silinmesi veya sert biçimde kesilen bir çalıştırma kaydedilmemiş yerel defter girişlerini kaybettirebilir. Sağlayıcı seviyesindeki ücretsiz plan, Cloudflare için gerekli son maliyet kapısıdır.
 
@@ -22,10 +22,13 @@ LiteLLM'in MIT SDK'sı görev rotaları, yeniden deneme, geçiş ve hız sınır
 - [LiteLLM Router belgeleri](https://docs.litellm.ai/docs/router/learn/reliability)
 - [LiteLLM PyPI olay duyurusu](https://github.com/BerriAI/litellm-docs/blob/main/blog/security_update_march_2026/index.md)
 - [Cloudflare Workers AI fiyat ve kota tablosu](https://developers.cloudflare.com/workers-ai/platform/pricing/)
+- [Cloudflare GPT-OSS 20B](https://developers.cloudflare.com/workers-ai/models/gpt-oss-20b/)
 - [Cloudflare abonelik API'si ve Billing Read](https://developers.cloudflare.com/api/resources/accounts/subresources/subscriptions/methods/get/)
 - [Google Gemini API fiyatları](https://ai.google.dev/gemini-api/docs/pricing)
 - [OpenRouter ücretsiz modeller](https://openrouter.ai/collections/free-models/)
 
 ## Doğrulama
 
-`python -m scripts.quality_checks` çevrim dışı çalışır ve medya üreten testleri sayıp ayrı tutar. **Multi-LLM · Ücretsiz metin ve sağlayıcı geçişi** Actions iş akışı Gemini 429 yanıtını yerel olarak simüle eder. Her Cloudflare modeli bir Türkçe editoryal görevle denenir. Rapor şema, olguya bağlılık, kanıt sınırı, kısa giriş, yanıt süresi, gerçek API çağrıları ve token bilgisi döndüyse nöron tahminini kaydeder. Sağlık veya tarih konusunda yeni bir olgu doğrulandığı varsayılmaz.
+`python -m scripts.quality_checks` çevrim dışı çalışır ve medya üreten testleri sayıp ayrı tutar. **Multi-LLM · Ücretsiz metin ve sağlayıcı geçişi** Actions iş akışı Gemini 429 yanıtını yerel olarak simüle eder. Gemma, tarih ve güzellik için iki zorunlu Türkçe editoryal görevle denenir. GPT-OSS ve GLM tanılamaları ayrı sonuçlanır. İsteğe bağlı modeldeki hata doğrulanmış Gemma sonucunu değiştirmez. Rapor şema, olguya bağlılık, kanıt sınırı, kısa giriş, yanıt süresi, gerçek API çağrıları ve token bilgisi döndüyse nöron tahminini kaydeder. Sağlık veya tarih konusunda yeni bir olgu doğrulandığı varsayılmaz.
+
+Qwen3 30B A3B FP8, canlı çağrıda HTTP 410 döndürdü ve Cloudflare tarafından 20 Kasım 2026 tarihinde kaldırıldı. Bu rota kullanılmaz. [Model kaldırma duyurusu](https://developers.cloudflare.com/changelog/post/2026-11-05-planned-model-deprecations/)

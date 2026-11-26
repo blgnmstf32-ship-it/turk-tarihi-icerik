@@ -2,7 +2,7 @@ name: Multi-LLM · Ücretsiz metin ve sağlayıcı geçişi
 on:
   workflow_dispatch:
   push:
-    branches: [multi-llm-router]
+    branches: [cloudflare-model-recovery]
     paths: [.github/workflows/multi_llm_smoke.yml]
 permissions:
   contents: read
@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   cloudflare-text:
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/multi-llm-router'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/cloudflare-model-recovery'
     runs-on: ubuntu-24.04
     timeout-minutes: 7
     steps:
@@ -32,7 +32,7 @@ jobs:
           key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             editorial-llm-v1-
-      - name: Measure Cloudflare models and simulate Gemini quota exhaustion
+      - name: Verify Gemma and compare optional Workers AI models
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

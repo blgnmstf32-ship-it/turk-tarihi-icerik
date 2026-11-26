@@ -159,11 +159,11 @@ class GeminiReviewSession:
             if index + 1 < len(routes) and retryable and delay <= MAX_RETRY_DELAY:
                 self.sleep(delay)
         if self.cloudflare and not primary_only:
-            answer, cloud_attempt = self.cloudflare.evaluate(role, instruction, prompt, parse_answer,
+            answer, cloud_attempts = self.cloudflare.evaluate(instruction, prompt, parse_answer,
                                                                max_tokens, reserve_calls)
-            attempts.append(cloud_attempt)
+            attempts.extend(cloud_attempts)
             if answer is not None:
-                return accept({"role": role, "status": "proposal", "model": cloud_attempt["model"],
+                return accept({"role": role, "status": "proposal", "model": cloud_attempts[-1]["model"],
                                "provider": "cloudflare_workers_ai", "http_status": 200,
                                "actual_llm_used": True, "answer": answer,
                                "response_source": "live", "attempts": attempts})
