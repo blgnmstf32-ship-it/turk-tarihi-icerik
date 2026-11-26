@@ -1,6 +1,7 @@
 ---
 name: tarih-icerik
 description: Kaynaklı Türk tarihi Instagram gönderisi ve Reels taslağı oluştur; 20 rolün işini koordine et ve insan onayı olmadan paylaşma.
+license: LicenseRef-No-License-Granted
 ---
 
 # Türk tarihi içerik skill'i
