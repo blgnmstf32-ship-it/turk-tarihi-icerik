@@ -67,3 +67,26 @@ Başlangıç npm raporunda ana kilitte 16 paket bulgusu, Python raporunda Pillow
 19 iş akışı izin açısından denetlenir. Kullanılmayan üç işin depo yazma yetkisi kaldırıldı. İki kayıt işinin `contents: write` yetkisi olay ve iş koşuluna bağlı olarak dar kapsamda kalır. Günlük üretim çağrısı adlandırılmış sır alanlarıyla sınırlıdır ve onaylı demo bunları almaz. Bağımlılık işi yalnız okuma izniyle ve sağlayıcı anahtarları olmadan çalışır.
 
 Depo geçmişi ve iki Skill klasöründe açık lisans kaydı bulunamadı. Her iki Skill alanı `LicenseRef-No-License-Granted` olarak kaydedildi. Bu kayıt mevcut lisans durumunu belirtir ve yeni dağıtım izni vermez. [GitHub lisans açıklaması](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository) · [Agent Skills alan tanımı](https://agentskills.io/specification#license-field)
+
+## Bağlam ve terminal çıktısı
+
+26 Kasım 2026. [Yerel çıktı aracı](scripts/context_output.py) üçüncü taraf hook, MCP sunucusu, model veya API kullanmadan Python ile çalışır. [Kalite iş akışı](.github/workflows/tests.yml) başarılı unittest kayıtlarını gruplandırır ve tam logu yedi gün saklar. Başarısız ve tamamlanmamış loglar olduğu gibi gösterilir. Kaynaklar, URL'ler, sayısal değer taşıyan satırlar, sağlık uyarıları ve tanılama metni korunur. Aynı devir belgesinin birebir kopyaları yalnız açık dosya listesi üzerinde bir kez gösterilir ve tekrarların dosya yolu kalır.
+
+| Araç | Lisans, platform ve karar |
+| --- | --- |
+| RTK OSS 1.2.1 | Ölçülen OSS paketi Apache-2.0. Tam sürümün motoru ayrıca BUSL-1.1. Codex ve Gemini CLI hook desteği üretici belgesinde var. Bağımsız CLI, Actions koşucusunda da çağrılabilir. Work içinde SHA-256 doğrulanmış ikiliyi yalnız tekil komutlarda telemetri kapalı denedik. `rtk test` görünümü tanılama, URL, sayısal ölçüm ve sağlık uyarısı bulunan deneme bloklarını göstermedi. Hook kurulmadı. [RTK](https://github.com/rtk-ai/rtk/tree/v1.2.1) |
+| Context Mode 2.2.4 | Elastic License 2.0. Ücretsiz yerel MCP ve SQLite araması ile ayrı abonelikli Gateway sunar. Codex ve Gemini CLI entegrasyonları belgelidir. Çalıştırma aracı host kullanıcısının dosya ve ağ yetkileriyle çalışır. Bu depoda veya Work'te MCP, hook ve Gateway kurulmadı. Actions'ta test edilmedi. Belgelenen verimlilik üreticinin iş yüküne aittir. [Context Mode](https://github.com/mksglu/context-mode/tree/v2.2.4) |
+| Planning with Files | MIT. Codex ve Gemini CLI desteği var. Markdown devir notları CI içinde de okunabilir. Otomatik yeniden ekleme hook'ları ek bağlam ve kalıcı durum yaratır. Mevcut PROJECT_STATE ve HANDOFF aynı ihtiyacı karşılıyor. [Planning with Files](https://github.com/OthmanAdi/planning-with-files) |
+| Graphify | Apache-2.0. Codex/Gemini CLI eklentileri ve Actions'ta çalışabilecek yerel kod ayrıştırması bulunur. Karma belge ve medya dizininde çıkarım sağlayıcı kullanabilir. Kod gezinmesine yarar. Test logu denetimi için eklenmedi. [Graphify](https://github.com/Graphify-Labs/graphify) |
+| Caveman | Apache-2.0. Codex ve Gemini CLI'de kısa yanıt tarzı ve yerel proxy seçenekleri belgelenmiş. Actions test logu için gereken birebir kanıt koruma koşulu doğrulanmadı. Proxy ve model yönlendirmesi eklenmedi. [Caveman](https://github.com/JuliusBrussee/caveman) |
+| LLMLingua | Kod MIT, kullanılan model ağırlığı ayrıca incelenmeli. Yerel Python kitaplığı Actions'ta çağrılabilir. Bu sürüm için yerleşik Codex/Gemini CLI adaptörü doğrulanmadı. Model tabanlı metin elemesi kelime ve bağlam kaybına yol açabileceğinden kanıt loglarında kullanılmadı. [LLMLingua](https://github.com/microsoft/LLMLingua) |
+
+Yerel ölçüm `88ba142` tabanındaki çalışma kopyasında, aynı girdiler kuyrukta tekrar kullanılarak yapıldı. `tiktoken 0.14.0 / o200k_base` yalnız metin gövdesini saydı. Bu sayım hesap kullanım limitini veya Codex/Gemini'nin gerçek oturum tüketimini ölçmez.
+
+| Örnek | Ham → seçilen görünüm (bayt) | Ham → seçilen görünüm (token) | Token azalması |
+| --- | ---: | ---: | ---: |
+| Aynı çalışma ağacında `git status` → `git status --short --branch` | 300 → 104 | 71 → 22 | %69,0 |
+| Gerçek 128 medyasız unittest kaydı | 22.388 → 4.104 | 5.138 → 986 | %80,8 |
+| Önceki PROJECT_STATE ve HANDOFF belgelerinin ikişer kopyası | 34.820 → 17.566 | 9.905 → 4.997 | %49,5 |
+
+Aynı test logunda RTK görünümü 25 token, kısa Git durumu 22 token kullandı. Ayrı bir güvenlik örneğinde yerel araç dört kanıt işaretinin tamamını korudu. RTK'nın doğrudan `test` görünümünde dördü de görünmedi. Altı regresyon testi ve yapay çıkış kodu 7 üzerinden CI kabuğu deneyi uygulandı. Hata çıkış kodu ve iki ham çıktı dosyasının bayt eşitliği doğrulandı. [Tokenizer](https://github.com/openai/tiktoken)
