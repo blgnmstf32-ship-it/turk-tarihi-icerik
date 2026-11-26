@@ -9,7 +9,7 @@
     "parallax-studio": {"status": "knowledge", "pin": "32e4cb451abf117a148594269219691f7144ce88", "code_license": "MIT", "use": "Küçük kamera kaydırması ve ayrık derinlik katmanları; masaüstü uygulamasının otomatik modellerini kullanma."},
     "animefx": {"status": "optional", "pin": "4.0.2", "integrity": "sha512-h1pKcFdLcEFivRSxRNwN3Y7QmZi1eqK4eJ3nTXZfpDdLBZgpVZhqNF2I8RsDOuRFfLVk43ShB/bjVz9Snjxa4A==", "code_license": "MIT; bundled Paper shaders Apache-2.0", "use": "Yerel, kareye bağlı satır açılışı ve görsel maske. Shader veya CDN gerektiren efektler kapalı."},
     "manim": {"status": "optional", "pin": "18320e2f0feaf142b2c3a377068ddb44c82fb2a1", "code_license": "MIT", "use": "Kaynaktan doğrulanmış mekanizmayı veya bilimsel süreci şema olarak göster."},
-    "theatre": {"status": "knowledge", "pin": "6ea82b938ea49609489f6377ded693ccc6ee8f5b", "code_license": "Apache-2.0 (core); Studio separately licensed", "use": "Kamera anahtar kareleri ve yumuşak geçiş. Mevcut GSAP/Remotion planı yeterliyse ikinci editör kurma."},
+    "theatre": {"status": "knowledge", "pin": "6ea82b938ea49609489f6377ded693ccc6ee8f5b", "code_license": "Apache-2.0 (core); AGPL-3.0 (Studio)", "use": "Kamera anahtar kareleri ve yumuşak geçiş. Mevcut GSAP/Remotion planı yeterliyse ikinci editör kurma."},
     "rembg": {"status": "conditional", "pin": "61fca30e68a34082da41bbe6197f07bee0a7d36b", "code_license": "MIT", "weight_license": "Model başına ayrı; yerel izin kaydı gerekir", "use": "Lisansı ve SHA-256 özeti doğrulanmış küçük model ile yerel alfa ayrımı."},
     "maplibre": {"status": "optional", "pin": "9db9465058380dd94471cd554b52c44c61ab5b25", "code_license": "BSD-3-Clause", "use": "Lisansı denetlenmiş yerel GeoJSON için ağsız MapLibre stili ve 3B Atlas çizgileri."},
     "historical-basemaps": {"status": "conditional", "pin": "4b5039e50d8d2464b065bd76ad6086cd4597108d", "code_license": "GPL-3.0", "asset_license": "GPL kapsamı ve her tarih katmanının kaynak zinciri ayrı kontrol edilir", "use": "Dönem referansı. Onaylı dosya, dönem, atıf ve türev koşulları olmadan Atlas'a bağlama."},
@@ -20,7 +20,7 @@
   },
   "direction": {
     "tarih": {"editor": "Kanıtı veya dönem bağlamını açıklayan tek bir görsel yaklaşım seç.",
-              "roles": {"11": ["maplibre", "manim", "animefx"], "13": ["depth-small", "animefx", "maplibre", "rembg"], "15": ["animefx", "vmaf"], "16": ["vmaf"], "22": ["maplibre", "historical-basemaps", "poly-haven", "gltf-transform"], "14": ["deepfilternet"]}},
+              "roles": {"11": ["maplibre", "manim", "animefx", "poly-haven", "gltf-transform"], "13": ["depth-small", "animefx", "maplibre", "rembg"], "15": ["animefx", "vmaf"], "16": ["vmaf"], "22": ["maplibre", "historical-basemaps", "poly-haven", "gltf-transform"], "14": ["deepfilternet"]}},
     "bakim": {"editor": "Uygulanabilir adımı veya mekanizmayı anlaşılır göster; sahte sonuç vaadi oluşturma.",
               "roles": {"13": ["manim", "poly-haven", "gltf-transform"], "14": ["depth-small", "animefx", "rembg"], "15": ["animefx", "vmaf"], "16": ["deepfilternet"], "17": ["deepfilternet"], "20": ["vmaf"]}}
   }
