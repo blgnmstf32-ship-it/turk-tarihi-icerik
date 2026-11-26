@@ -3,121 +3,201 @@
     "id": 1,
     "name": "Konu Avcısı",
     "stage": "research",
-    "job": "Türkçe Google Trends RSS'ini, izlenen rakiplerin son YouTube RSS başlıklarını ve arşiv konularını tarar; talep sinyallerini kanıt düzeyine göre ayırıp konu adaylarını gerekçeli önerir"
+    "job": "Türkçe Google Trends RSS'ini, izlenen rakiplerin son YouTube RSS başlıklarını ve arşiv konularını tarar; talep sinyallerini kanıt düzeyine göre ayırıp konu adaylarını gerekçeli önerir",
+    "reels_review": {
+      "technique": "topic",
+      "task": "Az bilinen olayı tek nesne, yer veya belge açısıyla sınırla."
+    }
   },
   {
     "id": 2,
     "name": "Kronolog",
     "stage": "research",
-    "job": "Tarih, dönem ve kronolojiyi kontrol edip 60-75 saniyelik anlatı akışını kurar"
+    "job": "Tarih, dönem ve kronolojiyi kontrol edip 60-75 saniyelik anlatı akışını kurar",
+    "reels_review": {
+      "technique": "story",
+      "task": "Kronolojiyi koruyarak erken kanıt ve bağlam katmanları öner."
+    }
   },
   {
     "id": 3,
     "name": "Kaynak Kütüphanecisi",
     "stage": "research",
-    "job": "Tarihî iddiaların kaynaklarını ve ücretsiz görsel kaynak sayfalarını kaydeder"
+    "job": "Tarihî iddiaların kaynaklarını ve ücretsiz görsel kaynak sayfalarını kaydeder",
+    "reels_review": {
+      "technique": "rights",
+      "task": "Tarihî iddia ile lisanslı görselin özgün kaydını ayrı tut."
+    }
   },
   {
     "id": 4,
     "name": "Kanıt Eşleyici",
     "stage": "research",
-    "job": "Her anlatı cümlesini kanıtına, her görseli sahneye eşler"
+    "job": "Her anlatı cümlesini kanıtına, her görseli sahneye eşler",
+    "reels_review": {
+      "technique": "story",
+      "task": "Açılış vaadini, kanıtı ve kapanıştaki yanıtı eşle."
+    }
   },
   {
     "id": 5,
     "name": "Belirsizlik Editörü",
     "stage": "research",
-    "job": "Belirsiz iddiaları, canlandırma sınırını ve görsel yanıltma riskini işaretler"
+    "job": "Belirsiz iddiaları, canlandırma sınırını ve görsel yanıltma riskini işaretler",
+    "reels_review": {
+      "technique": "rights",
+      "task": "Efsaneyi, olguyu ve çıkarımı ayrı sun."
+    }
   },
   {
     "id": 6,
     "name": "İlk 3 Saniye Yazarı",
     "stage": "writing",
-    "job": "Belgesel videosunun ilk üç saniyesi için merak uyandıran doğal Türkçe açılış yazar"
+    "job": "Belgesel videosunun ilk üç saniyesi için merak uyandıran doğal Türkçe açılış yazar",
+    "reels_review": {
+      "technique": "hook",
+      "task": "Beş açılışın ilk kare ile üç saniye uyumunu incele."
+    }
   },
   {
     "id": 7,
     "name": "Senarist",
     "stage": "writing",
-    "job": "60-75 saniyelik, 10-12 sahneli sinematik belgesel akışını kaynaklı olgularla kurar"
+    "job": "60-75 saniyelik, 10-12 sahneli sinematik belgesel akışını kaynaklı olgularla kurar",
+    "reels_review": {
+      "technique": "story",
+      "task": "Üç kurguda aynı olguları koru, vaat ve kanıt sırasını karşılaştır."
+    }
   },
   {
     "id": 8,
     "name": "Seslendirme Yazarı",
     "stage": "writing",
-    "job": "Coşkulu ama ölçülü Türkçe anlatıcı için durak, vurgu ve nefes noktaları belirler"
+    "job": "Coşkulu ama ölçülü Türkçe anlatıcı için durak, vurgu ve nefes noktaları belirler",
+    "reels_review": {
+      "technique": "audio",
+      "task": "Charon için isim telaffuzu, anlam durakları ve kısa açılış."
+    }
   },
   {
     "id": 9,
     "name": "Açıklama Editörü",
     "stage": "writing",
-    "job": "Belgesel videosuyla uyumlu, kaynakları ve canlandırma notunu içeren açıklama yazar"
+    "job": "Belgesel videosuyla uyumlu, kaynakları ve canlandırma notunu içeren açıklama yazar",
+    "reels_review": {
+      "technique": "discovery",
+      "task": "Ana terim, kaynak ve bir takip gerekçesini doğal biçimde yaz."
+    }
   },
   {
     "id": 10,
     "name": "Etiket Editörü",
     "stage": "writing",
-    "job": "Tarihî belgesel içeriğine uygun, ölçülü etiketleri ekler"
+    "job": "Tarihî belgesel içeriğine uygun, ölçülü etiketleri ekler",
+    "reels_review": {
+      "technique": "discovery",
+      "task": "En çok beş ilgili etiket ver. Bilinmeyen hacmi ölçülmüş gibi yazma."
+    }
   },
   {
     "id": 11,
     "name": "Sahne Planlayıcısı",
     "stage": "production",
-    "job": "Her anlatı bölümü için 10-12 sahne, gerçek yer/eser/harita ve hareket amacını planlar"
+    "job": "Her anlatı bölümü için 10-12 sahne, gerçek yer/eser/harita ve hareket amacını planlar",
+    "reels_review": {
+      "technique": "visuals",
+      "task": "Belge, nesne, rota veya kent için okunur ilk kare ve gerekli aracı seç."
+    }
   },
   {
     "id": 12,
     "name": "Kapak Tasarımcısı",
     "stage": "production",
-    "job": "Açık lisanslı tarihî alan, eser, arşiv ve harita görsellerini seçer; kaynağı ve atfı yazar"
+    "job": "Açık lisanslı tarihî alan, eser, arşiv ve harita görsellerini seçer; kaynağı ve atfı yazar",
+    "reels_review": {
+      "technique": "discovery",
+      "task": "Kapak sözü ve ilk karedeki olgu aynı olsun."
+    }
   },
   {
     "id": 13,
     "name": "Sinematik Yönetmen",
     "stage": "production",
-    "job": "Gerçekçi belgesel kadrajı, dönem atmosferi, sıcak doğal renk ve yavaş kamera hareketi tasarlar; canlandırmayı açıkça etiketler"
+    "job": "Gerçekçi belgesel kadrajı, dönem atmosferi, sıcak doğal renk ve yavaş kamera hareketi tasarlar; canlandırmayı açıkça etiketler",
+    "reels_review": {
+      "technique": "visuals",
+      "task": "Kamera hareketi mekânı veya ayrıntıyı görünür kılsın."
+    }
   },
   {
     "id": 14,
     "name": "Ses Tasarımcısı",
     "stage": "production",
-    "job": "Ücretsiz/telif güvenli ambiyans, seviye dengesi ve anlatıcı için ses boşluklarını düzenler"
+    "job": "Ücretsiz/telif güvenli ambiyans, seviye dengesi ve anlatıcı için ses boşluklarını düzenler",
+    "reels_review": {
+      "technique": "audio",
+      "task": "Anlamlı sahneye lisanslı efekt, konuşma altında müzik."
+    }
   },
   {
     "id": 15,
     "name": "Kurgu Ajanı",
     "stage": "production",
-    "job": "Remotion ile sinematik hareket ve kelime vurgulu altyazı; FFmpeg ile Türkçe anlatım/müzik miksajı ve MP4 üretir"
+    "job": "Remotion ile sinematik hareket ve kelime vurgulu altyazı; FFmpeg ile Türkçe anlatım/müzik miksajı ve MP4 üretir",
+    "reels_review": {
+      "technique": "edit",
+      "task": "Anlatı değişince kes, kısa bölümlemeyi altyazıyla hizala."
+    }
   },
   {
     "id": 16,
     "name": "Biçim Denetçisi",
     "stage": "review",
-    "job": "60-75 saniye, 9:16, 30 fps, 1080x1920, ses, altyazı ve Remotion render teknik kontrolü yapar"
+    "job": "60-75 saniye, 9:16, 30 fps, 1080x1920, ses, altyazı ve Remotion render teknik kontrolü yapar",
+    "reels_review": {
+      "technique": "edit",
+      "task": "İlk üç saniye, altyazı okunabilirliği, miks ve gerçek kesmeleri kontrol et."
+    }
   },
   {
     "id": 17,
     "name": "Telif Denetçisi",
     "stage": "review",
-    "job": "Her görsel ve sesin açık lisansını/özgünlüğünü ve zorunlu atıflarını denetler"
+    "job": "Her görsel ve sesin açık lisansını/özgünlüğünü ve zorunlu atıflarını denetler",
+    "reels_review": {
+      "technique": "rights",
+      "task": "İzin, atıf, türev koşulu ve canlandırma etiketini denetle."
+    }
   },
   {
     "id": 18,
     "name": "Tarih Doğruluk Denetçisi",
     "stage": "review",
-    "job": "Tarihî olguları birincil/akademik kaynaklarla denetler; insan doğrulaması zorunludur"
+    "job": "Tarihî olguları birincil/akademik kaynaklarla denetler; insan doğrulaması zorunludur",
+    "reels_review": {
+      "technique": "rights",
+      "task": "Açılıştaki ve kapanıştaki tarih iddialarını kaynağa yeniden bağla."
+    }
   },
   {
     "id": 19,
     "name": "Yayın Sorumlusu",
     "stage": "review",
-    "job": "İnsan onayı olmadan taslağı yayıma hazır saymaz; otomatik Instagram yayını kapalı tutar"
+    "job": "İnsan onayı olmadan taslağı yayıma hazır saymaz; otomatik Instagram yayını kapalı tutar",
+    "reels_review": {
+      "technique": "sharing",
+      "task": "Kaynak ve seri vaadiyle tek doğal çağrı. İnsan onayı korunur."
+    }
   },
   {
     "id": 20,
     "name": "Performans Kaydedicisi",
     "stage": "review",
-    "job": "Gerçek sonuç kayıtlarını kategori medyanlarıyla karşılaştırır; izlenme, izlenme süresi, paylaşım ve takipçi değişimi verisinin bulunup bulunmadığını ayırıp öğrenme raporu yazar"
+    "job": "Gerçek sonuç kayıtlarını kategori medyanlarıyla karşılaştırır; izlenme, izlenme süresi, paylaşım ve takipçi değişimi verisinin bulunup bulunmadığını ayırıp öğrenme raporu yazar",
+    "reels_review": {
+      "technique": "measurement",
+      "task": "Yalnız tarih markasının erişim, paylaşım, izleme ve takip verisini kullan."
+    }
   },
   {
     "id": 21,

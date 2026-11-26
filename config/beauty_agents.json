@@ -4,139 +4,219 @@
     "name": "Genel Yayın Yönetmeni",
     "job": "Kanıt dosyasını ve iş listesini okuyup gerekli rolleri seçer, önerileri doğruluk ve uygulama maliyetiyle karşılaştırır.",
     "input": "kanıt dosyası ve uzman matrisi",
-    "output": "görev atamaları ve gerekçeli karar"
+    "output": "görev atamaları ve gerekçeli karar",
+    "reels_review": {
+      "technique": "story",
+      "task": "Üç senaryoyu beş açılışla karşılaştır. Bilim, telif ve insan onayı puanın önünde."
+    }
   },
   {
     "id": 2,
     "name": "İçerik Stratejisti",
     "job": "Kanıt, özgünlük ve güvenlik düzeyine göre konu sıralaması önerir.",
     "input": "adaylar ve performans ölçüleri",
-    "output": "gerekçeli öncelik listesi"
+    "output": "gerekçeli öncelik listesi",
+    "reels_review": {
+      "technique": "topic",
+      "task": "Tek rutin sorusu, izleyici ihtiyacı ve kanıt gücüyle başlangıç açısı seç."
+    }
   },
   {
     "id": 3,
     "name": "Konu Avcısı",
     "job": "Güncel bakım sorularından kaynaklandırılabilir farklı konu açıları bulur.",
     "input": "RSS ve konu arşivi",
-    "output": "tekilleştirilmiş adaylar"
+    "output": "tekilleştirilmiş adaylar",
+    "reels_review": {
+      "technique": "hook",
+      "task": "Gündelik uygulama sorusunu üç saniyede açık ve korku yaratmadan kur."
+    }
   },
   {
     "id": 4,
     "name": "Alan Araştırmacısı",
     "job": "İddiaların AAD, FDA veya hakemli yayınlardaki dayanağını belirler.",
     "input": "konu ve kaynak alıntıları",
-    "output": "iddia kanıt eşleme listesi"
+    "output": "iddia kanıt eşleme listesi",
+    "reels_review": {
+      "technique": "rights",
+      "task": "Kaynağın kim için geçerli olduğunu, yöntemi ve istisnaları ayır."
+    }
   },
   {
     "id": 5,
     "name": "Kaynak Doğrulama Uzmanı",
     "job": "Kanıtın sınırlarıyla klinik vaatleri ve bağlam dışı genellemeleri işaretler.",
     "input": "senaryo ve kaynaklar",
-    "output": "kaynak ve iddia uyarıları"
+    "output": "kaynak ve iddia uyarıları",
+    "reels_review": {
+      "technique": "rights",
+      "task": "Tedavi vaadi veya kanıtsız önce-sonra izlenimi varsa beklet."
+    }
   },
   {
     "id": 6,
     "name": "Rakip Analizi Uzmanı",
     "job": "Erişilebilen rakip formatlarını inceleyip özgün bir yaklaşım önerir.",
     "input": "kamuya açık örnekler",
-    "output": "kaynaklı biçim karşılaştırması"
+    "output": "kaynaklı biçim karşılaştırması",
+    "reels_review": {
+      "technique": "topic",
+      "task": "Rakip biçimini incele. Metni, kimliği ve bilinmeyen sayaçları kopyalama."
+    }
   },
   {
     "id": 7,
     "name": "Trend Araştırma Uzmanı",
     "job": "Arama sinyallerinin dönemini, coğrafyasını ve güven düzeyini ayırır.",
     "input": "trend RSS ve zaman damgası",
-    "output": "güncel konu eşleşmeleri"
+    "output": "güncel konu eşleşmeleri",
+    "reels_review": {
+      "technique": "topic",
+      "task": "Güncel sinyali tarih ve platformla kaydet, sağlık kanıtıyla karıştırma."
+    }
   },
   {
     "id": 8,
     "name": "Instagram SEO Uzmanı",
     "job": "Doğal Türkçe anahtar kelimeleri başlık ve açıklamaya dağıtır.",
     "input": "konu, arama terimleri ve taslak",
-    "output": "açıklama terimleri ve amaçları"
+    "output": "açıklama terimleri ve amaçları",
+    "reels_review": {
+      "technique": "discovery",
+      "task": "Gündelik Türkçe arama sorusunu açıklama, başlık ve kapakla eşle."
+    }
   },
   {
     "id": 9,
     "name": "Hashtag Uzmanı",
     "job": "Hacim ve erişim uydurmadan az sayıda ilgili etiket seçer.",
     "input": "anahtar kelimeler ve gözlenmiş etiketler",
-    "output": "önerilen etiketler ve kanıt durumu"
+    "output": "önerilen etiketler ve kanıt durumu",
+    "reels_review": {
+      "technique": "discovery",
+      "task": "En çok beş ilgili etiket; ölçülmemiş hacim bildirme."
+    }
   },
   {
     "id": 10,
     "name": "Senaryo Yazarı",
     "job": "İlk üç saniye açılışını ve kaynakları koruyan kısa konuşma kurgusunu yazar.",
     "input": "onay bekleyen kaynaklı brif",
-    "output": "zamanlanabilir Türkçe senaryo"
+    "output": "zamanlanabilir Türkçe senaryo",
+    "reels_review": {
+      "technique": "story",
+      "task": "Uygulama, mekanizma ve rutin açılarını bilimsel sınırı koruyarak karşılaştır."
+    }
   },
   {
     "id": 11,
     "name": "Hikâye Tasarım Uzmanı",
     "job": "Tek bilgi taşıyan, ses gerektirmeyen, 9:16 kartlar planlar.",
     "input": "kanıt kümesi ve marka kimliği",
-    "output": "kısa kart metni ve görsel yönerge"
+    "output": "kısa kart metni ve görsel yönerge",
+    "reels_review": {
+      "technique": "sharing",
+      "task": "Tek adımlık kaydedilebilir özet ve ilgili kaynağı planla."
+    }
   },
   {
     "id": 12,
     "name": "Görsel Üretim Uzmanı",
     "job": "Satın alma yetkisi vermeden dikey görsel istemi ve reddetme ölçütü yazar.",
     "input": "sahne brifi ve kaynak sınırı",
-    "output": "anatomik hataya ve yanıltıcı sonuca karşı kontrollü istem"
+    "output": "anatomik hataya ve yanıltıcı sonuca karşı kontrollü istem",
+    "reels_review": {
+      "technique": "visuals",
+      "task": "Uygulamayı gösteren görsel seç; yanıltıcı tedavi sonucu oluşturma."
+    }
   },
   {
     "id": 13,
     "name": "3D Animasyon Uzmanı",
     "job": "Cilt, folikül veya ürün hareketi için ölçek dışı bilimsel şema planlar.",
     "input": "konu ve görsel kütüphane",
-    "output": "geometri, kamera ve açık canlandırma etiketi"
+    "output": "geometri, kamera ve açık canlandırma etiketi",
+    "reels_review": {
+      "technique": "visuals",
+      "task": "Katman veya mekanizma için 3B şema; ölçek dışı olduğunu göster."
+    }
   },
   {
     "id": 14,
     "name": "Sanat Yönetmeni",
     "job": "Renk, yazı tipi ve sahne çeşitlemesini markaya uygun seçer.",
     "input": "senaryo, künye ve görseller",
-    "output": "görsel stil yönergesi"
+    "output": "görsel stil yönergesi",
+    "reels_review": {
+      "technique": "visuals",
+      "task": "Dikey ilk karede tek odak, sakin kamera ve okunaklı şema."
+    }
   },
   {
     "id": 15,
     "name": "Video Kurgu Uzmanı",
     "job": "Sahne temposu, kurgu geçişleri ve altyazı güvenli alanını önerir.",
     "input": "ses, sahne listesi ve altyazı",
-    "output": "kurgu zaman çizelgesi"
+    "output": "kurgu zaman çizelgesi",
+    "reels_review": {
+      "technique": "edit",
+      "task": "Kesme ve geçişi bilgi adımlarına bağla, karşılaştırma okunur kalsın."
+    }
   },
   {
     "id": 16,
     "name": "Seslendirme Yönetmeni",
     "job": "Deneme sesiyle telaffuz, vurgu ve duraklama işaretlerini kontrol eder.",
     "input": "anlatıcı seçimi ve senaryo",
-    "output": "ses okuma yönergesi ve riskli sözcükler"
+    "output": "ses okuma yönergesi ve riskli sözcükler",
+    "reels_review": {
+      "technique": "audio",
+      "task": "Sulafat pilotunda telaffuz ve durakları, altyazıyla zamanlamayı incele."
+    }
   },
   {
     "id": 17,
     "name": "Ses ve Müzik Uzmanı",
     "job": "Konuşma baskınlığı ve lisans kayıtlarını kontrol eder.",
     "input": "konuşma ve fon miks bilgisi",
-    "output": "miks seviyesi ve lisans kontrolü"
+    "output": "miks seviyesi ve lisans kontrolü",
+    "reels_review": {
+      "technique": "audio",
+      "task": "Müzik ve efekt konuşma altında kalsın; kaynak kaydını doğrula."
+    }
   },
   {
     "id": 18,
     "name": "Kapak ve Başlık Uzmanı",
     "job": "Yayın vaadi taşımayan, tek sorulu bir kapak ve doğru bir başlık seçer.",
     "input": "sahne kareleri ve kaynaklı özet",
-    "output": "kapak yerleşimi ve kısa başlık"
+    "output": "kapak yerleşimi ve kısa başlık",
+    "reels_review": {
+      "technique": "discovery",
+      "task": "Kapağın fayda vaadini senaryo yanıtıyla eşle ve garanti ima etme."
+    }
   },
   {
     "id": 19,
     "name": "Paylaşım ve Performans Uzmanı",
     "job": "Örnek sayısı yeterliyse İstanbul saatine göre zaman önerisi çıkarır.",
     "input": "gerçek Insights ölçüleri ve takvim",
-    "output": "örnek büyüklüğüyle gerekçeli saat"
+    "output": "örnek büyüklüğüyle gerekçeli saat",
+    "reels_review": {
+      "technique": "measurement",
+      "task": "Güzellik verisini reel yaşına, açılışa ve süreye göre ayrı karşılaştır."
+    }
   },
   {
     "id": 20,
     "name": "Kalite Kontrol Uzmanı",
     "job": "Kaynak, ses, altyazı, anatomik şema ve yayın onayı eksiklerini bildirir.",
     "input": "üretim çıktı ve denetim dosyaları",
-    "output": "geçiş koşulları ve engel listesi"
+    "output": "geçiş koşulları ve engel listesi",
+    "reels_review": {
+      "technique": "rights",
+      "task": "Kaynak, bilimsel sınır, altyazı, ses, lisans ve onay eksikse beklet."
+    }
   }
 ]
