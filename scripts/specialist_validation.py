@@ -19,6 +19,7 @@ from scripts.editorial_research import collect_public_research
 from scripts.editorial_state import EditorialState
 from scripts.gemini_editorial import FLASH, GEMMA, LITE, GeminiReviewSession, model_for
 from scripts.run import ROOT, load_json
+from scripts.reels_editorial import EDITOR_RULE, specialist_guidance
 
 MODELS = (FLASH, LITE, GEMMA)
 MODE = "batched_live_role_assessment"
@@ -198,8 +199,9 @@ def check_brand(brand, topic, evidence, output, session):
         for start in range(0, len(group), 5):
             batch = group[start:start+5]
             ids = {role["id"] for role in batch}
-            assignment = [{**role, "validation_focus": AUDIT_FOCUS[brand].get(role["id"])} for role in batch]
-            answer = session.evaluate("Uzman grubu", GUARD +
+            assignment = [{**role, "validation_focus": AUDIT_FOCUS[brand].get(role["id"]),
+                           "reels_guidance": specialist_guidance(role, brand)} for role in batch]
+            answer = session.evaluate("Uzman grubu", GUARD + EDITOR_RULE +
                 ' Her rol için ayrı karar üret. Sonuç {"roles":[...]} nesnesidir. '
                 'Her satırda role_id, decision, rationale, suggestion, caveat, source_numbers bulunmalı. '
                 'role_id tam olarak kendi assignments kaydındaki sayıdır. Örnek kimlik kopyalama. '

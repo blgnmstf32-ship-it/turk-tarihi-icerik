@@ -21,6 +21,7 @@ from scripts.voice_provider import select_provider
 from scripts.task_observer import record
 from scripts.three_scene import plan_3d_scenes, render_with_2d_fallback, save_plan
 from scripts.editorial_board import run_board
+from scripts.reels_editorial import write_review
 
 
 def verified_facts_only(topic):
@@ -109,9 +110,25 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
         raise ValueError('Yalnızca Gemini Charon anlatımı kullanılır.')
     provider=select_provider(settings,voice_provider_override)
     segments=performance_script(topic)
-    script='\n'.join(item['spoken'] for item in segments)
     if approved_voice is None and topic['id']=='piri-reis-kayip-kaynak':
         approved_voice=ROOT/'data'
+    original_hook = topic.get("hook")
+    replaces_plain_hook = bool(original_hook) and segments[0]["spoken"] in {
+        original_hook, f"{original_hook} Bugün yanıtı kaynaklara bağlı kalarak arıyoruz.",
+    }
+    review_script = [item["spoken"] for item in segments]
+    if replaces_plain_hook and approved_voice is None:
+        review_script[0] = original_hook
+    review = write_review(out, topic, "tarih", review_script, fixed_recording=approved_voice is not None)
+    selected = review["best"]
+    apply_hook = not (skip_narration or approved_voice or topic.get("narration"))
+    if apply_hook:
+        # Keep authored facts in order and preserve existing performance directions.
+        if replaces_plain_hook:
+            segments = segments[1:]
+        segments = [{"spoken": selected["opening"], "caption": selected["opening"],
+                     "pace": 1.0, "pause_after": 0.22}, *segments]
+    script='\n'.join(item['spoken'] for item in segments)
     voice_path=out/'narration.wav'
     voice_info={}
     if not skip_narration:
@@ -141,7 +158,7 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
     if use_staged_experts and (staged.get('topic') != topic['id'] or 'dispatch' not in staged):
         raise ValueError('Uzman raporu seçilen konuya ait değil.')
     ai_result = staged if use_staged_experts else run_agents(topic, agents, out, settings=settings,
-                                                            editorial=editorial_report)
+                                                            editorial=editorial_report, media_review=True)
     editorial_stages = editorial_report.get('coordinator_llm', {}).get('stages', [])
     coordinator_called = any(stage['role']=='AI Genel Yayın Yönetmeni' and stage.get('actual_llm_used')
                              for stage in editorial_stages)
@@ -198,6 +215,9 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
         'voice_generated':False,'video_generated':False,'subtitle_alignment':'estimated_sentence_timing',
         'ready_for_instagram':False,'editorial_decision_report':'editorial/EDITORIAL_DECISION_REPORT.md',
         'ai_agent_execution_report':'AI_AGENT_EXECUTION_REPORT.json',
+        'reels_editorial_review':'REELS_EDITORIAL_REVIEW.json',
+        'editorial_index':review['best']['total'],
+        'applied_hook_family':selected['hook_family'] if apply_hook else None,
         'editorial_coordinator_llm':editorial_report['coordinator_llm'],
         'three_d':{**three_d_plan,'status':'planned_not_rendered' if three_d_plan.get('scenes') else 'not_applicable_2d_only'}}
     if skip_narration:

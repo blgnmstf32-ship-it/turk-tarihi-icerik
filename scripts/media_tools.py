@@ -21,13 +21,16 @@ CAPABILITIES = {
     "openverse": "Bilinen arşiv sonucu yoksa açık lisans adayı ara",
     "yt-dlp": "Yalnız izin kaydı olan doğrudan medya adresi",
     "remotion": "Mevcut sesli kurgu ve üç boyutlu sahneler için varsayılan",
-    "hyperframes": "Python pilotunda doğrulanmış yerel HTML sahnesi için alternatif",
-    "gsap": "Zaman çizelgeli HTML hareketi", "lottie": "Vektör animasyon",
-    "three.js": "Geometrisi hazırlanmış üç boyutlu sahne", "blender": "Önceden modellenmiş üç boyutlu animasyon",
+    "hyperframes": "Bağımsız HTML grafik sahnesi gerekiyorsa alternatif; aynı sahneyi iki motorda seri üretme",
+    "gsap": "HTML sahnesinde anlamı taşıyan zaman çizelgesi hareketi",
+    "lottie": "İki boyutlu süreç veya vektör şema gerekiyorsa",
+    "three.js": "Rota, mekân, katman veya mekanizmayı 2B görüntü anlatamıyorsa temsili 3B",
+    "blender": "Modellenmiş geometri ve kontrollü kamera gerektiren kısa sahne",
     "earshot": "CPU ile markaya özel yerel efekt",
     "real-sfx-cues": "Çerçeveye kilitli efekt planı ve CC0 uisfx kaynağı",
     "loudnorm": "Konuşma odaklı LUFS ve dBTP kontrolü", "faster-whisper": "Türkçe kelime zamanları",
-    "opencv": "Görüntü karşılaştırması", "pyscenedetect": "Kesme noktası denetimi",
+    "opencv": "Kare benzerliği ve keskinlik sinyali; editoryal değerlendirme ayrıca",
+    "pyscenedetect": "Karmaşık kurguda kesme noktası denetimi",
 }
 OPENVERSE = "https://api.openverse.org/v1/images/"
 COMMONS = "https://commons.wikimedia.org/w/api.php"
