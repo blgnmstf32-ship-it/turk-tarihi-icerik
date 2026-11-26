@@ -22,6 +22,7 @@ from scripts.subtitles import create_timed
 from scripts.reels_editorial import write_review
 from scripts.motion_toolkit import opening_presets, select_opening_effect
 from scripts.motion_quality import optional_vmaf
+from scripts.animation_styles import plan_for, RENDER_ERRORS
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
@@ -119,7 +120,7 @@ def ffmpeg(directory, *args):
              "-filter_threads", "2", "-filter_complex_threads", "2", *args], cwd=directory)
 
 
-def render_models(work, *, browser):
+def render_models(work, *, browser, continuous=False):
     measured = {}
     start = time.monotonic()
     model = work / "blender"
@@ -136,7 +137,17 @@ def render_models(work, *, browser):
                 "--concurrency=2", "--gl=angle", "--muted", "--license-key=free-license"]
         if browser:
             args.append(f"--browser-executable={browser}")
-        command(args, cwd=ROOT, log=work / f"{key}.log")
+        log = work / f"{key}.log"
+        if continuous:
+            try:
+                command([*args, "--props", json.dumps({"kind": key, "continuous": True})], cwd=ROOT, log=log)
+            except RENDER_ERRORS as exc:
+                command(args, cwd=ROOT, log=log)
+                measured[f"{key}_camera"] = {"stage": "base_fallback", "reason": type(exc).__name__}
+            else:
+                measured[f"{key}_camera"] = {"stage": "applied"}
+        else:
+            command(args, cwd=ROOT, log=log)
         measured[key] = round(time.monotonic()-start, 2)
     return measured
 
@@ -226,12 +237,19 @@ def assemble(assets, out, *, browser=None, vmaf_reference=None, vmaf_aligned=Fal
                     "visual_mode": "layer_diagram", "instagram_keywords": ["nemlendirici", "kuru cilt", "cilt bariyeri"]}
     review = write_review(out, review_topic, "bakim", topic["script"], fixed_recording=True)
     title_effect = select_opening_effect("bakim", review_topic)
+    animation = plan_for("bakim", review_topic)
     audio, picture, voice, art, duration, cues = inputs(assets)
     out.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(prefix="beauty-reel-") as tmp:
         work = Path(tmp)
         start = time.monotonic()
-        models = render_models(work, browser=browser)
+        continuous = animation["style"] == "continuous_camera"
+        models = render_models(work, browser=browser, continuous=continuous)
+        if continuous:
+            cameras = {key: models.pop(f"{key}_camera") for key in THREE}
+            stages = {value["stage"] for value in cameras.values()}
+            animation.update(stage=next(iter(stages)) if len(stages) == 1 else "partially_applied",
+                             three_scenes=cameras)
         cuts = [round(row[0]*FPS) for row in SHOTS] + [math.ceil(duration*FPS)]
         clips = []
         motion_result = {"status": "base_selected"}
@@ -276,7 +294,7 @@ def assemble(assets, out, *, browser=None, vmaf_reference=None, vmaf_aligned=Fal
         "voice_sha256": APPROVED_AUDIO, "image_model": art["model"], "image_sha256": APPROVED_IMAGE,
         "new_provider_requests": 0, "new_api_cost_usd": 0,
         "reels_editorial_review": "REELS_EDITORIAL_REVIEW.json", "editorial_index": review["best"]["total"],
-        "motion_tools": motion_result,
+        "motion_tools": motion_result, "editorial_animation": animation,
         "vmaf": optional_vmaf(vmaf_reference, video, aligned=vmaf_aligned),
         "captions": len(cues), "alignment": "faster-whisper-small, hash-bound Turkish cues",
         "opening_seconds": SHOTS[1][0], "shots": len(SHOTS), "blender_frames": BLENDER_FRAMES,

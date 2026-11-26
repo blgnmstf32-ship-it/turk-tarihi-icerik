@@ -3,12 +3,14 @@ import {
   AbsoluteFill,
   Easing,
   Img,
+  OffthreadVideo,
   Sequence,
   interpolate,
   staticFile,
   useCurrentFrame,
 } from 'remotion';
 import {History3DScene, History3DKind, HistoricalOverlay} from './History3DScene';
+import {EditorialCharacter} from './EditorialCharacter';
 import motionPresets from '../media_pilot/motion_presets.json';
 
 type DepthLayer = {src: string; travelPx: number};
@@ -27,7 +29,8 @@ export type DocumentaryProps = {
   title?: string;
   scenes: {src: string; label?: string; depthLayers?: DepthLayer[]}[];
   captions: CaptionCue[];
-  edit?: {title: string; topic: string; hook: string; effect?: OptionalEffect};
+  edit?: {title: string; topic: string; hook: string; effect?: OptionalEffect;
+    animation?: {style: 'continuous_camera' | 'paper_collage' | 'hand_drawn'; insert?: string}};
   threeScenes?: {kind: History3DKind; title: string; labels?: string[]; fromSec: number; durationSec: number; atlas?: HistoricalOverlay}[];
 };
 
@@ -109,9 +112,15 @@ export const DocumentaryReel: React.FC<DocumentaryProps> = ({durationSec, title 
       })}
       {threeScenes.map((scene, i) => (
         <Sequence key={`three-${i}-${scene.kind}`} from={Math.round(scene.fromSec * FPS)} durationInFrames={Math.max(1, Math.round(scene.durationSec * FPS))}>
-          <History3DScene kind={scene.kind} title={scene.title} labels={scene.labels} atlas={scene.atlas} />
+          <History3DScene kind={scene.kind} title={scene.title} labels={scene.labels} atlas={scene.atlas} continuous={edit?.animation?.style === 'continuous_camera'} />
         </Sequence>
       ))}
+      {edit?.animation?.style === 'paper_collage' && edit.animation.insert && <Sequence from={96} durationInFrames={150}>
+        <OffthreadVideo src={staticFile(edit.animation.insert)} muted style={{width:'100%', height:'100%'}} />
+      </Sequence>}
+      {edit?.animation?.style === 'hand_drawn' && <Sequence from={96} durationInFrames={150}>
+        <EditorialCharacter brand="tarih" />
+      </Sequence>}
       <AbsoluteFill style={{background:'linear-gradient(180deg,#081317b2 0%,transparent 23%,transparent 55%,#07111556 75%,#071115ec 100%)',pointerEvents:'none'}} />
       <div style={{position:'absolute',top:72,left:54,borderLeft:'3px solid #c49a5d',paddingLeft:14,
         color:'#fff4dc',font:'700 20px Arial',letterSpacing:3}}>{title}</div>

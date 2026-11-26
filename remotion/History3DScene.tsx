@@ -2,7 +2,8 @@ import React from 'react';
 import {ThreeCanvas} from '@remotion/three';
 import {interpolate, useCurrentFrame} from 'remotion';
 import * as THREE from 'three';
-import {AbsoluteFill} from 'remotion';
+import {AbsoluteFill, useVideoConfig} from 'remotion';
+import {EditorialCamera} from './EditorialCamera';
 
 export type History3DKind = 'battle_map' | 'city_flyover' | 'siege' | 'artifact_gears' | 'atlantic_atlas';
 export type HistoricalOverlay = {lines: [number, number][][]; year: number; attribution: string};
@@ -12,6 +13,7 @@ export type History3DSceneProps = {
   title: string;
   labels?: string[];
   atlas?: HistoricalOverlay;
+  continuous?: boolean;
 };
 
 const Ground: React.FC = () => (
@@ -66,8 +68,10 @@ const Route: React.FC<{from: [number, number]; to: [number, number]; color: stri
   );
 };
 
-const BattleMap: React.FC = () => {
+const BattleMap: React.FC<{continuous: boolean}> = ({continuous}) => {
   const frame = useCurrentFrame();
+  const {durationInFrames} = useVideoConfig();
+  const progress = frame / Math.max(1, durationInFrames - 1);
   const p = interpolate(frame, [0, 9 * 30], [0.03, 0.98], {extrapolateRight: 'clamp'});
   const cameraZ = interpolate(frame, [0, 9 * 30], [14, 7], {extrapolateRight: 'clamp'});
   return (
@@ -75,6 +79,7 @@ const BattleMap: React.FC = () => {
       camera={{position: [0, 26, cameraZ], rotation: [1.1, 0, 0], fov: 37, near: 0.1, far: 120}}
       gl={{antialias: false, alpha: false}}>
       <color attach="background" args={['#17211e']} />
+      {continuous && <EditorialCamera track="battle" progress={progress} />}
       <ambientLight intensity={1.5} />
       <directionalLight position={[-8, 18, 9]} intensity={2.4} />
       <Ground /><River />
@@ -85,8 +90,10 @@ const BattleMap: React.FC = () => {
   );
 };
 
-const City: React.FC<{siege: boolean}> = ({siege}) => {
+const City: React.FC<{siege: boolean; continuous: boolean}> = ({siege, continuous}) => {
   const frame = useCurrentFrame();
+  const {durationInFrames} = useVideoConfig();
+  const progress = frame / Math.max(1, durationInFrames - 1);
   const z = interpolate(frame, [0, 7 * 30], [20, 10], {extrapolateRight: 'clamp'});
   const cityBlocks: Array<[number, number, number]> = [];
   for (let row = -3; row <= 3; row++) for (let col = -3; col <= 3; col++) {
@@ -96,6 +103,7 @@ const City: React.FC<{siege: boolean}> = ({siege}) => {
   return (
     <ThreeCanvas width={1080} height={1920} dpr={1} camera={{position: [0, 23, z], rotation: [1.03, 0, 0], fov: 39, near: 0.1, far: 120}} gl={{antialias: false, alpha: false}}>
       <color attach="background" args={['#1b2426']} />
+      {continuous && <EditorialCamera track="city" progress={progress} />}
       <ambientLight intensity={1.4} /><directionalLight position={[-7, 18, 11]} intensity={2.2} />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]}><planeGeometry args={[40, 48]} /><meshStandardMaterial color="#343b31" roughness={1} /></mesh>
       {cityBlocks.map(([x, zz, h], i) => <mesh key={i} position={[x, h / 2, zz]}>
@@ -130,11 +138,14 @@ const Gear: React.FC<{x: number; y: number; radius: number; teeth: number; angle
   </group>
 );
 
-const ArtifactGears: React.FC = () => {
+const ArtifactGears: React.FC<{continuous: boolean}> = ({continuous}) => {
   const frame = useCurrentFrame();
+  const {durationInFrames} = useVideoConfig();
+  const progress = frame / Math.max(1, durationInFrames - 1);
   const angle = interpolate(frame, [0, 240], [-0.28, 0.14], {extrapolateRight: 'clamp'});
   return <ThreeCanvas width={1080} height={1920} dpr={1} camera={{position: [0, 1.1, 16 - frame / 250], fov: 53}} gl={{antialias: true}}>
     <color attach="background" args={['#101c20']} />
+    {continuous && <EditorialCamera track="gears" progress={progress} />}
     <ambientLight intensity={1.2} />
     <directionalLight position={[-5, 7, 12]} intensity={3.4} />
     <directionalLight position={[4, -2, 3]} intensity={1.1} color="#99c8e4" />
@@ -159,8 +170,10 @@ const coasts = [
   coast([[3.1,2.2],[4.5,2.5],[5.2,1.7],[5.85,.55],[6.25,.5],[5.65,-.75],[5.15,-1.8],[4.6,-3.1],[3.95,-3.65],[3.35,-1.8],[3.45,-.5],[2.55,-.45],[1.85,.3],[2.05,1.4]]),
 ];
 
-const AtlanticAtlas: React.FC<{atlas?: HistoricalOverlay}> = ({atlas}) => {
+const AtlanticAtlas: React.FC<{atlas?: HistoricalOverlay; continuous: boolean}> = ({atlas, continuous}) => {
   const frame = useCurrentFrame();
+  const {durationInFrames} = useVideoConfig();
+  const progress = frame / Math.max(1, durationInFrames - 1);
   const boundaryGeometry = React.useMemo(() => {
     if (!atlas) return;
     const geometry = new THREE.BufferGeometry();
@@ -176,6 +189,7 @@ const AtlanticAtlas: React.FC<{atlas?: HistoricalOverlay}> = ({atlas}) => {
     <ThreeCanvas width={1080} height={1920} dpr={1} gl={{antialias:true}}
       camera={{position:[0,0,22 - 3*travel], fov:45}}>
       <color attach="background" args={['#0a171b']} />
+      {continuous && <EditorialCamera track="atlas" progress={progress} />}
       <ambientLight intensity={1.15} />
       <directionalLight position={[-5,6,7]} color="#f6dca5" intensity={2.1} />
       <group position={[.3-.7*travel,1.1,0]} rotation={[-.30+.15*travel,-.23+.32*travel,.07-.08*travel]}>
@@ -205,10 +219,10 @@ const AtlanticAtlas: React.FC<{atlas?: HistoricalOverlay}> = ({atlas}) => {
   </AbsoluteFill>;
 };
 
-export const History3DScene: React.FC<History3DSceneProps> = ({kind, title, labels = [], atlas}) => (
+export const History3DScene: React.FC<History3DSceneProps> = ({kind, title, labels = [], atlas, continuous = false}) => (
   <AbsoluteFill style={{backgroundColor: '#17211e'}}>
-    {kind === 'battle_map' ? <BattleMap /> : kind === 'artifact_gears' ? <ArtifactGears /> :
-      kind === 'atlantic_atlas' ? <AtlanticAtlas atlas={atlas} /> : <City siege={kind === 'siege'} />}
+    {kind === 'battle_map' ? <BattleMap continuous={continuous} /> : kind === 'artifact_gears' ? <ArtifactGears continuous={continuous} /> :
+      kind === 'atlantic_atlas' ? <AtlanticAtlas atlas={atlas} continuous={continuous} /> : <City siege={kind === 'siege'} continuous={continuous} />}
     <div style={{position: 'absolute', left: 30, right: 30, top: 130, textAlign: 'center', color: '#fff0d4', font: '800 32px Arial, sans-serif', letterSpacing: 1.5, textShadow: '0 3px 14px #000', background: 'rgba(5,9,12,.56)', borderRadius: 12, padding: '14px 18px'}}>{title}</div>
     <div style={{position: 'absolute', left: 24, right: 24, top: 210, display: 'flex', justifyContent: 'space-evenly', gap: 12}}>
       {labels.map((label) => <span key={label} style={{font: '700 21px Arial, sans-serif', letterSpacing: 0.5, color: '#fff2d5', background: 'rgba(6,9,11,.72)', padding: '9px 12px', borderRadius: 9}}>{label}</span>)}

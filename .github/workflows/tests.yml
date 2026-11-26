@@ -23,6 +23,8 @@ jobs:
           cache: npm
       - name: Install and typecheck Remotion project
         run: npm ci && npm run typecheck
+      - name: Verify deterministic animation geometry and HTML without rendering
+        run: node --experimental-strip-types --test tests/editorial_animation.test.mjs
       - run: python -m pip install -r requirements.txt
       - name: Run offline Python quality tests and report media fixtures separately
         run: python -m scripts.quality_checks

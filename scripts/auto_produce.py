@@ -21,6 +21,7 @@ from scripts.voice_provider import select_provider
 from scripts.task_observer import record
 from scripts.three_scene import plan_3d_scenes, render_with_2d_fallback, save_plan
 from scripts.motion_toolkit import select_opening_effect
+from scripts.animation_styles import commons_collage_photo, plan_for, render_collage
 from scripts.motion_quality import optional_vmaf
 from scripts.editorial_board import run_board
 from scripts.reels_editorial import write_review
@@ -106,7 +107,7 @@ def render_motion_or_base(render_fn, *args, plan, edit, parallax_dir=None):
     scenes = plan["scenes"]
     baseline = [{key: value for key, value in scene.items() if key != "historical_overlay"} for scene in scenes]
     opening = edit.get("effect")
-    optional = bool(opening or parallax_dir or scenes != baseline)
+    optional = bool(opening or edit.get("animation") or parallax_dir or scenes != baseline)
     report = {"status": "base_selected", "opening_effect": opening,
               "atlas_overlay": scenes != baseline, "parallax": bool(parallax_dir)}
     if optional:
@@ -117,7 +118,7 @@ def render_motion_or_base(render_fn, *args, plan, edit, parallax_dir=None):
             return result, {"status": status, "fallback_used": False}, report
         except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as exc:
             report.update(status="optional_render_skipped", reason=type(exc).__name__)
-    base_edit = {key: value for key, value in edit.items() if key != "effect"}
+    base_edit = {key: value for key, value in edit.items() if key not in {"effect", "animation"}}
     result, three_d = render_with_2d_fallback(render_fn, *args, three_scenes=baseline, edit=base_edit)
     return result, three_d, report
 
@@ -135,6 +136,7 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
     provider=select_provider(settings,voice_provider_override)
     # Validate an optional geographic asset before reaching narration.
     three_d_plan = plan_3d_scenes(topic, 70)
+    animation = plan_for("tarih", topic)
     atlas_status = "not_requested"
     if atlas_overlay:
         from scripts.motion_atlas import read_atlas
@@ -264,6 +266,7 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
         'applied_hook_family':selected['hook_family'] if apply_review else None,
         'applied_scenario':selected['scenario'] if apply_review else None,
         'editorial_coordinator_llm':editorial_report['coordinator_llm'],
+        'editorial_animation': animation,
         'three_d':{**three_d_plan,'status':'planned_not_rendered' if three_d_plan.get('scenes') else 'not_applicable_2d_only'}}
     if skip_narration:
         manifest['status']='awaiting_local_tts';(out/'AUTO_REPORT.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
@@ -275,11 +278,25 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
     create_subtitles(cues,out/'subtitles.srt')
     create_bed(duration,out/'original_soundtrack.wav', maritime=topic['id']=='piri-reis-kayip-kaynak')
     rendered=out/'reel_with_voice.mp4'
+    chosen_style = animation["style"]
+    animation_edit = None
+    if chosen_style == "paper_collage":
+        photo = next((value for item in licensed_visuals
+                      if (value := commons_collage_photo(out / "commons_visuals", item)) is not None), None)
+        insert, status = render_collage("tarih", topic["title"], 5, out / "EDITORIAL_COLLAGE.mp4", photo=photo)
+        animation.update(status)
+        if insert:
+            animation_edit = {"style": chosen_style, "insert": str(insert)}
+    elif chosen_style == "hand_drawn" or chosen_style == "continuous_camera" and three_d_plan["scenes"]:
+        animation_edit = {"style": chosen_style}
     _, three_d_result, motion_result = render_motion_or_base(
         render_reel, scenes, voice_path, out/'subtitles.srt', rendered, plan=three_d_plan,
         parallax_dir=parallax_dir, edit={'title':topic['title'], 'topic':topic['id'],
-                                         'hook':segments[0]['caption'], 'effect':opening_effect})
+                                         'hook':segments[0]['caption'], 'effect':opening_effect,
+                                         'animation':animation_edit})
     manifest['motion_tools'] = {**motion_result, 'atlas_preflight':atlas_status}
+    if animation_edit:
+        animation["stage"] = ("applied" if motion_result["status"] == "applied" else "base_fallback")
     three_d_render_status=three_d_result['status']
     if three_d_result.get('error'):
         (out/'THREE_D_RENDER_FAILURE.txt').write_text(three_d_result['error']+'\n2D fallback render succeeded.',encoding='utf-8')

@@ -2,10 +2,11 @@ import React from 'react';
 import {ThreeCanvas} from '@remotion/three';
 import {useThree} from '@react-three/fiber';
 import {AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {EditorialCamera} from './EditorialCamera';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 
 type SceneKind = 'barrier' | 'cream';
-export type BeautySceneProps = {kind: SceneKind};
+export type BeautySceneProps = {kind: SceneKind; continuous?: boolean};
 
 const tile = new RoundedBoxGeometry(0.66, 0.14, 0.49, 2, 0.064);
 const plum = '#281525';
@@ -75,7 +76,7 @@ const Cream: React.FC<{t: number}> = ({t}) => {
   );
 };
 
-export const BeautySkinScene: React.FC<BeautySceneProps> = ({kind}) => {
+export const BeautySkinScene: React.FC<BeautySceneProps> = ({kind, continuous = false}) => {
   const frame = useCurrentFrame();
   const {width, height, durationInFrames} = useVideoConfig();
   const t = frame / Math.max(1, durationInFrames - 1);
@@ -84,7 +85,7 @@ export const BeautySkinScene: React.FC<BeautySceneProps> = ({kind}) => {
       <ThreeCanvas width={width} height={height} dpr={1}
         camera={{fov: 44, near: .1, far: 42}} gl={{antialias: true, alpha: false}}>
         <color attach="background" args={[plum]} />
-        <Camera t={t} kind={kind} />
+        {continuous ? <EditorialCamera track={kind} progress={t} /> : <Camera t={t} kind={kind} />}
         <hemisphereLight args={['#fff2e8', '#655478', 1.8]} />
         <directionalLight position={[-4, 8, 7]} color="#ffdfcc" intensity={3.0} />
         <directionalLight position={[3, 5, -5]} color="#b8b3fc" intensity={2.55} />
