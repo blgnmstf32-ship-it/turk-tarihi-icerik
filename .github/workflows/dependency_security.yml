@@ -1,0 +1,62 @@
+name: Dependency security · Python, npm and workflow permissions
+
+on:
+  pull_request:
+  push:
+    branches: [main, dependency-audit]
+  schedule:
+    - cron: '41 4 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  python-and-permissions:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.12'
+      - name: Install hash-pinned audit tools
+        run: |
+          python -m venv "$RUNNER_TEMP/dependency-audit"
+          "$RUNNER_TEMP/dependency-audit/bin/python" -m pip install \
+            --index-url https://pypi.org/simple --disable-pip-version-check \
+            --no-deps --only-binary=:all: --require-hashes -r requirements-dependency-audit.txt
+      - name: Test and check workflow permissions
+        run: |
+          auditor="$RUNNER_TEMP/dependency-audit/bin/python"
+          env -i PATH=/usr/bin:/bin LANG=C.UTF-8 "$auditor" -m unittest scripts.dependency_security_contracts -v
+          env -i PATH=/usr/bin:/bin LANG=C.UTF-8 "$auditor" -m scripts.dependency_security workflows
+      - name: Check Python package advisories without installing project packages
+        run: |
+          env -i PATH=/usr/bin:/bin LANG=C.UTF-8 \
+            "$RUNNER_TEMP/dependency-audit/bin/python" -m scripts.dependency_security python
+
+  npm:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: ['.', media_pilot]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: '22'
+      - name: Audit the lockfile without lifecycle scripts
+        working-directory: ${{ matrix.directory }}
+        run: |
+          audit_dir=$(mktemp -d)
+          cp package.json package-lock.json "$audit_dir/"
+          cd "$audit_dir"
+          env -i "PATH=$PATH" LANG=C.UTF-8 npm audit --package-lock-only --ignore-scripts \
+            --audit-level=low --registry=https://registry.npmjs.org --userconfig=/dev/null \
+            --globalconfig=/dev/null

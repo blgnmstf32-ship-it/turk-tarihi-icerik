@@ -3,6 +3,9 @@ on:
   push:
     branches: [editorial-recovery]
     paths: [.github/workflows/nano_batch_recovery.yml]
+permissions:
+  contents: read
+
 concurrency:
   group: nano-shared-paid-job
   cancel-in-progress: false
@@ -10,10 +13,10 @@ jobs:
   probe:
     runs-on: ubuntu-24.04
     timeout-minutes: 13
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
