@@ -1,0 +1,7 @@
+# Verified actions/cache labels for speech models or recordings, without credentials.
+# Exact historical findings only. New commits and lines keep the default rules.
+7f1c10dccabc811e1dc10347e640c0ec505bd0a7:.github/workflows/produce.yml:generic-api-key:112
+653dec755fae3d260c13c864b8a3b290aa294fec:.github/workflows/voice_comparison.yml:generic-api-key:55
+5388587f834f64f81a6a6ca457a59dac11781e7d:.github/workflows/produce.yml:generic-api-key:58
+33abc3dca7c1826ac2ad8befc82d04990b424a23:produce.yml:generic-api-key:42
+b4c238197a765b58bd588b57d30d1676973d127a:.github/workflows/produce.yml:generic-api-key:37
