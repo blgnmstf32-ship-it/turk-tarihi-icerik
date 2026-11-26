@@ -112,7 +112,7 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=192
             style = animation["style"]
             if style not in {"continuous_camera", "paper_collage", "hand_drawn"}:
                 raise ValueError("İzinli animasyon stili gerekli.")
-            props["edit"]["animation"] = {"style": style}
+            props["edit"]["animation"] = {"style": style, "continuous": animation.get("continuous") is True}
             if style == "paper_collage":
                 shutil.copy2(animation["insert"], public_dir / "editorial-collage.mp4")
                 props["edit"]["animation"]["insert"] = f"scenes/{out.stem}/editorial-collage.mp4"
@@ -132,7 +132,8 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=192
         except subprocess.CalledProcessError as exc:
             raise RuntimeError('Remotion render başarısız: '+(exc.stderr or exc.stdout)[-1800:]) from exc
     result=ffprobe(out)
-    if not any(s.get('codec_type')=='audio' for s in result['streams']):raise RuntimeError('Çıktı ses içermiyor')
+    if not any(s.get('codec_type') == 'video' for s in result['streams']):
+        raise RuntimeError('Remotion görsel çıktı üretmedi.')
     return {'path':str(out),'seconds':round(media_duration(out),2),'scenes':len(scenes),
             'renderer':'Remotion','fps':fps,'resolution':f'{width}x{height}',
             'contains_audio_track':False,'speech_verified':False,'animated_word_captions':True,'instagram_published':False,
