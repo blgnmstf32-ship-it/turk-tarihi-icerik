@@ -154,7 +154,8 @@ def _variant(brand, structure, hook, title, core, revision):
         "opening_seconds_estimate": round(len(_terms(first)) / 2.5, 1),
         "spoken": [first, *([bridge] if bridge else []), *core, closing],
         "estimated_seconds": round(words / 2.5, 1), "proof_before_context": early_proof or revision == 2,
-        "cover_title": title, "last_line": closing, "suggested_first_frame": opening_visual,
+        "cover_title": title, "lead_in": bridge, "last_line": closing,
+        "suggested_first_frame": opening_visual,
     }
 
 

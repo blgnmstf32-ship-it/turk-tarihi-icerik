@@ -121,13 +121,17 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
         review_script[0] = original_hook
     review = write_review(out, topic, "tarih", review_script, fixed_recording=approved_voice is not None)
     selected = review["best"]
-    apply_hook = not (skip_narration or approved_voice or topic.get("narration"))
-    if apply_hook:
-        # Keep authored facts in order and preserve existing performance directions.
-        if replaces_plain_hook:
-            segments = segments[1:]
-        segments = [{"spoken": selected["opening"], "caption": selected["opening"],
-                     "pace": 1.0, "pause_after": 0.22}, *segments]
+    apply_review = not (skip_narration or approved_voice is not None)
+    if apply_review:
+        # Preserve the full source-bound body and its performance directions.
+        body = segments[1:] if replaces_plain_hook else segments
+        def new_segment(line):
+            return {"spoken": line, "caption": line, "pace": 1.0, "pause_after": 0.22}
+        segments = [new_segment(selected["opening"])]
+        if selected["lead_in"]:
+            segments.append(new_segment(selected["lead_in"]))
+        segments.extend(body)
+        segments.append(new_segment(selected["last_line"]))
     script='\n'.join(item['spoken'] for item in segments)
     voice_path=out/'narration.wav'
     voice_info={}
@@ -217,7 +221,8 @@ def production(topic,out,model_cache=None,skip_narration=False,recordings_dir=No
         'ai_agent_execution_report':'AI_AGENT_EXECUTION_REPORT.json',
         'reels_editorial_review':'REELS_EDITORIAL_REVIEW.json',
         'editorial_index':review['best']['total'],
-        'applied_hook_family':selected['hook_family'] if apply_hook else None,
+        'applied_hook_family':selected['hook_family'] if apply_review else None,
+        'applied_scenario':selected['scenario'] if apply_review else None,
         'editorial_coordinator_llm':editorial_report['coordinator_llm'],
         'three_d':{**three_d_plan,'status':'planned_not_rendered' if three_d_plan.get('scenes') else 'not_applicable_2d_only'}}
     if skip_narration:
