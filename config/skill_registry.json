@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "local_skills": {
+    ".agents/skills/turk-history-documentary/SKILL.md": {"brand": "tarih", "discovery": "shared", "alternative": "local:tarih-icerik"},
+    ".codex/skills/tarih-icerik/SKILL.md": {"brand": "tarih", "discovery": "legacy", "alternative": "local:turk-history-documentary"}
+  },
+  "motion": {
+    "motion-skills": {"roles_from": "iart-ai", "alternative": "motion:animation-skills"},
+    "animation-skills": {"roles_from": "Hmzbo", "alternative": "motion:motion-skills"},
+    "motion-canvas-skills": {"roles_from": "jmwdpk", "alternative": "motion:animation-skills"},
+    "parallax-studio": {"role_keys": {"tarih": [13], "bakim": [14]}, "alternative": "media:local-parallax"},
+    "theatre": {"role_keys": {"tarih": [13, 22], "bakim": [13, 14]}, "alternative": "media:gsap"},
+    "depth-small": {"mode": "optional", "hardware": "CPU, ONNX Runtime ve özeti sabitlenmiş yerel Small ağırlığı", "adapter": "scripts/motion_layers.py:estimate_depth", "test": "adapter_contract_only", "evidence": "tests/test_motion_toolkit.py", "alternative": "media:local-parallax"},
+    "animefx": {"mode": "reference", "alternative": "media:opening-presets"},
+    "manim": {"mode": "optional", "hardware": "CPU, yerel Manim, Cairo ve Pango", "adapter": "scripts/motion_quality.py:render_science_diagram", "test": "adapter_contract_only", "evidence": "tests/test_motion_toolkit.py", "alternative": "media:lottie"},
+    "rembg": {"mode": "conditional", "hardware": "CPU, ONNX Runtime ve denetlenmiş yerel U2Net ağırlığı", "adapter": "scripts/motion_layers.py:alpha_mask", "test": "adapter_contract_only", "evidence": "tests/test_motion_toolkit.py", "alternative": null},
+    "maplibre": {"mode": "optional", "hardware": "CPU; GeoJSON ve stil sözleşmesi için Python", "adapter": "scripts/motion_atlas.py:read_atlas", "test": "adapter_contract_only", "evidence": "tests/test_motion_toolkit.py", "note": "Yerel adaptör MapLibre stili ve Atlas katmanı hazırlar. MapLibre JS motorunun gerçek render testi kayıtlı değil.", "alternative": "media:three-js"},
+    "historical-basemaps": {"mode": "asset_reference", "hardware": "Yerel GeoJSON ve hak kaydı", "alternative": null},
+    "poly-haven": {"mode": "optional", "hardware": "CPU; yerel katalog, açık seçimde HTTPS", "adapter": "scripts/motion_cli.py#catalogue", "test": "adapter_contract_only", "evidence": "tests/test_motion_toolkit.py", "note": "Canlı metadata sorgusu ayrı seçimdir; varlık indirme yetkisi vermez.", "alternative": null},
+    "vmaf": {"mode": "optional", "hardware": "CPU, libvmaf destekli FFmpeg ve hizalı referans video", "adapter": "scripts/motion_quality.py:optional_vmaf", "test": "unavailable", "evidence": "final_media", "alternative": null},
+    "deepfilternet": {"mode": "conditional", "hardware": "CPU, yerel ikili ve hakları doğrulanmış ağırlık", "adapter": "scripts/motion_quality.py:denoise_wav", "test": "adapter_contract_only", "evidence": "tests/test_motion_toolkit.py", "alternative": null},
+    "gltf-transform": {"mode": "optional", "hardware": "CPU, sabit yerel CLI ve kendi kaynaklarını taşıyan GLB", "adapter": "scripts/motion_quality.py:optimize_glb", "test": "adapter_contract_only", "evidence": "tests/test_motion_toolkit.py", "alternative": null}
+  },
+  "media": {
+    "wikimedia": {"license": "MediaWiki Action API; dosya başına lisans ve atıf", "mode": "public_metadata", "hardware": "CPU ve HTTPS", "adapter": "scripts/media_tools.py:discover", "test": "historical_pass", "evidence": "final_media", "alternative": "media:openverse"},
+    "openverse": {"license": "REST v1; varlık başına özgün kaynak lisansı", "mode": "public_metadata", "hardware": "CPU ve HTTPS", "adapter": "scripts/media_tools.py:discover", "test": "adapter_contract_only", "evidence": "tests/test_media_tools.py", "alternative": "media:wikimedia"},
+    "yt-dlp": {"license": "Unlicense; medya yeniden kullanım izni ayrıca gerekir", "mode": "local_fixture_only", "hardware": "CPU, sabit yt-dlp 2026.11.23 ve yerel döngü arayüzü", "adapter": "scripts/media_pilot.py:download_self_authored", "test": "historical_pass", "evidence": "cpu_pilot", "alternative": null},
+    "remotion": {"license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı", "mode": "local", "hardware": "CPU, Node ve Chromium", "adapter": "scripts/create_reel.py:render_reel", "test": "historical_pass", "evidence": "final_media", "alternative": "media:hyperframes"},
+    "hyperframes": {"license": "Apache-2.0", "mode": "optional", "hardware": "CPU, sabit HyperFrames 0.9.90, Node ve Chromium", "adapter": "scripts/animation_styles.py:render_collage", "test": "historical_pass", "evidence": "final_media", "alternative": "media:remotion"},
+    "gsap": {"license": "GSAP Standard License", "mode": "embedded", "hardware": "CPU, mevcut HTML veya Three.js zaman çizelgesi", "adapter": "media_pilot/editorial_collage.mjs", "test": "historical_pass", "evidence": "final_media", "alternative": null},
+    "lottie": {"license": "MIT (lottie-web); animasyon dosyası ayrıca incelenir", "mode": "embedded", "hardware": "CPU ve Chromium", "adapter": "media_pilot/design.mjs", "test": "historical_pass", "evidence": "cpu_pilot", "alternative": "media:remotion"},
+    "three.js": {"license": "MIT", "mode": "embedded", "hardware": "Chromium WebGL; CPU render doğrulandı", "adapter": "scripts/beauty_reel.py:render_models", "test": "historical_pass", "evidence": "final_media", "alternative": "media:blender", "role_keys": {"tarih": [11, 13, 21, 22, 23, 24]}},
+    "blender": {"license": "GPL-2.0-or-later; 3B varlıklar ayrı", "mode": "optional", "hardware": "CPU ve Blender CLI", "adapter": "scripts/beauty_reel.py:assemble", "test": "historical_pass", "evidence": "final_media", "alternative": "media:three-js"},
+    "earshot": {"license": "MIT", "mode": "local", "hardware": "CPU, Earshot 1.0.0/7a7f7c5", "adapter": "scripts/media_pilot.py:effects", "test": "historical_pass", "evidence": "final_media", "alternative": null},
+    "real-sfx": {"task": "Ses efekti katmanlama ve cue notları için kaynak incelemesi", "license": "Clipwing üst betikleri için doğrulanmış açık dağıtım izni yok", "mode": "reference", "alternative": "media:real-sfx-cues", "role_keys": {"tarih": [14], "bakim": [17]}},
+    "real-sfx-cues": {"license": "Yerel kod için açık izin kaydı yok; uisfx varlıkları CC0-1.0", "mode": "local", "hardware": "CPU, FFmpeg ve lisans kaydı olan uisfx 0.4.0", "adapter": "scripts/media_pilot.py:effects", "test": "historical_pass", "evidence": "final_media", "note": "Yerel cue iş akışı doğrulandı. Clipwing betikleri çalıştırılmaz.", "alternative": null},
+    "loudnorm": {"license": "FFmpeg derlemesine göre LGPL/GPL", "mode": "embedded", "hardware": "CPU ve FFmpeg loudnorm filtresi", "adapter": "scripts/media_pilot.py:loudness", "test": "historical_pass", "evidence": "final_media", "alternative": null},
+    "faster-whisper": {"license": "MIT; yerel Small model dosyası ve model kaydı ayrıca incelenir", "mode": "optional", "hardware": "CPU INT8, CTranslate2 ve yerelde doğrulanmış Small model", "adapter": "scripts/final_media_qa.py:metrics", "test": "historical_pass", "evidence": "final_media", "alternative": null},
+    "opencv": {"license": "Apache-2.0 (OpenCV)", "mode": "optional", "hardware": "CPU ve OpenCV headless", "adapter": "scripts/final_media_qa.py:metrics", "test": "historical_pass", "evidence": "final_media", "alternative": null},
+    "pyscenedetect": {"license": "BSD-3-Clause", "mode": "optional", "hardware": "CPU ve yerel PySceneDetect", "adapter": "scripts/final_media_qa.py:metrics", "test": "historical_pass", "evidence": "final_media", "alternative": null},
+    "freesound": {"task": "Ses efekti katalog hizmeti", "license": "Ücretsiz API ticari olmayan kullanım için; varlık lisansları ayrı", "mode": "disabled", "hardware": "HTTPS; bu projede kapalı", "test": "not_run", "alternative": "media:earshot", "role_keys": {"tarih": [14], "bakim": [17]}},
+    "ffmpeg": {"task": "Yerel video kodlama, ses miksajı ve medya biçim denetimi", "license": "Derlemeye göre LGPL/GPL", "mode": "local", "hardware": "CPU, FFmpeg ve ffprobe", "adapter": "scripts/final_media_qa.py:final_audio", "test": "historical_pass", "evidence": "final_media", "alternative": null, "role_keys": {"tarih": [14, 15, 16, 23, 24], "bakim": [15, 16, 17, 20]}},
+    "opening-presets": {"task": "AnimeFX kaynak fikrinin yerel kareye bağlı satır/maske açılışı", "license": "Yerel kod için açık izin kaydı yok; AnimeFX bağımlılık olarak kullanılmaz", "mode": "optional", "hardware": "CPU, mevcut video zaman çizelgesi", "adapter": "scripts/motion_toolkit.py:select_opening_effect", "test": "adapter_contract_only", "evidence": "tests/test_motion_toolkit.py", "alternative": "media:gsap", "motion_review_name": "animefx"},
+    "local-parallax": {"task": "Onaylı durağan görüntüyü yerel 2.5D katmanlarla hareketlendir", "license": "Yerel kod için açık izin kaydı yok; görüntü ve katmanlar ayrı denetlenir", "mode": "optional", "hardware": "CPU, onaylı görüntü ve yerel derinlik verisi veya elle hazırlanmış katman", "adapter": "scripts/final_media_qa.py:authored_map_layers", "test": "historical_pass", "evidence": "final_media", "note": "Gerçek pilot elle hazırlanmış katman kullandı. Model çıkarımı bu kanıta dahil değil.", "alternative": null, "role_keys": {"tarih": [11, 13], "bakim": [13, 14]}}
+  },
+  "evidence": {
+    "cpu_pilot": "https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45711789803",
+    "final_media": "https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45828936221",
+    "skill_scan": "https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45884866318",
+    "offline_quality": "https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45884865790"
+  }
+}
