@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 from unittest.mock import patch
 
@@ -46,6 +47,7 @@ def checks_for(case_index, value):
         "uses_supplied_fact": ("dişli" if case_index == 0 else "katman") in prose,
         "states_evidence_boundary": (("muci" in bound and any(w in bound for w in ("bilin", "kesin", "belir")))
                                       if case_index == 0 else ("temsil" in bound and "tedavi" in bound)),
+        "adds_no_unsupported_numeric_detail": not bool(re.search(r"\d", prose)),
         "references_only_supplied_evidence": value["fact_ids"] == [1] or value["fact_ids"] == [1, 2],
     }
 
@@ -88,7 +90,8 @@ def run(state, quota_path, run_id):
     cloud = router.cloudflare
     passed = (calls == [429] and all(
         row.get("provider") == "cloudflare_workers_ai" and row.get("model") == row["expected_model"]
-        and row.get("response_source") == "live" and row["quality_checks_passed"] == 5 for row in rows))
+        and row.get("response_source") == "live" and row["quality_checks"]
+        and all(row["quality_checks"].values()) for row in rows))
     return {
         "status": "passed" if passed else "incomplete", "workers_free_check": cloud.plan_status if cloud else "credentials_missing",
         "workers_billing_http_status": cloud.plan_http if cloud else None,
