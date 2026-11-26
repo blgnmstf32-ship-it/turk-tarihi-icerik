@@ -1,0 +1,27 @@
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /
+    exclude-paths:
+      - requirements-skill-security.txt
+      - requirements-dependency-audit.txt
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+  - package-ecosystem: npm
+    directories:
+      - /
+      - /media_pilot
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 4
+    groups:
+      remotion:
+        patterns:
+          - remotion
+          - '@remotion/*'
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3

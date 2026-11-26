@@ -45,6 +45,25 @@ Ortalama altyazı farkı ASR zamanlarıyla karşılaştırıldı. OpenCV göster
 
 26 Kasım 2026. [Skill Security Actions](.github/workflows/skill_security.yml), PR'larda ve `main` dalına gönderimlerde üretimden ayrı çalışır. Cisco Skill Scanner 2.3.2, Git'e kayıtlı `SKILL.md` paketlerini statik ve davranışsal analizle denetler. Depo kuralları yaygın dış bağlantı komutlarını, özyinelemeli silme ve kabuğa borulanan komutları ek olarak engeller. Gitleaks 8.30.1, geçerli commit'ten erişilen Git geçmişini tarar. NVIDIA SkillEvaluator 1.2.1 değerlendirildi. Statik taramaları mevcut kontrollerle örtüştüğü ve canlı değerlendirme ayrı sağlayıcılar ile çalışma ortamı gerektirdiği için eklenmedi.
 
-Taramalar ve altı güvenlik testi ağsız Linux ağ alanında çalışır. Skill dosyaları veri olarak okunur. Üretim API anahtarları tarayıcılara verilmez. Beş eski Actions önbellek etiketi, içerikleri doğrulandıktan sonra yalnız ilgili geçmiş eşleşmenin kimliğiyle istisna edildi. Mevcut iki Skill dosyasındaki lisans alanı eksikliği bilgi düzeyinde raporlanır. Hak sahipliği doğrulanınca alan eklenebilir. Statik denetim tek başına bir Skill'in güvenliğini garanti etmez.
+Taramalar ve altı güvenlik testi ağsız Linux ağ alanında çalışır. Skill dosyaları veri olarak okunur. Üretim API anahtarları tarayıcılara verilmez. Beş eski Actions önbellek etiketi, içerikleri doğrulandıktan sonra yalnız ilgili geçmiş eşleşmenin kimliğiyle istisna edildi. Statik denetim tek başına bir Skill'in güvenliğini garanti etmez.
 
 - [Cisco 2.3.2 ve Apache-2.0 lisansı](https://pypi.org/project/cisco-ai-skill-scanner/2.3.2/) · [NVIDIA 1.2.1 ve Apache-2.0 lisansı](https://github.com/NVIDIA/SkillEvaluator/tree/v1.2.1) · [Gitleaks v8.30.1 ve MIT lisansı](https://github.com/gitleaks/gitleaks/tree/v8.30.1)
+
+## Bağımlılık ve Actions izin güvenliği
+
+26 Kasım 2026. [Dependency Security Actions](.github/workflows/dependency_security.yml) PR, `main` gönderimi ve haftalık tetikleyicide çalışır. Mevcut Cisco ve Gitleaks iş akışı korunur.
+
+| Araç | Depodaki karar |
+| --- | --- |
+| pip-audit 2.10.1 | Linux/Python 3.12 için, beş uygulama gereksinim dosyasının ortak çözümü ve iki karma sabitli tarayıcı listesi PyPI açık kayıtlarına göre taranır. Uygulama paketleri kurulmaz. Sabit Git revizyonlu Earshot'ın kayıtlı PyPI bağımlılıkları çözülür. Earshot kaynak kodu bu taramanın kapsamında değildir. [PyPA](https://github.com/pypa/pip-audit) |
+| npm audit | Ana proje ve `media_pilot` kilitleri, paket kurmadan ve yaşam döngüsü betiği çalıştırmadan npm kayıt hizmetine karşı denetlenir. [npm belgeleri](https://docs.npmjs.com/cli/v11/commands/npm-audit/) |
+| Dependabot | Pip, iki npm dizini ve GitHub Actions için haftalık güncelleme PR'ları yapılandırıldı. Karma sabitli iki denetim listesi elle güncellenir. [Ayarlar](.github/dependabot.yml) · [GitHub belgeleri](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference) |
+| Trivy | Bağımlılık ve gizli bilgi taramaları mevcut araçları tekrar eder. Kapsamda yayımlanan konteyner veya Kubernetes yoktur. Eklenmedi. [Trivy](https://github.com/aquasecurity/trivy) |
+| Semgrep CE | Uygulama kodu için SAST sunar. Bu aşamanın kapsamı bilinen bağımlılık açıkları ve Actions izinleri. Harici kural paketi yüklenmedi. [Semgrep](https://github.com/semgrep/semgrep) |
+| OpenSSF Scorecard | Depo uygulamalarını ve izinleri puanlar. Bu ihtiyaç, puan yayınlamayan ve yazma yetkisi istemeyen yerel Actions izin denetimiyle karşılandı. Eklenmedi. [OpenSSF Scorecard](https://github.com/ossf/scorecard) |
+
+Başlangıç npm raporunda ana kilitte 16 paket bulgusu, Python raporunda Pillow 12.3.0 için 42 açık kaydı vardı. Remotion ailesi 4.0.547, Zod 4.6.7 ve Pillow en az 13.0.0 sürümüne alındı. Son taramalarda her iki npm kilidi ve seçilen Python bağımlılıklarında bilinen bulgu kalmadı. Uygulama kaynak kodu ve mevcut 40 uzman korunur. Bu aşamada medyasız Python, JavaScript ve tip kontrolü çalıştırıldı. Yeni sürümlerle 15 medya testi ile üretim tekrarına girilmedi.
+
+19 iş akışı izin açısından denetlenir. Kullanılmayan üç işin depo yazma yetkisi kaldırıldı. İki kayıt işinin `contents: write` yetkisi olay ve iş koşuluna bağlı olarak dar kapsamda kalır. Günlük üretim çağrısı adlandırılmış sır alanlarıyla sınırlıdır ve onaylı demo bunları almaz. Bağımlılık işi yalnız okuma izniyle ve sağlayıcı anahtarları olmadan çalışır.
+
+Depo geçmişi ve iki Skill klasöründe açık lisans kaydı bulunamadı. Her iki Skill alanı `LicenseRef-No-License-Granted` olarak kaydedildi. Bu kayıt mevcut lisans durumunu belirtir ve yeni dağıtım izni vermez. [GitHub lisans açıklaması](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository) · [Agent Skills alan tanımı](https://agentskills.io/specification#license-field)

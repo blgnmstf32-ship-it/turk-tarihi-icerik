@@ -11,6 +11,19 @@ on:
       daily:
         type: boolean
         default: false
+    secrets:
+      GEMINI_API_KEY:
+        required: false
+      OPENROUTER_API_KEY:
+        required: false
+      CLOUDFLARE_API_TOKEN:
+        required: false
+      CLOUDFLARE_ACCOUNT_ID:
+        required: false
+      YOUTUBE_DATA_API_KEY:
+        required: false
+      IG_INSIGHTS_ACCESS_TOKEN:
+        required: false
   workflow_dispatch:
     inputs:
       topic:
@@ -144,7 +157,7 @@ jobs:
         env:
           TOPIC_ID: ${{ steps.plan.outputs.topic || inputs.topic || '' }}
           HF_HOME: ${{ github.workspace }}/.cache/huggingface
-          GEMINI_API_KEY: ${{ inputs.approved_piri != true && secrets.GEMINI_API_KEY || '' }}
+          GEMINI_API_KEY: ${{ inputs.approved_piri != true && secrets.GEMINI_API_KEY != secrets.GEMINI_IMAGE_API_KEY && secrets.GEMINI_API_KEY || '' }}
           APPROVED_PIRI: ${{ inputs.approved_piri }}
           FREE_TIER_CONFIRMED: ${{ inputs.confirm_gemini_free_project || ((inputs.daily == true || github.event_name == 'schedule') && vars.GEMINI_FREE_TIER_CONFIRMED == '1') }}
         run: |
