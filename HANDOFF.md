@@ -69,3 +69,10 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - Kayıtlar sabit Google revizyonuna ve ilgili belgeye bağlanır. Yenileme gerektiğinde upstream değişikliği ağsız Cisco ve Gitleaks kontrolünden geçir. Yalnız görevle ilgili bilgiyi Türkçe özetle. Ham Skill, kurulum komutu, uzak bağlantı, CLI ve SDK seçeneklerini otomatik etkinleştirme.
 - Yeni model veya API sürümünü belge örneğinden üretime alma. Ücretsiz hesap erişimi ve mevcut kota kapıları ayrı doğrulanır. Sunucudaki bağlam önbelleği yerel SQLite yanıt önbelleğinden ayrıdır. Tarihte Charon ve bakımda Sulafat için önce onaylı kayıt kullanılır. Görsel ve medya servisi çağrıları önceki onay kapsamına bağlıdır.
 - `python -m scripts.quality_checks` sekiz bilgi notunu ve 40 uzman eşleşmesini medyasız doğrular. Codex ve Gemini CLI uyumluluğu bu teslimde belge incelemesidir. Dış paketlerin canlı servis testi bu aşamaya dahil değildir.
+
+## OpenMontage inceleme notlarını devralma
+
+- `python -m scripts.skill_registry --brand tarih --role 11` veya `--brand bakim --role 20` ile ilgili `openmontage:` bilgi kayıtlarını bul. [Karşılaştırma](PROJECT_STATE.md#openmontage-karşılaştırması) kaynakları, açık noktaları ve lisans kararını tutar. Sekiz notun adaptörü boştur.
+- Sahne kaydı daha sonra yetkilendirilirse önce bir medyasız taslakta kimlik, başlangıç karesi, süre, konuşma aralığı, görsel kaynak ve hak kaydı, seçilen ve gerçekleşen motor, dosya özetleri, hata nedeni ve inceleme durumunu tanımla. Planı, üretim komutunu, teknik sonucu ve insan onayını ayrı tut.
+- Kaldığı yerden devam tasarımında değişen sahneyi ve bağımlılıklarını belirle. Başarılı varlığı yalnız hash, sürüm ve haklar eşleşirse yeniden kullan. Bir görsel değişiminde mevcut Charon ya da Sulafat kaydını ve onaylı altyazıyı koru. Etkilenen kesme ve senkronu yeniden doğrula.
+- Kalite doğrulamasında çözünürlük, kare hızı, senkron ve ses düzeyini ayrı ölç. Kaynak, telif ve sağlık iddiası incelemesi ile yayın onayı ayrı kapılardır. Lisans veya sağlayıcı maliyeti engelinde işlem insan incelemesine gider. Bu aşama çalışma notunda kapanır.
