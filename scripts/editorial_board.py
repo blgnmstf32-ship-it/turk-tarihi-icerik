@@ -141,11 +141,14 @@ def main():
     args=parser.parse_args();report=run_board(args.out,performance_path=args.performance or None)
     print(json.dumps({"status":report["status"],"top_idea":report["recommendations"][0]["id"],
         "recommendations":len(report["recommendations"]),"research":report["research"]["evidence_counts"],
-        "actual_llm_used":report["coordinator_llm"]["actual_llm_used"],"llm_calls":report["coordinator_llm"]["calls"],
+        "actual_llm_used":report["coordinator_llm"]["actual_llm_used"],
+        "openrouter_calls":report["coordinator_llm"]["calls"],
+        "gemini_calls":report["coordinator_llm"].get("gemini_calls", 0),
+        "cloudflare_calls":report["coordinator_llm"].get("cloudflare_calls", 0),
         "report":str(Path(args.out)/"EDITORIAL_DECISION_REPORT.md")},ensure_ascii=False,indent=2))
 
     if args.require_llm and not discussion_completed(report["coordinator_llm"]):
-        parser.exit(1, "Dört gerçek OpenRouter görüşü tamamlanamadı. Ayrıntılar karar raporunda.\n")
+        parser.exit(1, "Dört ücretsiz model görüşü tamamlanamadı. Ayrıntılar karar raporunda.\n")
 
 
 if __name__=="__main__":main()

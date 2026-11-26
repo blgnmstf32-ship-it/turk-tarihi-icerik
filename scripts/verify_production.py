@@ -34,9 +34,10 @@ def verify(out, explicit_topic="", *, require_approved_charon=False, require_3d=
            academic_metadata_leads=len(research.get("source_leads", [])),
            public_metrics=research.get("metrics_coverage", {}), provider_errors=research.get("errors", []))
     stage["ai_review"] = {"status": "passed" if llm_completed else "blocked" if llm.get("status") == "blocked" else "failed",
-                         "calls": llm["calls"], "gemini_calls": llm.get("gemini_calls", 0), "requirements_missing": llm.get("requirements_missing", []),
+                         "calls": llm["calls"], "gemini_calls": llm.get("gemini_calls", 0),
+                         "cloudflare_calls": llm.get("cloudflare_calls", 0), "requirements_missing": llm.get("requirements_missing", []),
                          "completed_discussion": llm_completed,
-                         "role_statuses": [{k: item.get(k) for k in ("role", "status", "model", "http_status", "response_source", "error_type", "attempts")}
+                         "role_statuses": [{k: item.get(k) for k in ("role", "status", "provider", "model", "http_status", "response_source", "error_type", "attempts", "queued")}
                                            for item in llm.get("stages", [])]}
     experts = report.get("ai_editor", {})
     results = [row for row in experts.get("roles", []) if row.get("role_id") and row.get("status") == "proposal"
@@ -49,7 +50,7 @@ def verify(out, explicit_topic="", *, require_approved_charon=False, require_3d=
            selected_role_ids=[row["role_id"] for row in (dispatch.get("answer") or {}).get("assignments", [])],
            completed_role_ids=[row["role_id"] for row in results], specialist_calls=experts.get("calls", 0),
            comparison_status=comparison.get("status"), comparison_source=comparison.get("response_source"),
-           gemini_calls=experts.get("gemini_calls", 0))
+           gemini_calls=experts.get("gemini_calls", 0), cloudflare_calls=experts.get("cloudflare_calls", 0))
     assess("topic_selection", bool(topic and topic["id"] == report["topic"]), rendered=report["topic"],
            expected=topic["id"] if topic else None,
            method="manual_topic" if explicit_topic else "editorial_report_and_prepared_catalogue")
