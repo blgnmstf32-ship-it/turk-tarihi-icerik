@@ -9,6 +9,7 @@ import requests
 from scripts import cloudflare_editorial as cloud
 from scripts.editorial_state import EditorialState
 from scripts.gemini_editorial import GeminiReviewSession
+from scripts.multi_llm_smoke import checks_for
 
 
 ENV = {
@@ -178,3 +179,12 @@ class MultiLlmTests(TestCase):
         self.assertEqual(google.call_count, 3)
         cf.assert_not_called()
         self.billing.assert_called_once()
+
+    def test_benchmark_flags_a_date_missing_from_the_supplied_evidence(self):
+        answer = {"hook": "Bu dişli düzenek nereden geliyor?",
+                  "text": "Dişliler MÖ 2. yüzyılda yapılmıştır.",
+                  "boundary": "Mucidin kim olduğu bilinmiyor.", "fact_ids": [1, 2]}
+        checks = checks_for(0, answer)
+        self.assertFalse(checks["adds_no_unsupported_numeric_detail"])
+        answer["text"] = "Düzeneğin parçalarında dişliler bulunur."
+        self.assertTrue(all(checks_for(0, answer).values()))
