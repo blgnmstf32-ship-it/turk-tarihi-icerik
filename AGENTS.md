@@ -71,3 +71,8 @@ Doğru, tarafsız, merak uyandırıcı, özlü. Kökenleri, dönemleri, devletle
 - OpenRouter için anahtarı ortam veya GitHub Actions secret üzerinden al. Yalnız sabit ücretsiz sürümler veya `openrouter/free` rotası kullan ve fiyatı sıfırla sınırla. `--require-llm` ile gerçek dört görüşün tamamlandığını doğrula. Çalışmayan bir görüşü başarılı sayma.
 - Gemini TTS yalnız `--voice-provider gemini_tts --confirm-gemini-free-project` ile ve faturalandırma bağlanmamış projeye ait `GEMINI_API_KEY` sağlandığında çalışır. Tek konuşma çıktısı al, hızı ve durakları modele bırak, altyazıyı yerelde konuşmaya eşle. Kota veya hata durumunda dur. Ücretli veya otomatik sağlayıcı geçişi ekleme.
 - `python -m scripts.verify_production --out ...` araştırma, editoryal görüş, konu seçimi, kaynaklı senaryo, ses, görseller, montaj ve son MP4 aşamalarını ayrı denetler. Konuşma denetimi son MP4 sesinden yapılır. GitHub'da çalışan sürümü ancak uzak commit ve Actions sonucu doğrulandıktan sonra bildir.
+
+## Terminal çıktısı ve devir bağlamı
+
+- Kısa durum için `git status --short --branch` kullan. Uzun medyasız kalite testinde ham çıktıyı dosyaya kaydet, gerçek çıkış kodunu not et ve `python -m scripts.context_output unittest DOSYA --exit-code KOD` ile önizle.
+- Hata durumunda ham kaydı incele. Kaynakları, URL'leri, sayıları ve sağlık uyarılarını birebir koru. Aynı devir belgesi birden çok kez istenirse `python -m scripts.context_output notes PROJECT_STATE.md HANDOFF.md ...` tam kopyaları kaynak yolu ile işaretler.

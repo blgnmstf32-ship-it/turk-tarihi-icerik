@@ -47,3 +47,10 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - [İzin denetimi](scripts/dependency_security.py) workflow düzeyinde salt okuma ve iş düzeyinde gerekçeli iki yazma alanı arar. Bir işin izin ihtiyacı değişirse önce tetikleyiciyi ve dal koşulunu incele. [Altı denetim testi](scripts/dependency_security_contracts.py) yetki yükseltme, gizli bilgi aktarımı ve onaysız paket kaynağı durumlarını kapsar.
 - Dependabot önerileri PR olarak gelir. Medya veya üretim bağımlılığı değişirse birleştirmeden önce uyumluluk kontrolü yap. Denetim araçlarının karma sabitli dosyalarını güncellerken tekrarlanabilir wheel kurulumu ve ilgili tarama işini birlikte doğrula.
 - İki yerel Skill açık dağıtım izni içermez. İzin doğrulanmadan açık kaynak lisansı atama. Bu kapsamda otomatik Instagram yayını açılmadı ve yeni medya üretilmedi.
+
+## Terminal ve bağlam verimliliğini devralma
+
+- Önce kısa Git durumunu al. Aynı devir belgelerini oturuma birden fazla kez eklemek gerekirse `python -m scripts.context_output notes PROJECT_STATE.md HANDOFF.md ...` kullan. Birebir aynı dosyaların tüm kaynak yolları görünür. Kopyalar arasındaki en küçük fark ayrı bölüm olarak kalır.
+- Gerçek test çıkış koduyla `python -m scripts.context_output unittest LOG --exit-code KOD` çalıştır. Actions'ta `offline-quality-logs` paketinde hem ham hem önizleme dosyasını açabilirsin. Hata veya eksik bitiş kaydında tam log korunur. Önizleme aracı arızalanırsa ham log gösterilir ve iş başarısız olur.
+- Sağlık uyarısı, kaynak/URL ve sayısal ölçüm kaybında değişikliği kabul etme. [Çıktı testlerini](scripts/context_output_contracts.py) medyasız çalıştır. Yerel token ölçümlerini yalnız ölçülmüş metin ve tokenizer ile birlikte bildir. Üretim ortamındaki kota ve faturalandırma için bu oranları kullanma.
+- RTK veya Context Mode için global hook ve MCP kurulumu yapılmadı. GitHub Actions ve Work zaten yerel Python önizlemesini çalıştırır. Yeni bir ortamda Codex/Gemini CLI eklenti desteğini ayrıca doğrula.

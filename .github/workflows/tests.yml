@@ -28,5 +28,27 @@ jobs:
       - name: Verify deterministic animation geometry and HTML without rendering
         run: node --experimental-strip-types --test tests/editorial_animation.test.mjs
       - run: python -m pip install -r requirements.txt
-      - name: Run offline Python quality tests and report media fixtures separately
-        run: python -m scripts.quality_checks
+      - name: Verify context output preserves evidence and failures
+        run: python -m unittest scripts.context_output_contracts -v
+      - name: Run offline Python quality tests and preview the log
+        run: |
+          folder="$RUNNER_TEMP/quality-logs"
+          mkdir -p "$folder"
+          raw="$folder/quality.raw.txt"
+          preview="$folder/quality.preview.txt"
+          status=0
+          python -m scripts.quality_checks > "$raw" 2>&1 || status=$?
+          if ! python -m scripts.context_output unittest "$raw" --exit-code "$status" > "$preview"; then
+            cp "$raw" "$preview"
+            if [[ "$status" == 0 ]]; then status=2; fi
+          fi
+          cat "$preview"
+          wc -c "$raw" "$preview"
+          exit "$status"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: always()
+        with:
+          name: offline-quality-logs
+          path: ${{ runner.temp }}/quality-logs/*.txt
+          if-no-files-found: ignore
+          retention-days: 7
