@@ -11,7 +11,7 @@ permissions:
 
 concurrency:
   group: approved-media-final-qa-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   media-tests:
@@ -46,6 +46,7 @@ jobs:
     env:
       DO_NOT_TRACK: "1"
       HYPERFRAMES_NO_TELEMETRY: "1"
+      HYPERFRAMES_NO_UPDATE_CHECK: "1"
       HF_HUB_OFFLINE: "1"
       OMP_NUM_THREADS: "2"
       NUMBA_NUM_THREADS: "2"
@@ -110,16 +111,25 @@ jobs:
           34ce3fe1c5041027b3f8d42912270993f986dbc4bb34cf27f951e34a1e453913  vocabulary.txt
           SHAS
           )
-      - name: Render and measure the selected brand; no provider keys
+      - name: Render and measure on a loopback-only CPU runner
         env:
           BRAND: ${{ matrix.brand }}
         run: |
           browser=$(find node_modules/.remotion -name chrome-headless-shell -type f | head -n 1)
           test -x "$browser"
-          export HYPERFRAMES_BROWSER_PATH="$PWD/$browser"
-          python -m scripts.final_media_qa --brand "$BRAND" --history output/qa-input/history \
-            --beauty output/qa-input/beauty --beauty-assets output/qa-input/assets \
-            --model output/qa-input/whisper --browser "$browser" --out output/final-qa
+          sudo unshare --net -- bash -euc '
+            ip link set lo up
+            test -z "$(ip route show default)"
+            test -z "$(ip -6 route show default)"
+            ip -brief address
+            exec runuser -u "$1" -- env "PATH=$2" "GITHUB_RUN_ID=$3" \
+              DO_NOT_TRACK=1 HYPERFRAMES_NO_TELEMETRY=1 HYPERFRAMES_NO_UPDATE_CHECK=1 \
+              HF_HUB_OFFLINE=1 OMP_NUM_THREADS=2 NUMBA_NUM_THREADS=2 \
+              "HYPERFRAMES_BROWSER_PATH=$PWD/$4" "$5" -m scripts.final_media_qa \
+              --brand "$6" --history output/qa-input/history --beauty output/qa-input/beauty \
+              --beauty-assets output/qa-input/assets --model output/qa-input/whisper \
+              --browser "$4" --out output/final-qa
+          ' _ "$(id -un)" "$PATH" "$GITHUB_RUN_ID" "$browser" "$(command -v python)" "$BRAND"
       - name: Write measurement summary
         if: always()
         env:
