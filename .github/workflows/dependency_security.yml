@@ -57,6 +57,7 @@ jobs:
           audit_dir=$(mktemp -d)
           cp package.json package-lock.json "$audit_dir/"
           cd "$audit_dir"
+          touch user.npmrc global.npmrc
           env -i "PATH=$PATH" LANG=C.UTF-8 npm audit --package-lock-only --ignore-scripts \
-            --audit-level=low --registry=https://registry.npmjs.org --userconfig=/dev/null \
-            --globalconfig=/dev/null
+            --audit-level=low --registry=https://registry.npmjs.org --userconfig="$audit_dir/user.npmrc" \
+            --globalconfig="$audit_dir/global.npmrc"
