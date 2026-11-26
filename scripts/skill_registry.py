@@ -109,6 +109,28 @@ def _entry(identifier, task, roles, *, source, license, metadata=None, evidence=
     }
 
 
+def _review_notes(namespace, source, test_file):
+    if not re.fullmatch(r"[0-9a-f]{40}", source["revision"]):
+        raise ValueError(f"{namespace} knowledge source must be pinned to a full Git revision")
+    for name, note in source["notes"].items():
+        origin = {
+            "repository": source["repository"], "revision": source["revision"],
+            "path": note["path"] if "path" in note else source["skill_path"],
+            "license_path": "LICENSE",
+        }
+        if "docs" in note:
+            origin["docs"] = note["docs"]
+        yield _entry(
+            f"{namespace}:{_id(name)}", note["task"], _roles(note["role_keys"]),
+            source=origin, license={"code": source["license"], "scope": "upstream_reference"},
+            metadata={
+                "security": "curated_reference_only",
+                "test": "guidance_contract_only", "evidence": test_file,
+                "note": "Yerel Türkçe inceleme notu. Kaynak dosya ve çalıştırma bileşenleri eklenmedi.",
+            },
+        )
+
+
 @lru_cache(maxsize=1)
 def _inventory():
     manifest = _read("config/skill_registry.json")
@@ -173,23 +195,10 @@ def _inventory():
                    source={"path": "config/reels_playbook.json", "key": name}, license={"code": NO_LICENSE},
                    metadata={"test": "guidance_contract_only", "evidence": "offline_quality"}, evidence=evidence))
 
-    gemini = manifest["gemini_knowledge"]
-    if not re.fullmatch(r"[0-9a-f]{40}", gemini["revision"]):
-        raise ValueError("Gemini knowledge source must be pinned to a full Git revision")
-    for name, note in gemini["notes"].items():
-        add(_entry(
-            f"gemini:{_id(name)}", note["task"], _roles(note["role_keys"]),
-            source={
-                "repository": gemini["repository"], "revision": gemini["revision"],
-                "path": gemini["skill_path"], "license_path": "LICENSE", "docs": note["docs"],
-            },
-            license={"code": gemini["license"], "scope": "upstream_reference"},
-            metadata={
-                "security": "curated_reference_only",
-                "test": "guidance_contract_only", "evidence": "tests/test_gemini_skill_notes.py",
-                "note": "Yerel Türkçe inceleme notu. Üst paket, SDK, CLI ve servis çalıştırması bu kayda dahil değildir.",
-            },
-        ))
+    for namespace, test_file in (("gemini", "tests/test_gemini_skill_notes.py"),
+                                 ("openmontage", "tests/test_openmontage_notes.py")):
+        for entry in _review_notes(namespace, manifest[f"{namespace}_knowledge"], test_file):
+            add(entry)
 
     for pack in skill_index():
         owner, repo = pack["repository"].split("/")

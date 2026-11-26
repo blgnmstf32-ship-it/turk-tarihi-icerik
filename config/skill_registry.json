@@ -97,6 +97,53 @@
       }
     }
   },
+  "openmontage_knowledge": {
+    "repository": "OpenMontageInc/OpenMontage",
+    "revision": "2e003e65fa99a0f329478a2c1cdcf26bc481933a",
+    "license": "AGPL-3.0",
+    "notes": {
+      "production-handoffs": {
+        "path": "docs/ARCHITECTURE.md",
+        "task": "Araştırma, senaryo, sahne planı, varlık seçimi, montaj ve inceleme arasındaki teslimi kısa bir kayıtla belirt. Her teslimin sorumlusunu, kullanılan girdiyi, doğrulama sonucunu ve bekleyen insan onayını göster.",
+        "role_keys": {"tarih": [1, 2, 4, 7, 11, 19, 20], "bakim": [1, 2, 3, 4, 10, 11, 19, 20]}
+      },
+      "specialist-coordination": {
+        "path": "skills/pipelines/cinematic/executive-producer.md",
+        "task": "Sahne veya taslak kararı için bir sorumlu ve ilgili bağımsız kontrolü belirle. Aşama çıktısını, kaynak kanıtını ve açık soruyu sonraki uzmana aktar. Aynı konuyu yeniden araştırmayı ve gereksiz model çağrısını önle.",
+        "role_keys": {"tarih": [1, 3, 4, 5, 9, 10, 13, 17, 18], "bakim": [1, 2, 4, 5, 6, 7, 8, 9, 14, 18]}
+      },
+      "scene-tool-fit": {
+        "path": "docs/ARCHITECTURE.md",
+        "task": "Sahnenin kanıt, anlatım veya görsel açıklık ihtiyacını tanımla. Mevcut izinli araçları girdi, lisans, yerel hazır oluş ve süreye göre karşılaştır. Gerekli araç yoksa engeli belirt ve güvenli yerel seçeneğin yaratıcı farkını yaz.",
+        "role_keys": {"tarih": [3, 11, 12, 13, 15, 17], "bakim": [1, 11, 12, 13, 14, 15]}
+      },
+      "storyboard": {
+        "path": "skills/pipelines/cinematic/scene-director.md",
+        "task": "Her sahneye sabit kimlik, konuşma aralığı, bir görsel odak, plan ölçeği, hareket, geçiş ve kaynak ver. Arşiv görüntüsünü, temsili canlandırmayı ve bakım şemasını doğru etiketle. Geçişte bakış yönü ve hareket sürekliliğini kontrol et.",
+        "role_keys": {"tarih": [2, 5, 6, 7, 11, 12, 13, 18], "bakim": [4, 5, 10, 11, 12, 13, 14, 18]}
+      },
+      "render-provenance": {
+        "path": "tools/video/video_compose.py",
+        "task": "Ana kompozisyon tercihini ve sahneye özel katkıları ayrı kaydet. Remotion ana kurgu, HyperFrames yerel grafik klibi, Blender ve Three.js sahne katkısı, FFmpeg miks ve teslim rolünü korur. Uygulanan geri dönüşü ve etkisini kalite raporunda görünür kıl.",
+        "role_keys": {"tarih": [11, 13, 15, 16, 20], "bakim": [13, 14, 15, 20]}
+      },
+      "media-synchronization": {
+        "path": "pipeline_defs/cinematic.yaml",
+        "task": "Görüntü, altyazı, animasyon ve ses işaretlerini onaylı anlatım zaman çizelgesine bağla. Tarihte Charon, bakımda Sulafat kaydını koru. Yalnız bir görsel değiştiyse ses ve altyazı hash'lerini koru ve geçişi yeniden kontrol et.",
+        "role_keys": {"tarih": [8, 11, 13, 14, 15, 16], "bakim": [10, 11, 14, 15, 16, 17, 20]}
+      },
+      "selective-recovery": {
+        "path": "lib/checkpoint.py",
+        "task": "Bir hata için sahne kimliği, neden, etkilenen girdiler ve izinli tekrar sınırını belgelemeyi öner. Başarısız parçayı ve yalnız doğrudan etkilenen komşu geçişleri yeniden incele. Lisans veya kaynak sorunu için otomatik deneme yerine insan kararı iste.",
+        "role_keys": {"tarih": [11, 13, 15, 16, 17, 20], "bakim": [1, 5, 12, 15, 16, 20]}
+      },
+      "cache-revalidation": {
+        "path": "lib/asset_cache.py",
+        "task": "Yeniden kullanım değerlendirmesinde dosya özeti, girdi sürümü, render ayarı, hak durumu ve önceki kalite kanıtını birlikte karşılaştır. Sırf dosya bulundu diye kullanma. Teknik uygunluğu, içerik doğruluğunu ve insan onayını ayrı doğrula.",
+        "role_keys": {"tarih": [3, 8, 14, 15, 16, 17, 18, 20], "bakim": [1, 5, 12, 13, 15, 16, 17, 20]}
+      }
+    }
+  },
   "evidence": {
     "cpu_pilot": "https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45711789803",
     "final_media": "https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45828936221",
