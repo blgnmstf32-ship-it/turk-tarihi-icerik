@@ -82,7 +82,7 @@ class MultiLlmTests(TestCase):
                 session = self.session(google, cf)
                 session.budget.db.execute("DELETE FROM usage")
                 reply = session.evaluate("İçerik Stratejisti", "Kısa Türkçe öneri", {"id": i}, validate)
-                self.assertEqual((reply["status"], reply["model"]), ("proposal", cloud.GLM))
+                self.assertEqual((reply["status"], reply["model"]), ("proposal", cloud.GEMMA))
                 self.assertEqual(google.call_count, 2)
                 cf.assert_called_once()
 
@@ -153,7 +153,7 @@ class MultiLlmTests(TestCase):
             self.assertEqual(result["reason"], "request_budget_exhausted")
             self.assertTrue(result["queued"])
         self.assertEqual(request.call_count, 2)
-        self.assertEqual(cf.call_count, 2)
+        self.assertEqual(cf.call_count, 4)
 
     def test_model_specific_probe_never_uses_the_fallback(self):
         google = mock.Mock(return_value=response(503))
@@ -188,3 +188,75 @@ class MultiLlmTests(TestCase):
         self.assertFalse(checks["adds_no_unsupported_numeric_detail"])
         answer["text"] = "Düzeneğin parçalarında dişliler bulunur."
         self.assertTrue(all(checks_for(0, answer).values()))
+
+    def test_glm_probe_read_timeout_does_not_affect_gemma(self):
+        cf = mock.Mock(side_effect=[requests.ReadTimeout("secret diagnostics"), cloud_answer()])
+        router = self.session(mock.Mock(), cf)
+        transport = router.cloudflare
+        parse = cloud.turkish_json_parser(validate)
+        answer, diagnostic = transport.probe(cloud.GLM, "Kısa Türkçe öneri", {}, parse, 768)
+        self.assertIsNone(answer)
+        self.assertEqual(diagnostic["status"], "cloudflare_read_timeout")
+        self.assertIsNone(diagnostic["http_status"])
+        self.assertNotIn("secret diagnostics", json.dumps(diagnostic))
+        answer, attempts = transport.evaluate("Kısa Türkçe öneri", {}, parse, 768, 0)
+        self.assertEqual(answer, GOOD)
+        self.assertEqual([item["model"] for item in attempts], [cloud.GEMMA])
+        ledger = {item["model"]: item for item in self.state.cloudflare_report()}
+        self.assertEqual(ledger[cloud.GLM]["metered_attempts"], 0)
+        self.assertGreater(ledger[cloud.GLM]["reserved_neurons"], 0)
+        self.assertEqual(ledger[cloud.GEMMA]["metered_attempts"], 1)
+
+    def test_gemma_model_429_falls_through_once_and_skips_only_that_model(self):
+        cf = mock.Mock(side_effect=[response(429), cloud_answer(), cloud_answer()])
+        router = self.session(mock.Mock(return_value=response(429)), cf)
+        task = ("Alan Araştırmacısı", "Kısa Türkçe öneri", {"id": "a"}, validate)
+        result = router.evaluate(*task)
+        self.assertEqual(result["model"], cloud.QWEN)
+        self.assertEqual([a["http_status"] for a in result["attempts"]], [429, 429, 200])
+        next_result = router.evaluate(task[0], task[1], {"id": "b"}, validate)
+        self.assertEqual(next_result["model"], cloud.QWEN)
+        self.assertEqual(next_result["attempts"][0]["status"], "cloudflare_model_cooldown")
+        self.assertEqual([call.kwargs["json"]["model"] for call in cf.call_args_list],
+                         [cloud.GEMMA, cloud.QWEN, cloud.QWEN])
+
+    def test_bad_alternate_response_does_not_cool_the_provider(self):
+        cf = mock.Mock(side_effect=[cloud_answer({"answer": "English output only for this task."}),
+                                    response(503), cloud_answer()])
+        router = self.session(mock.Mock(return_value=response(429)), cf)
+        result = router.evaluate("İçerik Stratejisti", "Kısa Türkçe öneri", {"id": 1}, validate)
+        self.assertTrue(result["queued"])
+        next_result = router.evaluate("İçerik Stratejisti", "Kısa Türkçe öneri", {"id": 2}, validate)
+        self.assertEqual(next_result["model"], cloud.GEMMA)
+        self.assertEqual(next_result["status"], "proposal")
+
+    def test_alternate_respects_shared_reservation_limit(self):
+        cf = mock.Mock(return_value=cloud_answer())
+        self.assertIsNotNone(self.state.reserve_cloudflare("bakim", cloud.GEMMA, 8999, 9000))
+        router = self.session(mock.Mock(return_value=response(429)), cf, brand="tarih")
+        result = router.evaluate("Alan Araştırmacısı", "Kısa Türkçe öneri", {}, validate)
+        self.assertEqual(result["attempts"][-1]["status"], "cloudflare_daily_limit")
+        self.assertTrue(result["queued"])
+        cf.assert_not_called()
+
+    def test_live_benchmark_keeps_gemma_success_when_optional_model_fails(self):
+        from scripts.multi_llm_smoke import run
+
+        history = {"hook": "Bu dişli düzenek nereden geliyor?", "text": "Parçalarında dişliler vardır.",
+                   "boundary": "Mucidin kim olduğu kesin bilinmiyor.", "fact_ids": [1, 2]}
+        beauty = {"hook": "Cildin katmanlarını birlikte inceleyelim mi?",
+                  "text": "Bu şema cilt katmanlarını gösterir.",
+                  "boundary": "Bu temsili şema tedavi sonucu göstermez.", "fact_ids": [1, 2]}
+        with mock.patch.object(cloud.requests, "get", self.billing), mock.patch.object(
+            cloud.requests, "post", side_effect=[cloud_answer(history), cloud_answer(beauty),
+                                                  cloud_answer(beauty), requests.ReadTimeout()],
+        ):
+            report = run(self.state, Path(self.root.name) / "fixture.sqlite3", "unit")
+        self.assertEqual(report["status"], "passed")
+        self.assertEqual(report["simulated_gemini_responses"], [429])
+        self.assertEqual(report["real_cloudflare_model_calls"], 4)
+        self.assertTrue(all(row["case_passed"] for row in report["cases"]))
+        qwen, glm = report["optional_model_checks"]
+        self.assertTrue(qwen["case_passed"])
+        self.assertFalse(glm["case_passed"])
+        self.assertEqual(glm["attempts"][0]["status"], "cloudflare_read_timeout")
