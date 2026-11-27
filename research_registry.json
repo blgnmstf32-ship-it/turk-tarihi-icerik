@@ -1,0 +1,57 @@
+{
+  "knowledge": {
+    "last30days": {
+      "repository": "mvanhorn/last30days-skill",
+      "revision": "64b1f006f800640022ce07f51de5ce56aad34b76",
+      "license": "MIT",
+      "notes": {
+        "trend-window": {
+          "path": "skills/last30days/SKILL.md",
+          "task": "Son 30 günlük trend taramasında yayın tarihi ile toplama tarihini ayrı kaydet. Yeniden paylaşımları tek gözlem say. Bağımsız ikinci kaynak ve dönem dışı örnekler yoksa artışı belirsiz bırak.",
+          "role_keys": {"tarih": [1], "bakim": [2, 3, 7]}
+        }
+      }
+    },
+    "open-research": {
+      "repository": "pradyumnasagar/open-research-skills",
+      "revision": "9c0b41e2036cc5588c699f06e658ea6dc3b9685d",
+      "license": "MIT",
+      "notes": {
+        "evidence-scope": {
+          "path": "skills/literature-research/systematic-review/SKILL.md",
+          "task": "Araştırma sorusunu, taranan dizini, tarih aralığını ve seçim ölçütünü kaydet. Ön baskı, özgün çalışma, derleme ve alan rehberini ayrı değerlendir. Örneklem ve çalışma tasarımını görmeden sonucu genelleme.",
+          "role_keys": {"tarih": [3, 5, 18], "bakim": [4, 5, 20]}
+        }
+      }
+    },
+    "factual-research": {
+      "repository": "masluny/factual-research",
+      "revision": "23f71c7c19be720e2b32d2d5dce1fc7052e474e5",
+      "license": "MIT",
+      "notes": {
+        "claim-passage": {
+          "path": "factual_research/skill/WORKFLOW.md",
+          "task": "Her önemli iddiayı asıl kaynağın sayfa, bölüm veya tablo konumuna bağla. Sayı, birim ve örneklem o alıntıyla uyuşmalı. Karşı kanıtı ve belirsizliği belirt. Sözcük eşleşmesi tek başına doğruluk kararı vermez.",
+          "role_keys": {"tarih": [3, 4, 5, 18], "bakim": [4, 5, 20]}
+        }
+      }
+    }
+  },
+  "trends": {
+    "source": {
+      "docs": "https://support.google.com/trends/answer/3076011",
+      "api": "https://developers.google.com/search/apis/trends"
+    },
+    "task": "Google Trends gözlemini ülke, yayın ve toplama zamanı ile ilişkilendir. Yaklaşık arama aralığını olduğu gibi aktar. Trend gözlemi Instagram erişimi, kesin arama hacmi veya bir iddiayı doğrulayan kanıt sayılmaz.",
+    "role_keys": {"tarih": [1, 20], "bakim": [2, 3, 7, 19]}
+  },
+  "trafilatura": {
+    "mode": "optional",
+    "adapter": "scripts/research_documents.py:read_snapshot",
+    "test": "adapter_contract_only",
+    "evidence": "scripts/research_document_contracts.py",
+    "hardware": "Hash sabitli CPython 3.12 Linux x86-64 CPU wheel ortamı",
+    "note": "Onaylı yerel HTML, 120000 bayt, kaynak/tarih/SHA-256, az sayıda kanıt adayı. Ağ erişimi, OCR, medya veya yayın izni yok.",
+    "role_keys": {"tarih": [3, 4, 5, 18], "bakim": [4, 5, 20]}
+  }
+}
