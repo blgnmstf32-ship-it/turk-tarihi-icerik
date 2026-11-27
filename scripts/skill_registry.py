@@ -197,7 +197,8 @@ def _inventory():
 
     for namespace, test_file in (("gemini", "tests/test_gemini_skill_notes.py"),
                                  ("openmontage", "tests/test_openmontage_notes.py"),
-                                 ("cinecode", "tests/test_cinecode_notes.py")):
+                                 ("cinecode", "tests/test_cinecode_notes.py"),
+                                 ("instagram", "tests/test_instagram_skill_notes.py")):
         for entry in _review_notes(namespace, manifest[f"{namespace}_knowledge"], test_file):
             add(entry)
 
@@ -282,6 +283,13 @@ def editorial_method(technique):
     """Resolve a configured Reels method without sending the inventory to a model."""
     entries, _, _ = _inventory()
     return entries.get(f"editorial:{technique}", {}).get("task")
+
+
+def instagram_editorial_notes(brand, role_id):
+    """Return only the local, role-specific Instagram editorial guidance."""
+    entries, experts, _ = _inventory()
+    expert = experts.get(_key(brand, role_id), {})
+    return [entries[key]["task"] for key in expert.get("entry_ids", ()) if key.startswith("instagram:")]
 
 
 def review_options(brand, role_id):

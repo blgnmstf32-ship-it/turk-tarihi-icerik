@@ -185,6 +185,58 @@
       }
     }
   },
+  "instagram_knowledge": {
+    "repository": "Jakeschincariol/instagram-agent-skill",
+    "revision": "d03c56bb598be770c60b201f94237e5d1a4268a6",
+    "license": "MIT",
+    "notes": {
+      "hook-delivery": {
+        "path": "skills/ig-reel/hooks.json",
+        "task": "Beş açılışın her biri için söylenen cümleyi, kısa ekran metnini ve ilk karedeki kanıtı ayrı düşün. Tarihte belge veya nesne ayrıntısı, bakımda güvenli uygulama anı ya da kaynaklı bir soru seç. Başkasına ait deneyimi kişisel tanıklık gibi anlatma.",
+        "role_keys": {"tarih": [6, 7, 11], "bakim": [10, 18]}
+      },
+      "spoken-beat-estimate": {
+        "path": "skills/ig-reel/beats.py",
+        "task": "Taslakta her anlam biriminin yaklaşık süresini, ilk kanıtın giriş anını ve uzun durağan bölümleri işaretle. Türkçe sayıları, özel adları ve durakları hesaba kat. Tahmini süreyi ölçülmüş kayıttan ayır. Mevcut onaylı ses varsa zamanlamayı ona göre incele.",
+        "role_keys": {"tarih": [7, 8, 15], "bakim": [10, 15, 16]}
+      },
+      "competitor-relative-baseline": {
+        "path": "skills/ig-viral/SKILL.md",
+        "task": "Yalnız izinli olarak sağlanan gözlemlerde rakip Reels izlenmesini aynı hesabın yakın tarihli, eş yaşlı ve benzer format örneklerinin medyanına göre yorumla. Örneklem ve dönem belli değilse oran çıkarma. Biçim hipotezini ve hipotezin belirsizliğini kaydet.",
+        "role_keys": {"tarih": [1, 20], "bakim": [2, 6, 7, 19]}
+      },
+      "audit-stage-evidence": {
+        "path": "skills/ig-audit/SKILL.md",
+        "task": "Üçüncü saniyede kalan izleyici oranı, ortalama izleme ve ulaşılan hesap başına takip ayrı soruları yanıtlar. Üçüncü saniye oranını yalnız gerçek ölçüm varsa kullan. Ölçüme kaynağı, pencereyi, paydayı ve örneklemi ekle. Düşük veya eksik veriden neden çıkarma. Editoryal puanı ölçümlere katma.",
+        "role_keys": {"tarih": [19, 20], "bakim": [1, 19, 20]}
+      },
+      "caption-collapsed-preview": {
+        "path": "skills/ig-caption/caption.py",
+        "task": "Açıklamanın kısaltılmış mobil görünümünü taslak incelemesinde oku. Konu veya kaynaklı vaat ilk görünür bölümde anlaşılır kalsın. Uzun açıklama, kaynaklar ve mevcut hashtag üst sınırı korunur. Arayüzün kesme yerini sabit kabul etme.",
+        "role_keys": {"tarih": [9, 10, 16], "bakim": [8, 9, 18]}
+      },
+      "story-sequence": {
+        "path": "skills/ig-story/SKILL.md",
+        "task": "Yalnız bağlantılı sessiz hikâyelerde sırayı merak, görülebilir kanıt ve kısa sonuç olarak tasarla. Her karede tek düşünceyi koru. Tarihte belge ayrıntısını, bakımda koşul veya önemli uyarıyı okunur tut. Mevcut slotları ve insan yayın onayını koru.",
+        "role_keys": {"tarih": [11, 16, 19], "bakim": [11, 19, 20]}
+      },
+      "spoken-turkish-edit": {
+        "path": "skills/ig-human/SKILL.md",
+        "task": "Türkçe anlatımı sesli okuma mantığıyla gözden geçir. Genel girişleri somut bağlama bağla, art arda aynı uzunluktaki cümleleri doğal nefes gruplarına ayır. Alıntıları, kaynakları, kişi adlarını, tarihleri, ölçü birimlerini ve sağlık uyarılarını koru. Dedektör puanı kullanma.",
+        "role_keys": {"tarih": [7, 8, 9], "bakim": [10, 16, 20]}
+      },
+      "calendar-angle-balance": {
+        "path": "skills/ig-plan/SKILL.md",
+        "task": "Mevcut takvimde yinelenen bir ana temayı, farklı kanıt ve izleyici amacı yoksa işaretle. Tarihte belge, olay ve mekanizma açılarını, bakımda rutin, uygulama ve kaynak denetimi açılarını çeşitlendir. Aynı konuya dönüşte yeni katkıyı bir cümleyle belirt. Sıklık ve yayın saatini değiştirme.",
+        "role_keys": {"tarih": [1, 19], "bakim": [1, 2, 3, 19]}
+      },
+      "source-extract-repurpose": {
+        "path": "skills/ig-repurpose/SKILL.md",
+        "task": "Onaylı uzun kaynaktan kendi başına anlamlı bir iddia, mekanizma veya arşiv ayrıntısı seç. Kaynak, alıntı yeri ve kullanım iznini türev taslakta taşı. Reels, hikâye veya açıklama için aynı özeti tekrarlama. Bağlam ve istisna ayrı okununca da anlaşılır olsun.",
+        "role_keys": {"tarih": [3, 4, 7, 9, 11, 17], "bakim": [4, 5, 10, 11]}
+      }
+    }
+  },
   "evidence": {
     "cpu_pilot": "https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45711789803",
     "final_media": "https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45828936221",
