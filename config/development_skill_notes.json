@@ -1,0 +1,64 @@
+{
+  "superpowers": {
+    "repository": "obra/superpowers",
+    "revision": "22f0b463e7a5e579904dd6211a520321035526f7",
+    "license": "MIT",
+    "notes": {
+      "isolate-failure": {
+        "path": "skills/systematic-debugging/SKILL.md",
+        "task": "Bir hata için önce beklenen davranışı ve en küçük tekrar örneğini kaydet. Veri sınırlarına tek tek bak, her denemede bir değişkeni değiştir ve bulunan nedeni onu koruyan regresyonla doğrula.",
+        "role_keys": {"tarih": [13, 16], "bakim": [13, 15, 20]}
+      }
+    }
+  },
+  "matt-pocock": {
+    "repository": "mattpocock/skills",
+    "revision": "6f7f7831a625f040a8e06a0e7954826b87ce775a",
+    "license": "MIT",
+    "notes": {
+      "handoff-readiness": {
+        "path": "skills/engineering/triage/SKILL.md",
+        "task": "Bir görevi uzmana devretmeden önce sorumluyu, kabul kanıtını ve eksik girdiyi yaz. Engelli görevle hazır görevin durumunu ayır. Çözüme dair iddiayı tamamlanmış iş olarak işaretleme.",
+        "role_keys": {"tarih": [4, 13, 19], "bakim": [1, 2, 14, 20]}
+      }
+    }
+  },
+  "addy-osmani": {
+    "repository": "addyosmani/agent-skills",
+    "revision": "e997ac5b9a74eab332d5e9793bb38a38c8cfdd74",
+    "license": "MIT",
+    "notes": {
+      "acceptance-proof": {
+        "path": "skills/spec-driven-development/SKILL.md",
+        "task": "Değişen davranış için ölçülebilir kabul örneği ve kapsam dışı maddeleri yaz. Önceki çalışan yolları koruyan bir örneği de dene. Kanıtı test çıktısı ve sürümüyle teslim et.",
+        "role_keys": {"tarih": [11, 16], "bakim": [1, 14, 20]}
+      }
+    }
+  },
+  "anthropic": {
+    "repository": "anthropics/skills",
+    "revision": "e4bb5d960d87126ff3b3a8af1a104b7db67560ba",
+    "license": "Apache-2.0",
+    "license_path": "skills/webapp-testing/LICENSE.txt",
+    "notes": {
+      "mobile-preview-check": {
+        "path": "skills/webapp-testing/SKILL.md",
+        "task": "Yerel önizlemede uygulamanın hazır işaretini bekle. Mobil ekran genişliğinde başlığın kesilmesini, taşmayı ve erişilebilir denetimleri ölç. DOM ölçümünü üretilmiş videonun görsel onayı olarak kullanma.",
+        "role_keys": {"tarih": [12, 16], "bakim": [11, 18, 20]}
+      }
+    }
+  },
+  "openai": {
+    "repository": "openai/skills",
+    "revision": "49f948faa9258a0c61caceaf225e179651397431",
+    "license": "Apache-2.0",
+    "license_path": "skills/.curated/gh-fix-ci/LICENSE.txt",
+    "notes": {
+      "ci-evidence": {
+        "path": "skills/.curated/gh-fix-ci/SKILL.md",
+        "task": "Başarısız PR kontrolünde son dal commit'i ile çalıştırmanın commit'ini eşle. İlk hatalı adımla sonradan iptal olan adımları ayır. Düzeltmeyi yeni ve başarılı koşunun bağlantısıyla doğrula.",
+        "role_keys": {"tarih": [16, 19], "bakim": [1, 19, 20]}
+      }
+    }
+  }
+}

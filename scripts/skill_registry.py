@@ -116,7 +116,7 @@ def _review_notes(namespace, source, test_file):
         origin = {
             "repository": source["repository"], "revision": source["revision"],
             "path": note["path"] if "path" in note else source["skill_path"],
-            "license_path": "LICENSE",
+            "license_path": source.get("license_path", "LICENSE"),
         }
         if "docs" in note:
             origin["docs"] = note["docs"]
@@ -205,6 +205,9 @@ def _inventory():
     research = _read("config/research_registry.json")
     for namespace, source in research["knowledge"].items():
         for entry in _review_notes(namespace, source, "tests/test_research_tools.py"):
+            add(entry)
+    for namespace, source in _read("config/development_skill_notes.json").items():
+        for entry in _review_notes(namespace, source, "tests/test_development_skill_notes.py"):
             add(entry)
     trends = research["trends"]
     add(_entry("research:google-trends-rss", trends["task"], _roles(trends["role_keys"]),

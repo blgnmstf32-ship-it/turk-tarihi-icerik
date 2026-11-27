@@ -46,6 +46,11 @@ TASK_NOTES = {
     "image-review": ("gemini:multimodal", "gemini:image-generation"),
     "reference-review": ("cinecode:reference-form",),
     "spoken-edit": ("instagram:spoken-turkish-edit",),
+    "failure-diagnosis": ("superpowers:isolate-failure",),
+    "task-handoff": ("matt-pocock:handoff-readiness",),
+    "acceptance-review": ("addy-osmani:acceptance-proof",),
+    "local-preview-review": ("anthropic:mobile-preview-check",),
+    "ci-review": ("openai:ci-evidence",),
 }
 SCENE_NOTES = {
     ("visuals", "map"): ("openmontage:storyboard", "cinecode:camera-cut-continuity"),
