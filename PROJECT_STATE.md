@@ -351,3 +351,23 @@ Kayıpsız birleştirmede kapsam dışındaki kareler ve iki AAC akışı özetl
 - `Nemlendirici_15A1.mp4` SHA-256 `dc408dda486437aa552f43f82ebc76faede8a545ea2aec9afcafbb7bcf186b77`
 - Yerelde 234 Python testi tam çalıştırmada geçti. Sonradan eklenen hedef seçimi testi de geçti. İki JavaScript testi, Remotion tip kontrolü, iki OTIO sözleşmesi ve altı izin sözleşmesi geçti. 20 iş akışının izin denetiminde bulgu yok.
 - 40 ana uzman ve 163 Registry kaydı doğrulandı. Ücretli API çağrısı 0, Instagram otomatik paylaşımı kapalı.
+
+## 15B · Yeni konular ve günlük kapasite
+
+27 Kasım 2026. Başlangıç `e7c8f5d`. Günlük işletim hedefi iki markada toplam **2 Reels ve 20 sessiz hikâye**. Sıralı kapasite iş yükü 3 tarih ve 2 güzellik Reels planı, tarih için 10 PNG ve güzellik için 10 PNG olarak kuruldu. Havuzdaki yeni kimlikler, başlıklar ve hikâye metinleri depo kataloglarıyla karşılaştırıldı. [Konu, iddia ve kaynak kayıtları](data/capacity_15b.json)
+
+| İş | Ölçülen çıktı | Duvar saati | CPU süresi | Tepe süreç ağacı RSS |
+| --- | --- | ---: | ---: | ---: |
+| Gerçek sessiz hikâye | 20 farklı 1080×1920 PNG | 2,67 sn | 2,72 CPU-sn | 51,7 MiB |
+| Editoryal ve kurgu planı | 5 plan, 50 sahne ve doğrulanmış 5 OTIO dosyası | 0,33 sn | 0,20 CPU-sn | 55,4 MiB |
+| Görsel render simülasyonu | 5 sessiz 70 sn, 1080×1920, 30 fps MP4 | 103,57 sn | 286,71 CPU-sn | 586,4 MiB |
+| Simülasyon ölçümü | 5/5 siyah ve donmuş kare denetimi | 20,96 sn | 49,46 CPU-sn | 129,1 MiB |
+| Tek sıralı koşu | Planlar, hikâyeler, simülasyonlar ve denetimler | **127,61 sn** | **339,18 CPU-sn** | **586,4 MiB** |
+
+CPU koşucusunda 9 erişilebilir mantıksal çekirdek ve 9.967 MiB RAM vardı. Kültepe ve fırça planları, simülasyonları ve ölçümleri ile 20 gerçek hikâyenin aşama toplamı **53,49 sn**. Bu, iki video için aynı koşudan alınan bir alt küme. Onaylı seslendirme, nihai görüntü montajı, tam medya QA ve insan incelemesi için günlük kapasite ölçülemedi.
+
+- **Tarih** Kültepe’de gümüş borcunun kaydı, Lewis satranç taşlarının ait olduğu takımlar ve Ife’de kayıp mum dökümü. Kaynaklarda olasılık olarak verilen buluntu yeri, atölye ve kimlik sınırları anlatıda korundu. [The Met](https://www.metmuseum.org/art/collection/search/325857) · [National Museums Scotland](https://www.nms.ac.uk/discover-catalogue/the-story-of-the-lewis-chess-pieces) · [The Met · Ife](https://www.metmuseum.org/essays/ife-terracottas-1000-1400-a-d)
+- **Güzellik** Makyaj fırçasının kurutulması ve göz makyajı aplikatörü hijyeni. İddialar tüketici rehberiyle sınırlı. Sağlık uyarıları sahneye bağlı ve son insan incelemesi gerekiyor. [AAD](https://www.aad.org/public/everyday-care/skin-care-secrets/routine/clean-your-makeup-brushes) · [FDA](https://www.fda.gov/cosmetics/cosmetic-products/eye-cosmetic-safety)
+- **Tam Reels 0/5.** Onaylı Charon ve Sulafat kayıtları önceki pilot metinlerine bağlı. Yeni metinlerle eşleşen kayıt yok. Üç tarih konusu için tam belgesel görsel paketi de inceleme bekliyor. Hikâye ve simülasyonlarda proje içi özgün şemalar kullanıldı. Dış fotoğraf ve müzik aktarılmadı.
+- Tarih ve güzellik kadrolarından plan başına 20 çevrimdışı uzman brifi hazırlandı. Skill Router bağlamı, Tool Router yerel öndenetimi ve ölçüm yorumunu, Scene Director sahne kararlarını ve OpenTimelineIO kare sırasını kaydetti. Viral Analiz beş editoryal plana 96–100 verdi. Eşik 85. Kalite Laboratuvarı simülasyonlarda yalnız ölçülen kontrolleri değerlendirdi. Gerçek Instagram performansı ve tam sesli video kapıları bekliyor.
+- Mevcut 15A.1 sahne onarımı, 40 uzman, 163 Registry kaydı ve 235 Python testi korundu. İki kapsam regresyonuyla 237 Python testi birlikte geçti. İki JavaScript testi ve Remotion tip kontrolü başarılı. Üretimde ücretsiz ve ücretli sağlayıcı çağrısı 0. Instagram otomatik paylaşımı kapalı.

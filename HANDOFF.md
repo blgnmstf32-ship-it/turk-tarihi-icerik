@@ -152,3 +152,10 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - GitHub CPU’da tekrar gerekirse [Approved pilot caption repair](.github/workflows/pilot_scene_repair.yml) manuel başlatılır. İş akışı sabit girdi paketlerini indirir ve Whisper dosya özetlerini denetler. Arşivler yoksa aynı SHA-256’ya sahip onaylı yerel kopyaları `python -m scripts.pilot_scene_repair --help` seçenekleriyle ver. Başarılı mevcut çıktı ve testleri tekrar üretme.
 - `SCENE_EXECUTION_REPORT.json` hedef sahneleri, komşu geçişleri ve korunan kareleri taşır. `MEASUREMENT_EVIDENCE.json` mobil örnekleri ve kesme noktalarını, `VIDEO_QUALITY_LAB.json` teknik kapıları doğrular. Final ancak tüm altyazılar eşleştiğinde ve başlangıç sapmaları 350 ms’yi aşmadığında, mobil örnekler ve geçişler geçtiğinde, kapsam dışı kareler ve AAC akışı korunduğunda kabul edilir.
 - Son indirme kopyaları `Piri_Reis_15A1.mp4` ve `Nemlendirici_15A1.mp4`. [Proje durumu](PROJECT_STATE.md#15a1--onaylı-pilotların-altyazı-onarımı) ölçümleri ve özetleri kaydeder. İnsan incelemesi sürüyor. Instagram otomatik paylaşımı kapalı.
+
+## 15B · Kapasite koşusunu devralma
+
+- Günlük işletim hedefi iki marka toplamında 2 Reels ve 20 sessiz hikâye. 3 tarih ve 2 güzellik Reels yalnız kapasite iş yüküdür.
+- Ayrı bir çıktı diziniyle `python -m scripts.capacity_15b --out output/capacity-15b` çalıştırılabilir. Mevcut Python gereksinimleri, `psutil==7.2.2`, sabit `requirements-scene-otio.txt`, FFmpeg ve ffprobe kullanılır. Koşu onaylı medya ve yayın komutlarını çağırmaz.
+- `CAPACITY_15B.json` gerçek PNG, engelli Reels, sessiz MP4 simülasyonu ve API sayaçlarını ayrı tutar. `PERFORMANCE.json` duvar saati, CPU-sn ve örneklenen süreç ağacı RSS değerlerini taşır. Her Reels klasöründe kaynak kaydı, uzman brifi, Scene Director kararı, OTIO ve video kalite raporu bulunur.
+- `SILENT_SIMULATION.mp4` 70 saniyelik görsel iş yükü kaydıdır. Eşleşen onaylı Charon veya Sulafat dosyası, onaylı zamanlı altyazı, gerekli görsel hakları ve tam kalite incelemesi geldiğinde normal üretim girişini kullan. Mevcut 15A.1 sahne onarımını ve kalite eşiklerini koru. Instagram otomatik paylaşımı kapalı kalır.
