@@ -341,13 +341,13 @@ Tarih altyazı zamanlamasında eşik dışı iki sahne aralığı var. 25 mobil 
 | Mobil altyazı örnekleri | 25/25, ihlal 0 | 47/47, ihlal 0 |
 | Görünür kesme adayı / kontrol edilen plan sınırı | 4 / 14 | 5 / 11 |
 | En büyük kesme sapması / beklenmedik kesme | 0 kare / 0 | 4 kare / 0 |
-| Sınırlı render / kayıpsız birleştirme | 34,06 / 49,66 sn | 8,60 / 30,45 sn |
+| İlk sınırlı render / kayıpsız birleştirme | 34,06 / 49,66 sn | 8,60 / 30,45 sn |
 
-Charon kaydında ilk işaretli cümle 2,52. saniyede başlıyor. Altyazı başlangıcı 3,84’ten 2,533’e alındı ve sapma 13 ms oldu. 15A’da son sahne için 857 ms p95 raporlanmıştı. Aynı AAC izinin bu oturumdaki yeniden ölçümünde son altyazı için 20 ms bulundu. Başlangıcı 64,833’e alındı, son ölçüm 7 ms. Güzellikte önceki piksel denetimi açık renkli arka planı işaretlemişti. Altyazının koyu zemin üzerindeki harfleri 360 piksel örnekte yatay 76–284’ten 86–273’e çekildi. Ölçülen kontrast 10,82’den 10,89’a çıktı.
+Charon kaydında ilk işaretli cümle 2,52. saniyede başlıyor. Altyazı başlangıcı 3,84’ten 2,533’e alındı ve sapma 13 ms oldu. 15A’da son sahne için 857 ms p95 raporlanmıştı. Aynı AAC izinin bu oturumdaki yeniden ölçümünde son altyazı için 20 ms bulundu. Başlangıcı 64,833’e alındı, son ölçüm 7 ms. Güzellikte önceki piksel denetimi açık renkli arka planı işaretlemişti. Altyazının koyu zemin üzerindeki harfleri 360 piksel örnekte yatay 76–284’ten 86–273’e çekildi. Ölçülen kontrast 10,82’den 10,89’a çıktı. Altyazının eski kutu kenarı aynı 55 kare içindeki onarıma dahil edildi.
 
 Kayıpsız birleştirmede kapsam dışındaki kareler ve iki AAC akışı özetleriyle doğrulandı. İndirme için hazırlanan 1080×1920, 30 fps H.264 High/AAC kopyalar ayrıca ölçüldü ve bütün teknik kapıları geçti. Görünür kesmeler PySceneDetect ile önceki MP4 ve kurgu sınırlarına göre doğrulandı. Sürekli kamera ve geçiş bölgelerinde orijinal üst görüntü katmanının kare özetleri kayıpsız kopyada eşleşti. Mobil denetim her altyazının orta karesini örnekler. İnsan yayın onayı gereklidir.
 
 - `Piri_Reis_15A1.mp4` SHA-256 `d0337652842ba5259800f9565903cb70ec08377507af2e27d36548e3d82be0c9`
-- `Nemlendirici_15A1.mp4` SHA-256 `6f14e1016cdb473abb01ec884f3f2c43dfc5db07cf841d0c1ae4902e24875751`
+- `Nemlendirici_15A1.mp4` SHA-256 `dc408dda486437aa552f43f82ebc76faede8a545ea2aec9afcafbb7bcf186b77`
 - Yerelde 234 Python testi tam çalıştırmada geçti. Sonradan eklenen hedef seçimi testi de geçti. İki JavaScript testi, Remotion tip kontrolü, iki OTIO sözleşmesi ve altı izin sözleşmesi geçti. 20 iş akışının izin denetiminde bulgu yok.
 - 40 ana uzman ve 163 Registry kaydı doğrulandı. Ücretli API çağrısı 0, Instagram otomatik paylaşımı kapalı.
