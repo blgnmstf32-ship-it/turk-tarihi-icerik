@@ -52,6 +52,7 @@ TASK_NOTES = {
     "local-preview-review": ("anthropic:mobile-preview-check",),
     "ci-review": ("openai:ci-evidence",),
     "pause-analysis": ("auto-editor:pause-evidence",),
+    "video-quality": ("cinecode:preflight-frame-sampling", "openmontage:selective-recovery"),
 }
 SCENE_NOTES = {
     ("visuals", "map"): ("openmontage:storyboard", "cinecode:camera-cut-continuity"),

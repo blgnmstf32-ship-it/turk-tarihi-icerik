@@ -38,7 +38,7 @@ VISUALS = {
     "science": ("media:remotion", "temsili_bilimsel_2b_şema", "bölgesel_vurgu", "kontrastı_koruyan_paleti"),
     "motion": ("media:remotion", "hareketli_bilgi_grafiği", "sabit_okuma_kadrajı", "eşit_ve_okunaklı"),
 }
-REASONS = {"render_failed", "renderer_unavailable", "rights_unverified", "source_unverified", "sync_failed"}
+REASONS = {"render_failed", "renderer_unavailable", "rights_unverified", "source_unverified", "sync_failed", "quality_failed"}
 ENGINE_FAILURES = {"render_failed", "renderer_unavailable"}
 
 
