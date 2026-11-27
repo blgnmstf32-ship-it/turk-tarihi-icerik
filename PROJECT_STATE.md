@@ -379,3 +379,9 @@ CPU koşucusunda 9 erişilebilir mantıksal çekirdek ve 9.967 MiB RAM vardı. K
 Skill Registry 163, ana uzman sayısı 40 (tarih 20 ve güzellik 20). Üretim entegrasyonları, otomatik sahne onarımı ve kalite eşikleri korunuyor. Ücretli API çağrısı 0. Instagram otomatik paylaşımı kapalı.
 
 Sokollu Mehmed Paşa minyatürü ve Charon'la gerçek 9 saniyelik konuşan fotoğraf örneği üretildi. Dört CPU'da 217,14 sn, 840,53 CPU-sn ve 1.426,66 MiB tepe RSS ölçüldü. Yüz ağı 75/75 karede bulundu. En iyi ses enerjisi/ağız açıklığı korelasyonu 0,0614. Ağız ile konuşma arasındaki eşleşme üretim için doğrulanamadı ve 8,33 fps örnek doğrulanmış son medya sözleşmesini karşılamıyor. Entegrasyon kararı kapalı. [Deneme, ölçüm ve dosya özeti](AVATAR_15C.md#gerçek-cpu-denemesi)
+
+## 15D · Graphify, ECC ve bağlam ölçümü
+
+28 Kasım 2026. `f77323bbd9a07bb20235795e37032a4283933209` kod tabanında Graphify 0.9.121'in çevrimdışı yapısal çıkarımı **122 dosya, 1.309 düğüm, 4.234 bağ** üretti (5,137 sn). Beş gezinme sorusunda sekiz dosya/satır hedefinin tamamı tam kaynak, hedefli arama ve Graphify ile bulundu. `tiktoken 0.14.0 / o200k_base` ile **22.124 tam-dosya tokeni → 2.747 Graphify tokeni (%87,6 azalma)** ölçüldü. Hedefli `git grep` 357 token verdi. Sorgu başına üç çalıştırmanın medyanları toplamında Graphify 1.198,75 ms, hedefli arama 18,11 ms. Ölçüm araç yanıtı metniyle sınırlı.
+
+[Graphify ve ECC teknik kaydı](GRAPHIFY_15D.md) kaynakları, güvenlik koşullarını, Actions ve saklama biçimini açıklar. Mevcut uzman, Registry, üretim, sahne onarımı ve yayın ayarları korundu. Model/API çağrısı 0. Instagram otomatik paylaşımı kapalı.

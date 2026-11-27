@@ -2,6 +2,12 @@
 
 Bu proje Türk ve dünya tarihini kapsayan kaynaklı Türkçe Instagram Reels taslakları üretir. `config/agents.json` içindeki ilk **20 uzman rolünü aynen koru**; sonlarına 4 Three.js görev modülü eklenmiştir. Bunlar tek ücretsiz yürütmede çalışan iş modülleridir; bağımsız LLM ajanı olduklarını iddia etme. 3D LLM çağrısı varsayılan olarak kapalıdır.
 
+## Kodda gezinme
+
+- Bu devir belgesi, `AGENTS.md` ve görev için gerekli proje kayıtlarından sonra, uygulama kaynaklarını geniş kapsamda açmadan önce tam Git commit'i ile eşleşen Graphify grafiğini sorgula. Grafik doğrulamasını `python graphify_project.py verify --out GRAFIK_DIZINI`, kapsamlı sorguyu `python graphify_project.py query --out GRAFIK_DIZINI --question "ilgili modül ve simgeler"` ile yap.
+- Grafiği yalnız kodda gezinmek için kullan. `EXTRACTED` ile `INFERRED` bağları ayır ve düzenleme hedefini veya kritik sonucu ilgili kaynak satırıyla doğrula. Grafik eksikse, eşleşmiyorsa veya sonuç kesildiyse hedefli `git grep`/kaynak okumasına geç.
+- Grafiği yalnız yerel yapısal kod modunda üret. Kaynakları, grafiği ve sorguları üçüncü taraf model hizmetine gönderme. Otomatik hook, MCP ya da oturum kaydı açma.
+
 ## Sırasıyla uygula
 1. Önce resmî veya akademik kaynakları bul; kaynağı açmadan yeni bir iddiayı doğrulanmış olarak işaretleme.
 2. `data/topics.json` içine konuyu, üç somut olguyu, kronolojiyi, dönemi ve kaynak URL'lerini ekle.
