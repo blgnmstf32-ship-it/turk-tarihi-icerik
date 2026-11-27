@@ -311,3 +311,19 @@ Sahneye bağlanan ölçüm ve kaynak sorunları Scene Director'ın önceki yerel
 Scene Director üretim kesmelerini ve kare aralığına denk gelen özgün altyazı parçalarını planlar. Skill Router'ın seçtiği bilgi notları ve Tool Router'ın çağırdığı açılış adaptörü, çalıştırılan motorlardan ayrı kaydedilir. OpenTimelineIO çekirdek çıktısı gerçek kurgu kesmeleriyle yazılıp geri okunur. İki markanın 40 uzmanı ve 163 Registry kaydı korunur. Yeni LLM, anlatıcı veya görsel API çağrısı yapılmaz.
 
 Önce-sonra raporlarında yerel konuşma hizalaması, ses seviyesi, eldeki anlatıcı dalgasıyla tahmini ses/fon farkı, telefon boyutuna küçültülmüş gerçek altyazı piksel örnekleri, algısal dHash ve FFmpeg siyah/donma aralıkları bulunur. Piksel örneklemesi metin tanıma veya insan onayı değildir. Kesme önerileri ve insan kaynak incelemesi ayrı tutulur. Otomatik sahne onarımı yalnız ölçülen ve sınırlı siyah/donma kusurlarına tek deneme uygular. Yeni video doğrulamayı geçmezse ilk çıktı saklanır. Kabul edilen kurtarmada etkilenmeyen bütün sahnelerin çözümlenmiş kare özetleri eşit olmalıdır. Instagram paylaşımı kapalıdır.
+
+[CPU medya çalıştırması 45988740750](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45988740750) iki markanın render ve ölçümleriyle başarılı. Ana render karşılaştırması aşağıdadır. 216 medyasız ve 15 medya testi toplam 231/231 geçti. JavaScript 2/2 ve Remotion tip kontrolü de geçti.
+
+| Ölçüm | Piri Reis | Nemlendirici için doğru an |
+| --- | ---: | ---: |
+| H.264/AAC, 1080×1920, 30 fps süre | 67,60 sn | 71,80 sn |
+| Ana render, önce → sonra | 285,00 → 261,83 sn | 133,75 → 141,29 sn |
+| CPU, önce → sonra | 288,79 → 287,63 CPU-sn | 339,47 → 351,14 CPU-sn |
+| Tepe süreç ağacı RSS, önce → sonra | 4.090 → 3.845 MiB | 1.805 → 2.546 MiB |
+| Aynı analizde ortalama altyazı başlangıç farkı, önce → sonra | 64,0 → 107,2 ms | 17,9 → 17,9 ms |
+| Son miks, LUFS / dBTP | −18,63 / −4,18 | −15,34 / −1,27 |
+
+Tarih altyazı zamanlamasında eşik dışı iki sahne aralığı var. 25 mobil örneğin 22'sinde ölçülebilir altyazı pikseli bulundu. Güzellikte 47/47 altyazı senkronu ölçüldü. Mobil örneklerden biri güvenli alan denetiminde işaretlendi. İki videoda ilk görüntü ve algılanan ilk sözcük sıfırıncı karede. Siyah/donmuş kare, örneklenmiş görsel tekrar ve ses dengesi kontrolleri geçti. Zaman damgalı onaylı altyazılar korundu. Otomatik onarımı tetikleyecek sınırlı bir siyah/donmuş kare aralığı bulunmadı. İki çıktı insan incelemesinde.
+
+- [Piri Reis MP4 ve rapor paketi](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45988740750/artifacts/15193542324)
+- [Güzellik MP4 ve rapor paketi](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45988740750/artifacts/15192478473)
