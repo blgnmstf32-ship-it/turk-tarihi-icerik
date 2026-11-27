@@ -67,6 +67,14 @@ jobs:
                 "$SCENE_PYTHON" -m scripts.beauty_reel --topic "$topic" --out "$SCENE_OUTPUT/$topic" --otio
               done
             '
+      - name: Exercise the optional document reader on CPU without network
+        run: |
+          parser_dir="$RUNNER_TEMP/research-documents"
+          python -m pip install --only-binary=:all: --no-deps --require-hashes \
+            --index-url https://pypi.org/simple --target "$parser_dir" -r requirements-research-documents.txt
+          sudo unshare --net -- runuser -u "$(id -un)" -- env -i \
+            PATH=/usr/bin:/bin LANG=C.UTF-8 "PYTHONPATH=$parser_dir" \
+            "$(command -v python)" -m unittest scripts.research_document_contracts -v
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: offline-scene-plans
