@@ -144,6 +144,47 @@
       }
     }
   },
+  "cinecode_knowledge": {
+    "repository": "sarpstar/cinecode",
+    "revision": "c8a3e7552699360a2b0142c9620882af2069eedb",
+    "license": "MIT",
+    "notes": {
+      "preview-depth": {
+        "path": "references/quick-mode.md",
+        "docs": ["https://github.com/sarpstar/cinecode/blob/c8a3e7552699360a2b0142c9620882af2069eedb/references/film-mode.md"],
+        "task": "Önizleme derinliğini belirsizliğe göre seç. Görsel yaklaşım belli ise ilk karar için açılış ve en zor sahneden kare öner. Hareket süresi veya anlatım sırası tartışmalı ise tam render öncesine düşük maliyetli zamanlama taslağı koy. Kanıt, sağlık ve insan onayı kapıları iki durumda da geçerlidir.",
+        "role_keys": {"tarih": [6, 7, 11, 13, 15], "bakim": [1, 2, 10, 11, 14, 15, 20]}
+      },
+      "camera-cut-continuity": {
+        "path": "references/camera-moves.md",
+        "docs": ["https://github.com/sarpstar/cinecode/blob/c8a3e7552699360a2b0142c9620882af2069eedb/references/motion.md"],
+        "task": "Hareket içinde kesilen iki planın son ve ilk karelerinde konu konumu, ekran yönü ve algılanan hızın uyumunu kontrol et. Uygun 3B sahnede örtücü ön planla kesmeyi gizlemeyi veya odağı ikinci derinlik düzlemine aktarmayı değerlendir. Hareket bulanıklığının bitişik sahneye taşmamasını ve altyazıların netliğini kontrol et.",
+        "role_keys": {"tarih": [11, 13, 15, 16], "bakim": [11, 13, 14, 15, 20]}
+      },
+      "motivated-light": {
+        "path": "references/finish.md",
+        "task": "Ana ışığın sahne içinde anlaşılır bir nedeni ve yönü olsun. Ön planı silüet ve temas gölgesiyle ayır. Yakın plandaki alan derinliğini odak için kullan. Harita, altyazı, ürün etiketi veya temsili anatomi okunurluğunu bozan sis, parlama ve renk sapmasını kapalı tutmayı öner.",
+        "role_keys": {"tarih": [11, 12, 13, 16, 17], "bakim": [11, 12, 13, 14, 18, 20]}
+      },
+      "sound-perspective": {
+        "path": "references/sound.md",
+        "task": "Ses taslağında ortam, anlamlı olay sesi, müzik ve anlatımı ayrı işaretle. Ortamın görüntüden önce girip girmeyeceğini veya kesmeden sonra sürüp sürmeyeceğini planla. Charon ve Sulafat'ın anlaşılırlığını ve mevcut ses hedefini koru. Toplam ölçümün saklayabileceği sahne düzeyi sapmaları ayrıca incele.",
+        "role_keys": {"tarih": [8, 14, 15, 16], "bakim": [15, 16, 17, 20]}
+      },
+      "reference-form": {
+        "path": "references/reference-video.md",
+        "docs": ["https://github.com/sarpstar/cinecode/blob/c8a3e7552699360a2b0142c9620882af2069eedb/references/assets-and-licences.md"],
+        "task": "Yalnız inceleme hakkı bulunan mevcut referansın ritmini, plan uzunluklarını, renk ve ışık yönünü ve ses vurgularını zaman koduyla gözlemle. Biçim kararını kaynak görüntüden ayır. Özgün konu ve kadraj oluştur. Referansın karelerini, sesini, metnini ve tanınabilir unsurlarını taslağa taşıma.",
+        "role_keys": {"tarih": [3, 9, 11, 12, 13, 17, 18], "bakim": [3, 5, 6, 12, 14, 15, 18, 20]}
+      },
+      "preflight-frame-sampling": {
+        "path": "references/craft.md",
+        "docs": ["https://github.com/sarpstar/cinecode/blob/c8a3e7552699360a2b0142c9620882af2069eedb/references/jury.md", "https://github.com/sarpstar/cinecode/blob/c8a3e7552699360a2b0142c9620882af2069eedb/references/engine.md"],
+        "task": "Tam render onayı öncesi mevcut inceleme karelerinde açılışı, en zayıf anı ve kritik kesmelerin iki yanını seç. Telefon boyutunda okunurluğu, istenmeyen aynı kareyi, güvenli kadrajı ve ses vurgusunu zaman koduyla kaydet. Ölçüm varsa değerini, görsel yargıysa gözlemi yaz.",
+        "role_keys": {"tarih": [6, 11, 12, 15, 16, 18, 20], "bakim": [1, 8, 11, 14, 15, 18, 20]}
+      }
+    }
+  },
   "evidence": {
     "cpu_pilot": "https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45711789803",
     "final_media": "https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45828936221",
