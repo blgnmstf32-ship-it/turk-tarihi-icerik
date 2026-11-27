@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 import json
 import os
 import time
@@ -15,6 +16,8 @@ from scripts.motion_toolkit import role_guidance
 from scripts.animation_styles import plan_for, style_guidance
 from scripts.reels_editorial import EDITOR_RULE, playbook, specialist_guidance
 from scripts.skill_registry import review_options
+from scripts.skill_router import specialist_context
+from scripts.tool_router import run_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 EDITOR = "AI Genel Yayın Yönetmeni"
@@ -172,7 +175,7 @@ def run_agents(topic, agents, output, requester=None, settings=None, *, editoria
             role_id = assignment["role_id"]
             role = candidates[role_id]
             specialist_input = {"topic": context, "assignment": assignment,
-                                "reels_guidance": specialist_guidance(role, brand)}
+                                "reels_guidance": specialist_guidance(role, brand, topic)}
             check = lambda content: _suggestion(content, len(sources))
             if media_review:
                 guidance = role_guidance(brand, role_id)
@@ -196,6 +199,11 @@ def run_agents(topic, agents, output, requester=None, settings=None, *, editoria
                 specialist_input, check, namespace=namespace, reserve_calls=1)
             rows[role_id] = {**outcome, "role_id": role_id, "assignment": assignment["brief"]}
             if outcome["status"] == "proposal":
+                if media_review:
+                    route = specialist_context(role, brand, topic)
+                    if route.task in {"visuals", "edit"} and "media:opening-presets" in route.entries():
+                        rows[role_id]["tool_route"] = run_tool(replace(route, task="opening-preset"),
+                                                              topic=topic, state=state)
                 completed.append({"role_id": role_id, "role": role["name"], **outcome["answer"]})
         if completed:
             completed_ids = [row["role_id"] for row in completed]

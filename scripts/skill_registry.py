@@ -285,13 +285,6 @@ def editorial_method(technique):
     return entries.get(f"editorial:{technique}", {}).get("task")
 
 
-def instagram_editorial_notes(brand, role_id):
-    """Return only the local, role-specific Instagram editorial guidance."""
-    entries, experts, _ = _inventory()
-    expert = experts.get(_key(brand, role_id), {})
-    return [entries[key]["task"] for key in expert.get("entry_ids", ()) if key.startswith("instagram:")]
-
-
 def review_options(brand, role_id):
     """Legacy model-facing tool names, resolved from reviewed catalog adapters."""
     entries, _, review = _inventory()
