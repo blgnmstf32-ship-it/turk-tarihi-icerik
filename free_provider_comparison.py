@@ -48,7 +48,7 @@ def measure(evaluate):
             "attempt_statuses": [row["status"] for row in attempts],
             "usage": [{field: row[field] for field in
                        ("tokens", "input_tokens", "output_tokens", "completion_tokens",
-                        "reserved_neurons", "actual_neurons") if field in row}
+                        "reserved_neurons", "estimated_used_neurons") if field in row}
                       for row in network],
             "valid_turkish_json": bool(answer) if network or answer else None,
             "editorial_checks": checks,
@@ -66,7 +66,7 @@ def measure(evaluate):
 
 
 def skipped(reason):
-    return {"status": reason, "cases": []}
+    return {"status": reason, "inference_calls": 0, "cases": []}
 
 
 def compare(state, quota_path, namespace):

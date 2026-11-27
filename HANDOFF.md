@@ -173,3 +173,15 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - Geniş kaynak okumadan önce `python graphify_project.py query --out GRAFIK_DIZINI --question "modül ve simge"` çalıştır. Sonucun kaynak yolu ve satırını doğrula. Kesilmiş sorgu veya tek kesin simge için hedefli `git grep` kullan. Model sağlayıcı, oturum kayıtçısı, MCP ve hook açma.
 - [CPU işi](.github/workflows/graphify.yml) standart Linux koşucusunda kilitlenmiş Python tekerlekleri ve doğrulanmış `o200k_base` sözlüğü kullanır. Kamuya açık işte yalnız sayısal ölçüm raporu yüklenir. Birleşim öncesi kalite, bağımlılık ve içerik güvenlik taramaları da geçmelidir.
 - ECC inceleme ilkeleri için [15D raporuna](GRAPHIFY_15D.md) bak. Kurulum betikleri, otomatik Memory Vault ve Continuous Learning akışları mevcut görevlerle çalıştırılmaz.
+
+### Özel grafik arşivinden devralma
+
+- [Özel arşiv](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik-graph) altında tam Git commit'ine ait `snapshots/<commit>/graph.json.gz` ve `provenance.json` birlikte bulunur. Grafiği yerelde aç ve proje komutuyla doğrula. `LATEST` yalnız arşivin işlediği son main commit'ini gösterir. Eksik commit için aynı kaynak revizyonunda kod grafiğini ağsız çıkar.
+- Bilinen simge veya dosyada `git grep` ile başla. Mimari ve modüller arası ilişkiler için Graphify sorgusu kullan. Geniş mimari sonuçlarını kaynak yolundan ve satırından doğrula.
+- Özel arşiv Actions işi her gün 03.17 Türkiye saati için planlıdır. İhtiyaç halinde depo sahibi elle tetikleyebilir. İş, yalnız kamuya açık kaynak commit ve kilitli kod ayrıştırıcı alır. Üretim sırlarını, tokenları, medya paketlerini ve oturum kayıtlarını taşıma. [İlk arşiv çalıştırması](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik-graph/actions/runs/46078854325)
+
+## 15E · Ücretsiz metin sağlayıcılarını devralma
+
+- Üretimde izinli Gemini → doğrulanmış Cloudflare Workers Free → OpenRouter Free sırasını ve mevcut kota/önbellek davranışını koru. Başka bir sağlayıcıyı canlı erişim, ücretli kullanıma geçiş engeli, lisans ve iki marka kalite kontrolü geçmeden etkinleştirme.
+- Depo sahibinin main dalındaki manuel `15E · Free text provider comparison` işi iki sabit Türkçe metni karşılaştırır. JSON, canlı erişim, süre ve editoryal ölçütleri ayrı oku. Gemini faturalandırmasız Free Tier proje onayı yoksa atlanır. OpenRouter sıfır fiyat sınırı ve Cloudflare plan kontrolü zorunludur. Ölçümde kişisel veya yayımlanmamış içerik kullanma.
+- GroqCloud Free GPT-OSS 20B için gerçek erişim ve Türkçe kalite ölçümü bekliyor. Kotalar ve lisanslar zamanla değişir. [Karar, yöntem ve canlı sonuçlar](FREE_LLM_15E.md)
