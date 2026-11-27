@@ -6,7 +6,7 @@ from hashlib import sha256
 import json
 import re
 
-from scripts import media_tools, motion_toolkit
+from scripts import media_tools, motion_toolkit, research_documents
 from scripts.skill_registry import registry_view
 
 MAX_SNAPSHOT_CHARS = 250_000
@@ -32,6 +32,8 @@ BINDINGS = {
                                    "Yerel kod için açık izin kaydı yok; AnimeFX bağımlılık olarak kullanılmaz",
                                    "optional"),
     "motion:poly-haven": Binding("asset-catalogue", "scripts/motion_cli.py#catalogue", "AGPL-3.0", "optional"),
+    "research:trafilatura": Binding("document-evidence", "scripts/research_documents.py:read_snapshot",
+                                    "Apache-2.0", "optional"),
 }
 VERIFIED = {"historical_pass", "adapter_contract_only"}
 
@@ -77,6 +79,11 @@ def _discover(identifier, topic, snapshot):
 
 
 def _execute(identifier, context, topic, snapshot, parallax):
+    if identifier == research_documents.TOOL_ID:
+        try:
+            return research_documents.read_snapshot(snapshot)
+        except research_documents.ResearchInputError as exc:
+            raise Unavailable(str(exc)) from None
     if identifier == "media:opening-presets":
         effect = motion_toolkit.select_opening_effect(context.brand, topic, parallax=parallax)
         if effect is None:
@@ -110,7 +117,7 @@ def _blocked(row, binding, context, cpu_available):
     if cpu_available is not True:
         return "missing_cpu_capability"
     scenes = {"asset-search": ASSET_SCENES, "opening-preset": OPENING_SCENES,
-              "asset-catalogue": {"mechanism", "diagram", "city", "map"}}
+              "asset-catalogue": {"mechanism", "diagram", "city", "map"}, "document-evidence": {"general"}}
     if context.scene not in scenes[context.task]:
         return "scene_not_supported"
     return None

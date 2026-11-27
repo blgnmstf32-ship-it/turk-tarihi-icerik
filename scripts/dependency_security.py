@@ -99,7 +99,8 @@ def run_audit(pinned: Path) -> int:
 def check_python() -> int:
     with tempfile.TemporaryDirectory(prefix="dependency-audit-") as tmp:
         work = Path(tmp)
-        lock_files = ("requirements-skill-security.txt", "requirements-dependency-audit.txt")
+        lock_files = ("requirements-skill-security.txt", "requirements-dependency-audit.txt",
+                      "requirements-research-documents.txt")
         runtime_paths = sorted(p for p in ROOT.glob("requirements*.txt") if p.name not in lock_files)
         if not runtime_paths:
             raise RuntimeError("No Python application requirements were found")

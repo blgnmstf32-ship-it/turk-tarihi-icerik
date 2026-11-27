@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 import os
+import re
 from urllib.parse import quote
 import xml.etree.ElementTree as ET
 
@@ -14,6 +16,7 @@ YOUTUBE = "{http://www.youtube.com/xml/schemas/2015}"
 YOUTUBE_API = "https://www.googleapis.com/youtube/v3/videos"
 CROSSREF = "https://api.crossref.org/works"
 HEADERS = {"User-Agent": "TarihinBilinmeyenGercekleri/1.0"}
+TRENDS = "{https://trends.google.com/trending/rss}"
 
 
 def get_rss(url, requester=None, timeout=8):
@@ -26,6 +29,23 @@ def count(value):
     if isinstance(value, (str, int)) and str(value).isdigit():
         return int(value)
     return None
+
+
+def trend_observation(item, feed, captured):
+    raw_date = item.findtext("pubDate")
+    published = None
+    if raw_date:
+        try:
+            parsed = parsedate_to_datetime(raw_date)
+            if parsed.tzinfo is not None:
+                published = parsed.astimezone(timezone.utc).isoformat()
+        except (ValueError, OverflowError):
+            pass
+    bucket = (item.findtext(f"{TRENDS}approx_traffic") or "").strip()
+    return {"title": (item.findtext("title") or "").strip(), "url": (item.findtext("link") or "").strip(),
+            "source": "Google Trends RSS (Türkiye)", "feed": feed, "published_at_utc": published,
+            "collected_at_utc": captured, "approx_search_bucket": bucket if re.fullmatch(r"[0-9]{1,12}\+", bucket) else None,
+            "platform": "google_search", "evidence_type": "trend_signal_only"}
 
 
 def discover_sources(queries, get, timeout, result):
@@ -51,10 +71,10 @@ def collect_public_research(config, requester=None):
     result = {"collected_at_utc": captured, "method": "public RSS, public metrics, Crossref metadata",
               "trends": [], "competitors": [], "source_leads": [], "errors": []}
     try:
-        root = get_rss(config["google_trends_rss"], get, timeout)
+        feed = config["google_trends_rss"]
+        root = get_rss(feed, get, timeout)
         for item in root.findall(".//item")[:30]:
-            result["trends"].append({"title": (item.findtext("title") or "").strip(),
-                "url": (item.findtext("link") or "").strip(), "source": "Google Trends RSS (Türkiye)"})
+            result["trends"].append(trend_observation(item, feed, captured))
     except Exception as exc:
         result["errors"].append({"source": "Google Trends RSS", "error": type(exc).__name__})
 
