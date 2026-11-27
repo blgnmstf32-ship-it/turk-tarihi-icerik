@@ -242,7 +242,7 @@ def metrics(path, cues, model, *, timeline=False):
         first = next((matches[i] for i in range(offset, offset + min(3, count)) if i in matches), None)
         if first is not None:
             errors.append(abs(cue["start"] - first))
-        cue_matches.append({"frame": round(cue["start"] * 30),
+        cue_matches.append({"frame": round(cue["start"] * 30), "spoken_start": first,
                             "offset_ms": abs(cue["start"] - first) * 1000 if first is not None else None})
         offset += count
     timing = {"aligned_cues": len(errors), "median_start_error_ms": round(1000*median(errors), 1) if errors else None,

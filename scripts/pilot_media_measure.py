@@ -93,7 +93,7 @@ def _caption_pixels(frame, brand, cv2):
             "min_contrast_ratio": round((max(fg, bg) + .05)/(min(fg, bg) + .05), 2)}
 
 
-def pixel_samples(path, plan, cues):
+def pixel_samples(path, plan, cues, *, caption_measure=_caption_pixels):
     import cv2
     import numpy as np
 
@@ -135,7 +135,7 @@ def pixel_samples(path, plan, cues):
             start = round(cue["start"] * fps)
             end = min(duration, round(cue["end"] * fps))
             at = (start + end) // 2
-            measured = _caption_pixels(frame_at(at), plan["brand"], cv2)
+            measured = caption_measure(frame_at(at), plan["brand"], cv2)
             mobile.append({"frame": at, "cue_frames": [start, end], "sampled_phone_pixels": measured})
     finally:
         capture.release()
@@ -143,7 +143,7 @@ def pixel_samples(path, plan, cues):
             "mobile_subtitle_samples": mobile, "mobile_scope": "sampled_caption_pixels_360x640_not_ocr"}
 
 
-def collect(path, plan, cues, metrics, voice):
+def collect(path, plan, cues, metrics, voice, *, caption_measure=_caption_pixels):
     import numpy as np
 
     evidence = lab.collect_ffmpeg(path, plan)
@@ -156,7 +156,7 @@ def collect(path, plan, cues, metrics, voice):
                 key, = lab.RULES[check][1]
                 # Every detected interval is a technical warning at this threshold. Intent is adjudicated separately.
                 rows[check][index] = _observation(check, {key: end-start}, item["frames"])
-    pixels = pixel_samples(path, plan, cues)
+    pixels = pixel_samples(path, plan, cues, caption_measure=caption_measure)
     starts = metrics["word_starts"]
     picture = pixels["first_picture_frame"]
     if picture is not None and starts:
