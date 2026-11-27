@@ -297,3 +297,9 @@ Playwright 1.65.1'in varsayılan tarayıcı indirmesi bu ortamda HTTP 403 dönd�
 | MMAudio | MIT depo kodu, yayımlanan model ağırlıkları CC BY-NC 4.0. Yayıncı varsayılan 44 kHz büyük model için 16 bit çıkarımda yaklaşık 6 GB GPU belleği bildiriyor. Ticari yol için ağırlık veya ücretli GPU eklenmedi. [Kod](https://github.com/hkchengrex/MMAudio) · [Ağırlık lisansı](https://huggingface.co/hkchengrex/MMAudio) |
 
 Registry notları metin olarak CPU'da ve API maliyeti olmadan seçilir. Duraklama adaptörü 30 fps ve 30–90 saniyelik kaynak kabul eder. Reels üretim hedefi 60–75 saniyedir. Anlatım ve altyazının aynı kaynağa hizalandığı inceleyen kişi tarafından belirtilir. İlk 90 kare, anlatım ve altyazı aralıklarının 6 kare çevresi ve 12 kareden kısa adaylar korunur. Diğer aralıklar elle inceleme adayıdır. Süre ve zaman kodları korunur. Üst proje kurucuları, model ağırlıkları, ağ erişimli harita ve ses kaynakları, ücretli API ve Instagram paylaşımı bu teslimde kullanılmadı. [Devir](HANDOFF.md#13c--medya-tasarımını-devralma)
+
+## Merkezi viral analiz ve video kalite laboratuvarı
+
+27 Kasım 2026. [Kalite laboratuvarı](config/VIDEO_QUALITY_LAB.md) iki marka için teknik ölçümleri, mevcut 85/100 editoryal değerlendirmeyi ve gerçek Instagram gözlemlerini ayrı raporlar. Ölçümü eksik olan kontrol açık durumla görünür. VMAF hizalanmış referans ve motor kanıtına bağlıdır. Siyah ve donmuş kare adayları insan incelemesine iletilir. Mevcut 162 kayıt korunarak ağsız yerel laboratuvar adaptörü eklendi, toplam 163 kayıt oldu. Tarih ve güzellik ekiplerinde 20'şer ana uzman korunuyor.
+
+Sahneye bağlanan ölçüm ve kaynak sorunları Scene Director'ın önceki yerel kaydıyla yalnız ilgili sahneleri ve bitişik geçişleri yeniden incelemeye alır. On araç mevcut altyapıyla karşılaştırıldı. Bu aşamanın kanıtı ağsız metadata ve komut sözleşmesi testleridir. Gerçek MP4, VMAF ve Instagram performans ölçümü yapılmadı.
