@@ -1,9 +1,6 @@
 name: 15E · Free text provider comparison
 on:
   workflow_dispatch:
-  push:
-    branches: [stage-15e-free-providers]
-    paths: [.github/workflows/free_provider_comparison.yml]
 permissions:
   contents: read
 concurrency:
@@ -14,7 +11,7 @@ jobs:
     if: >-
       github.repository == 'blgnmstf32-ship-it/turk-tarihi-icerik' &&
       github.actor == 'blgnmstf32-ship-it' &&
-      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage-15e-free-providers')
+      github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
