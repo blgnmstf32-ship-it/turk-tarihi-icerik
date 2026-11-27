@@ -177,8 +177,9 @@ def _replace_visual(args, named, voice, srt, topic, plan, previous, selections, 
                 clip = beauty_reel.shot(cache, index, end-start, kind, picture, label, title, note, repair=True)
                 # ASS positioning is evaluated at the original global caption frame times.
                 _ffmpeg("-i", cache / clip, "-vf",
-                        f"setpts=PTS+{start}/{FPS}/TB,ass={cache / 'captions.ass'},setpts=PTS-STARTPTS",
-                        "-an", "-c:v", "libx264", "-crf", "17", "-threads", "2", part)
+                        f"settb=1/{FPS},setpts=N+{start},ass={cache / 'captions.ass'},setpts=N,fps={FPS}",
+                        "-an", "-c:v", "libx264", "-bf", "0", "-fps_mode", "cfr",
+                        "-crf", "17", "-threads", "2", part)
             checked = previous_pipeline.checked_frame_video(part)
             if checked["video_frames"] != end-start:
                 raise ValueError("Repair render changed the scene's exact frame count")
@@ -194,7 +195,8 @@ def _replace_visual(args, named, voice, srt, topic, plan, previous, selections, 
         # Lossless final reassembly preserves decoded pixels outside the replacement intervals.
         _ffmpeg(*inputs, "-filter_complex", ";".join(pieces) + f";{labels}concat=n={len(pieces)}:v=1:a=0[out]",
                 "-map", "[out]", "-map", "0:a:0", "-c:a", "copy", "-c:v", "libx264", "-qp", "0",
-                "-threads", "3", "-pix_fmt", "yuv420p", "-movflags", "+faststart", repaired)
+                "-threads", "3", "-pix_fmt", "yuv420p", "-r", FPS, "-fps_mode", "cfr",
+                "-movflags", "+faststart", repaired)
     return repaired
 
 
