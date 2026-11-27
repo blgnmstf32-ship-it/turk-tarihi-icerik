@@ -227,6 +227,34 @@ def artwork(draw, motif, shade, light, rng):
             for x in range(419, 688, 28):
                 if rng.random() > .22:
                     draw.line((x-8, y+6, x+3, y-5, x+11, y+7), fill=light, width=3)
+    elif motif == "chess":
+        for row in range(4):
+            for col in range(4):
+                x, y = 354 + 92 * col, 426 + 92 * row
+                draw.rectangle((x, y, x + 92, y + 92), fill=light if (row + col) % 2 else shade)
+        knight = [(453, 735), (452, 704), (487, 672), (492, 629), (453, 624),
+                  (450, 597), (497, 535), (491, 501), (535, 517), (566, 501),
+                  (610, 551), (628, 631), (608, 691), (640, 705), (640, 735)]
+        draw.polygon(knight, fill=shade, outline=light, width=7)
+        draw.ellipse((520, 550, 534, 564), fill=light)
+    elif motif == "face":
+        draw.rounded_rectangle((461, 733, 619, 816), 16, fill=shade, outline=light, width=5)
+        draw.ellipse((365, 382, 715, 784), fill=shade, outline=light, width=5)
+        for x in (454, 558):
+            draw.arc((x, 508, x + 64, 551), 195, 350, fill=light, width=5)
+        draw.line((540, 549, 521, 617, 552, 620), fill=light, width=6)
+        draw.arc((485, 637, 596, 697), 20, 160, fill=light, width=5)
+        for x in range(414, 678, 24):
+            draw.line((x, 460, x + 10, 488), fill=light, width=2)
+    elif motif == "trade":
+        for x in (308, 592):
+            draw.rounded_rectangle((x, 528, x + 176, 690), 28, fill=shade, outline=light, width=4)
+            draw.line((x + 30, 552, x + 146, 665), fill=light, width=4)
+            draw.line((x + 146, 552, x + 30, 665), fill=light, width=4)
+        draw.line((457, 493, 617, 493), fill=light, width=6)
+        draw.polygon([(610, 478), (637, 493), (610, 508)], fill=light)
+        draw.line((617, 728, 457, 728), fill=light, width=6)
+        draw.polygon([(464, 713), (437, 728), (464, 743)], fill=light)
     elif motif in {"islands", "ship", "water", "tunnel"}:
         for i in range(8):
             y = 481 + i * 42
