@@ -44,11 +44,11 @@ class InstagramSkillNotesTests(unittest.TestCase):
             researcher = reels_editorial.specialist_guidance({"id": 6}, "bakim")
             other = reels_editorial.specialist_guidance({"id": 13}, "tarih")
             tools = skill_registry.review_options("bakim", 6)
-        self.assertEqual(writer["instagram_editorial_notes"], [self.notes["instagram:hook-delivery"]["task"]])
+        self.assertEqual(writer["skill_notes"], [self.notes["instagram:hook-delivery"]["task"]])
         self.assertEqual(writer["method"], reels_editorial.playbook()["techniques"]["hook"])
-        self.assertEqual(researcher["instagram_editorial_notes"],
+        self.assertEqual(researcher["skill_notes"],
                          [self.notes["instagram:competitor-relative-baseline"]["task"]])
-        self.assertNotIn("instagram_editorial_notes", other)
+        self.assertTrue(all(row["task"] not in other.get("skill_notes", []) for row in self.notes.values()))
         self.assertTrue(self.notes.keys().isdisjoint(tools))
 
     def test_editorial_review_retains_five_hooks_three_scripts_and_eighty_five(self):

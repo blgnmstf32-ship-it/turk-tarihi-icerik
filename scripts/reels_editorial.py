@@ -27,8 +27,9 @@ def playbook():
     return json.loads((ROOT / "config/reels_playbook.json").read_text(encoding="utf-8"))
 
 
-def specialist_guidance(role, brand):
-    from scripts.skill_registry import editorial_method, instagram_editorial_notes
+def specialist_guidance(role, brand, topic=None):
+    from scripts.skill_registry import editorial_method
+    from scripts.skill_router import select_knowledge, specialist_context
 
     guide = playbook()
     focus = role.get("reels_review", {})
@@ -37,9 +38,9 @@ def specialist_guidance(role, brand):
         "method": editorial_method(focus.get("technique")),
         "brand_strategy": guide["brands"][brand]["topic_strategy"],
     }
-    notes = instagram_editorial_notes(brand, role.get("id"))
+    notes = select_knowledge(specialist_context(role, brand, topic))
     if notes:
-        guidance["instagram_editorial_notes"] = notes
+        guidance["skill_notes"] = [note["guidance"] for note in notes]
     return guidance
 
 

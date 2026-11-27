@@ -58,6 +58,19 @@ class EditorialState:
             db.execute("INSERT OR IGNORE INTO checkpoints VALUES (?, ?)",
                        (name, json.dumps(value, ensure_ascii=False)))
 
+    def local_tool_once(self, name, run):
+        """Serialize short, local transforms and keep successful output in the existing cache."""
+        with self.connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute("SELECT value FROM checkpoints WHERE name=?", (name,)).fetchone()
+            if row:
+                return json.loads(row[0]), True
+            result = run()
+            if result is not None:
+                db.execute("INSERT INTO checkpoints VALUES (?, ?)",
+                           (name, json.dumps(result, ensure_ascii=False)))
+            return result, False
+
     def reserve(self, daily_limit):
         # Count attempts before sending them, even if they time out or are rejected.
         day = datetime.now(timezone.utc).date().isoformat()
