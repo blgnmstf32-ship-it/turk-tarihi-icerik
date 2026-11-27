@@ -51,6 +51,7 @@ TASK_NOTES = {
     "acceptance-review": ("addy-osmani:acceptance-proof",),
     "local-preview-review": ("anthropic:mobile-preview-check",),
     "ci-review": ("openai:ci-evidence",),
+    "pause-analysis": ("auto-editor:pause-evidence",),
 }
 SCENE_NOTES = {
     ("visuals", "map"): ("openmontage:storyboard", "cinecode:camera-cut-continuity"),
@@ -59,6 +60,16 @@ SCENE_NOTES = {
     ("visuals", "diagram"): ("cinecode:motivated-light", "openmontage:storyboard"),
     ("edit", "collage"): ("cinecode:reference-form",),
     ("edit", "diagram"): ("cinecode:preflight-frame-sampling",),
+    ("craft-review", "mechanism"): ("blender-skills:silhouette-budget",),
+    ("craft-review", "city"): ("blender-skills:silhouette-budget", "blender-skills:material-light-check"),
+    ("craft-review", "diagram"): ("blender-skills:silhouette-budget", "blender-skills:material-light-check"),
+    ("craft-review", "barrier"): ("blender-skills:material-light-check",),
+    ("craft-review", "macro"): ("video-shotcraft:product-detail-hold", "blender-skills:material-light-check"),
+    ("craft-review", "collage"): ("lemo-opuscar:briefing-board-focus", "rough-js:seeded-sketch-strokes"),
+    ("craft-review", "science"): ("rough-js:seeded-sketch-strokes",),
+    ("foley-review", "collage"): ("earshot:material-contact-cue",),
+    ("foley-review", "mechanism"): ("earshot:material-contact-cue",),
+    ("foley-review", "macro"): ("earshot:material-contact-cue",),
 }
 TOPIC_NOTES = {("tarih", "story", "mekanizma"): ("instagram:source-extract-repurpose",),
                ("bakim", "story", "rutin"): ("instagram:spoken-turkish-edit",)}

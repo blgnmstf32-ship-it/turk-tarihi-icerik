@@ -22,6 +22,7 @@ REPORT = "SCENE_EXECUTION_REPORT.json"
 SLUG = re.compile(r"[a-z0-9][a-z0-9_-]{0,79}\Z")
 SHA = re.compile(r"[0-9a-f]{64}\Z")
 ROLES = {"tarih": 13, "bakim": 14}
+FOLEY_ROLES = {"tarih": 14, "bakim": 17}
 VOICES = {"tarih": "Charon", "bakim": "Sulafat"}
 HISTORY_VISUALS = {"atlantic_atlas": "map", "battle_map": "map", "city_flyover": "city",
                    "siege_city": "city", "artifact_gears": "mechanism"}
@@ -189,13 +190,15 @@ def build_plan(brand, topic, *, duration_frames=2100, overrides=None, end_frames
         target, technique, camera, light = VISUALS[kind]
         skill_scene = "diagram" if kind in {"barrier", "science"} else kind
         skills = select_knowledge(RouteContext(brand, brand_role, "visuals", skill_scene, category))
+        craft = select_knowledge(RouteContext(brand, brand_role, "craft-review", kind, category))
+        foley = select_knowledge(RouteContext(brand, FOLEY_ROLES[brand], "foley-review", kind, category))
         fallback = _engine("media:remotion", brand, entries) if target != "media:remotion" else None
         if fallback:
             fallback.update(technique="katmanlı_2b", camera="sabit_kadraj", lighting="2b_okunaklı",
                             visual_label="TEMSİLÎ ŞEMA" if kind != "collage" else "MEVCUT KAYNAK VE ATIF")
         scene_id = f"s{i:02}"
         purpose = "açılış" if i == 1 else "kapanış_ve_kaynak" if i == len(lines) else "kanıt_ve_açıklama"
-        scenes.append({"id": scene_id, "purpose": purpose, "kind": kind, "start_frame": start, "end_frame": end,
+        scene = {"id": scene_id, "purpose": purpose, "kind": kind, "start_frame": start, "end_frame": end,
                        "start_seconds": round(start / FPS, 4), "end_seconds": round(end / FPS, 4),
                        "narration": {"line": i, "text": line, "voice": VOICES[brand],
                                      "source_numbers": list(dict.fromkeys(bound_sources)),
@@ -213,7 +216,11 @@ def build_plan(brand, topic, *, duration_frames=2100, overrides=None, end_frames
                        "skills": [{"id": note["id"], "reason": note["reason"]} for note in skills],
                        "tools": (["media:opening-presets"] if i == 1 else []) + [target],
                        "quality": ["source_review", "asset_rights_review", "voice_alignment", "phone_safe_area",
-                                   "shot_edge_review", "human_review"]})
+                                   "shot_edge_review", "human_review"]}
+        if craft or foley:
+            scene["craft_review"] = {"visual_notes": [note["id"] for note in craft],
+                                     "foley_notes": [note["id"] for note in foley]}
+        scenes.append(scene)
         start = end
     cuts = _cuts(scenes)
     for index, scene in enumerate(scenes):
