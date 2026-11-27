@@ -52,7 +52,7 @@ jobs:
           path: ${{ runner.temp }}/quality-logs/*.txt
           if-no-files-found: ignore
           retention-days: 7
-      - name: Validate optional OTIO and write both offline scene plans
+      - name: Validate optional OTIO and export offline scene plans
         run: |
           wheel_dir="$RUNNER_TEMP/scene-otio"
           python -m pip install --only-binary=:all: --no-deps --require-hashes \
@@ -63,6 +63,9 @@ jobs:
               "$SCENE_PYTHON" -m unittest scripts.scene_otio_contracts -v
               "$SCENE_PYTHON" -m scripts.scene_director --brand tarih --topic piri-reis-kayip-kaynak --out "$SCENE_OUTPUT/tarih" --otio
               "$SCENE_PYTHON" -m scripts.scene_director --brand bakim --topic kuruluk-nemlendirici-zamani --out "$SCENE_OUTPUT/bakim" --otio
+              for topic in lazer-on-gorusme cilt-bariyeri-katmanlari gunes-koruyucu-etiketi; do
+                "$SCENE_PYTHON" -m scripts.beauty_reel --topic "$topic" --out "$SCENE_OUTPUT/$topic" --otio
+              done
             '
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
@@ -70,5 +73,8 @@ jobs:
           path: |
             ${{ runner.temp }}/scene-plans/*/SCENE_*.json
             ${{ runner.temp }}/scene-plans/*/SCENE_TIMELINE.otio
+            ${{ runner.temp }}/scene-plans/*/BEAUTY_*.json
+            ${{ runner.temp }}/scene-plans/*/REELS_EDITORIAL_REVIEW.json
+            ${{ runner.temp }}/scene-plans/*/TR_TASLAK.srt
           if-no-files-found: error
           retention-days: 7
