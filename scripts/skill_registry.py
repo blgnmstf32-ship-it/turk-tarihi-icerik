@@ -202,6 +202,21 @@ def _inventory():
         for entry in _review_notes(namespace, manifest[f"{namespace}_knowledge"], test_file):
             add(entry)
 
+    research = _read("config/research_registry.json")
+    for namespace, source in research["knowledge"].items():
+        for entry in _review_notes(namespace, source, "tests/test_research_tools.py"):
+            add(entry)
+    trends = research["trends"]
+    add(_entry("research:google-trends-rss", trends["task"], _roles(trends["role_keys"]),
+               source=trends["source"], license={"code": "Google Trends kullanım koşulları", "scope": "upstream_reference"},
+               metadata={"security": "curated_reference_only", "test": "guidance_contract_only",
+                         "evidence": "tests/test_research_tools.py"}))
+    documents = research["trafilatura"]
+    add(_entry("research:trafilatura", "Kaydedilmiş HTML içinden kaynak ve konum bilgili kanıt adayları bul.",
+               _roles(documents["role_keys"]),
+               source={"repository": "adbar/trafilatura", "release": "v2.4.0", "license_path": "LICENSE"},
+               license={"code": "Apache-2.0", "scope": "parser_code"}, metadata=documents))
+
     for pack in skill_index():
         owner, repo = pack["repository"].split("/")
         for row in pack["skills"]:

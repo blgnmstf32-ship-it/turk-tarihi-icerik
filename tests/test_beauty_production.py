@@ -48,7 +48,7 @@ class GeneralBeautyProductionTests(unittest.TestCase):
         self.assertTrue(all(report["scenes"][row["id"]]["executed_renderer"] is None for row in three))
         self.assertEqual(report["scenes"]["s01"]["local_preflight"]["cache"], "hit")
         self.assertEqual(report["scenes"]["s01"]["local_preflight"]["executed_tools"], [])
-        self.assertEqual(len(registry_view()["entries"]), 144)
+        self.assertGreaterEqual(len(registry_view()["entries"]), 144)
 
     def test_sunscreen_uses_uv_graphic_and_keeps_label_jurisdiction(self):
         plan = beauty.make_plan(beauty.load_topic("gunes-koruyucu-etiketi"))

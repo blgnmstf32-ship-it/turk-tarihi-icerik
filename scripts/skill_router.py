@@ -14,7 +14,11 @@ SCENES = {
 ROLE_TASKS = {("bakim", 6): "competitor", ("bakim", 11): "story-sequence",
               ("tarih", 8): "speech", ("bakim", 16): "speech",
               ("tarih", 19): "calendar", ("tarih", 21): "visuals", ("tarih", 22): "visuals",
-              ("tarih", 23): "render-plan", ("tarih", 24): "media-review"}
+              ("tarih", 23): "render-plan", ("tarih", 24): "media-review",
+              ("tarih", 3): "document-evidence", ("tarih", 4): "document-evidence",
+              ("tarih", 5): "document-evidence", ("tarih", 18): "document-evidence",
+              ("bakim", 4): "document-evidence", ("bakim", 5): "document-evidence",
+              ("bakim", 7): "trend", ("bakim", 20): "document-evidence"}
 TASK_NOTES = {
     "hook": ("instagram:hook-delivery",),
     "story": ("instagram:spoken-beat-estimate", "openmontage:storyboard"),
@@ -24,7 +28,10 @@ TASK_NOTES = {
     "visuals": ("openmontage:scene-tool-fit", "cinecode:preview-depth"),
     "media-review": ("cinecode:preflight-frame-sampling", "gemini:multimodal"),
     "render-plan": ("openmontage:render-provenance", "openmontage:selective-recovery"),
-    "topic": ("instagram:calendar-angle-balance",),
+    "topic": ("instagram:calendar-angle-balance", "last30days:trend-window", "research:google-trends-rss"),
+    "trend": ("research:google-trends-rss", "last30days:trend-window"),
+    "document-evidence": ("factual-research:claim-passage", "open-research:evidence-scope"),
+    "rights": ("factual-research:claim-passage",),
     "discovery": ("instagram:caption-collapsed-preview",),
     "competitor": ("instagram:competitor-relative-baseline",),
     "measurement": ("instagram:audit-stage-evidence",),
