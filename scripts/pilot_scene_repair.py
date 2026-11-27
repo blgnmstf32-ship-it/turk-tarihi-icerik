@@ -7,7 +7,7 @@ from pathlib import Path
 import shutil
 from tempfile import TemporaryDirectory
 
-from scripts import approved_pilot_replay as replay, beauty_reel, final_media_qa as qa
+from scripts import approved_pilot_replay as replay, beauty_reel
 from scripts import media_pilot, pilot_media_measure as measure, scene_director as director
 from scripts import video_quality_lab as lab
 from scripts.create_reel import collect_scenes, render_reel, subtitle_cues
@@ -20,7 +20,7 @@ PILOTS = {
     "history": ("PIRI_REIS_FINAL.mp4", "1003d3cf0a988bcc161af61d474e20ae596e386bfa3ff9fb9895676ac4854498",
                 "tarih", "piri-reis-kayip-kaynak", "subtitles.srt", (1320, 314), "MEDIA_ATTRIBUTION.md"),
     "beauty": ("BAKIM_FINAL.mp4", "c086a69dc6847ef3cbc0816ae4d69c7ddddfb0b8c2fa953e48feed36c59b837a",
-               "bakim", "kuruluk-nemlendirici-zamani", "KURU_CILT_BAKIMI.srt", (1440, 144), "MEDIA_SOURCES.txt"),
+               "bakim", "kuruluk-nemlendirici-zamani", "KURU_CILT_BAKIMI.srt", (1440, 168), "MEDIA_SOURCES.txt"),
 }
 COLLAGE_SHA = "539f34ade6103e7297a8b62d266906bc3a3f36ac43d08955d425161c2ff7fc94"
 
@@ -130,6 +130,8 @@ def scene_scope(plan, state, spans, cause):
 
 
 def render_history(args, topic, voice, srt, spans, work):
+    from scripts import final_media_qa as qa
+
     photos = args.history / "auto/commons_visuals"
     collage = args.baseline / "TARIH_KOLAJ_HYPERFRAMES.mp4"
     if replay._hash(collage) != COLLAGE_SHA:
@@ -169,6 +171,8 @@ def render_beauty(plan, ranges, cues, compact, picture, preset, work):
 
 def compose(original, parts, band, output):
     """Place the new caption band on its original global frame numbers."""
+    from scripts import final_media_qa as qa
+
     inputs, filters = ["-i", original], ["[0:v]settb=1/30,setpts=N[original]"]
     top, height = band
     previous = "original"
@@ -255,6 +259,8 @@ def audit(video, plan, cues, metrics, voice, reference, state):
 
 
 def run(args):
+    from scripts import final_media_qa as qa
+
     name, digest, brand, topic_id, subtitle, band, attribution = PILOTS[args.brand]
     original = args.baseline / name
     baseline = beauty_reel.read_json(args.baseline / "FINAL_QA.json")
