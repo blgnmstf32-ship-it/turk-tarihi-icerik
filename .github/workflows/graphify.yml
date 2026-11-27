@@ -1,0 +1,54 @@
+name: Graphify · Offline CPU code navigation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - graphify_project.py
+      - graphify_benchmark.py
+      - requirements-graphify.txt
+      - .github/workflows/graphify.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.12'
+      - name: Install locked CPU wheels and obtain the verified tokenizer vocabulary
+        run: |
+          python -m venv "$RUNNER_TEMP/graphify"
+          "$RUNNER_TEMP/graphify/bin/python" -m pip install --only-binary=:all: --require-hashes -r requirements-graphify.txt
+          mkdir -p "$RUNNER_TEMP/graphify-tokenizer"
+          target="$RUNNER_TEMP/graphify-tokenizer/fb374d419588a4632f3f557e76b4b70aebbca790"
+          curl --fail --silent --show-error --location --max-time 30 \
+            https://openaipublic.blob.core.windows.net/encodings/o200k_base.tiktoken -o "$target"
+          printf '%s  %s\n' 446a9538cb6c348e3516120d7c08b09f57c36495e2acfffe59a5bf8b0cfb1a2d "$target" | sha256sum -c
+      - name: Extract, check, and benchmark without network or secrets
+        run: |
+          sudo unshare --net -- runuser -u "$(id -un)" -- env -i \
+            PATH=/usr/bin:/bin LANG=C.UTF-8 "RUNNER_TEMP=$RUNNER_TEMP" \
+            "TIKTOKEN_CACHE_DIR=$RUNNER_TEMP/graphify-tokenizer" bash -euc '
+              python="$RUNNER_TEMP/graphify/bin/python"
+              out="$RUNNER_TEMP/commit-graph"
+              "$python" graphify_project.py build --out "$out"
+              "$python" graphify_project.py verify --out "$out"
+              "$python" graphify_benchmark.py . "$out" > "$RUNNER_TEMP/graphify-evidence.json"
+              cat "$RUNNER_TEMP/graphify-evidence.json"
+            '
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: graphify-cpu-evidence
+          path: ${{ runner.temp }}/graphify-evidence.json
+          if-no-files-found: error
+          retention-days: 7

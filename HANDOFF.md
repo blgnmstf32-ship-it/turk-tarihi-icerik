@@ -166,3 +166,10 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - Tarih testinde yalnız arşivdeki hak kaydı bulunan Sokollu minyatürü ve mevcut Charon kesiti kullanıldı. Görselde kişi adı, kaynak, modern anlatım ve **YAPAY ZEKÂ TEMSİLİ · TEMSİLÎ CANLANDIRMA** ibareleri yer alır. Sokollu minyatürünü Piri Reis'in portresi olarak sunma. Gerçek kişide görseli ve sesi canlandırmaya yönelik izin kapsamını kaydet.
 - Yeniden değerlendirmede her çalıştırılan ağırlığın özetini ve lisansını sabitle. Render girdilerini dış ağsız ve sağlayıcı anahtarsız koşucuya ver. Ücretsiz bir Space ancak uygulamanın erişimi, veri işleme koşulları ve kota uygunluğu doğrulanırsa değerlendirilir.
 - Sicil ve yönlendirici kaydı için gerçek medya üzerinde yeterli dudak/fonem eşleşmesi, yüz bütünlüğü, doğal mimik ve baş pozu kanıtı gerekir. 1080×1920 ve 30 fps son medya sözleşmesini, mevcut kalite eşiklerini ve Scene Director'ın sahneye özgü onarımını koru. Ücretli çağrı ve Instagram otomatik paylaşımı kapalı.
+
+## 15D · Kod grafiğiyle devralma
+
+- Önce `git rev-parse HEAD` ile tam commit'i bul. [Graphify kaydında](GRAPHIFY_15D.md) anlatılan commit bağlantılı grafik ve provenance dosyasını kullan. `python graphify_project.py verify --out GRAFIK_DIZINI` içeriği doğrulamıyorsa aynı commit'te yerel ağsız çıkarım al.
+- Geniş kaynak okumadan önce `python graphify_project.py query --out GRAFIK_DIZINI --question "modül ve simge"` çalıştır. Sonucun kaynak yolu ve satırını doğrula. Kesilmiş sorgu veya tek kesin simge için hedefli `git grep` kullan. Model sağlayıcı, oturum kayıtçısı, MCP ve hook açma.
+- [CPU işi](.github/workflows/graphify.yml) standart Linux koşucusunda kilitlenmiş Python tekerlekleri ve doğrulanmış `o200k_base` sözlüğü kullanır. Kamuya açık işte yalnız sayısal ölçüm raporu yüklenir. Birleşim öncesi kalite, bağımlılık ve içerik güvenlik taramaları da geçmelidir.
+- ECC inceleme ilkeleri için [15D raporuna](GRAPHIFY_15D.md) bak. Kurulum betikleri, otomatik Memory Vault ve Continuous Learning akışları mevcut görevlerle çalıştırılmaz.
