@@ -56,7 +56,7 @@ jobs:
                      "seconds": duration, "cloud_requests": 1, "script_sha256": hashlib.sha256(script.encode()).hexdigest(),
                      "sha256": hashlib.sha256(raw).hexdigest()})
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: gemini-recovery-and-sulafat

@@ -21,7 +21,7 @@ jobs:
           ENABLE_GEMINI_EDITORIAL: "1"
           GEMINI_FREE_TIER_CONFIRMED: "1"
         run: python -m scripts.provider_smoke free --out output/free-provider
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: gemini-free-model-results

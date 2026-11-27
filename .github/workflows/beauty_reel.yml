@@ -58,7 +58,7 @@ jobs:
             cat output/beauty-reel/DOGRULAMA.json
             printf '\x60\x60\x60\n'
           } >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: beauty-reel-kuru-cilt-${{ github.run_number }}
           path: output/beauty-reel/
