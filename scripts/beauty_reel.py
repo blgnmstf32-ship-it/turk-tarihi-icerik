@@ -160,7 +160,7 @@ def ass_time(seconds):
     return f"{cs//360000}:{cs//6000%60:02}:{cs//100%60:02}.{cs%100:02}"
 
 
-def styled_captions(cues, path):
+def styled_captions(cues, path, *, compact=()):
     header = """[Script Info]
 ScriptType: v4.00+
 PlayResX: 1080
@@ -177,9 +177,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
     lines = [
         f"Dialogue: 0,{ass_time(cue['start'])},{ass_time(cue['end'])},Talk,,0,0,0,,"
-        + r"{\fad(60,65)}"
+        + (r"{\fad(60,65)\fscx90}" if index in compact else r"{\fad(60,65)}")
         + EMPHASIS.sub(lambda match: r"{\c&HBAEDFF&}" + match[0] + r"{\c&H00E9F3FF&}", cue["text"])
-        for cue in cues
+        for index, cue in enumerate(cues, 1)
     ]
     path.write_text(header + "\n".join(lines) + "\n", encoding="utf-8")
 

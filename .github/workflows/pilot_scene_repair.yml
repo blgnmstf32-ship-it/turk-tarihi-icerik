@@ -1,0 +1,106 @@
+name: Approved pilot caption repair
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        brand: [history, beauty]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install existing CPU media tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core
+          python -m pip install -r requirements.txt faster-whisper==1.2.1 ctranslate2==4.9.1 av==17.1.0 \
+            opencv-python-headless==4.13.0.92 scenedetect==0.6.7.1 scipy==1.17.0 psutil==7.2.2
+          python -m pip install --no-deps --only-binary=:all: --require-hashes -r requirements-scene-otio.txt
+          npm ci --ignore-scripts --no-audit
+          npx --no-install remotion browser ensure
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45988740750
+          name: final-qa-${{ matrix.brand }}
+          path: output/repair-input/baseline
+      - uses: actions/download-artifact@v4
+        if: matrix.brand == 'history'
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45649575775
+          name: tarihin-bilinmeyen-gercekleri-4
+          path: output/repair-input/history
+      - uses: actions/download-artifact@v4
+        if: matrix.brand == 'beauty'
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45702177750
+          name: beauty-reel-kuru-cilt-2
+          path: output/repair-input/beauty
+      - uses: actions/download-artifact@v4
+        if: matrix.brand == 'beauty'
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45654042857
+          name: beauty-sulafat-and-nano-assets
+          path: output/repair-input/assets
+      - name: Verify pinned Whisper model
+        run: |
+          mkdir -p output/repair-input/whisper
+          cd output/repair-input/whisper
+          base=https://huggingface.co/Systran/faster-whisper-small/resolve/536b0662742c02347bc0e980a01041f333bce120
+          for model_file in model.bin config.json tokenizer.json vocabulary.txt; do
+            curl --fail --silent --show-error --retry 2 --location "$base/$model_file" -o "$model_file"
+          done
+          sha256sum -c <<'SHAS'
+          3e305921506d8872816023e4c273e75d2419fb89b24da97b4fe7bce14170d671  model.bin
+          b55496ac7940a7ae47d2c01eab40edfd8701feec1229d9cce3b40014383fb828  config.json
+          fb7b63191e9bb045082c79fd742a3106a12c99513ab30df4a0d47fa6cb6fd0ab  tokenizer.json
+          34ce3fe1c5041027b3f8d42912270993f986dbc4bb34cf27f951e34a1e453913  vocabulary.txt
+          SHAS
+      - name: Repair and verify with loopback access only
+        env:
+          BRAND: ${{ matrix.brand }}
+        run: |
+          browser=$(find node_modules/.remotion -name chrome-headless-shell -type f | head -n 1)
+          test -x "$browser"
+          sudo unshare --net -- bash -euc '
+            ip link set lo up
+            test -z "$(ip route show default)"
+            test -z "$(ip -6 route show default)"
+            exec runuser -u "$1" -- env -i PATH="$2" HOME="$HOME" LANG=C.UTF-8 DO_NOT_TRACK=1 \
+              HF_HUB_OFFLINE=1 OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 GITHUB_RUN_ID="$3" \
+              "$4" -m scripts.pilot_scene_repair --brand "$5" --browser "$6" \
+              --baseline output/repair-input/baseline --history output/repair-input/history \
+              --beauty output/repair-input/beauty --beauty-assets output/repair-input/assets \
+              --model output/repair-input/whisper --out output/pilot-scene-repair
+          ' _ "$(id -un)" "$PATH" "$GITHUB_RUN_ID" "$(command -v python)" "$BRAND" "$browser"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: repaired-pilot-${{ matrix.brand }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            output/pilot-scene-repair/*FINAL.mp4
+            output/pilot-scene-repair/*.json
+            output/pilot-scene-repair/*.otio
+            output/pilot-scene-repair/*.srt
+            output/pilot-scene-repair/MEDIA_ATTRIBUTION.md
+            output/pilot-scene-repair/MEDIA_SOURCES.txt
