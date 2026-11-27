@@ -308,13 +308,31 @@ def assemble(assets, out, *, browser=None, vmaf_reference=None, vmaf_aligned=Fal
 
 
 def main():
+    from scripts import beauty_production
+
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--assets", required=True, type=Path)
+    parser.add_argument("--assets", type=Path)
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--browser", type=Path)
     parser.add_argument("--vmaf-reference", type=Path)
     parser.add_argument("--vmaf-aligned", action="store_true")
+    beauty_production.add_arguments(parser)
+    parser.add_argument("--bundle", type=Path)
+    parser.add_argument("--render-approved", type=Path, metavar="LOCAL_CHROMIUM")
     args = parser.parse_args()
+    if args.reel_topic or args.topic_file:
+        if args.assets or args.browser or args.vmaf_reference or args.vmaf_aligned:
+            parser.error("Genel konu rotasında pilot render seçenekleri kullanılamaz.")
+        try:
+            result = beauty_production.prepare(beauty_production.selected_topic(args), args.out,
+                                               bundle=args.bundle, export_otio=args.otio,
+                                               render_browser=args.render_approved)
+        except (OSError, ValueError, RuntimeError, wave.Error, EOFError) as exc:
+            parser.error(str(exc))
+        print(json.dumps(result, ensure_ascii=False))
+        return
+    if not args.assets or args.bundle or args.otio or args.render_approved:
+        parser.error("Önceki pilot için --assets, genel konu için --topic veya --topic-file gerekli.")
     assemble(args.assets.resolve(), args.out.resolve(), browser=args.browser,
              vmaf_reference=args.vmaf_reference, vmaf_aligned=args.vmaf_aligned)
 

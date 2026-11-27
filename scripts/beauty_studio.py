@@ -127,11 +127,24 @@ def build_preview(out, day, *, use_llm=False):
 
 
 def main():
+    from scripts import beauty_production
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--date", type=date.fromisoformat)
     parser.add_argument("--use-llm", action="store_true")
+    beauty_production.add_arguments(parser, topic_option="--reel-topic")
     args = parser.parse_args()
+    if args.reel_topic or args.topic_file:
+        if args.use_llm or args.date:
+            parser.error("Medyasız Reels planı, hikâye takvimi ve canlı model seçeneklerinden ayrıdır.")
+        try:
+            beauty_production.prepare(beauty_production.selected_topic(args), args.out, export_otio=args.otio)
+        except (OSError, ValueError, RuntimeError) as exc:
+            parser.error(str(exc))
+        return
+    if args.otio:
+        parser.error("OTIO için bir Reels konusu gerekli.")
     build_preview(args.out, args.date or tomorrow(), use_llm=args.use_llm)
 
 

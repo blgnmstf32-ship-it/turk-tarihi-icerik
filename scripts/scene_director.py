@@ -33,6 +33,9 @@ VISUALS = {
     "mechanism": ("media:three-js", "temsili_mekanizma", "işleyişe_kilitli_yakın_plan", "temas_gölgeli_ana_ışık"),
     "diagram": ("media:blender", "temsili_cilt_kesiti", "yavaş_makro_geçiş", "ölçek_ve_etiket_korumalı"),
     "macro": ("media:three-js", "temsili_ürün_hareketi", "yavaş_makro_odak", "parlamasız_yumuşak_ışık"),
+    "barrier": ("media:three-js", "temsili_cilt_katmanları", "yavaş_makro_geçiş", "ölçek_ve_etiket_korumalı"),
+    "science": ("media:remotion", "temsili_bilimsel_2b_şema", "bölgesel_vurgu", "kontrastı_koruyan_paleti"),
+    "motion": ("media:remotion", "hareketli_bilgi_grafiği", "sabit_okuma_kadrajı", "eşit_ve_okunaklı"),
 }
 REASONS = {"render_failed", "renderer_unavailable", "rights_unverified", "source_unverified", "sync_failed"}
 ENGINE_FAILURES = {"render_failed", "renderer_unavailable"}
@@ -141,7 +144,7 @@ def _cuts(scenes):
             for a, b in zip(scenes, scenes[1:])]
 
 
-def build_plan(brand, topic, *, duration_frames=2100, overrides=None):
+def build_plan(brand, topic, *, duration_frames=2100, overrides=None, end_frames=None):
     """Return an integer-frame dry plan for existing script text and declared provenance."""
     if not isinstance(topic, dict):
         raise ValueError("Topic must be a JSON object")
@@ -154,6 +157,10 @@ def build_plan(brand, topic, *, duration_frames=2100, overrides=None):
     if (not isinstance(lines, list) or not 2 <= len(lines) <= 40
             or any(not isinstance(line, str) or not line.strip() or len(line) > 1400 for line in lines)):
         raise ValueError("At least two bounded, authored narration lines are required")
+    if end_frames is not None and (not isinstance(end_frames, list) or len(end_frames) != len(lines)
+            or any(type(frame) is not int for frame in end_frames) or end_frames[-1] != duration_frames
+            or not 0 < end_frames[0] <= 90 or any(a >= b for a, b in zip(end_frames, end_frames[1:]))):
+        raise ValueError("Supplied cuts must span the timeline and keep the opening within 90 frames")
     overrides = overrides if overrides is not None else {}
     if not isinstance(overrides, dict) or set(overrides) - {str(i) for i in range(1, len(lines) + 1)}:
         raise ValueError("Scene overrides must use existing one-based narration line IDs")
@@ -167,21 +174,22 @@ def build_plan(brand, topic, *, duration_frames=2100, overrides=None):
         mode = "layer_diagram"
     scenes = []
     start = 0
-    for i, (line, end, default_kind) in enumerate(zip(lines, _ends(lines, duration_frames),
+    for i, (line, end, default_kind) in enumerate(zip(lines, end_frames or _ends(lines, duration_frames),
                                                        _draft_kinds(brand, topic, len(lines))), 1):
         extra = overrides.get(str(i), {})
         if not isinstance(extra, dict) or extra.keys() - {"kind", "source_numbers", "assets"}:
             raise ValueError("Unexpected scene override field")
         kind = extra.get("kind", default_kind)
         if not isinstance(kind, str) or kind not in VISUALS or (brand == "bakim" and kind in {"map", "city", "mechanism"}) or (
-                brand == "tarih" and kind in {"diagram", "macro"}):
+                brand == "tarih" and kind in {"diagram", "macro", "barrier", "science", "motion"}):
             raise ValueError("Visual treatment is not supported for this brand")
         bound_sources = extra.get("source_numbers", [])
         if not isinstance(bound_sources, list) or any(type(x) is not int or x not in source_ids for x in bound_sources):
             raise ValueError("Narration source references must point to declared sources")
         target, technique, camera, light = VISUALS[kind]
-        skills = select_knowledge(RouteContext(brand, brand_role, "visuals", kind, category))
-        fallback = _engine("media:remotion", brand, entries) if kind != "flat" else None
+        skill_scene = "diagram" if kind in {"barrier", "science"} else kind
+        skills = select_knowledge(RouteContext(brand, brand_role, "visuals", skill_scene, category))
+        fallback = _engine("media:remotion", brand, entries) if target != "media:remotion" else None
         if fallback:
             fallback.update(technique="katmanlı_2b", camera="sabit_kadraj", lighting="2b_okunaklı",
                             visual_label="TEMSİLÎ ŞEMA" if kind != "collage" else "MEVCUT KAYNAK VE ATIF")
@@ -196,7 +204,7 @@ def build_plan(brand, topic, *, duration_frames=2100, overrides=None):
                        "visual_assets": _assets(extra.get("assets"), source_ids, kind, brand),
                        "render": {"primary": _engine(target, brand, entries), "alternative": fallback,
                                   "technique": technique, "illustration_frames": min(270, end - start) if kind in
-                                  {"map", "city", "mechanism", "diagram", "macro"} else end - start,
+                                  {"map", "city", "mechanism", "diagram", "macro", "barrier"} else end - start,
                                   "reason": f"{purpose}:{kind}"},
                        "camera": camera, "lighting": light,
                        "captions": {"text": line, "timing": "estimate_pending_voice_alignment"},
@@ -213,7 +221,7 @@ def build_plan(brand, topic, *, duration_frames=2100, overrides=None):
         scene["transition_out"] = cuts[index]["id"] if index < len(cuts) else None
     return {"schema_version": VERSION, "brand": brand, "topic": {"id": topic_id, "title": topic["title"],
             "category": category, "visual_mode": mode}, "fps": FPS, "duration_frames": duration_frames,
-            "resolution": [1080, 1920], "timing": "estimated_from_script", "sources": sources,
+            "resolution": [1080, 1920], "timing": "supplied_frame_boundaries" if end_frames else "estimated_from_script", "sources": sources,
             "quality_policy": {"minimum_scenes_for_release": 10, "opening_max_frames": 90,
                                "human_approval_required": True},
             "scenes": scenes, "transitions": cuts, "paid_api_allowed": False, "instagram_auto_publish": False}
