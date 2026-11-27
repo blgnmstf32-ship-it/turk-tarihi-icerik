@@ -3,7 +3,13 @@ on:
   workflow_dispatch:
   push:
     branches: [media-final-qa, pilot-production-qa]
-    paths: [.github/workflows/media_final_qa.yml]
+    paths:
+      - .github/workflows/media_final_qa.yml
+      - scripts/approved_pilot_replay.py
+      - scripts/pilot_media_measure.py
+      - scripts/beauty_reel.py
+      - scripts/create_reel.py
+      - remotion/DocumentaryReel.tsx
 
 permissions:
   contents: read
