@@ -32,7 +32,7 @@ jobs:
           node-version: "22"
           cache: npm
       - name: Download the verified Sulafat and Nano Banana asset package
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           github-token: ${{ github.token }}
           run-id: 45654042857

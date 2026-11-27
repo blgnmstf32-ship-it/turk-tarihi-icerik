@@ -48,19 +48,19 @@ jobs:
         run: |
           npm run typecheck
           python -m unittest discover -s tests -q
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           github-token: ${{ github.token }}
           run-id: 45649575775
           name: tarihin-bilinmeyen-gercekleri-4
           path: output/media-input/history
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           github-token: ${{ github.token }}
           run-id: 45702177750
           name: beauty-reel-kuru-cilt-2
           path: output/media-input/beauty
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           github-token: ${{ github.token }}
           run-id: 45654042857

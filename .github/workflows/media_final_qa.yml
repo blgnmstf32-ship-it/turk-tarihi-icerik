@@ -85,28 +85,28 @@ jobs:
           npm --prefix media_pilot ci --ignore-scripts --no-audit
           npx --no-install remotion browser ensure
           python -m pip install --no-deps --only-binary=:all: --require-hashes -r requirements-scene-otio.txt
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         if: matrix.brand == 'history'
         with:
           github-token: ${{ github.token }}
           run-id: 45649575775
           name: tarihin-bilinmeyen-gercekleri-4
           path: output/qa-input/history
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         if: matrix.brand == 'beauty'
         with:
           github-token: ${{ github.token }}
           run-id: 45702177750
           name: beauty-reel-kuru-cilt-2
           path: output/qa-input/beauty
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         if: matrix.brand == 'beauty'
         with:
           github-token: ${{ github.token }}
           run-id: 45654042857
           name: beauty-sulafat-and-nano-assets
           path: output/qa-input/assets
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           github-token: ${{ github.token }}
           run-id: 45828936221
