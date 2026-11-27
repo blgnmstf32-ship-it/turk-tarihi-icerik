@@ -1,0 +1,565 @@
+{
+  "verified_on": "2026-11-27",
+  "sources": {
+    "met-tablet": [
+      "The Met · Kültepe borç tableti",
+      "https://www.metmuseum.org/art/collection/search/325857",
+      "Eser 66.245.16a. Katalog, gümüş borcunun kapanmasını ve kil zarftaki tanık mühürlerini açıklıyor."
+    ],
+    "met-loan": [
+      "The Met · Gümüş borcu kaydı",
+      "https://www.metmuseum.org/art/collection/search/325855",
+      "Asur ticaret kolonisine ait ayrı borç senedi ve açık erişimli eser kaydı."
+    ],
+    "nms-lewis": [
+      "National Museums Scotland · Lewis",
+      "https://www.nms.ac.uk/discover-catalogue/the-story-of-the-lewis-chess-pieces",
+      "Yontu, malzeme ve en az dört takım yorumunun dayanağı. Atölye ve köken olasılık olarak kalır."
+    ],
+    "nms-display": [
+      "National Museums Scotland · Sergi",
+      "https://media.nms.ac.uk/news/redisplay-of-the-lewis-chess-pieces-allows-them-to-be-seen-in-full-for-the-first-time",
+      "Toplu buluntuda 93 oyun parçası. Sergi kaydı, taşların arkasındaki bezemeyi ve bulunan grubun belirsiz sahibini anlatır."
+    ],
+    "met-ife": [
+      "The Met · Ife pişmiş toprakları",
+      "https://www.metmuseum.org/essays/ife-terracottas-1000-1400-a-d",
+      "Ife başlarında pişmiş toprak ve bakır alaşımları ile farklı biçim anlayışlarının birlikte görüldüğünü açıklar."
+    ],
+    "met-casting": [
+      "The Met · Kayıp mum dökümü",
+      "https://www.metmuseum.org/essays/african-lost-wax-casting",
+      "Mum modelin kil kalıpla çevrilmesi ve eriyen mumun bıraktığı boşluğa metal dökülmesi."
+    ],
+    "aad-brush": [
+      "AAD · Makyaj fırçası bakımı",
+      "https://www.aad.org/public/everyday-care/skin-care-secrets/routine/clean-your-makeup-brushes",
+      "Fırça uçlarının temizlenmesi, durulama, yatay kurutma, paylaşmama ve tekrarlayan tahrişte dermatolog önerisi."
+    ],
+    "fda-eye": [
+      "FDA · Göz kozmetiği güvenliği",
+      "https://www.fda.gov/cosmetics/cosmetic-products/eye-cosmetic-safety",
+      "Göz çevresine uygun ürünler, testerlar, temiz aplikatör ve hareket halindeki araçta yaralanma riski."
+    ],
+    "fda-eye-faq": [
+      "FDA · Göz kozmetiği SSS",
+      "https://www.fda.gov/cosmetics/resources-consumers-cosmetics/cosmetics-safety-qa-eye-cosmetic-safety",
+      "Kuruyan maskarayı sulandırmama, elleri yıkama, tahrişte bırakma ve bulaş riskini azaltma."
+    ],
+    "fda-use": [
+      "FDA · Güvenli kozmetik kullanımı",
+      "https://www.fda.gov/cosmetics/resources-consumers-cosmetics/using-cosmetics-safely",
+      "Etiket uyarıları, açılış tarihi notu ve ABD bağlamındaki pazarlama terimlerinin sınırları."
+    ]
+  },
+  "reels": [
+    {
+      "brand": "tarih",
+      "id": "kultepe-kil-borc-kaydi",
+      "title": "Kil tablet bir borcu nasıl kapattı?",
+      "place": "Anadolu",
+      "era": "Orta Tunç Çağı",
+      "motif": "tablet",
+      "hook": "Bu tablet bir borcu kapattı.",
+      "boundary": "The Met buluntu yerini Kültepe olarak olası görür. Metin tek bir işlemi belgeliyor.",
+      "beats": [
+        {
+          "heading": "Kapanan borç",
+          "text": "Bu tablet bir borcu kapattı.",
+          "source": "met-tablet"
+        },
+        {
+          "heading": "Avuç içi kadar kanıt",
+          "text": "The Met’teki kil yazıt, avuç içine sığacak boyutta. Katalog tabletin muhtemelen Kültepe’den geldiğini belirtiyor.",
+          "source": "met-tablet"
+        },
+        {
+          "heading": "Gümüş kaydı",
+          "text": "Metin, Aşur-taklaku’ya olan gümüş borcunun ödendiğini ve bu borca dayalı iddiaların kapandığını bildiriyor.",
+          "source": "met-tablet"
+        },
+        {
+          "heading": "Küçük bir zarf",
+          "text": "Bu yazının bir de kil zarfı vardı. Müzedeki tablet ve zarfın ayrı katalog numaraları bulunuyor.",
+          "source": "met-tablet"
+        },
+        {
+          "heading": "Tanıkların izi",
+          "text": "Tanıkların adları yazıda geçiyor. Onların mühürleri ise tabletin dışındaki kil zarf üzerinde yer alıyor.",
+          "source": "met-tablet"
+        },
+        {
+          "heading": "Ticaretin hafızası",
+          "text": "Aşur’dan gelen tüccarlar Anadolu’da işlemleri yazıya döküyordu. Benzer belgeler iş anlaşmalarına ve anlaşmazlıklara da ışık tutuyor.",
+          "source": "met-tablet"
+        },
+        {
+          "heading": "Borç senedi ayrı",
+          "text": "Müzenin koleksiyonunda gümüş borcu açılırken hazırlanmış başka kayıtlar da var. Başlangıç ve kapanış farklı işlevler görüyor.",
+          "source": "met-loan"
+        },
+        {
+          "heading": "Ev içindeki arşiv",
+          "text": "Kazılarda ortaya çıkan çok sayıda tablet, tüccar evlerinde biriken kayıtların izini taşıyor.",
+          "source": "met-tablet"
+        },
+        {
+          "heading": "Neyi okuyabiliyoruz?",
+          "text": "Tek bir belge herkese uygulanan ticaret kuralını açıklamaz. Ama belirli bir ödemenin nasıl kayda geçtiğini gösterir.",
+          "source": "met-tablet"
+        },
+        {
+          "heading": "Kaynağı aç",
+          "text": "Katalogda tabletin ve zarfın işlevlerini karşılaştırabilirsin. Eser numarası altmış altı, iki yüz kırk beş, on altı A.",
+          "source": "met-tablet"
+        }
+      ]
+    },
+    {
+      "brand": "tarih",
+      "id": "lewis-satranc-tasim-takim",
+      "title": "Lewis taşları kaç takımdan geldi?",
+      "place": "İskoçya",
+      "era": "Orta Çağ",
+      "motif": "chess",
+      "hook": "Bu taşlar kaç takımdan geldi?",
+      "boundary": "Atölye, köken ve gömülme gerekçesi kesin değil. 93 bütün oyun parçalarının sayısıdır.",
+      "beats": [
+        {
+          "heading": "Tek kutu mu?",
+          "text": "Bu taşlar kaç takımdan geldi?",
+          "source": "nms-lewis"
+        },
+        {
+          "heading": "Lewis buluntusu",
+          "text": "İskoçya’nın batısındaki Lewis’te ortaya çıkan parçalar, Orta Çağ’da satrancın nasıl göründüğünü anlatıyor.",
+          "source": "nms-display"
+        },
+        {
+          "heading": "Sayının anlamı",
+          "text": "Buluntuda doksan üç oyun parçası kayda geçmiş. Bu sayı grubun tamamını kapsıyor, çünkü başka oyunlara ait parçalar da var.",
+          "source": "nms-display"
+        },
+        {
+          "heading": "Dört takım izi",
+          "text": "Boyut ve yontu ayrıntıları karşılaştırılınca, müze en az dört satranç takımının izini görüyor.",
+          "source": "nms-lewis"
+        },
+        {
+          "heading": "Yüz ve giysi",
+          "text": "Yüzleri ve kıyafetleri yan yana koyunca farklı ellerin çalışmış olabileceği görülüyor. Aynı atölye olasılığı kesinleşmiş değil.",
+          "source": "nms-lewis"
+        },
+        {
+          "heading": "Malzeme farkı",
+          "text": "Taşların çoğu mors dişinden oyulmuş. Bazı örneklerde ise ispermeçet balinası dişi kullanılmış.",
+          "source": "nms-lewis"
+        },
+        {
+          "heading": "Arka yüzler",
+          "text": "Tahtların arkasındaki örgü ve sarmaşık bezemeleri de işçiliği tanımaya yardım ediyor.",
+          "source": "nms-display"
+        },
+        {
+          "heading": "Norveç bağlantısı",
+          "text": "Norveç’teki yontularla benzerlikler köken tartışmasına ipucu sunuyor. Bu benzerlik kesin bir üretim adresi vermiyor.",
+          "source": "nms-lewis"
+        },
+        {
+          "heading": "Eksik taşlar",
+          "text": "Parçaların sayısı dört eksiksiz takımı tamamlamıyor. Elde kalan örneklerden hareketle bir gruplama yapılıyor.",
+          "source": "nms-lewis"
+        },
+        {
+          "heading": "Birlikte düşün",
+          "text": "Sonuç bir kutuyu saymaktan çıkmıyor. Boyut, üslup ve malzemenin bir arada okunması gerekiyor.",
+          "source": "nms-lewis"
+        }
+      ]
+    },
+    {
+      "brand": "tarih",
+      "id": "ife-heykel-mum-kalip",
+      "title": "Ife’de bir yüz nasıl metal oldu?",
+      "place": "Ile-Ife, Nijerya",
+      "era": "Orta Çağ",
+      "motif": "face",
+      "hook": "Kalıpta önce metal yoktu.",
+      "boundary": "Özgün teknik şeması tek bir heykelin kesin yapım kaydı veya kimlik tespiti değildir.",
+      "beats": [
+        {
+          "heading": "Önce mum",
+          "text": "Kalıpta önce metal yoktu.",
+          "source": "met-casting"
+        },
+        {
+          "heading": "Ife’nin yüzleri",
+          "text": "Bugünkü Nijerya’da bulunan Ife, gerçekçi yüz ayrıntıları ve farklı malzemelerde heykelleriyle tanınıyor.",
+          "source": "met-ife"
+        },
+        {
+          "heading": "Malzeme çeşitliliği",
+          "text": "Bölgede pişmiş toprakla yapılmış başların yanında bakır ve pirinç örnekleri de var.",
+          "source": "met-ife"
+        },
+        {
+          "heading": "Geçici model",
+          "text": "Kayıp mum yönteminde sanatçı, kalıcı olmasını istemediği bir örnekle başlıyor. Biçimin ilk taşıyıcısı mum.",
+          "source": "met-casting"
+        },
+        {
+          "heading": "Kil kabuk",
+          "text": "Modelin dışına kil uygulanıyor. Kil, yüzeydeki ayrıntıları çevreleyen bir kalıp oluşturuyor.",
+          "source": "met-casting"
+        },
+        {
+          "heading": "Boşluğun açılması",
+          "text": "Isı mumun yerini boşaltıyor. Kalıpta kalan boşluk, metalin alacağı biçimi taşıyor.",
+          "source": "met-casting"
+        },
+        {
+          "heading": "Metalin sırası",
+          "text": "Eritilen metal boşluğa ulaşıyor. Soğuyunca, daha önce mumun bulunduğu yerde artık metal var.",
+          "source": "met-casting"
+        },
+        {
+          "heading": "Yüzeye yakından bak",
+          "text": "Ife eserlerinin incelikli yüz çizgileri, kayıp mum tekniğinde modelin rolünü anlamaya yardım ediyor.",
+          "source": "met-ife"
+        },
+        {
+          "heading": "Kimlik sınırı",
+          "text": "Biçimi incelemek, heykeldeki kişinin adını tek başına ortaya çıkarmaz. Teknik ile kimlik ayrı sorular.",
+          "source": "met-ife"
+        },
+        {
+          "heading": "Kaynak ve şema",
+          "text": "Kalıp açıklaması The Met’in teknik incelemesine dayanıyor. Gösterilen çizim bu tekniğin temsili anlatımı.",
+          "source": "met-casting"
+        }
+      ]
+    },
+    {
+      "brand": "bakim",
+      "id": "firca-kurutma-duzeni",
+      "title": "Makyaj fırçasını doğru kurutma",
+      "category": "kozmetik-icerikler",
+      "hook": "Fırçan nerede kuruyor?",
+      "boundary": "AAD’nin yeniden kullanılabilir makyaj fırçaları için verdiği genel bakım adımları. Tedavi veya mikropsuzluk vaadi yok.",
+      "beats": [
+        {
+          "purpose": "hook",
+          "heading": "Fırçan nerede kuruyor?",
+          "text": "Fırçan nerede kuruyor?",
+          "source": "aad-brush"
+        },
+        {
+          "purpose": "context",
+          "heading": "Biriken kalıntı",
+          "text": "Makyaj fırçalarında ürün, yağ ve kir birikebilir. Temizlik gününü hatırlamak için kendine basit bir rutin kurabilirsin.",
+          "source": "aad-brush"
+        },
+        {
+          "purpose": "application",
+          "heading": "Yalnız uçları ıslat",
+          "text": "Fırça uçlarını ılık akan suda durula. Fırça başının tamamını suya batırmamak, sapla birleşen kısmı korumaya yardımcı olur.",
+          "source": "aad-brush"
+        },
+        {
+          "purpose": "application",
+          "heading": "Nazik yıkama",
+          "text": "AAD, fırça uçlarını temizlemek için ılık suyla seyreltilmiş nazik şampuanı öneriyor.",
+          "source": "aad-brush"
+        },
+        {
+          "purpose": "application",
+          "heading": "Durulama",
+          "text": "Fırçanın ucunu nazikçe yıkadıktan sonra akan suyla durula. Durulama suyu berraklaşana kadar gerekirse işlemi tekrarla.",
+          "source": "aad-brush"
+        },
+        {
+          "purpose": "application",
+          "heading": "Fazla suyu al",
+          "text": "Fırça ucundaki fazla suyu temiz ve kuru bir kâğıt havluyla hafifçe al.",
+          "source": "aad-brush"
+        },
+        {
+          "purpose": "application",
+          "heading": "Yatay yerleştir",
+          "text": "Bir havlu üzerinde düz yatır. Fırçanın ucu tezgâh kenarından dışarı taşarsa kılların çevresinde hava dolaşabilir.",
+          "source": "aad-brush"
+        },
+        {
+          "purpose": "mechanism",
+          "heading": "Sap birleşimini koru",
+          "text": "Dik kurutunca su, kılları sapa bağlayan yapışkan bölgeye ilerleyebilir. AAD düz kurutmayı bu nedenle öneriyor.",
+          "source": "aad-brush"
+        },
+        {
+          "purpose": "safety",
+          "heading": "Kişisel kullanım",
+          "text": "Makyaj fırçalarını paylaşma. Makyaj sonrası tekrarlayan cilt tahrişi varsa dermatoloğa danış.",
+          "source": "aad-brush"
+        },
+        {
+          "purpose": "sources",
+          "heading": "Kaynak",
+          "text": "Bu adımlar Amerikan Dermatoloji Akademisinin fırça bakımı rehberinden. Kendi fırçanın bakım talimatına da bak.",
+          "source": "aad-brush"
+        }
+      ]
+    },
+    {
+      "brand": "bakim",
+      "id": "goz-makyaji-aplikatoru",
+      "title": "Göz makyajında temiz aplikatör",
+      "category": "kozmetik-icerikler",
+      "hook": "Aplikatörün temiz mi?",
+      "boundary": "FDA genel tüketici hijyen rehberidir. Hastalık tanısı, tedavi veya Türkiye mevzuatı iddiası yok.",
+      "beats": [
+        {
+          "purpose": "hook",
+          "heading": "Aplikatörün temiz mi?",
+          "text": "Aplikatörün temiz mi?",
+          "source": "fda-eye-faq"
+        },
+        {
+          "purpose": "context",
+          "heading": "Göz çevresi ayrı",
+          "text": "Bir ürünü göz çevresinde kullanmadan önce etikette o bölge için tasarlanıp tasarlanmadığına bak.",
+          "source": "fda-eye"
+        },
+        {
+          "purpose": "application",
+          "heading": "Hazırlık",
+          "text": "Göz makyajından önce ellerini yıka ve göz çevresine değecek uygulama aracının temiz olduğundan emin ol.",
+          "source": "fda-eye-faq"
+        },
+        {
+          "purpose": "mechanism",
+          "heading": "Neden paylaşılmaz?",
+          "text": "Başka birinin kullandığı aplikatör mikroorganizmaları taşıyabilir. Kendi göz kozmetiğini kişisel tut.",
+          "source": "fda-eye"
+        },
+        {
+          "purpose": "application",
+          "heading": "Testerda yeni uç",
+          "text": "Mağaza örneği kullanacaksan tek kullanımlık temiz bir uç iste. Başkasının kullandığı uçla deneme yapma.",
+          "source": "fda-eye"
+        },
+        {
+          "purpose": "context",
+          "heading": "Sabit bir yerde uygula",
+          "text": "Hareket eden bir araçta ani duruş, aplikatörün göze çarpmasına yol açabilir. Uygulamayı sabit bir yerde yap.",
+          "source": "fda-eye"
+        },
+        {
+          "purpose": "application",
+          "heading": "Kapağı temiz tut",
+          "text": "Kabı temiz tut ve ürünü toz veya kirle temas ettirme. Saklama ve kullanımda etiketteki uyarıları izle.",
+          "source": "fda-eye-faq"
+        },
+        {
+          "purpose": "recap",
+          "heading": "Üç kontrol",
+          "text": "Başlamadan önce ürünü, ellerini ve aplikatörü kontrol et. Basit bir hazırlık rutini bu adımları hatırlatır.",
+          "source": "fda-eye-faq"
+        },
+        {
+          "purpose": "safety",
+          "heading": "Tahriş olursa",
+          "text": "Uygulama tahrişe neden olursa ürünü kullanmayı bırak. Tahriş devam ederse bir sağlık uzmanına danış.",
+          "source": "fda-eye-faq"
+        },
+        {
+          "purpose": "sources",
+          "heading": "Kaynak",
+          "text": "Bu kontrol listesi FDA’nın göz kozmetiği güvenliği rehberine dayanıyor. Ürününe ait kullanım uyarılarını da oku.",
+          "source": "fda-eye"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "brand": "tarih",
+      "id": "kultepe-zarfin-kaydi",
+      "title": "Kil zarf, ayrı envanter",
+      "text": "Met koleksiyonunda Kültepe’ye atfedilen bir tabletin zarfı ayrı numarayla kayıtlı. İki parça aynı borç işlemini aydınlatıyor.",
+      "place": "Anadolu",
+      "era": "Tunç Çağı",
+      "motif": "tablet",
+      "source": "met-tablet"
+    },
+    {
+      "brand": "tarih",
+      "id": "kultepe-yazi-yonu",
+      "title": "Yazı nereden başlıyor?",
+      "text": "Met’in gümüş borcu kapatma tabletindeki çivi yazısı soldan sağa okunuyor.",
+      "place": "Anadolu",
+      "era": "Tunç Çağı",
+      "motif": "tablet",
+      "source": "met-tablet"
+    },
+    {
+      "brand": "tarih",
+      "id": "kultepe-ticaret-mallari",
+      "title": "Tüccarlar ne taşıyordu?",
+      "text": "Aşurlu tüccarlar Anadolu’da başta kalay ve dokuma ürünlerini bakır ve başka mallarla değiştiriyordu.",
+      "place": "Anadolu",
+      "era": "Tunç Çağı",
+      "motif": "trade",
+      "source": "met-tablet"
+    },
+    {
+      "brand": "tarih",
+      "id": "kultepe-ev-arsivi",
+      "title": "Bir evde ticaret arşivi",
+      "text": "Kültepe’deki pek çok yazılı kayıt tüccar hanelerinde saklanıyordu. Kil belgeler evlerde yürütülen ticari işlerin izini taşıyor.",
+      "place": "Anadolu",
+      "era": "Tunç Çağı",
+      "motif": "roof",
+      "source": "met-tablet"
+    },
+    {
+      "brand": "tarih",
+      "id": "lewis-taslarin-arkasi",
+      "title": "Tahtın arkasına bak",
+      "text": "Bazı Lewis taşlarında tahtın arka yüzü, iç içe geçen bitki ve örgü desenleriyle işlenmiş.",
+      "place": "İskoçya",
+      "era": "Orta Çağ",
+      "motif": "chess",
+      "source": "nms-display"
+    },
+    {
+      "brand": "tarih",
+      "id": "lewis-kirmazi-ihtimali",
+      "title": "Kırmızı taş var mıydı?",
+      "text": "Bazı Lewis taşlarındaki cıva izleri, bir zamanlar kırmızı pigment kullanılmış olabileceğini düşündürüyor.",
+      "place": "İskoçya",
+      "era": "Orta Çağ",
+      "motif": "face",
+      "source": "nms-lewis"
+    },
+    {
+      "brand": "tarih",
+      "id": "lewis-bulanin-sorusu",
+      "title": "Taşları kim sakladı?",
+      "text": "Lewis buluntusunu kimin sakladığı bilinmiyor. Müze, tüccar ve yerel seçkin gibi farklı olasılıklar sunuyor.",
+      "place": "İskoçya",
+      "era": "Orta Çağ",
+      "motif": "trade",
+      "source": "nms-display"
+    },
+    {
+      "brand": "tarih",
+      "id": "lewis-oyun-parcasi-sayisi",
+      "title": "93 parça, farklı oyunlar",
+      "text": "Lewis’teki toplu buluntudaki 93 parça yalnız satranç taşlarından oluşmuyor. Başka oyunlardan parçalar da var.",
+      "place": "İskoçya",
+      "era": "Orta Çağ",
+      "motif": "chess",
+      "source": "nms-display"
+    },
+    {
+      "brand": "tarih",
+      "id": "ife-pismis-toprak-bicimleri",
+      "title": "Ife’de iki biçim anlayışı",
+      "text": "Ife sanatında gerçekçi yüzlerle daha soyut, koni biçimli pişmiş toprak başlar aynı kültürel ortamda görülüyor.",
+      "place": "Nijerya",
+      "era": "Orta Çağ",
+      "motif": "face",
+      "source": "met-ife"
+    },
+    {
+      "brand": "tarih",
+      "id": "ife-metal-ve-kil",
+      "title": "Bir yüz, farklı malzemeler",
+      "text": "Ife başlarının büyük bölümü pişmiş toprak. Koleksiyonlarda bakır ve pirinçle yapılmış daha az sayıda örnek de bulunuyor.",
+      "place": "Nijerya",
+      "era": "Orta Çağ",
+      "motif": "face",
+      "source": "met-ife"
+    },
+    {
+      "brand": "bakim",
+      "id": "firca-temizlik-takvimi",
+      "title": "Fırçanı ne zaman yıkadın?",
+      "text": "AAD, makyaj fırçalarını 7–10 günde bir yıkamayı öneriyor. Son yıkama gününü takvimde işaretleyebilirsin.",
+      "motif": "calendar",
+      "source": "aad-brush"
+    },
+    {
+      "brand": "bakim",
+      "id": "firca-durulama-suyu",
+      "title": "Durulama suyu berrak mı?",
+      "text": "Fırça ucunu akan suda durula. AAD, akan su berraklaşana kadar yıkama ve durulamayı tekrarlamayı öneriyor.",
+      "motif": "drop",
+      "source": "aad-brush"
+    },
+    {
+      "brand": "bakim",
+      "id": "firca-nemi-havlu",
+      "title": "Fırçada fazla su kaldı mı?",
+      "text": "Durulanan fırçanın ucundaki suyu temiz, kuru kâğıt havluyla nazikçe al.",
+      "motif": "layers",
+      "source": "aad-brush"
+    },
+    {
+      "brand": "bakim",
+      "id": "firca-yatay-kurutma",
+      "title": "Fırçayı düz yatır",
+      "text": "Fırçayı kuruturken düz bir havluya koy. Ucunu kenardan taşırmak, kılların çevresinde hava dolaşmasına izin verir.",
+      "motif": "air",
+      "source": "aad-brush"
+    },
+    {
+      "brand": "bakim",
+      "id": "maskara-kurumus-kutu",
+      "title": "Kuruyan maskaraya su ekleme",
+      "text": "FDA, kurumuş maskaranın atılmasını öneriyor. Su ya da tükürük eklemek ürünün kirlenmesine yol açabilir.",
+      "motif": "flask",
+      "source": "fda-eye-faq"
+    },
+    {
+      "brand": "bakim",
+      "id": "goz-kozmetigi-paylasim",
+      "title": "Aplikatör kişisel kalsın",
+      "text": "Göz makyajı ürününü veya ucunu paylaşma. Kullanım sırasında mikroorganizmalar ürüne taşınabilir.",
+      "motif": "dialog",
+      "source": "fda-eye"
+    },
+    {
+      "brand": "bakim",
+      "id": "goz-kozmetigi-tester",
+      "title": "Tester için yeni uç iste",
+      "text": "Mağazada göz kozmetiği deneyeceksen temiz, tek kullanımlık bir aplikatör kullan.",
+      "motif": "shelf",
+      "source": "fda-eye"
+    },
+    {
+      "brand": "bakim",
+      "id": "goz-kozmetigi-uygunluk",
+      "title": "Dudak kalemi göze mi?",
+      "text": "Göz çevresinde yalnız o bölge için üretilen kozmetiği kullan. FDA, dudak kalemini göz kalemi gibi kullanmamayı öneriyor.",
+      "motif": "flask",
+      "source": "fda-eye-faq"
+    },
+    {
+      "brand": "bakim",
+      "id": "kozmetik-ilk-acilis-gunu",
+      "title": "Açtığın günü işaretle",
+      "text": "Kabın üzerine ürünü açtığın günü yazmak, ne kadar süredir açık olduğunu hatırlamana yardımcı olur.",
+      "motif": "calendar",
+      "source": "fda-use"
+    },
+    {
+      "brand": "bakim",
+      "id": "goz-kozmetigi-arac",
+      "title": "Hareket halindeyken sürme",
+      "text": "Hareket eden araçta ani duruş, makyaj ucunun göze değmesine yol açabilir. Uygulamayı sabit bir yerde yap.",
+      "motif": "dialog",
+      "source": "fda-eye"
+    }
+  ]
+}
