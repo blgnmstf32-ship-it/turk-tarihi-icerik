@@ -218,6 +218,12 @@ def _inventory():
                metadata={"mode": "local", "adapter": "scripts/pause_review.py:review_pauses",
                          "test": "adapter_contract_only", "evidence": "tests/test_media_craft.py",
                          "note": "Yalnız çağıranın sağladığı sayısal zaman aralıkları. Zaman çizelgesi ve medya değişmez."}))
+    add(_entry("quality-lab:local-review", "Ölçüm kapsamını, kare kusurlarını ve sahneye bağlı kaynak notlarını değerlendir.",
+               _roles({"tarih": [16, 24], "bakim": [20]}),
+               source={"path": "scripts/video_quality_lab.py"}, license={"code": NO_LICENSE},
+               metadata={"mode": "local", "adapter": "scripts/video_quality_lab.py:inspect_snapshot",
+                         "test": "adapter_contract_only", "evidence": "tests/test_video_quality_lab.py",
+                         "note": "Ağsız ve medyasız, yalnız sağlanan timeline ve kanıt verisi."}))
     trends = research["trends"]
     add(_entry("research:google-trends-rss", trends["task"], _roles(trends["role_keys"]),
                source=trends["source"], license={"code": "Google Trends kullanım koşulları", "scope": "upstream_reference"},
