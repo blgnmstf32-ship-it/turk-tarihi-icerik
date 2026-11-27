@@ -1,0 +1,63 @@
+name: 15E · Free text provider comparison
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: turk-tarihi-content-drafts
+  cancel-in-progress: false
+jobs:
+  compare:
+    if: >-
+      github.repository == 'blgnmstf32-ship-it/turk-tarihi-icerik' &&
+      github.actor == 'blgnmstf32-ship-it' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt
+      - name: Restore shared production quotas
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .cache/editorial-llm.sqlite3
+            .cache/gemini-quota.sqlite3
+            .cache/gemini-voice
+          key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            editorial-llm-v1-
+      - name: Compare only eligible free routes
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_IMAGE_API_KEY: ${{ secrets.GEMINI_IMAGE_API_KEY }}
+          ENABLE_GEMINI_EDITORIAL: ${{ vars.GEMINI_FREE_TIER_CONFIRMED || '0' }}
+          GEMINI_FREE_TIER_CONFIRMED: ${{ vars.GEMINI_FREE_TIER_CONFIRMED || '0' }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python -m free_provider_comparison --state .cache/editorial-llm.sqlite3 \
+            --quota .cache/gemini-quota.sqlite3 --out output/free-provider-comparison.json
+      - name: Save shared production quotas
+        if: ${{ always() && hashFiles('.cache/editorial-llm.sqlite3') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .cache/editorial-llm.sqlite3
+            .cache/gemini-quota.sqlite3
+            .cache/gemini-voice
+          key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Upload aggregate measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: free-provider-comparison
+          path: output/free-provider-comparison.json
+          if-no-files-found: error
+          retention-days: 14

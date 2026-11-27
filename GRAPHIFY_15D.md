@@ -28,3 +28,11 @@ Graphify, Git'te kayıtlı ve izinli uzantıya sahip normal uygulama dosyaların
 | TDD Guide ve Build Error Resolver | Bozulma kanıtını, test çıkış kodunu ve ham tanıyı koruma ilkesi mevcut sözleşmelerle örtüşüyor. Otomatik düzeltici ve yeni test altyapısı kurulmuyor. |
 
 Work ortamında aynı CLI çalıştırıldı. Codex ve Gemini CLI için üst kaynak yerel kurulum ve ortak kod gezintisini belgeliyor. Entegrasyon bu proje için ortak komut satırı ve `AGENTS.md` kuralını kullanır. Etkileşimli Gemini modeli, ECC hook/MCP, GPU ve harici LLM yürütmesi kapsamda açılmadı. [Graphify kullanım belgeleri](https://docs.graphify.com/reference/overview) · [ECC uyarlama kılavuzu](https://github.com/affaan-m/ECC/tree/4adeee6732a12d1540f49a4d50a38ce8c97f9a53/docs)
+
+## Kalıcı özel arşiv
+
+28 Kasım 2026. [Kişisel GitHub arşivi](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik-graph) PRIVATE. Anonim REST sorgusu 404 döndürdü. [İlk gerçek koşuda](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik-graph/actions/runs/46078854325) CPU çıkarımı ve yazma işi başarıyla tamamlandı. `c3ed478d5f043022693911ed0b587d382cbe0b57` dizinindeki açılmış grafiğin SHA-256 değeri `78d6796962ec03182b1005802db78b9a6f11ac90853340beed3ae03e46a3527a`.
+
+Arşiv her gün 03.17 Türkiye saati için planlanır. Özel depodan elle de çalıştırılabilir. Kaynak main dalındaki yeni ilk ebeveyn commit'leri sırayla ve koşu başına en çok 12 tane işlenir. Her commit bağımsız gzip ve provenance dosyası alır. Var olan içerik üzerine yazılmaz. `LATEST` son tamamlanan commit'i gösterir. Çıkarım kaynak projeyi çalıştırmadan, ağ ve sırlar kapalı olarak yapılır. Ayrı yazma işi yalnız arşiv deposunun kısa ömürlü GitHub Actions yetkisini kullanır. Sabitlenen Graphify çıkarıcısı güncellenirken özel işin sabit referansı ayrıca incelenir.
+
+Geniş mimari sorularında Graphify, bilinen simge veya dosya için Git Grep kullanılır. İki yol da kritik bulguyu gerçek kod satırına bağlar.

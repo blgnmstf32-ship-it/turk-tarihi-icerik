@@ -5,7 +5,7 @@ Bu proje Türk ve dünya tarihini kapsayan kaynaklı Türkçe Instagram Reels ta
 ## Kodda gezinme
 
 - Bu devir belgesi, `AGENTS.md` ve görev için gerekli proje kayıtlarından sonra, uygulama kaynaklarını geniş kapsamda açmadan önce tam Git commit'i ile eşleşen Graphify grafiğini sorgula. Grafik doğrulamasını `python graphify_project.py verify --out GRAFIK_DIZINI`, kapsamlı sorguyu `python graphify_project.py query --out GRAFIK_DIZINI --question "ilgili modül ve simgeler"` ile yap.
-- Grafiği yalnız kodda gezinmek için kullan. `EXTRACTED` ile `INFERRED` bağları ayır ve düzenleme hedefini veya kritik sonucu ilgili kaynak satırıyla doğrula. Grafik eksikse, eşleşmiyorsa veya sonuç kesildiyse hedefli `git grep`/kaynak okumasına geç.
+- Bilinen simge, dosya veya ayar için önce hedefli `git grep` kullan. Geniş mimari sorularında Graphify ile başla. `EXTRACTED` ile `INFERRED` bağları ayır ve kritik sonucu ilgili kaynak satırından doğrula. Grafik eksikse, eşleşmiyorsa veya sonuç kesildiyse hedefli `git grep` ve dar kapsamlı kaynak okuması kullan.
 - Grafiği yalnız yerel yapısal kod modunda üret. Kaynakları, grafiği ve sorguları üçüncü taraf model hizmetine gönderme. Otomatik hook, MCP ya da oturum kaydı açma.
 
 ## Sırasıyla uygula

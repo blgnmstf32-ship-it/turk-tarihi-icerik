@@ -385,3 +385,13 @@ Sokollu Mehmed Paşa minyatürü ve Charon'la gerçek 9 saniyelik konuşan foto�
 28 Kasım 2026. `f77323bbd9a07bb20235795e37032a4283933209` kod tabanında Graphify 0.9.121'in çevrimdışı yapısal çıkarımı **122 dosya, 1.309 düğüm, 4.234 bağ** üretti (5,137 sn). Beş gezinme sorusunda sekiz dosya/satır hedefinin tamamı tam kaynak, hedefli arama ve Graphify ile bulundu. `tiktoken 0.14.0 / o200k_base` ile **22.124 tam-dosya tokeni → 2.747 Graphify tokeni (%87,6 azalma)** ölçüldü. Hedefli `git grep` 357 token verdi. Sorgu başına üç çalıştırmanın medyanları toplamında Graphify 1.198,75 ms, hedefli arama 18,11 ms. Ölçüm araç yanıtı metniyle sınırlı.
 
 [Graphify ve ECC teknik kaydı](GRAPHIFY_15D.md) kaynakları, güvenlik koşullarını, Actions ve saklama biçimini açıklar. Mevcut uzman, Registry, üretim, sahne onarımı ve yayın ayarları korundu. Model/API çağrısı 0. Instagram otomatik paylaşımı kapalı.
+
+### 15D · Kalıcı özel grafik arşivi
+
+`turk-tarihi-icerik-graph` kişisel PRIVATE depo olarak oluşturuldu. İlk arşiv işi `c3ed478` grafiğini ve kaynak commit/SHA-256 kaydını yazdı. Oturum dışından depo sorgusu HTTP 404 döndürdü. Her yeni main commit'i GitHub Actions CPU işinde ayrı sürümlenir. Zincir kendiliğinden her gün taranır ve elle de tetiklenebilir. Üretim deposundan anahtar aktarılmaz. [Arşiv doğrulaması](GRAPHIFY_15D.md#kalıcı-özel-arşiv)
+
+## 15E · Ücretsiz metin kapasitesi
+
+28 Kasım 2026. [FreeLLMAPI ve sağlayıcı karşılaştırması](FREE_LLM_15E.md) sekiz adayın güncel kota ve lisans kayıtlarını kapsar. Cloudflare Gemma 4 iki Türkçe görevi geçti. OpenRouter Nemotron iki geçerli Türkçe JSON üretti ve tarih açılışı uzunluk ölçütünü kaçırdı. Gemini Free Tier proje onayı bu koşuda yoktu. GroqCloud GPT-OSS 20B öncelikli yeni aday, gerçek proje erişimi doğrulanamadı.
+
+Dört canlı ücretsiz inference çağrısı ve iki salt okunur plan/kota isteği yapıldı. Ücretli API çağrısı 0. Yeni üretim sağlayıcısı eklenmedi. 40 uzman, 163 Registry kaydı, Multi-LLM sırası, medya ve yayın güvenlik eşikleri korundu. Instagram otomatik paylaşımı kapalı. [Actions ölçümü](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/46079472737)
