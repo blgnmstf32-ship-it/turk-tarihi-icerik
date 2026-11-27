@@ -28,15 +28,19 @@ def playbook():
 
 
 def specialist_guidance(role, brand):
-    from scripts.skill_registry import editorial_method
+    from scripts.skill_registry import editorial_method, instagram_editorial_notes
 
     guide = playbook()
     focus = role.get("reels_review", {})
-    return {
+    guidance = {
         "task": focus.get("task"),
         "method": editorial_method(focus.get("technique")),
         "brand_strategy": guide["brands"][brand]["topic_strategy"],
     }
+    notes = instagram_editorial_notes(brand, role.get("id"))
+    if notes:
+        guidance["instagram_editorial_notes"] = notes
+    return guidance
 
 
 def _terms(text):
