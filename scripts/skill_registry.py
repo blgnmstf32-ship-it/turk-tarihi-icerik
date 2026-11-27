@@ -196,7 +196,8 @@ def _inventory():
                    metadata={"test": "guidance_contract_only", "evidence": "offline_quality"}, evidence=evidence))
 
     for namespace, test_file in (("gemini", "tests/test_gemini_skill_notes.py"),
-                                 ("openmontage", "tests/test_openmontage_notes.py")):
+                                 ("openmontage", "tests/test_openmontage_notes.py"),
+                                 ("cinecode", "tests/test_cinecode_notes.py")):
         for entry in _review_notes(namespace, manifest[f"{namespace}_knowledge"], test_file):
             add(entry)
 

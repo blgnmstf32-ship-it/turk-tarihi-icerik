@@ -76,3 +76,9 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - Sahne kaydı daha sonra yetkilendirilirse önce bir medyasız taslakta kimlik, başlangıç karesi, süre, konuşma aralığı, görsel kaynak ve hak kaydı, seçilen ve gerçekleşen motor, dosya özetleri, hata nedeni ve inceleme durumunu tanımla. Planı, üretim komutunu, teknik sonucu ve insan onayını ayrı tut.
 - Kaldığı yerden devam tasarımında değişen sahneyi ve bağımlılıklarını belirle. Başarılı varlığı yalnız hash, sürüm ve haklar eşleşirse yeniden kullan. Bir görsel değişiminde mevcut Charon ya da Sulafat kaydını ve onaylı altyazıyı koru. Etkilenen kesme ve senkronu yeniden doğrula.
 - Kalite doğrulamasında çözünürlük, kare hızı, senkron ve ses düzeyini ayrı ölç. Kaynak, telif ve sağlık iddiası incelemesi ile yayın onayı ayrı kapılardır. Lisans veya sağlayıcı maliyeti engelinde işlem insan incelemesine gider. Bu aşama çalışma notunda kapanır.
+
+## CineCode bilgi kayıtları
+
+- `python -m scripts.skill_registry --brand tarih --role 13` veya `--brand bakim --role 20` ile ilgili `cinecode:` notlarına ulaş. Altı notun kaynakları sabit Git revizyonuna bağlıdır. [Karşılaştırma ve denetim](PROJECT_STATE.md#cinecode-karşılaştırması)
+- Açık sahne kararında en az masraflı inceleme düzeyini seç. Kare ile karar verilemiyorsa zamanlama taslağı öner. Kesmenin iki yanını, ana ışığın gerekçesini, telefon boyutu okunurluğunu ve ortam sesinin geçişini zaman koduyla incele. Geçerli ses ve insan onayı kuralları aynı kalır.
+- CineCode hook, betik ve şablonları bu notların parçası değildir. İnceleme için sağlanan referans klibi üretim varlığına dönüştürme. Yeni motor, sağlayıcı veya Scene Director ekleme yetkisi bu kayıtlardan gelmez.
