@@ -89,3 +89,10 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - 5 açılış, 3 senaryo ve 85/100 eşiğiyle devam et. Konuşulan cümle, ekrandaki kısa metin ve ilk kare kanıtını ayrı denetle. Tahmini taslak süresi ile onaylı kayıttan ölçülen süreyi ayrı belirt.
 - Rakip gözlemi, editoryal skor ve marka Insights girdisini aynı kanıt olarak kullanma. Oran için kaynağı, aynı yaş penceresini, geçerli paydayı ve örneklemi sakla. Erişilemeyen ölçüm bilinmiyor kalsın.
 - `python -m scripts.quality_checks` medyasız sözleşmeleri doğrular. Üst paket bu projeye kurulmadı. Otomatik veri toplama, yorum, DM veya yayın ekleme yetkisi bu bilgi kayıtlarından gelmez.
+
+## Merkezi yönlendirmeyi devralma
+
+- Uzman brifi, `specialist_context(rol, marka, konu)` üzerinden ilgili `skill_notes` metinlerini ekler. Dört üst kaynağın göreve uygun kayıtlarını [Skill Router](scripts/skill_router.py) içindeki görev, sahne ve konu eşleşmelerinden izle. Bir not eklerken önce kayıt kimliği, rol eşleşmesi ve mevcut iki not/640 karakter sınırını kontrol et.
+- Yerel araç için `run_tool(RouteContext(...), topic=..., state=...)` çağrısı yapılandırılmış bağlam alır. Arşiv veya katalog incelemesi için çağıranın onayladığı yerel metadata `snapshots` alanına araç kimliğiyle verilir. Ham model cevabı veya önerilen `media_tool` değeri yürütme girdisi olarak kullanılamaz. Ardışık çalıştırmada `selected`, `rejected`, `attempts`, `executed_adapter` ve `result` alanlarını kontrol et.
+- Yeni bir bağlama gerektiğinde [Tool Router](scripts/tool_router.py) ve Registry girişi birlikte incelenir. Yalnız mevcut, kısa, güvenli ve doğrulanmış yerel işlem ekle. İşlev veya anahtar semantiği değiştiğinde ilgili önbellek anahtarını sürümle. Render, ücretli servis ve Instagram yayın kapıları kendi yerlerinde kalır.
+- [Medyasız sözleşmeler](tests/test_skill_router.py) gerçek yerel dönüşümleri sentetik metin ve metadata ile çalıştırır. Ağsız kalite testi, Cisco, Gitleaks ve bağımlılık denetimlerini normal PR akışında doğrula. [Karar ve kapsam](PROJECT_STATE.md#skill-router-ve-tool-router)
