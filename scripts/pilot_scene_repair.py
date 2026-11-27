@@ -91,6 +91,25 @@ def retime(cues, matches, indices):
     return edited, spans
 
 
+def repair_targets(cues, original_report, quality, history):
+    """Select documented failures in the hash-bound 15A evidence."""
+    check = "subtitle_sync" if history else "mobile_readability"
+    intervals = [row["frames"] for row in quality["issues"] if row["check"] == check and row["frames"]]
+    if history:
+        matches = original_report["after"]["cue_matches"]
+        if len(matches) != len(cues):
+            raise ValueError("15A report caption count differs from the source")
+        indices = [index for index, match in enumerate(matches)
+                   if match["offset_ms"] is not None and match["offset_ms"] > LIMIT_MS
+                   and any(start <= match["frame"] < end for start, end in intervals)]
+    else:
+        indices = [index for index, cue in enumerate(cues)
+                   if [round(cue["start"]*FPS), round(cue["end"]*FPS)] in intervals]
+    if not indices:
+        raise ValueError("No observed 15A caption failure matches the approved source")
+    return indices
+
+
 def scene_scope(plan, state, spans, cause):
     initial = director.preflight(plan, state)
     failures = {scene["id"]: cause for scene in plan["scenes"] if any(
@@ -129,9 +148,9 @@ def render_history(args, topic, voice, srt, spans, work):
     return parts
 
 
-def render_beauty(plan, ranges, cues, picture, preset, work):
+def render_beauty(plan, ranges, cues, compact, picture, preset, work):
     ass = work / "captions.ass"
-    beauty_reel.styled_captions(cues, ass, compact=(2,))
+    beauty_reel.styled_captions(cues, ass, compact=compact)
     parts = []
     for left, right, index in ranges:
         scene = plan["scenes"][index]
@@ -229,7 +248,7 @@ def audit(video, plan, cues, metrics, voice, reference, state):
     observations["transitions"] = [measure._observation("transitions", cut_result)]
     quality, _ = lab.evaluate(plan, evidence=evidence, state=state)
     summary = {"captions": len(cues), "captions_sampled": len(visibility), "captions_aligned": len(matched),
-               "max_offset_ms": round(max(matched), 2) if matched else None,
+               "max_offset_ms": round(float(max(matched)), 2) if matched else None,
                "mean_offset_ms": metrics["asr"]["mean_start_error_ms"], "levels": metrics["levels"],
                "transitions": cut_result}
     return quality, {"evidence": evidence, "sampled": sampled}, summary
@@ -241,6 +260,9 @@ def run(args):
     baseline = beauty_reel.read_json(args.baseline / "FINAL_QA.json")
     if replay._hash(original) != digest or baseline["media"]["sha256"] != digest:
         raise ValueError("Input is not the pinned 15A MP4")
+    prior_quality = beauty_reel.read_json(args.baseline / lab.REPORT)
+    if prior_quality["asset_sha256"] != digest:
+        raise ValueError("15A quality evidence points to a different video")
     inputs = replay.verify_inputs(args, original)
     history = brand == "tarih"
     source = (args.history / "auto" if history else args.beauty) / subtitle
@@ -268,12 +290,13 @@ def run(args):
     before, old_evidence, old_summary = meter.measure("baseline_quality", audit, original, plan, cues, old, voice, old, state)
     write(args.out / "BASELINE.json", {"quality": before, "summary": old_summary, "cue_matches": old["cue_matches"]})
 
+    indices = repair_targets(cues, baseline, prior_quality, history)
     if history:
-        edited, spans = retime(cues, old["cue_matches"], (1, 24))
+        edited, spans = retime(cues, old["cue_matches"], indices)
         cause, engine = "sync_failed", "media:remotion"
     else:
         edited = cues
-        spans = [(round(cues[1]["start"]*FPS), round(cues[1]["end"]*FPS))]
+        spans = [(round(cues[i]["start"]*FPS), round(cues[i]["end"]*FPS)) for i in indices]
         cause, engine = "quality_failed", "media:ffmpeg"
     initial, recheck, ranges = scene_scope(plan, state, spans, cause)
     srt = create_timed(edited, args.out / subtitle)
@@ -287,7 +310,8 @@ def run(args):
             parts = meter.measure("scoped_remotion", render_history, args, topic, voice, srt, spans, work)
         else:
             preset = initial["scenes"]["s01"]["local_preflight"]["opening_preset"]
-            parts = meter.measure("scoped_ffmpeg", render_beauty, plan, ranges, edited, picture, preset["effect"], work)
+            parts = meter.measure("scoped_ffmpeg", render_beauty, plan, ranges, edited, [i+1 for i in indices],
+                                  picture, preset["effect"], work)
         meter.measure("lossless_assembly", compose, original, parts, band, candidate)
 
     result = qa.checked_frame_video(candidate, length=media["seconds"])
