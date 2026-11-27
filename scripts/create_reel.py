@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 import subprocess
 import tempfile
@@ -49,7 +50,7 @@ def collect_scenes(folder):
     return images
 
 
-def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=1920,fps=30,three_scenes=None,edit=None,*,parallax_dir=None):
+def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=1920,fps=30,three_scenes=None,edit=None,*,parallax_dir=None,browser=None,frame_range=None):
     """Render cinematic scene motion and active-word captions with Remotion."""
     scenes=collect_scenes(scenes_dir)
     effect = (edit or {}).get("effect")
@@ -121,8 +122,15 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=192
         props_path=Path(td)/'props.json'
         props_path.write_text(json.dumps(props,ensure_ascii=False),encoding='utf-8')
         cmd=['npx','--no-install','remotion','render','remotion/index.tsx','DocumentaryReel',str(out),
-             '--props',str(props_path),'--codec=h264','--crf=22','--concurrency=2','--gl=angle','--log=error',
+             '--props',str(props_path),'--codec=h264','--crf=22','--concurrency=2','--gl=swangle','--log=error',
              '--license-key=free-license']
+        if browser:
+            cmd.append(f'--browser-executable={browser}')
+        if frame_range is not None:
+            start, end = frame_range
+            if not 0 <= start < end <= math.ceil(length * fps):
+                raise ValueError("Invalid half-open render interval.")
+            cmd.append(f'--frames={start}-{end-1}')
         try:
             env=os.environ.copy()
             compat=root/'scripts'/'remotion_node_compat.cjs'

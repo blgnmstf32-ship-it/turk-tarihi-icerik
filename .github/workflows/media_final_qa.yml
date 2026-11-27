@@ -2,8 +2,14 @@ name: Media final QA · approved assets
 on:
   workflow_dispatch:
   push:
-    branches: [media-final-qa]
-    paths: [.github/workflows/media_final_qa.yml]
+    branches: [media-final-qa, pilot-production-qa]
+    paths:
+      - .github/workflows/media_final_qa.yml
+      - scripts/approved_pilot_replay.py
+      - scripts/pilot_media_measure.py
+      - scripts/beauty_reel.py
+      - scripts/create_reel.py
+      - remotion/DocumentaryReel.tsx
 
 permissions:
   contents: read
@@ -31,6 +37,8 @@ jobs:
           node-version: "22"
           cache: npm
       - run: python -m pip install -r requirements.txt
+      - name: Run medyasız baseline separately
+        run: python -m scripts.quality_checks
       - name: Run all Python tests including media fixtures
         run: python -m unittest discover -s tests -v
       - run: npm ci --ignore-scripts --no-audit
@@ -76,6 +84,7 @@ jobs:
           npm ci --ignore-scripts --no-audit
           npm --prefix media_pilot ci --ignore-scripts --no-audit
           npx --no-install remotion browser ensure
+          python -m pip install --no-deps --only-binary=:all: --require-hashes -r requirements-scene-otio.txt
       - uses: actions/download-artifact@v4
         if: matrix.brand == 'history'
         with:
@@ -97,6 +106,12 @@ jobs:
           run-id: 45654042857
           name: beauty-sulafat-and-nano-assets
           path: output/qa-input/assets
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45828936221
+          name: final-qa-${{ matrix.brand }}
+          path: output/qa-input/previous
       - name: Fetch and verify the pinned CPU Whisper model
         run: |
           mkdir -p output/qa-input/whisper
@@ -128,7 +143,7 @@ jobs:
               "HYPERFRAMES_BROWSER_PATH=$PWD/$4" "$5" -m scripts.final_media_qa \
               --brand "$6" --history output/qa-input/history --beauty output/qa-input/beauty \
               --beauty-assets output/qa-input/assets --model output/qa-input/whisper \
-              --browser "$4" --out output/final-qa
+              --browser "$4" --previous output/qa-input/previous --out output/final-qa
           ' _ "$(id -un)" "$PATH" "$GITHUB_RUN_ID" "$browser" "$(command -v python)" "$BRAND"
       - name: Write measurement summary
         if: always()
@@ -156,6 +171,8 @@ jobs:
             output/final-qa/${{ matrix.brand }}/TARIH_KOLAJ_HYPERFRAMES.mp4
             output/final-qa/${{ matrix.brand }}/*.json
             output/final-qa/${{ matrix.brand }}/*.md
+            output/final-qa/${{ matrix.brand }}/*.otio
+            output/final-qa/${{ matrix.brand }}/MEDIA_SOURCES.txt
             output/final-qa/${{ matrix.brand }}/*.srt
             output/final-qa/${{ matrix.brand }}/beauty_base/*.json
             output/final-qa/${{ matrix.brand }}/beauty_base/*.srt

@@ -137,7 +137,7 @@ def checked_frame_video(path, *, length=None):
             "sha256": digest(path), "bytes": path.stat().st_size}
 
 
-def history_render(args, out, meters, voice, srt):
+def history_render(args, out, meters, voice, srt, *, route=None):
     topic = next(t for t in media_pilot.read(ROOT / "data/topics.json") if t["id"] == "piri-reis-kayip-kaynak")
     segments = performance_script(topic)
     script = "\n".join(row["spoken"] for row in segments)
@@ -159,10 +159,13 @@ def history_render(args, out, meters, voice, srt):
     style = {"style": "paper_collage", "insert": str(collage), "continuous": True} if collage else {"style": "continuous_camera"}
     silent = out / "tarih_remotion_work.mp4"
     plan = plan_3d_scenes(topic, media_duration(voice))
-    _, three, motion = meters.measure("remotion_full_history", render_motion_or_base, render_reel,
+    def renderer(*inputs, **kwargs):
+        return render_reel(*inputs, **kwargs, browser=args.browser)
+
+    _, three, motion = meters.measure("remotion_full_history", render_motion_or_base, renderer,
         media / "commons_visuals", voice, srt, silent, plan=plan,
         edit={"title": topic["title"], "topic": topic["id"], "hook": segments[0]["caption"],
-              "effect": "lines-reveal", "animation": style}, parallax_dir=out / "parallax")
+              "effect": route.get("effect") if route is not None else "lines-reveal", "animation": style}, parallax_dir=out / "parallax")
     from scripts.audio_bed import create as create_bed
 
     music = out / "score_work.wav"
@@ -173,10 +176,11 @@ def history_render(args, out, meters, voice, srt):
                   "history_three": three, "history_motion": motion, "hyperframes": collage_status}
 
 
-def beauty_render(args, out, meters):
+def beauty_render(args, out, meters, *, cache=None, route=None):
     # assemble() runs its fixed-recording editorial review before opening assets or rendering.
     base = out / "beauty_base"
-    meters.measure("beauty_full_blender_three_ffmpeg", assemble, args.beauty_assets, base, browser=args.browser)
+    meters.measure("beauty_full_blender_three_ffmpeg", assemble, args.beauty_assets, base, browser=args.browser,
+                   cache=cache, routed_effect=(route or {}).get("effect"))
     result = media_pilot.read(base / "DOGRULAMA.json")
     return base / VIDEO, {"viral_review_score": result["editorial_index"],
                          "beauty_render": result}
@@ -213,7 +217,7 @@ def comparison(before, after, out, start):
        "-threads", "3", "-preset", "veryfast", "-crf", 20, "-c:a", "aac", "-movflags", "+faststart", out)
 
 
-def metrics(path, cues, model):
+def metrics(path, cues, model, *, timeline=False):
     import cv2
     import numpy as np
     from scenedetect import SceneManager, open_video
@@ -231,13 +235,15 @@ def metrics(path, cues, model):
         times.extend([word["start"]] * len(word_tokens))
     matches = {i+k: times[j+k] for i, j, length in SequenceMatcher(None, expected, tokens, autojunk=False)
                .get_matching_blocks() for k in range(length)}
-    offset, errors = 0, []
+    offset, errors, cue_matches = 0, [], []
     for cue in cues:
         count = len(media_pilot.normalize(cue["text"]))
         # A match within the first three tokens limits ambiguous offset estimates.
         first = next((matches[i] for i in range(offset, offset + min(3, count)) if i in matches), None)
         if first is not None:
             errors.append(abs(cue["start"] - first))
+        cue_matches.append({"frame": round(cue["start"] * 30),
+                            "offset_ms": abs(cue["start"] - first) * 1000 if first is not None else None})
         offset += count
     timing = {"aligned_cues": len(errors), "median_start_error_ms": round(1000*median(errors), 1) if errors else None,
               "mean_start_error_ms": round(1000*sum(errors)/len(errors), 1) if errors else None}
@@ -262,7 +268,8 @@ def metrics(path, cues, model):
     scenes = manager.get_scene_list(start_in_scene=True)
     lengths = [(end-start).get_seconds() for start, end in scenes]
     levels, _ = media_pilot.loudness(path)
-    return {"asr": {"language": transcript["language"], "wer": round(media_pilot.distances(expected, heard)/len(expected), 4),
+    detail = {"cue_matches": cue_matches, "word_starts": times} if timeline else {}
+    return {**detail, "asr": {"language": transcript["language"], "wer": round(media_pilot.distances(expected, heard)/len(expected), 4),
                     "detected_words": len(transcript["words"]), "cue_count": len(cues), **timing},
             "levels": {k: float(levels[k]) for k in ("input_i", "input_tp", "input_lra")},
             "opencv": {"samples": len(variances), "median_sharpness_proxy": round(float(np.median(variances)), 3),
@@ -353,7 +360,14 @@ def main():
     parser.add_argument("--brand", required=True, choices=("history", "beauty"))
     for argument in ("history", "beauty", "beauty-assets", "model", "browser", "out"):
         parser.add_argument("--" + argument, required=True, type=lambda p: Path(p).resolve())
-    project(parser.parse_args())
+    parser.add_argument("--previous", type=lambda p: Path(p).resolve(),
+                        help="Pinned previous final pilot artifact; enables the production QA replay")
+    args = parser.parse_args()
+    if args.previous:
+        from scripts.approved_pilot_replay import project as replay
+        replay(args)
+    else:
+        project(args)
 
 
 if __name__ == "__main__":

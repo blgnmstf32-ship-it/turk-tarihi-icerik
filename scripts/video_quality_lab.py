@@ -29,6 +29,8 @@ RULES = {
     "transitions": ("pyscenedetect+review", {"max_boundary_error_frames": (0, 6),
                                            "unexpected_cuts": (0, 0)}),
 }
+ADDITIONAL_COLLECTORS = {"mobile_readability": {"opencv-caption-pixels"},
+                         "audio_balance": {"ffmpeg-loudnorm+waveform"}}
 DIAGNOSTICS = {"vmaf": "ffmpeg-libvmaf"}
 CODES = {"subtitle_sync": "sync_failed", "source_accuracy": "source_unverified"}
 RECHECK_PRIORITY = ("source_unverified", "sync_failed", "quality_failed")
@@ -115,7 +117,7 @@ def inspect_snapshot(snapshot, *, brand):
         limit = min(3 * plan["fps"], duration) if name == "opening" else duration
         results = []
         for row in rows:
-            if row.get("collector") != collector:
+            if row.get("collector") not in {collector, *ADDITIONAL_COLLECTORS.get(name, ())}:
                 raise ValueError("Unsupported measurement provenance")
             frames = (_span(row["frames"], limit) if "frames" in row else
                       [0, limit] if name == "opening" else None)
@@ -129,7 +131,7 @@ def inspect_snapshot(snapshot, *, brand):
                 results.append({"frames": frames, "candidate": True, "outside_thresholds": []})
                 continue
             failed = _metrics(name, row["values"])
-            results.append({"frames": frames, "transition_id": cut_id, "values": row["values"],
+            results.append({"frames": frames, "transition_id": cut_id, "collector": row["collector"], "values": row["values"],
                             "outside_thresholds": failed})
             if failed:
                 issues.append({"check": name, "frames": frames, "transition_id": cut_id})
