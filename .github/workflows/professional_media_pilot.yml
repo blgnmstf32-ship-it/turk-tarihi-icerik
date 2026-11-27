@@ -90,7 +90,7 @@ jobs:
           python -m scripts.media_pilot --history output/media-input/history --beauty output/media-input/beauty \
             --beauty-assets output/media-input/beauty-assets --model output/media-input/whisper-small \
             --browser "$browser" --out output/media-pilot
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: professional-media-pilot-${{ github.run_number }}

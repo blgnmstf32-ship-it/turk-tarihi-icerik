@@ -49,7 +49,7 @@ jobs:
           key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Upload text benchmark report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: multi-llm-text-benchmark
           path: output/multi-llm/MULTI_LLM_SMOKE.json

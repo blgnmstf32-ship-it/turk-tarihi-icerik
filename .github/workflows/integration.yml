@@ -38,7 +38,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ENABLE_GEMINI_EDITORIAL: '1'
         run: python -m scripts.provider_smoke free --out output/free-provider
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: gemini-free-model-results
@@ -72,7 +72,7 @@ jobs:
         env:
           GEMINI_IMAGE_API_KEY: ${{ secrets.GEMINI_IMAGE_API_KEY != secrets.GEMINI_API_KEY && secrets.GEMINI_IMAGE_API_KEY || '' }}
         run: python -m scripts.provider_smoke paid --mode batch --allow-one-paid-image --out output/paid-provider
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: nano-banana-image-results
