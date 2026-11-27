@@ -235,7 +235,8 @@ def build_plan(brand, topic, *, duration_frames=2100, overrides=None, end_frames
 
 
 def _local_preflight(plan, scene, state):
-    key = f"scene-preflight:v{VERSION}:" + _digest([plan["brand"], plan["topic"], plan["sources"], scene])
+    parallax = plan.get("opening_has_parallax") is True
+    key = f"scene-preflight:v{VERSION}:" + _digest([plan["brand"], plan["topic"], plan["sources"], scene, parallax])
     if saved := state.read(key):
         return {**saved, "cache": "hit", "executed_tools": []}
     route = None
@@ -244,7 +245,7 @@ def _local_preflight(plan, scene, state):
         context = RouteContext(brand, ROLES[brand], "opening-preset",
                                "diagram" if brand == "bakim" and plan["topic"]["visual_mode"] == "layer_diagram"
                                else "general")
-        route = run_tool(context, topic=plan["topic"], state=state)
+        route = run_tool(context, topic=plan["topic"], state=state, parallax=parallax)
     result = {"opening_preset": (route or {}).get("result"), "tool_status": (route or {}).get("status"),
               "tool_rejections": (route or {}).get("rejected", []), "cache": "miss",
               "executed_tools": [route["executed_adapter"]] if route and route["executed_adapter"] else []}

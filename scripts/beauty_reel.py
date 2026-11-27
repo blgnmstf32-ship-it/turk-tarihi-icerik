@@ -181,7 +181,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     path.write_text(header + "\n".join(lines) + "\n", encoding="utf-8")
 
 
-def shot(work, index, frames, kind, picture, eyebrow, title, note, *, title_effect=None):
+def shot(work, index, frames, kind, picture, eyebrow, title, note, *, title_effect=None, repair=False):
     out = f"shot-{index:02d}.mp4"
     layer = work / "shot-overlay.png"
     overlay(layer, eyebrow, title, visual_note=note)
@@ -195,7 +195,7 @@ def shot(work, index, frames, kind, picture, eyebrow, title, note, *, title_effe
     else:
         still(kind, picture, work / "shot-background.jpg")
         source = ["-i", "shot-background.jpg"]
-        factor = .00076 if kind == "hook" else .00025
+        factor = .00076 if kind == "hook" or repair else .00025
         video = (f"scale=2160:3840,zoompan=z='1.008+on*{factor}':x='iw/2-iw/zoom/2':"
                  f"y='ih/2-ih/zoom/2':d={frames}:s=1080x1920:fps={FPS}")
     # Match cuts between graphic/3D shots, with brief plum dips into the macro shots.
@@ -203,6 +203,8 @@ def shot(work, index, frames, kind, picture, eyebrow, title, note, *, title_effe
     dip_in = f",fade=t=in:st=0:d=0.13:color={color}" if kind in {"skin", "cream", "barrier", "sources"} else ""
     dip_out = (f",fade=t=out:st={length-.17:.4f}:d=0.15:color={color}"
                if index in {1, 5, 9, 10, 11} else "")
+    if repair:
+        dip_in = dip_out = ""
     title_input, overlay_args = "[1:v]", "format=auto"
     title_filter = ""
     if title_effect == "lines-reveal":
@@ -231,16 +233,19 @@ def reviewed_shot(*args, title_effect=None):
                              "reason": type(exc).__name__}
 
 
-def assemble(assets, out, *, browser=None, vmaf_reference=None, vmaf_aligned=False):
+def assemble(assets, out, *, browser=None, vmaf_reference=None, vmaf_aligned=False, cache=None, routed_effect=None):
     topic = read_json(DATA / "beauty_reel_kuruluk.json")
     review_topic = {**topic, "hook": topic["script"][0], "category": "kuru_cilt",
                     "visual_mode": "layer_diagram", "instagram_keywords": ["nemlendirici", "kuru cilt", "cilt bariyeri"]}
     review = write_review(out, review_topic, "bakim", topic["script"], fixed_recording=True)
-    title_effect = select_opening_effect("bakim", review_topic)
+    title_effect = (select_opening_effect("bakim", review_topic) if cache is None else routed_effect)
     animation = plan_for("bakim", review_topic)
     audio, picture, voice, art, duration, cues = inputs(assets)
     out.mkdir(parents=True, exist_ok=True)
-    with TemporaryDirectory(prefix="beauty-reel-") as tmp:
+    from contextlib import nullcontext
+    if cache is not None:
+        cache.mkdir(parents=True, exist_ok=False)
+    with (TemporaryDirectory(prefix="beauty-reel-") if cache is None else nullcontext(cache)) as tmp:
         work = Path(tmp)
         start = time.monotonic()
         continuous = animation["style"] == "continuous_camera"
@@ -254,7 +259,7 @@ def assemble(assets, out, *, browser=None, vmaf_reference=None, vmaf_aligned=Fal
         clips = []
         motion_result = {"status": "base_selected"}
         for i, (_, kind, eyebrow, title, note) in enumerate(SHOTS):
-            effect = title_effect if kind == "skin" else None
+            effect = title_effect if kind == ("skin" if cache is None else "hook") else None
             clip, result = reviewed_shot(work, i, cuts[i+1]-cuts[i], kind, picture, eyebrow, title, note,
                                          title_effect=effect)
             clips.append(clip)
