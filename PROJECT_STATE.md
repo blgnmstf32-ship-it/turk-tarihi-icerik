@@ -327,3 +327,27 @@ Tarih altyazı zamanlamasında eşik dışı iki sahne aralığı var. 25 mobil 
 
 - [Piri Reis MP4 ve rapor paketi](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45988740750/artifacts/15193542324)
 - [Güzellik MP4 ve rapor paketi](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45988740750/artifacts/15192478473)
+
+## 15A.1 · Onaylı pilotların altyazı onarımı
+
+27 Kasım 2026. Çalışma `5d3b004` ve [15A #5 medya paketleri](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/45988740750) üzerinden yürütüldü. Altyazı ve mobil güvenli alan kusurları 15A kalite raporundan seçildi. Scene Director, ilgili kare aralıklarını ve bitişik geçişleri işaretledi. Tarihte Remotion mevcut arşiv görselleri, paralaks ve HyperFrames kolajıyla ilgili kareleri oluşturdu. Güzellikte FFmpeg mevcut açılış görüntüsüne aynı altyazıyı daha geniş yan boşlukla yerleştirdi.
+
+| Ölçüm | Piri Reis | Nemlendirici için doğru an |
+| --- | ---: | ---: |
+| Onarım aralığı, bitiş hariç | 76–120 ve 1945–1950. kareler | 58–113. kareler |
+| Kayıpsız onarımda değişen / aynı kalan kare | 49 / 1.979 | 55 / 2.099 |
+| Ortalama altyazı başlangıç sapması, önce → sonra | 63,2 → 10,4 ms | 18,3 → 18,3 ms |
+| En büyük altyazı sapması, önce → sonra | 1.320 → 60 ms | 340 → 340 ms |
+| Mobil altyazı örnekleri | 25/25, ihlal 0 | 47/47, ihlal 0 |
+| Görünür kesme adayı / kontrol edilen plan sınırı | 4 / 14 | 5 / 11 |
+| En büyük kesme sapması / beklenmedik kesme | 0 kare / 0 | 4 kare / 0 |
+| Sınırlı render / kayıpsız birleştirme | 34,06 / 49,66 sn | 8,60 / 30,45 sn |
+
+Charon kaydında ilk işaretli cümle 2,52. saniyede başlıyor. Altyazı başlangıcı 3,84’ten 2,533’e alındı ve sapma 13 ms oldu. 15A’da son sahne için 857 ms p95 raporlanmıştı. Aynı AAC izinin bu oturumdaki yeniden ölçümünde son altyazı için 20 ms bulundu. Başlangıcı 64,833’e alındı, son ölçüm 7 ms. Güzellikte önceki piksel denetimi açık renkli arka planı işaretlemişti. Altyazının koyu zemin üzerindeki harfleri 360 piksel örnekte yatay 76–284’ten 86–273’e çekildi. Ölçülen kontrast 10,82’den 10,89’a çıktı.
+
+Kayıpsız birleştirmede kapsam dışındaki kareler ve iki AAC akışı özetleriyle doğrulandı. İndirme için hazırlanan 1080×1920, 30 fps H.264 High/AAC kopyalar ayrıca ölçüldü ve bütün teknik kapıları geçti. Görünür kesmeler PySceneDetect ile önceki MP4 ve kurgu sınırlarına göre doğrulandı. Sürekli kamera ve geçiş bölgelerinde orijinal üst görüntü katmanının kare özetleri kayıpsız kopyada eşleşti. Mobil denetim her altyazının orta karesini örnekler. İnsan yayın onayı gereklidir.
+
+- `Piri_Reis_15A1.mp4` SHA-256 `d0337652842ba5259800f9565903cb70ec08377507af2e27d36548e3d82be0c9`
+- `Nemlendirici_15A1.mp4` SHA-256 `6f14e1016cdb473abb01ec884f3f2c43dfc5db07cf841d0c1ae4902e24875751`
+- Yerelde 234 Python testi tam çalıştırmada geçti. Sonradan eklenen hedef seçimi testi de geçti. İki JavaScript testi, Remotion tip kontrolü, iki OTIO sözleşmesi ve altı izin sözleşmesi geçti. 20 iş akışının izin denetiminde bulgu yok.
+- 40 ana uzman ve 163 Registry kaydı doğrulandı. Ücretli API çağrısı 0, Instagram otomatik paylaşımı kapalı.
