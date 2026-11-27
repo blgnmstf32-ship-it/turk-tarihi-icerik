@@ -82,3 +82,10 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - `python -m scripts.skill_registry --brand tarih --role 13` veya `--brand bakim --role 20` ile ilgili `cinecode:` notlarına ulaş. Altı notun kaynakları sabit Git revizyonuna bağlıdır. [Karşılaştırma ve denetim](PROJECT_STATE.md#cinecode-karşılaştırması)
 - Açık sahne kararında en az masraflı inceleme düzeyini seç. Kare ile karar verilemiyorsa zamanlama taslağı öner. Kesmenin iki yanını, ana ışığın gerekçesini, telefon boyutu okunurluğunu ve ortam sesinin geçişini zaman koduyla incele. Geçerli ses ve insan onayı kuralları aynı kalır.
 - CineCode hook, betik ve şablonları bu notların parçası değildir. İnceleme için sağlanan referans klibi üretim varlığına dönüştürme. Yeni motor, sağlayıcı veya Scene Director ekleme yetkisi bu kayıtlardan gelmez.
+
+## Instagram editoryal bilgi kayıtları
+
+- `python -m scripts.skill_registry --brand tarih --role 6` açılış notunu, `--brand bakim --role 6` izinli rakip karşılaştırması notunu gösterir. Mevcut Reels uzman brifi eşleşen `instagram:` kayıtlarını ekler. Dokuz kaydın adaptörü boştur. [İnceleme ve kaynaklar](PROJECT_STATE.md#instagram-agent-skill-karşılaştırması)
+- 5 açılış, 3 senaryo ve 85/100 eşiğiyle devam et. Konuşulan cümle, ekrandaki kısa metin ve ilk kare kanıtını ayrı denetle. Tahmini taslak süresi ile onaylı kayıttan ölçülen süreyi ayrı belirt.
+- Rakip gözlemi, editoryal skor ve marka Insights girdisini aynı kanıt olarak kullanma. Oran için kaynağı, aynı yaş penceresini, geçerli paydayı ve örneklemi sakla. Erişilemeyen ölçüm bilinmiyor kalsın.
+- `python -m scripts.quality_checks` medyasız sözleşmeleri doğrular. Üst paket bu projeye kurulmadı. Otomatik veri toplama, yorum, DM veya yayın ekleme yetkisi bu bilgi kayıtlarından gelmez.

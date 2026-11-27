@@ -161,3 +161,33 @@ Kök `LICENSE` MIT kapsamındadır. MIT, kopya veya önemli bölüm dağıtıld�
 Ağsız Cisco testi, üst deponun `SKILL.md`, `references`, `scripts`, lisans ve test iş akışı örneğini taradı. 102 bulgunun 32’si yüksek veya kritikti. Yerel komut kuralları ayrıca iki ağ komutu eşleşmesi verdi. Bunlar statik tarama bulgularıdır. Sabit revizyonun sığ Git geçmişi Gitleaks bulgusu vermedi. `UserPromptSubmit`, `PreToolUse` ve `Stop` hook’ları ortamı aktaran Node/Python zinciri ve dosya keşfi içerir. Hook, `guard.py`, ağdan varlık alan betikler ve CDN bağımlı şablonlar kurulmadı. Proje bağımlılık taraması mevcut kendi kilit ve gereksinimleri üzerinde çalışır.
 
 [Skill Registry](config/skill_registry.json) 135 kayda ulaştı. Altı yeni `cinecode:` notu tarih için 14, bakım için 16 ilgili uzmana bağlanır. 40 ana rol ve dört yardımcı 3B görev korunur. Bilgi notları adaptör, ücretli servis veya yayın yetkisi taşımaz. Remotion, HyperFrames, Blender, Three.js, GSAP, Gemini, Cloudflare ve OpenRouter akışları korunur. Scene Director bu aşamada geliştirilmedi.
+
+## Instagram Agent Skill karşılaştırması
+
+27 Kasım 2026. Üst deponun `d03c56bb598be770c60b201f94237e5d1a4268a6` revizyonunda 13 Skill bildirimi ve kök MIT lisansı incelendi. Kaynak kodu, örnek metinler, hook kataloğu, eklenti ve varlıklar projeye kopyalanmadı. Özgün Türkçe editoryal notlar kaynak revizyonuna bağlıdır. MIT kod ve belge kapsamındadır. Bir Instagram iletisinin, görselin veya izleyici verisinin yeniden kullanım izni ayrı doğrulanır. [Sabit kaynak](https://github.com/Jakeschincariol/instagram-agent-skill/tree/d03c56bb598be770c60b201f94237e5d1a4268a6) · [MIT lisansı](https://github.com/Jakeschincariol/instagram-agent-skill/blob/d03c56bb598be770c60b201f94237e5d1a4268a6/LICENSE)
+
+| Beceri | Uyarlanan yöntem ve sınırı |
+| --- | --- |
+| `ig-reel` | Söylenen açılış, ekran metni ve ilk karedeki kanıt üç ayrı karar olarak incelenir. Taslak süreleri anlam birimiyle etiketlenir. Türkçe telaffuz, durak ve mevcut onaylı kaydın zamanlaması belirleyicidir. Sabit İngilizce kelime hızı ve dört saniyelik tempo uyarısı prodüksiyon eşiği olarak alınmadı. |
+| `ig-viral` | Yalnız izinli rakip örnekleri için aynı hesabın karşılaştırılabilir Reels medyanı bir bağlam sağlar. Kaynak, örneklem ve yaş penceresi kayıtlıysa oran yorumlanır. Paketin 1,5× ve 3× kesimleri ile İngilizce otomatik formül etiketleme kullanılmaz. |
+| `ig-audit` | İlk üç saniye, izleme ve takip dönüşümü ayrı aşamalar olarak incelenir. Etiketli gerçek Insights ölçümleri, tahmini editoryal puanlar ve rakip gözlemleri birbirinin yerine kullanılmaz. Eksik metrik bilinmiyor kalır. Zayıf metrikten tek başına neden çıkarılmaz. |
+| `ig-caption` | Mobil kısaltılmış görünümde konu ve kaynaklı vaat kontrol edilir. Uzun Türkçe açıklama, kaynaklar ve mevcut en fazla beş etiket kuralı korunur. 125 karakterlik CLI kesimi bir arayüz garantisi değildir. |
+| `ig-story` | Bağlantılı sessiz kareler açık bir soru, görsel kanıt ve kısa yanıtla planlanabilir. Kare başına tek bilgi okunur kalır. Mevcut hikâye slotları korunur. DM ve etkileşim akışı eklenmedi. |
+| `ig-human` | Anlatım Türkçede nefes, somutluk ve ritim açısından editoryal okunur. Alıntı, ad, ölçü, URL ve sağlık uyarısı korunur. İngilizce otomatik sözcük değişimi ve insan yazarlığına dair puan kullanılmaz. |
+| `ig-plan` | Var olan takvimde konu açısı ve izleyici amacı çeşitlendirilir. Yeni yayın sıklığı, sabit zaman önerisi veya etkileşim turu eklenmedi. |
+| `ig-repurpose` | İzinli uzun kaynaktan her format için bağımsız anlamı olan bir bölüm seçilir. Konum, kaynak, lisans ve sınırlamalar türev taslakla birlikte taşınır. Yeni indirme yolu açılmaz. |
+
+26 formül, mevcut beş açılış ailesine aday fikir veya reddetme gerekçesi olarak değerlendirildi. Aşağıdaki sayı aralıkları sabit yukarı akış kataloğundaki kimliklere aittir. Hiçbiri yeni puan ağırlığı, zorunlu şablon ya da algılanan başarı olasılığı tanımlamaz.
+
+| Katalog numaraları | Tarih ve güzellik için karar |
+| --- | --- |
+| 6, 16, 18, 23, 24 | Kayda dayalı gözlem, gerçek soru, göstererek başlama, bağlamı açık sayı ve kanıtın görünür olması mevcut açılışların içinde değerlendirilebilir. |
+| 4, 5, 7, 11, 12, 17, 20, 21, 22 | Alternatif, zaman farkı, yaygın uygulama, öncelik, itiraz ve karşılaştırma ancak doğrulanmış bağlamla işe yarar. Cümle ortasında girişte konu ilk karede anlaşılır olmalı. Zıt görüş sağlık veya tarih iddiasını keskinleştirmek için kullanılmaz. |
+| 1, 8, 9, 14, 15, 19, 25 | Kişisel maliyet ve deneyim, içeriden bilgi, alıntılanan sonuç ve süre sınırı gerçek, izinli ve bağlamlı olmalı. Sahte kişisel tanıklık, kopyalama, hedef gösterme, uydurma aciliyet ve genellenmiş başarı örneği kullanılmaz. |
+| 2, 3, 10, 13, 26 | Mutlak emir, gizli gerçek, garantili çözüm, önce-sonra ve en üstün olma iddiası özellikle bakımdaki yanıltma riski nedeniyle varsayılan açılış değildir. Karşılaştırma ancak aynı temel, izin ve kanıtla anlam kazanır. |
+
+Altı yerel Python aracı izole, ağsız ve anahtarsız süreçte sentetik girdilerle denendi. `hookscore.py` iki alternatif için sezgisel puan verdi. `beats.py`, 150 kelime/dakika varsayımıyla 38 kelimelik taslağa 15,2 saniye, ilk birime 9,2 saniye tahmin etti. Seslendirme süresi ölçülmedi. `caption.py` ve `detect.py` geçerli JSON ile `REVIEW` verdi. `humanize.py` deneme URL'sini korudu. `swipe.py` iki satırı okuyup oranladı, iki Türkçe açılışı da sınıflandıramadı. Bu örnekler işlevi gösterir, Türkçe kalite veya gerçek erişim ölçümü sunmaz. Altı CLI standart kitaplık kullanır. `swipe.py` yerel `hookscore.py` içe aktarabilir. Bu araçların hiçbiri üretim bağımlılığına eklenmedi.
+
+Cisco strict ve davranışsal tarama 13 bildirimin her birinde yalnız frontmatter lisans alanı eksikliği bildirdi. Yüksek ve kritik bulgu yoktu. Kök MIT metni ayrı doğrulandı. Gitleaks sığ inceleme revizyonunda sıfır bulgu verdi. `ig-viral` belgesindeki dış ağdan video verisi alma önerileri, `ig-plan` etkileşim turu ve yorum/yanıt/DM akışları dahil edilmedi. Canlı Instagram verisi alınmadı. Yerel proje taramaları kendi Skill paketleri, Git geçmişi, bağımlılıkları ve Actions izinleri üzerinde çalışır.
+
+Registry 144 kayıt içerir. Önceki 135 kayıt korunur. Dokuz yerel `instagram:` bilgi kaydı 14 tarih ve 16 güzellik rolüne eşlenir. Mevcut Reels uzman brifi yalnız o rolün Türkçe notlarını taşır. 5 açılış, 3 senaryo, 85/100 eşik, sınırlı düzeltme ve kaynak/sağlık/telif kapıları korunur. Editoryal puan bir taslak değerlendirmesidir. Gerçek performans raporu yalnız doğrulanmış, marka bazlı Insights verisiyle oluşturulur. Sağlayıcı, ses, render ve Instagram yayın ayarları değişmedi.
