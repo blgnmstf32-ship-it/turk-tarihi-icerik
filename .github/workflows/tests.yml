@@ -52,3 +52,23 @@ jobs:
           path: ${{ runner.temp }}/quality-logs/*.txt
           if-no-files-found: ignore
           retention-days: 7
+      - name: Validate optional OTIO and write both offline scene plans
+        run: |
+          wheel_dir="$RUNNER_TEMP/scene-otio"
+          python -m pip install --only-binary=:all: --no-deps --require-hashes \
+            --index-url https://pypi.org/simple --target "$wheel_dir" -r requirements-scene-otio.txt
+          sudo unshare --net -- runuser -u "$(id -un)" -- env -i \
+            PATH=/usr/bin:/bin LANG=C.UTF-8 "PYTHONPATH=$wheel_dir" "SCENE_OUTPUT=$RUNNER_TEMP/scene-plans" \
+            "SCENE_PYTHON=$(command -v python)" /bin/bash -e -c '
+              "$SCENE_PYTHON" -m unittest scripts.scene_otio_contracts -v
+              "$SCENE_PYTHON" -m scripts.scene_director --brand tarih --topic piri-reis-kayip-kaynak --out "$SCENE_OUTPUT/tarih" --otio
+              "$SCENE_PYTHON" -m scripts.scene_director --brand bakim --topic kuruluk-nemlendirici-zamani --out "$SCENE_OUTPUT/bakim" --otio
+            '
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: offline-scene-plans
+          path: |
+            ${{ runner.temp }}/scene-plans/*/SCENE_*.json
+            ${{ runner.temp }}/scene-plans/*/SCENE_TIMELINE.otio
+          if-no-files-found: error
+          retention-days: 7
