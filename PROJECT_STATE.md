@@ -371,3 +371,11 @@ CPU koşucusunda 9 erişilebilir mantıksal çekirdek ve 9.967 MiB RAM vardı. K
 - **Tam Reels 0/5.** Onaylı Charon ve Sulafat kayıtları önceki pilot metinlerine bağlı. Yeni metinlerle eşleşen kayıt yok. Üç tarih konusu için tam belgesel görsel paketi de inceleme bekliyor. Hikâye ve simülasyonlarda proje içi özgün şemalar kullanıldı. Dış fotoğraf ve müzik aktarılmadı.
 - Tarih ve güzellik kadrolarından plan başına 20 çevrimdışı uzman brifi hazırlandı. Skill Router bağlamı, Tool Router yerel öndenetimi ve ölçüm yorumunu, Scene Director sahne kararlarını ve OpenTimelineIO kare sırasını kaydetti. Viral Analiz beş editoryal plana 96–100 verdi. Eşik 85. Kalite Laboratuvarı simülasyonlarda yalnız ölçülen kontrolleri değerlendirdi. Gerçek Instagram performansı ve tam sesli video kapıları bekliyor.
 - Mevcut 15A.1 sahne onarımı, 40 uzman, 163 Registry kaydı ve 235 Python testi korundu. İki kapsam regresyonuyla 237 Python testi birlikte geçti. İki JavaScript testi ve Remotion tip kontrolü başarılı. Üretimde ücretsiz ve ücretli sağlayıcı çağrısı 0. Instagram otomatik paylaşımı kapalı.
+
+## 15C · Dijital insan ve konuşan fotoğraf
+
+28 Kasım 2026. Devralınan taban `1f7e9b9`. [Aday ve lisans incelemesi](AVATAR_15C.md) GitHub, Skills.sh, Codex uyumlu beceriler ve ücretsiz bulut koşullarını kapsar. SadTalker CPU modunu belgeliyor, ancak gereken yüz şablonunun ticari izni doğrulanmadı. NSR Engine CPU’da kamera hareketini aktarıyor ve tek WAV dosyasından hareket çıkarmıyor. Açık ağırlıklı ve sesle hareket üretebilen Ditto için MediaPipe kullanan ağsız bir Linux CPU denemesi yapıldı.
+
+Skill Registry 163, ana uzman sayısı 40 (tarih 20 ve güzellik 20). Üretim entegrasyonları, otomatik sahne onarımı ve kalite eşikleri korunuyor. Ücretli API çağrısı 0. Instagram otomatik paylaşımı kapalı.
+
+Sokollu Mehmed Paşa minyatürü ve Charon'la gerçek 9 saniyelik konuşan fotoğraf örneği üretildi. Dört CPU'da 217,14 sn, 840,53 CPU-sn ve 1.426,66 MiB tepe RSS ölçüldü. Yüz ağı 75/75 karede bulundu. En iyi ses enerjisi/ağız açıklığı korelasyonu 0,0614. Ağız ile konuşma arasındaki eşleşme üretim için doğrulanamadı ve 8,33 fps örnek doğrulanmış son medya sözleşmesini karşılamıyor. Entegrasyon kararı kapalı. [Deneme, ölçüm ve dosya özeti](AVATAR_15C.md#gerçek-cpu-denemesi)
