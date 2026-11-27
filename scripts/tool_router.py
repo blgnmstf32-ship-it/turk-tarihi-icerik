@@ -6,7 +6,7 @@ from hashlib import sha256
 import json
 import re
 
-from scripts import media_tools, motion_toolkit, research_documents
+from scripts import media_tools, motion_toolkit, pause_review, research_documents
 from scripts.skill_registry import registry_view
 
 MAX_SNAPSHOT_CHARS = 250_000
@@ -34,6 +34,8 @@ BINDINGS = {
     "motion:poly-haven": Binding("asset-catalogue", "scripts/motion_cli.py#catalogue", "AGPL-3.0", "optional"),
     "research:trafilatura": Binding("document-evidence", "scripts/research_documents.py:read_snapshot",
                                     "Apache-2.0", "optional"),
+    pause_review.TOOL_ID: Binding("pause-analysis", "scripts/pause_review.py:review_pauses",
+                                  "LicenseRef-No-License-Granted", "local"),
 }
 VERIFIED = {"historical_pass", "adapter_contract_only"}
 
@@ -79,6 +81,8 @@ def _discover(identifier, topic, snapshot):
 
 
 def _execute(identifier, context, topic, snapshot, parallax):
+    if identifier == pause_review.TOOL_ID:
+        return pause_review.review_pauses(snapshot)
     if identifier == research_documents.TOOL_ID:
         try:
             return research_documents.read_snapshot(snapshot)
@@ -117,7 +121,8 @@ def _blocked(row, binding, context, cpu_available):
     if cpu_available is not True:
         return "missing_cpu_capability"
     scenes = {"asset-search": ASSET_SCENES, "opening-preset": OPENING_SCENES,
-              "asset-catalogue": {"mechanism", "diagram", "city", "map"}, "document-evidence": {"general"}}
+              "asset-catalogue": {"mechanism", "diagram", "city", "map"}, "document-evidence": {"general"},
+              "pause-analysis": {"general"}}
     if context.scene not in scenes[context.task]:
         return "scene_not_supported"
     return None

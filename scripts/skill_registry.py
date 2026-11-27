@@ -209,6 +209,15 @@ def _inventory():
     for namespace, source in _read("config/development_skill_notes.json").items():
         for entry in _review_notes(namespace, source, "tests/test_development_skill_notes.py"):
             add(entry)
+    for namespace, source in _read("config/media_craft_notes.json").items():
+        for entry in _review_notes(namespace, source, "tests/test_media_craft.py"):
+            add(entry)
+    add(_entry("media-craft:pause-review", "Kaynak karelerinde sessizlik adaylarını anlatım ve altyazıya göre işaretle.",
+               _roles({"tarih": [15, 16], "bakim": [15, 20]}),
+               source={"path": "scripts/pause_review.py"}, license={"code": NO_LICENSE},
+               metadata={"mode": "local", "adapter": "scripts/pause_review.py:review_pauses",
+                         "test": "adapter_contract_only", "evidence": "tests/test_media_craft.py",
+                         "note": "Yalnız çağıranın sağladığı sayısal zaman aralıkları. Zaman çizelgesi ve medya değişmez."}))
     trends = research["trends"]
     add(_entry("research:google-trends-rss", trends["task"], _roles(trends["role_keys"]),
                source=trends["source"], license={"code": "Google Trends kullanım koşulları", "scope": "upstream_reference"},
