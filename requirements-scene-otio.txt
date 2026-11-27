@@ -1,0 +1,2 @@
+# Optional CPU export on CPython 3.12, Linux x86-64. No plugins or production install.
+OpenTimelineIO==0.18.1 --hash=sha256:8f0924f818b496cf771612d489082bdb83f42b6bd97ed06589dd2e2c086742c9
