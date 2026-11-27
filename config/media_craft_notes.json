@@ -1,0 +1,80 @@
+{
+  "blender-skills": {
+    "repository": "arjun988/blender-skills",
+    "revision": "904f095d8f36a6e72adaebb08d07f884a074743d",
+    "license": "MIT",
+    "notes": {
+      "silhouette-budget": {
+        "path": ".claude/skills/asset-optimization/SKILL.md",
+        "task": "3B modeli sadeleştirmeden önce kahraman nesneyi ve ikincil parçaları ayır. Final kamera açısı ve dikey kadrajda silüeti, birleşim noktalarını ve ince ayrıntıyı kontrol et. Şemada açıklamayı taşıyan geometriyi koru.",
+        "role_keys": {"tarih": [11, 13], "bakim": [12, 13, 14]}
+      },
+      "material-light-check": {
+        "path": ".claude/skills/lighting/SKILL.md",
+        "task": "Ana ışığı materyalin özelliğiyle eşleştir. Mat katmanla parlak yüzeyin ayrımını gölge ve kontrollü yansımayla yap. Kenar ışığını yalnız çizgi kayboluyorsa artır ve etiket kontrastını aynı pozda tekrar kontrol et.",
+        "role_keys": {"tarih": [13], "bakim": [12, 13, 14, 20]}
+      }
+    }
+  },
+  "lemo-opuscar": {
+    "repository": "lemomo-ai/lemo-opuscar",
+    "revision": "439b98af08b04400f8fd8a8dd19cd773c0c96532",
+    "license": "MIT",
+    "notes": {
+      "briefing-board-focus": {
+        "path": "styles/briefing-board/demo/kit/board.js",
+        "task": "Kâğıt kolajında her anlatım vuruşunda yalnız bir bilgi kartını odağa al. Önceki kartı bağlam olarak yerinde bırak. Geçişi kartın metninden ayrı katmanda tut ve Türkçe okuma süresi dolmadan odağı taşıma.",
+        "role_keys": {"tarih": [11, 13, 15], "bakim": [11, 14, 15]}
+      }
+    }
+  },
+  "earshot": {
+    "repository": "Leonxlnx/earshot",
+    "revision": "7a7f7c5c70d4a763a1eca4b3666af7c77e313f97",
+    "license": "MIT",
+    "notes": {
+      "material-contact-cue": {
+        "path": "skills/earshot/SKILL.md",
+        "task": "Efekt brifinde malzeme, temas, uzaklık ve kuyruğu ayrı tarif et. Arşiv kâğıdında kuru sürtünmeyi, mekanizmada kısa tıkı, bakım ambalajında hafif kapak temasını yalnız görünür eylem karesine bağla. Doğrulanmış yerel efekt yoksa sahneyi sessiz bırak.",
+        "role_keys": {"tarih": [14, 15], "bakim": [15, 17]}
+      }
+    }
+  },
+  "video-shotcraft": {
+    "repository": "Vincentwei1021/video-shotcraft",
+    "revision": "1152363da5c824b32dba6d8a2ef7f935b677e445",
+    "license": "Apache-2.0",
+    "notes": {
+      "product-detail-hold": {
+        "path": "SKILL.md",
+        "task": "Makro ürün çekiminde bir ayrıntıyı hedefle. Yaklaşma bittikten sonra odak ve konumu sabitleyip ayrıntıyı tanıyacak okuma süresi bırak. Ürüne ait doğrulanmamış etkiyi hareket veya görsel karşılaştırmayla ima etme.",
+        "role_keys": {"bakim": [12, 13, 14, 15, 18]}
+      }
+    }
+  },
+  "rough-js": {
+    "repository": "rough-stuff/rough",
+    "revision": "56a2762171b1294d643501e8d14f120db6b27bd7",
+    "license": "MIT",
+    "notes": {
+      "seeded-sketch-strokes": {
+        "path": "src/core.ts",
+        "docs": ["https://github.com/rough-stuff/rough/wiki"],
+        "task": "Özgün eskiz veya şemada çizgi düzensizliğine nesne başına sabit bir tohum ver. Dokuyu sahne boyunca koru. Harita sınırı, ölçü, bilimsel etiket ve altyazıları temiz çizgi ve tipografide tut.",
+        "role_keys": {"tarih": [11, 13], "bakim": [11, 12, 14]}
+      }
+    }
+  },
+  "auto-editor": {
+    "repository": "WyattBlue/auto-editor",
+    "revision": "e1975ba3921ae67fa270ab9c15be2b1ff45d708d",
+    "license": "Unlicense",
+    "notes": {
+      "pause-evidence": {
+        "path": "docs/src/docs/subcommands/levels.md",
+        "task": "Sessizlik tespitini özgün kare saatinde aday olarak kaydet. Anlatım ve altyazı zamanlarıyla birlikte değerlendir. Açılışı, kelime uçlarını ve anlatı duraklarını koru. Kesme veya hız değiştirme kararı zaman çizelgesine otomatik uygulanmaz.",
+        "role_keys": {"tarih": [15, 16], "bakim": [15, 20]}
+      }
+    }
+  }
+}
