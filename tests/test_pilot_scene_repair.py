@@ -26,6 +26,17 @@ class PilotSceneRepairTests(unittest.TestCase):
         self.assertEqual(review["evaluated_transition_ids"], ["s01--s02", "s02--s03"])
         self.assertEqual(review["scenes"]["s03"]["evaluation"], "reused_previous")
 
+    def test_only_reported_caption_failures_reach_the_renderer(self):
+        cues = [{"start": 0., "end": 2.8}, {"start": 3.84, "end": 6.}]
+        original = {"after": {"cue_matches": [{"frame": 0, "offset_ms": 375},
+                                               {"frame": 115, "offset_ms": 1320}]}}
+        history = {"issues": [{"check": "subtitle_sync", "frames": [96, 202]}]}
+        beauty = {"issues": [{"check": "mobile_readability", "frames": [115, 180]}]}
+        self.assertEqual(repair.repair_targets(cues, original, history, True), [1])
+        self.assertEqual(repair.repair_targets(cues, original, beauty, False), [1])
+        with self.assertRaises(ValueError):
+            repair.repair_targets(cues, original, {"issues": []}, True)
+
     def test_visible_cut_pairs_once_and_unexpected_cut_fails_threshold(self):
         plan = {"transitions": [{"id": "a", "frame": 606}, {"id": "b", "frame": 608}]}
         before = {"scenes": {"starts_s": [0, 20.2]}}
