@@ -1,0 +1,85 @@
+{
+  "sources": {
+    "aad-dry": {"title": "AAD · Kuru cilt bakımı", "url": "https://www.aad.org/public/everyday-care/skin-care-basics/dry/dermatologists-tips-relieve-dry-skin"},
+    "aad-laser-prep": {"title": "AAD · Lazer epilasyona hazırlık", "url": "https://www.aad.org/public/cosmetic/hair-removal/laser-hair-removal-preparation"},
+    "aad-laser-risk": {"title": "AAD · Lazer epilasyon soruları", "url": "https://www.aad.org/public/cosmetic/hair-removal/laser-hair-removal-faqs"},
+    "dermnet-barrier": {"title": "DermNet · Cilt bariyeri", "url": "https://dermnetnz.org/topics/skin-barrier-function"},
+    "fda-cosmetics": {"title": "FDA · Kozmetiklerin güvenli kullanımı", "url": "https://www.fda.gov/cosmetics/resources-consumers-cosmetics/using-cosmetics-safely"},
+    "aad-hair": {"title": "AAD · Saç bakım alışkanlıkları", "url": "https://www.aad.org/public/everyday-care/hair-scalp-care/hair/habits-that-damage-hair"},
+    "fda-sun": {"title": "FDA · Güneşten korunma", "url": "https://www.fda.gov/drugs/understanding-over-counter-medicines/sunscreen-how-help-protect-your-skin-sun"}
+  },
+  "topics": {
+    "nazik-cilt-bakimi": {"category": "cilt-bakimi", "title": "Kuru cilt için nazik duş rutini", "beats": [
+      ["hook", "Havluyu sürtmeyin.", "Nazik kurulama", "aad-dry"],
+      ["context", "Kuru cilt için duşun sıcaklığı, süresi ve sonrasında yaptıklarınız önem taşır.", "Duş rutini", "aad-dry"],
+      ["mechanism", "Amerikan Dermatoloji Akademisi, sıcak su yerine ılık suyla kısa duş öneriyor.", "Ilık su", "aad-dry"],
+      ["application", "Kurulanırken temiz havluyu cilde nazikçe dokundurun. Sertçe ovalamak çok kuru cildi tahriş edebilir.", "Havluyu dokundurun", "aad-dry"],
+      ["product", "Düzenli nemlendirme kuru cilt bakımının bir parçasıdır. Cildiniz hafif nemliyken uygulama önerilir.", "Nemlendiricinin zamanı", "aad-dry"],
+      ["label", "Kuru ve hassas cilt için, etikette parfüm içermediğinin belirtildiği ürünlere bakın.", "Parfüm bilgisi", "aad-dry"],
+      ["application", "Bu zamanlama yalnız duş sonrası için düşünülmez. Akademi el yıkamasından sonra da nemlendirici önerir.", "El bakımı", "aad-dry"],
+      ["safety", "Kuruluk devam ederse veya kullandığınız ürün yanma yaparsa bir dermatoloğa danışın.", "Ne zaman danışmalı?", "aad-dry"],
+      ["recap", "Üç adımı hatırlayın: ılık su, nazik kurulama ve cilt nemliyken bakım.", "Üç adım", "aad-dry"],
+      ["sources", "Ayrıntılar için Amerikan Dermatoloji Akademisinin kuru cilt rehberine bakabilirsiniz.", "Kaynak · AAD", "aad-dry"]
+    ]},
+    "lazer-on-gorusme": {"category": "lazer-epilasyon", "title": "Lazer epilasyondan önce neler konuşulur?", "beats": [
+      ["hook", "İlk adım ön görüşme.", "Lazer öncesi", "aad-laser-prep"],
+      ["context", "Ön görüşmede işlemden ne beklediğinizi ve cildinizin durumunu dermatoloğunuzla konuşabilirsiniz.", "Uygunluk görüşmesi", "aad-laser-prep"],
+      ["mechanism", "Kılın rengi, kalınlığı ve büyüme döngüsü, dermatoloğun değerlendirdiği etkenler arasındadır.", "Kıl ve döngü", "aad-laser-prep"],
+      ["application", "Yakın zamanda bronzlaştıysanız, iz kalma eğiliminiz varsa veya ilaç kullanıyorsanız bunları görüşmede belirtin.", "Paylaşılacak bilgiler", "aad-laser-prep"],
+      ["context", "Görüşmede kaç seans gerekebileceğini ve hangi sonuçların makul olduğunu sorabilirsiniz.", "Beklentiler", "aad-laser-prep"],
+      ["application", "İşlemden önce ve sonra izlemeniz gereken adımları uygulayıcıyla birlikte netleştirin.", "Bakım planı", "aad-laser-prep"],
+      ["safety", "Lazer epilasyonda yanık, kalıcı renk değişikliği veya iz oluşabilir. Uygunluğu dermatolog değerlendirmelidir.", "Olası riskler", "aad-laser-risk"],
+      ["context", "Amerikan Dermatoloji Akademisi, işlem için lazer konusunda deneyimli bir dermatolog seçilmesini önerir.", "Uygulayıcı deneyimi", "aad-laser-risk"],
+      ["recap", "Ön görüşmeye giderken tıbbi geçmişinizi, ilaçlarınızı ve merak ettiğiniz riskleri not edin.", "Görüşme notları", "aad-laser-prep"],
+      ["sources", "Kaynaklar, Amerikan Dermatoloji Akademisinin hazırlık rehberi ve lazer epilasyon sorularıdır.", "Kaynak · AAD", "aad-laser-risk"]
+    ]},
+    "cilt-bariyeri-katmanlari": {"category": "cilt-bariyeri", "title": "Cilt bariyeri nasıl çalışır?", "beats": [
+      ["hook", "Bariyer nerede başlar?", "Cilt bariyeri", "dermnet-barrier"],
+      ["context", "Cilt, vücudumuzla çevre arasında bir bariyer oluşturmaya yardım eder.", "Çevreyle sınır", "dermnet-barrier"],
+      ["mechanism", "Epidermisin en dış katmanı stratum korneum olarak adlandırılır. Şemada bu katmanı temsili gösteriyoruz.", "En dış katman", "dermnet-barrier"],
+      ["mechanism", "Bu katmandaki hücreler bir duvarın tuğlalarına, aralarındaki yağlar ise harca benzetilebilir.", "Tuğla ve harç", "dermnet-barrier"],
+      ["context", "Bariyer, ciltten dışarıya doğru su kaybının düzenlenmesinde görev alır.", "Su kaybı", "dermnet-barrier"],
+      ["product", "Kuru ciltte nemlendirici, Amerikan Dermatoloji Akademisinin önerdiği günlük bakım adımlarından biridir.", "Günlük bakım", "aad-dry"],
+      ["application", "Duş sonrası ürünü cilt hâlâ hafif nemliyken uygulamayı öneren bir rehber vardır.", "Uygulama zamanı", "aad-dry"],
+      ["safety", "Kuruluk bakımınıza rağmen geçmiyorsa veya ürün yanma yapıyorsa bir dermatoloğa danışın.", "Uzman değerlendirmesi", "aad-dry"],
+      ["recap", "Tuğla ve harç benzetmesi, hücrelerle aralarındaki tabakanın birlikte görev yaptığını hatırlatır.", "Bariyer özeti", "dermnet-barrier"],
+      ["sources", "Kaynaklar arasında DermNet'in bariyer açıklaması ve Akademinin kuru cilt rehberi bulunuyor.", "DermNet ve AAD", "dermnet-barrier", "aad-dry"]
+    ]},
+    "kozmetik-parfum-etiketi": {"category": "kozmetik-icerikler", "title": "Parfümsüz ve kokusuz etiketleri", "beats": [
+      ["hook", "Etikette hangi ifade var?", "Kozmetik etiketi", "aad-dry"],
+      ["context", "Kuru veya hassas cilt için alışverişte ambalajdaki ifadelerin anlamı önem taşır.", "Ambalaj dili", "aad-dry"],
+      ["label", "Bir ürünün kokusunu almamanız, içinde parfüm bulunmadığını kendi başına göstermez.", "Koku algısı", "aad-dry"],
+      ["label", "Kokusuz diye sunulan bir üründe kokuyu maskelemek için kullanılan maddeler bulunabilir.", "Kokusuz ifadesi", "aad-dry"],
+      ["product", "Amerikan Dermatoloji Akademisi, kuru ve hassas cilt için parfüm içermeyen nazik ürünler önerir.", "Parfümsüz ifadesi", "aad-dry"],
+      ["application", "Ambalajı değerlendirirken ürünün üzerinde yazan kullanım amaçlarını ve uyarıları da okuyun.", "Kullanım bilgisi", "fda-cosmetics"],
+      ["context", "Amerikan Gıda ve İlaç Dairesi, kozmetiklerin etiketteki talimatlara göre kullanılmasını önerir.", "Etiketi izleyin", "fda-cosmetics"],
+      ["safety", "Kullandığınız ürün cildinizde yanma veya tahriş yapıyorsa bir dermatoloğa danışın.", "Tahriş uyarısı", "aad-dry"],
+      ["recap", "Bir ürünü seçerken yalnız duyduğunuz kokuya dayanmayın. İçerik bilgisi ve uyarıları birlikte okuyun.", "Satın alma öncesi", "aad-dry", "fda-cosmetics"],
+      ["sources", "Kaynaklarda Akademinin kuru cilt rehberi ve Amerikan Gıda ve İlaç Dairesinin tüketici önerileri yer alıyor.", "AAD ve FDA", "aad-dry", "fda-cosmetics"]
+    ]},
+    "nazik-sac-bakimi": {"category": "sac-bakimi", "title": "Saçı yıkarken ve kuruturken nazik adımlar", "beats": [
+      ["hook", "Şampuan önce nereye?", "Saç bakımı", "aad-hair"],
+      ["context", "Bazı yıkama ve şekillendirme alışkanlıkları zamanla saç telinin kırılmasına katkıda bulunabilir.", "Yıkama alışkanlığı", "aad-hair"],
+      ["mechanism", "Akademi, şampuanı saç boyunca ovalamak yerine saç derisine nazikçe uygulamayı önerir.", "Saç derisi", "aad-hair"],
+      ["application", "Durularken şampuanın saç boyunca akmasına izin verin. Saç telini ayrıca ovalamak gerekmez.", "Nazik durulama", "aad-hair"],
+      ["application", "Saçı havluyla sertçe ovmak yerine havlunun suyu emmesini sağlayabilirsiniz.", "Kurutma adımı", "aad-hair"],
+      ["context", "Mümkünse saçı kendi halinde kurumaya bırakmak, ısılı şekillendirmeye bir alternatiftir.", "Isısız seçenek", "aad-hair"],
+      ["application", "Isı kullandığınızda en düşük ayarı seçmek ve temas süresini sınırlamak önerilir.", "Isıyı sınırlayın", "aad-hair"],
+      ["safety", "Bakımınızı değiştirmenize rağmen kırılma sürüyorsa veya saçta seyrelme fark ederseniz dermatoloğa danışın.", "Uzman görüşü", "aad-hair"],
+      ["recap", "Saç derisine nazik uygulama, yumuşak kurulama ve daha az ısı bu rutinin özüdür.", "Bakım özeti", "aad-hair"],
+      ["sources", "Önerilerin ayrıntıları Amerikan Dermatoloji Akademisinin saç bakım alışkanlıkları rehberinde yer alıyor.", "Kaynak · AAD", "aad-hair"]
+    ]},
+    "gunes-koruyucu-etiketi": {"category": "gunes-korumasi", "title": "Güneş koruyucu etiketinde iki bilgi", "beats": [
+      ["hook", "Geniş spektrum ne demek?", "Güneş koruyucu etiketi", "fda-sun"],
+      ["context", "Bir güneş koruyucunun ambalajında geniş spektrum ve suya dayanıklılık gibi ifadeler görebilirsiniz.", "İki etiket bilgisi", "fda-sun"],
+      ["mechanism", "Amerikan Gıda ve İlaç Dairesine göre geniş spektrum, UVA ve UVB ışınlarına karşı korumayı ifade eder.", "UVA ve UVB", "fda-sun"],
+      ["label", "Suya dayanıklılık ise su veya terle temasla ilgili ayrı bir etiket bilgisidir.", "Suya dayanıklılık", "fda-sun"],
+      ["product", "Amerika Birleşik Devletlerinde bu ifade, test edilen kırk veya seksen dakikalık süreyle birlikte belirtilir.", "ABD'deki etiket", "fda-sun"],
+      ["context", "Suya dayanıklı ürün de zamanla cilt yüzeyinden uzaklaşabilir. Yeniden uygulama talimatına bakın.", "Yeniden uygulama", "fda-sun"],
+      ["application", "Ürünün kendi etiketinde, yüzme ve terlemeden sonra ne yapmanız gerektiğini kontrol edin.", "Ürün talimatı", "fda-sun"],
+      ["safety", "Koruyucuyla birlikte açık havada gölgeyi, koruyucu kıyafeti ve şapkayı da değerlendirin.", "Birlikte korunma", "fda-sun"],
+      ["recap", "Geniş spektrum korunan ışınları anlatır. Suya dayanıklılık ise farklı bir test bilgisidir.", "Etiket özeti", "fda-sun"],
+      ["sources", "Bu etiket örneği Amerikan Gıda ve İlaç Dairesinin güneşten korunma açıklamasına dayanıyor.", "Kaynak · FDA", "fda-sun"]
+    ]}
+  }
+}
