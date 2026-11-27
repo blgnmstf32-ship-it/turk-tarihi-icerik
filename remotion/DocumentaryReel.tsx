@@ -124,7 +124,7 @@ export const DocumentaryReel: React.FC<DocumentaryProps> = ({durationSec, title 
       <AbsoluteFill style={{background:'linear-gradient(180deg,#081317b2 0%,transparent 23%,transparent 55%,#07111556 75%,#071115ec 100%)',pointerEvents:'none'}} />
       <div style={{position:'absolute',top:72,left:54,borderLeft:'3px solid #c49a5d',paddingLeft:14,
         color:'#fff4dc',font:'700 20px Arial',letterSpacing:3}}>{title}</div>
-      {edit && frame<81 && <div style={{position:'absolute',left:65,right:86,bottom:345,
+      {edit && frame<81 && <div style={{position:'absolute',left:65,right:86,bottom:490,
         opacity:interpolate(frame,[0,8,67,81],[.8,1,1,0],{extrapolateRight:'clamp'}),
         textShadow:'0 3px 24px #061214,0 3px 55px #061214'}}>
         <div style={{font:'700 29px Arial',letterSpacing:5,color:'#f4ca84',marginBottom:21}}>
@@ -138,8 +138,8 @@ export const DocumentaryReel: React.FC<DocumentaryProps> = ({durationSec, title 
           </div>
         </div>
       </div>}
-      {(!edit || frame>=81) && <div style={{position:'absolute',left:30,right:65,bottom:295,
-        display:'flex',justifyContent:'center'}}><ActiveCaption captions={captions} /></div>}
+      <div style={{position:'absolute',left:30,right:65,bottom:295,
+        display:'flex',justifyContent:'center'}}><ActiveCaption captions={captions} /></div>
       <div style={{position:'absolute',left:54,right:70,bottom:188,height:3,background:'rgba(255,255,255,.22)'}}>
         <Progress durationSec={durationSec} />
       </div>
