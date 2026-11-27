@@ -122,7 +122,7 @@ def render_reel(scenes_dir,audio_path,srt_path,output_path,width=1080,height=192
         props_path=Path(td)/'props.json'
         props_path.write_text(json.dumps(props,ensure_ascii=False),encoding='utf-8')
         cmd=['npx','--no-install','remotion','render','remotion/index.tsx','DocumentaryReel',str(out),
-             '--props',str(props_path),'--codec=h264','--crf=22','--concurrency=2','--gl=angle','--log=error',
+             '--props',str(props_path),'--codec=h264','--crf=22','--concurrency=2','--gl=swangle','--log=error',
              '--license-key=free-license']
         if browser:
             cmd.append(f'--browser-executable={browser}')

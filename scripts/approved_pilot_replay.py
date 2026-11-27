@@ -227,6 +227,7 @@ def project(args):
                                             ("node_modules", "gsap"), ("media_pilot/node_modules", "hyperframes"))}
     write(named / "TOOL_VERSIONS.json", {
         **node_versions, **{name: version(name) for name in ("OpenTimelineIO", "faster-whisper", "scenedetect")},
+        "browser": subprocess.check_output([args.browser, "--version"], text=True, timeout=10).strip(),
         "ffmpeg": subprocess.check_output(["ffmpeg", "-version"], text=True, timeout=10).splitlines()[0],
         "blender": (subprocess.check_output(["blender", "--version"], text=True, timeout=10).splitlines()[0]
                     if args.brand == "beauty" else None)})
@@ -326,5 +327,15 @@ def project(args):
         "status": "human_review_required", "brand": args.brand, "media": final_media, "previous_media": former,
         "before": old, "after": new, "previous_technical": before_quality["technical"], "technical_status": quality["technical"]["status"], "recovery": recovery,
         "paid_api_calls": 0, "instagram_auto_publish": False, "approved_voice_sha256": _hash(voice)})
-    print(json.dumps({"brand": brand, "media": final_media, "technical": quality["technical"]["status"],
-                      "recovery": recovery}, ensure_ascii=False), flush=True)
+    checks = quality["technical"]["checks"]
+    mobile = measured["mobile_subtitle_samples"]
+    print(json.dumps({
+        "brand": brand, "media": final_media, "technical": quality["technical"]["status"],
+        "check_statuses": {key: review["status"] for key, review in checks.items()},
+        "opening": checks["opening"]["observations"], "sync_ms": [old["asr"]["mean_start_error_ms"],
+                                                                 new["asr"]["mean_start_error_ms"]],
+        "audio_separation": measured["audio_separation"], "mixed_loudness": new["levels"],
+        "mobile_samples": sum(bool(row["sampled_phone_pixels"]) for row in mobile), "captions_sampled": len(mobile),
+        "before_issues": before_quality["issues"], "issues": quality["issues"], "recovery": recovery,
+        "actual_scene_tools": sorted({tool for row in rendered.values() for tool in row["executed_scene_tools"]}),
+    }, ensure_ascii=False), flush=True)

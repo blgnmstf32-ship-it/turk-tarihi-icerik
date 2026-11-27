@@ -120,9 +120,15 @@ def pixel_samples(path, plan, cues):
         for scene in plan["scenes"]:
             at = (scene["start_frame"] + scene["end_frame"]) // 2
             gray = cv2.cvtColor(frame_at(at), cv2.COLOR_BGR2GRAY)
-            sampled.append((at, _hash(gray, cv2)))
+            visual = scene["approved_visual"]
+            # Several timeline rows can refer to the same continuous insert or dissolve.
+            source = (scene["kind"] if plan["brand"] == "tarih" and scene["kind"] in {"collage", "map"}
+                      else visual.get("archive_index") if plan["brand"] == "tarih" else visual["shot"])
+            sampled.append((at, _hash(gray, cv2), source))
         repeats = []
-        for (left, a), (right, b) in itertools.combinations(sampled, 2):
+        for (left, a, left_source), (right, b, right_source) in itertools.combinations(sampled, 2):
+            if left_source == right_source:
+                continue
             repeats.append({"frames": [left, right], "distance": (a ^ b).bit_count()})
         mobile = []
         for cue in cues:

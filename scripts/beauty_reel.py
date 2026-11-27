@@ -112,7 +112,10 @@ def command(args, *, cwd, log=None):
     if log is not None:
         log.write_text(result.stdout, encoding="utf-8")
     if result.returncode:
-        raise RuntimeError(f"{args[0]} exited {result.returncode}: {result.stdout[-3200:]}")
+        lines = result.stdout.splitlines()
+        errors = [line for line in lines if re.search(r"error|exception|WebGL", line, re.I)]
+        detail = "\n".join(errors[:6])[:1800]
+        raise RuntimeError(f"{args[0]} exited {result.returncode}: {detail}\n{result.stdout[-1600:]}")
 
 
 def ffmpeg(directory, *args):
@@ -134,7 +137,7 @@ def render_models(work, *, browser, continuous=False):
         start = time.monotonic()
         args = ["npx", "--no-install", "remotion", "render", "remotion/index.tsx",
                 composition, str(work / f"{key}.mp4"), "--codec=h264", "--crf=17",
-                "--concurrency=2", "--gl=angle", "--muted", "--license-key=free-license"]
+                "--concurrency=2", "--gl=swangle", "--muted", "--license-key=free-license"]
         if browser:
             args.append(f"--browser-executable={browser}")
         log = work / f"{key}.log"
