@@ -52,6 +52,33 @@
       }
     }
   },
+  "shotcraft-15h": {
+    "repository": "digitalpublisher/video-shotcraft",
+    "revision": "457f3a144b3140bd89970e0fe4a6a692d0f9719d",
+    "license": "Apache-2.0",
+    "notes": {
+      "tabletop-reframe": {
+        "path": "references/shots/camera/overhead-camera-moves.md",
+        "task": "Özgün masaüstü şemada önce sabit eğimle yanal tarama yap, ardından tek kartı cepheden göster. Remotion'da tarama ile eğim değişimini ayrı kare aralıklarına bağla ve ikisini aynı anda başlatma. Arşiv karesine yapay derinlik katma, altyazıyı kamera dönüşünün dışında tut.",
+        "role_keys": {"tarih": [11, 13, 16], "bakim": [11, 14, 20]}
+      },
+      "readable-detail-triplet": {
+        "path": "references/shots/rhythm/montage-rhythm-moves.md",
+        "task": "Aynı işlemin üç ayrıntısını benzer ölçek ve bakış ekseninde sırala, ardından sonucu genel planda okunur bırak. Ritmi sözcük bölerek veya sahneyi karartarak kurma. Ayrıntıları kesme yerine tek sahnede sırayla vurgulamak kaynak sürekliliğini koruyabilir.",
+        "role_keys": {"tarih": [11, 13, 15, 16], "bakim": [11, 14, 15, 20]}
+      },
+      "svg-path-draw": {
+        "path": "references/shots/ui-entrance/draw-svg-trace.md",
+        "task": "Özgün süreç şemasının yönünü Remotion kare sayacına bağlı SVG çizgi açılımıyla göster. İz yoluyla dolgu farklı katmanlarda kalsın. Yol bittiğinde son konumu sabitle, etiket ve altyazıyı baştan okunur tut. Hareketi gerçek mikroskop veya arşiv kaydı gibi sunma.",
+        "role_keys": {"tarih": [11, 13, 16], "bakim": [11, 14, 20]}
+      },
+      "cut-event-drift": {
+        "path": "references/music-beat-sync.md",
+        "task": "Son videoda konuşma veya ses atağını bir kare olayı olarak kaydet. Gerçek kesmenin ses olayına uzaklığını, planlanan kesmenin gözlenen kesmeye uzaklığından ayrı raporla. Müzik ızgarası varsa onu da ayrı karşılaştır. Anlatım ve altyazı sınırları önceliklidir.",
+        "role_keys": {"tarih": [13, 14, 15, 16], "bakim": [14, 15, 17, 20]}
+      }
+    }
+  },
   "rough-js": {
     "repository": "rough-stuff/rough",
     "revision": "56a2762171b1294d643501e8d14f120db6b27bd7",

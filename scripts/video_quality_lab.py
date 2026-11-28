@@ -143,17 +143,56 @@ def _reference_review(reference, asset_sha256):
 def _pending_review_skills(scenes):
     from scripts.skill_registry import registry_view
 
-    identifiers = {key for key in registry_view()["entries"] if key.startswith("openmontage-15f:")}
+    identifiers = {key for key, entry in registry_view()["entries"].items()
+                   if key.startswith(("openmontage-15f:", "shotcraft-15h:"))
+                   and entry["kind"] == "knowledge" and not entry["adapter"]}
     pending = {}
     for key, scene in scenes.items():
         skills = scene.get("review_skills", [])
-        if (not isinstance(skills, list) or len(skills) > 3
+        if (not isinstance(skills, list) or len(skills) > 5
                 or any(not isinstance(skill, str) or skill not in identifiers for skill in skills)
-                or len(set(skills)) != len(skills)):
+                or len(set(skills)) != len(skills)
+                or sum(skill.startswith("openmontage-15f:") for skill in skills) > 3
+                or sum(skill.startswith("shotcraft-15h:") for skill in skills) > 2):
             raise ValueError("Unsupported scene review skills")
         if skills:
             pending[key] = {"status": "pending_editor_review", "skill_ids": skills}
     return pending
+
+
+def _rhythm_review(review, asset_id, plan):
+    """Compare supplied frame observations without treating them as release evidence."""
+    if (not isinstance(review, dict) or review.keys() != {"asset_sha256", "events"}
+            or asset_id is None or review["asset_sha256"] != asset_id):
+        raise ValueError("Rhythm observations must name the same local media fingerprint")
+    events = review["events"]
+    cuts = {cut["id"]: cut["frame"] for cut in plan["transitions"]}
+    if not isinstance(events, list) or not 1 <= len(events) <= len(cuts):
+        raise ValueError("Expected one rhythm observation per reviewed transition")
+
+    def in_timeline(frame):
+        return type(frame) is int and 0 <= frame < plan["duration_frames"]
+
+    def milliseconds(frames):
+        return round(1000 * frames / plan["fps"], 2)
+
+    compared = {}
+    for event in events:
+        if (not isinstance(event, dict) or event.keys() != {
+                "transition_id", "observed_cut_frame", "audio_event_frame", "grid_frame"}):
+            raise ValueError("Invalid rhythm observation fields")
+        cut_id = event["transition_id"]
+        actual, audible, grid = (event[k] for k in ("observed_cut_frame", "audio_event_frame", "grid_frame"))
+        if (not isinstance(cut_id, str) or cut_id not in cuts or cut_id in compared
+                or not in_timeline(actual) or not in_timeline(audible)
+                or (grid is not None and not in_timeline(grid))):
+            raise ValueError("Invalid rhythm transition or frame")
+        compared[cut_id] = {**event, "planned_cut_frame": cuts[cut_id],
+                            "observed_cut_minus_plan_ms": milliseconds(actual - cuts[cut_id]),
+                            "observed_cut_minus_audio_ms": milliseconds(actual - audible),
+                            "grid_minus_audio_ms": milliseconds(grid - audible) if grid is not None else None}
+    return {"status": "reviewed_metadata", "method": "supplied_local_frame_observations",
+            "events": list(compared.values()), "release_gate": False}
 
 
 def inspect_snapshot(snapshot, *, brand):
@@ -178,6 +217,9 @@ def inspect_snapshot(snapshot, *, brand):
         raise ValueError("Invalid media fingerprint")
     reference = _reference_review(evidence.get("reference_review"), asset_id)
     planned_reviews = _pending_review_skills(scenes)
+    editor_review = {"scenes": planned_reviews, "reference": reference}
+    if "rhythm_review" in evidence:
+        editor_review["rhythm"] = _rhythm_review(evidence["rhythm_review"], asset_id, plan)
     observations = evidence.get("observations", {})
     if observations.keys() - (RULES.keys() | DIAGNOSTICS.keys()):
         raise ValueError("Unknown measurement")
@@ -278,7 +320,7 @@ def inspect_snapshot(snapshot, *, brand):
     return {"plan_sha256": plan_id, "asset_sha256": asset_id, "brand": brand, "duration_frames": duration,
             "technical": {"status": status, "checks": technical, "vmaf": diagnostic},
             "source_accuracy": source_accuracy, "issues": issues,
-            "editor_review": {"scenes": planned_reviews, "reference": reference},
+            "editor_review": editor_review,
             "scene_recheck": {"failures": failures, "unlocated_checks": sorted(set(untargeted))}}
 
 

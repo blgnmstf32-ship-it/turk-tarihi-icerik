@@ -57,6 +57,14 @@ TASK_NOTES = {
     "sound-review": ("openmontage-15f:sound-cause",),
 }
 SCENE_NOTES = {
+    ("shotcraft-review", "flat"): ("shotcraft-15h:readable-detail-triplet", "shotcraft-15h:cut-event-drift"),
+    ("shotcraft-review", "collage"): ("shotcraft-15h:tabletop-reframe", "shotcraft-15h:cut-event-drift"),
+    ("shotcraft-review", "map"): ("shotcraft-15h:svg-path-draw",),
+    ("shotcraft-review", "mechanism"): ("shotcraft-15h:readable-detail-triplet", "shotcraft-15h:svg-path-draw"),
+    ("shotcraft-review", "diagram"): ("shotcraft-15h:svg-path-draw",),
+    ("shotcraft-review", "macro"): ("shotcraft-15h:cut-event-drift",),
+    ("shotcraft-review", "science"): ("shotcraft-15h:svg-path-draw",),
+    ("shotcraft-review", "motion"): ("shotcraft-15h:cut-event-drift",),
     ("shot-review", "flat"): ("openmontage-15f:evidence-insert",),
     ("shot-review", "collage"): ("openmontage-15f:evidence-insert", "openmontage-15f:archive-shot-evidence"),
     ("shot-review", "map"): ("openmontage-15f:camera-depth-reveal", "openmontage-15f:progressive-graphics"),
