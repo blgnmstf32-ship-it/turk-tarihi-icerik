@@ -7,7 +7,7 @@ from unittest.mock import patch
 from scripts import scene_director, video_quality_lab as lab
 from scripts.editorial_state import EditorialState
 from scripts.skill_registry import registry_view
-from scripts.skill_router import RouteContext
+from scripts.skill_router import RouteContext, select_knowledge
 from scripts.tool_router import run_tool
 
 
@@ -206,9 +206,56 @@ class VideoQualityLabTest(unittest.TestCase):
 
     def test_registry_preserves_baseline_and_forty_primary_roles(self):
         view = registry_view()
-        self.assertEqual(sum(not key.startswith("openmontage-15f:") for key in view["entries"]), 163)
-        self.assertEqual(len(view["entries"]), 171)
+        base = {key for key in view["entries"] if not key.startswith("shotcraft-15h:")}
+        self.assertEqual(sum(not key.startswith("openmontage-15f:") for key in base), 163)
+        self.assertEqual(len(base), 171)
+        self.assertEqual(len(view["entries"]), 175)
         for brand in ("tarih", "bakim"):
             roster = {role["id"] for role in view["experts"].values() if role["brand"] == brand}
             self.assertTrue(set(range(1, 21)).issubset(roster))
         self.assertEqual(view["entries"][lab.TOOL_ID]["kind"], "tool")
+
+    def test_shotcraft_is_pinned_and_reaches_review_for_both_brands(self):
+        entries = registry_view()["entries"]
+        for entry in (row for key, row in entries.items() if key.startswith("shotcraft-15h:")):
+            self.assertEqual(entry["source"]["revision"], "457f3a144b3140bd89970e0fe4a6a692d0f9719d")
+            self.assertEqual(entry["license"]["code"], "Apache-2.0")
+            self.assertIsNone(entry["adapter"])
+            self.assertFalse(entry["security"]["authorizes_execution"])
+        for brand, topic in (("tarih", self.history), ("bakim", self.beauty)):
+            self.assertEqual(select_knowledge(RouteContext(brand, 1, "shotcraft-review", "collage")), [])
+            plan = scene_director.build_plan(brand, topic, overrides={"2": {"kind": "collage"}})
+            report, _ = lab.evaluate(plan, state=self.state)
+            review = report["editor_review"]["scenes"]["s02"]
+            self.assertIn("openmontage-15f:evidence-insert", review["skill_ids"])
+            self.assertIn("shotcraft-15h:tabletop-reframe", review["skill_ids"])
+            self.assertIn("shotcraft-15h:cut-event-drift", review["skill_ids"])
+            self.assertEqual(review["status"], "pending_editor_review")
+            self.assertEqual(report["technical"]["status"], "not_measured")
+
+    def test_shotcraft_rhythm_has_separate_offsets_and_rejects_unbound_evidence(self):
+        plan = scene_director.build_plan("tarih", self.history)
+        cut = plan["transitions"][0]
+        frame = cut["frame"]
+        asset = "c" * 64
+        event = {"transition_id": cut["id"], "observed_cut_frame": frame + 2,
+                 "audio_event_frame": frame + 1, "grid_frame": frame - 1}
+        rhythm = {"asset_sha256": asset, "events": [event]}
+        evidence = {**self.evidence(plan), "asset_sha256": asset, "rhythm_review": rhythm}
+        report, recheck = lab.evaluate(plan, evidence=evidence, state=self.state)
+        log = report["editor_review"]["rhythm"]
+        self.assertEqual(log["events"][0], {**event, "planned_cut_frame": frame,
+                                            "observed_cut_minus_plan_ms": 66.67,
+                                            "observed_cut_minus_audio_ms": 33.33,
+                                            "grid_minus_audio_ms": -66.67})
+        self.assertEqual(log["status"], "reviewed_metadata")
+        self.assertFalse(log["release_gate"])
+        self.assertEqual(report["technical"]["status"], "not_measured")
+        self.assertIsNone(recheck)
+        for changes in ({"asset_sha256": "d" * 64}, {"events": [event, event]},
+                        {"events": [{**event, "transition_id": "s99--s100"}]},
+                        {"events": [{**event, "audio_event_frame": -1}]},
+                        {"events": [{**event, "grid_frame": True}]},
+                        {"events": [{**event, "path": "untrusted.py"}]}):
+            with self.subTest(changes=changes), self.assertRaises(ValueError):
+                lab.evaluate(plan, evidence={**evidence, "rhythm_review": {**rhythm, **changes}})

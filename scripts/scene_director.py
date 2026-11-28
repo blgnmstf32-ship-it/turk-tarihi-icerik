@@ -194,6 +194,7 @@ def build_plan(brand, topic, *, duration_frames=2100, overrides=None, end_frames
         foley = select_knowledge(RouteContext(brand, FOLEY_ROLES[brand], "foley-review", kind, category))
         shot_review = select_knowledge(RouteContext(brand, brand_role, "shot-review", kind, category))
         sound_review = select_knowledge(RouteContext(brand, FOLEY_ROLES[brand], "sound-review", kind, category))
+        shotcraft = select_knowledge(RouteContext(brand, brand_role, "shotcraft-review", kind, category))
         fallback = _engine("media:remotion", brand, entries) if target != "media:remotion" else None
         if fallback:
             fallback.update(technique="katmanlı_2b", camera="sabit_kadraj", lighting="2b_okunaklı",
@@ -216,7 +217,7 @@ def build_plan(brand, topic, *, duration_frames=2100, overrides=None, end_frames
                        "sound": {"cue": "room_tone_if_approved", "transition": "J_or_L_cut_if_continuous",
                                  "priority": "narration", "asset_source_review_required": True},
                        "skills": [{"id": note["id"], "reason": note["reason"]} for note in skills],
-                       "review_skills": [note["id"] for note in (*shot_review, *sound_review)],
+                       "review_skills": [note["id"] for note in (*shot_review, *sound_review, *shotcraft)],
                        "tools": (["media:opening-presets"] if i == 1 else []) + [target],
                        "quality": ["source_review", "asset_rights_review", "voice_alignment", "phone_safe_area",
                                    "shot_edge_review", "human_review"]}

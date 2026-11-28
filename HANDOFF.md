@@ -200,3 +200,9 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - Her başarılı konu paketinde `REVIEW_REQUIRED_REEL.mp4`, `STATUS.json`, `VIDEO_QUALITY_LAB.json`, `SCENE_REPAIR.json`, `PERFORMANCE.json`, kaynak ve lisans makbuzları, SRT ve OpenTimelineIO bulunur. `human_approval_required=true` yayına almadan önce insan onayı gerektiğini gösterir.
 - `.github/workflows/daily_production_15g.yml` dört konuyu ayrı standart CPU işlerinde işler. Göz konusunun başarılı devamı sabitlenmiş küçük Whisper ile yapıldı. `[15g-eye-only]` hedefli üretimde diğer konuları hariç tutar. `[15g-eye-repair]` son ölçülen MP4’ü SHA-256 ve anlatım makbuzuyla doğrular, yalnız kusurlu sahneleri onarır. Sesler [doğrulanmış Actions artefaktından](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/46111381101) alınır. Artefakt saklama süresi dolarsa aynı SHA-256’lı WAV’ları ve `TTS_REPORT.json` makbuzunu kullan.
 - `15g-navigation-evidence`, tam sürüm kaydıyla Graphify doğrulaması, yapısal sorgu ve Git Grep çıktısını içerir. [Durum ve ölçümler](PROJECT_STATE.md#15g--günlük-içerik-kapasitesi-doğrulandı). 40 uzman, 171 Registry kaydı ve kalite eşikleri korunur. Instagram otomatik paylaşımı kapalıdır.
+
+## 15H · Video Shotcraft beceri ve ritim incelemesi
+
+- [15H kaynak ve güvenlik kaydı](SHOTCRAFT_15H.md) tam upstream commit’i, dört seçilmiş tekniği ve şablonun statik bağımlılık taramasını kapsar. Envanter 175 kayıt ve 40 ana uzmandır.
+- İki marka için mevcut planlama girişlerinden `shotcraft-review` görevini kullan. Scene Director notları `scenes[].review_skills` alanına yazar. Kalite Laboratuvarı bunları `editor_review.scenes` altında incelemeye açar.
+- Yerel kare kanıtı varsa, plan özeti ve medya SHA-256 özetiyle eşleşen `rhythm_review` alanını Kalite Laboratuvarına sun. Mevcut yayın kapısı ve insan onayı geçerlidir. Gözlem yoksa çizelgeye zaman atama. Instagram otomatik paylaşımını kapalı tut.
