@@ -395,3 +395,9 @@ Sokollu Mehmed Paşa minyatürü ve Charon'la gerçek 9 saniyelik konuşan foto�
 28 Kasım 2026. [FreeLLMAPI ve sağlayıcı karşılaştırması](FREE_LLM_15E.md) sekiz adayın güncel kota ve lisans kayıtlarını kapsar. Cloudflare Gemma 4 iki Türkçe görevi geçti. OpenRouter Nemotron iki geçerli Türkçe JSON üretti ve tarih açılışı uzunluk ölçütünü kaçırdı. Gemini Free Tier proje onayı bu koşuda yoktu. GroqCloud GPT-OSS 20B öncelikli yeni aday, gerçek proje erişimi doğrulanamadı.
 
 Dört canlı ücretsiz inference çağrısı ve iki salt okunur plan/kota isteği yapıldı. Ücretli API çağrısı 0. Yeni üretim sağlayıcısı eklenmedi. 40 uzman, 163 Registry kaydı, Multi-LLM sırası, medya ve yayın güvenlik eşikleri korundu. Instagram otomatik paylaşımı kapalı. [Actions ölçümü](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/46079472737)
+
+## 15F · OpenMontage ve profesyonel sahne incelemesi
+
+28 Kasım 2026. [15F karşılaştırması](OPENMONTAGE_15F.md) OpenMontage'ın güncel `2e003e65` revizyonunu, 163 mevcut Registry kaydını ve ücretsiz gerçek stok/arşiv koşullarını kapsar. Önceki OpenMontage inceleme notları korunarak sinematik kamera, kanıt planı, hareket durakları, yüzey ışığı, grafik okuma sırası, arşiv kaydı, olay sesi ve referans çekim günlüğü için sekiz özgün not eklendi. 40 ana uzman, toplam 171 Registry kaydı.
+
+Scene Director inceleme görevlerini sahneye taşır. Video Kalite Laboratuvarı ve Tool Router, yalnız sağlanan referans çekim günlüğünden süre, gözlem kapsamı ve insan incelemesi bekleyen sahne kayıtları üretir. Teknik ve editoryal eşikler, OTIO, sahne onarımı ve mevcut render rotaları korundu. Yeni video, ücretli API ve Instagram paylaşımı yok.

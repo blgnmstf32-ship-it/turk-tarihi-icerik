@@ -185,3 +185,10 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - Üretimde izinli Gemini → doğrulanmış Cloudflare Workers Free → OpenRouter Free sırasını ve mevcut kota/önbellek davranışını koru. Başka bir sağlayıcıyı canlı erişim, ücretli kullanıma geçiş engeli, lisans ve iki marka kalite kontrolü geçmeden etkinleştirme.
 - Depo sahibinin main dalındaki manuel `15E · Free text provider comparison` işi iki sabit Türkçe metni karşılaştırır. JSON, canlı erişim, süre ve editoryal ölçütleri ayrı oku. Gemini faturalandırmasız Free Tier proje onayı yoksa atlanır. OpenRouter sıfır fiyat sınırı ve Cloudflare plan kontrolü zorunludur. Ölçümde kişisel veya yayımlanmamış içerik kullanma.
 - GroqCloud Free GPT-OSS 20B için gerçek erişim ve Türkçe kalite ölçümü bekliyor. Kotalar ve lisanslar zamanla değişir. [Karar, yöntem ve canlı sonuçlar](FREE_LLM_15E.md)
+
+## 15F · Profesyonel sahne ve referans incelemesini devralma
+
+- [Kategori, lisans ve stok kaydı](OPENMONTAGE_15F.md) revizyonu ve sekiz yeni `openmontage-15f:` notunun kapsamını belirtir. Envanter 171, ana uzman sayısı 40. Önceki 163 kayıt olduğu gibi yerindedir.
+- Geçerli Scene Director planında `scenes[].review_skills` alanındaki görevleri görüntü ve ses editörü değerlendirir. Bunlar teknik ölçüm, render veya üretime hazır kararı vermez. Eski planlar alan olmadan kabul edilir.
+- İzinli bir referansın kare aralıklı çekim günlüğünü [Video Kalite Laboratuvarı](scripts/video_quality_lab.py) için `--evidence` dosyasına ekle. `reference_review` alanı kaynağın SHA-256 özetini, kare hızını, süreyi ve gözlem aralıklarını taşır. Rapor `editor_review.reference` altında kapsam, plan süresi medyanı ve kategori sayısını gösterir. VMAF, medya doğruluğu ve arşiv varlığı kullanma izni ayrı kanıt gerektirir.
+- Stok veya arşiv sayfasını kaynak, hak, atıf ve tarih/yer kaydıyla değerlendir. Sağlık iddiasında görseli yayın iddiasının kanıtı sayma. Yeni indirici veya kaynak sağlayıcısı açılmadı. Instagram otomatik paylaşımı kapalı.
