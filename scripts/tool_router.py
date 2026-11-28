@@ -196,7 +196,8 @@ def run_tool(context, *, topic, state, snapshots=None, preferred=None, cpu_avail
                                  topic_fields, snapshot, parallax], sort_keys=True, allow_nan=False)
             if len(inputs) > MAX_SNAPSHOT_CHARS:
                 raise Unavailable("snapshot_limit_exceeded")
-            key = "tool-router:v1:" + sha256(inputs.encode()).hexdigest()
+            cache_version = "video-quality:v2" if identifier == video_quality_lab.TOOL_ID else "v1"
+            key = f"tool-router:{cache_version}:" + sha256(inputs.encode()).hexdigest()
             result, cached = state.local_tool_once(key, execute)
         except Unavailable as exc:
             report["rejected"].append({"id": identifier, "reason": str(exc)})

@@ -56,6 +56,28 @@ class MediaCraftTests(unittest.TestCase):
         self.assertFalse(report["media_created"])
         self.assertTrue(all(pause_review.TOOL_ID not in scene["tools"] for scene in care["scenes"] + history["scenes"]))
 
+    def test_openmontage_delta_is_role_scoped_and_reaches_both_plans(self):
+        registry = registry_view()
+        notes = {key: row for key, row in registry["entries"].items() if key.startswith("openmontage-15f:")}
+        self.assertEqual(len(notes), 8)
+        self.assertEqual({expert for row in notes.values() for expert in row["expert_ids"]},
+                         {key for key, row in registry["experts"].items() if row["primary"]})
+        for row in notes.values():
+            self.assertIsNone(row["adapter"])
+            self.assertEqual(row["security"]["status"], "curated_reference_only")
+            self.assertEqual(row["license"]["scope"], "upstream_reference")
+        history = scene_director.build_plan("tarih", scene_director._load_topic("tarih", "piri-reis-kayip-kaynak", None))
+        beauty = beauty_production.make_plan(beauty_production.load_topic("cilt-bariyeri-katmanlari"))
+        arc = next(scene for scene in history["scenes"] if scene["kind"] == "collage")
+        macro = next(scene for scene in beauty["scenes"] if scene["kind"] == "macro")
+        self.assertIn("openmontage-15f:archive-shot-evidence", arc["review_skills"])
+        self.assertIn("openmontage-15f:surface-exposure", macro["review_skills"])
+        self.assertIn("openmontage-15f:sound-cause", macro["review_skills"])
+        self.assertFalse(select_knowledge(RouteContext("bakim", 7, "shot-review", "macro")))
+        reference = select_knowledge(RouteContext("bakim", 6, "reference-review"))
+        self.assertEqual([row["id"] for row in reference],
+                         ["cinecode:reference-form", "openmontage-15f:reference-shot-log"])
+
     def test_pause_review_protects_both_tracks_and_leaves_source_as_received(self):
         before = deepcopy(self.snapshot)
         result = pause_review.review_pauses(self.snapshot)

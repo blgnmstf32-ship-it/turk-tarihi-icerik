@@ -76,5 +76,76 @@
         "role_keys": {"tarih": [15, 16], "bakim": [15, 20]}
       }
     }
+  },
+  "openmontage-15f": {
+    "repository": "OpenMontageInc/OpenMontage",
+    "revision": "2e003e65fa99a0f329478a2c1cdcf26bc481933a",
+    "license": "AGPL-3.0",
+    "notes": {
+      "camera-depth-reveal": {
+        "path": "skills/creative/video-gen-prompting.md",
+        "task": "Yalnız gerçek derinlik katmanı olan sahnede yanal kayışla ön planın arkasından kanıtı açığa çıkar. Hareketin bitişinde odağı eser veya güzergâha sabitle. Düz arşiv kırpmasında yaklaşımı sayısal yakınlaştırma olarak adlandır.",
+        "role_keys": {
+          "tarih": [6, 11, 12, 13, 15, 16],
+          "bakim": [2, 11, 12, 13, 14, 15, 18]
+        }
+      },
+      "evidence-insert": {
+        "path": "skills/creative/video-editing.md",
+        "task": "Bağlamı kuran geniş plandan sonra iddianın geçtiği anda belge ayrıntısı veya uygulama adımına kes. Ayrıntıyı okunacak kadar tut ve gerekirse bağlama dön. Görünür kanıtı iki ardışık plan aynı işi yapacak biçimde yineleme.",
+        "role_keys": {
+          "tarih": [2, 4, 6, 7, 9, 11, 13, 15, 16, 18],
+          "bakim": [5, 10, 11, 14, 15, 18, 20]
+        }
+      },
+      "pose-to-pose": {
+        "path": "skills/creative/animation-pipeline.md",
+        "task": "Mekanizmanın veya süreç şemasının önce durumlarını belirle. Eylem sırasına giriş, temas ve sonuç anlarını koy. Kritik durumda kısa bir okuma duruşu bırak ve hareketin bittiği karede bir sonraki açıklamaya yer aç.",
+        "role_keys": {
+          "tarih": [4, 7, 11, 13, 15, 18],
+          "bakim": [4, 10, 11, 12, 13, 14, 20]
+        }
+      },
+      "surface-exposure": {
+        "path": "skills/creative/commercial-product-video.md",
+        "task": "Bitişik makro planlarda pozlama ve beyaz dengesi eşleşmesini incele. Parlak yüzeydeki yansıma kanıtı örtüyorsa ışığı yeniden konumlandırmayı planla. Cilt dokusunu pürüzsüzleştirme veya renk farkını tedavi sonucu gibi kullanma.",
+        "role_keys": {
+          "tarih": [11, 12, 13, 15, 16, 17],
+          "bakim": [4, 5, 12, 13, 14, 15, 18, 20]
+        }
+      },
+      "progressive-graphics": {
+        "path": "skills/creative/data-visualization.md",
+        "task": "Okuma sırası için aynı anda bir veri grubu aç. Karşılaştırılan sahnelerde eksen, ölçek ve renk anlamını sabit tut. Son duraklamada birim, etiket ve kaynağı telefon kadrajında birlikte okunur bırak.",
+        "role_keys": {
+          "tarih": [2, 6, 9, 10, 11, 12, 13, 16],
+          "bakim": [2, 8, 9, 10, 11, 12, 13, 14, 18, 20]
+        }
+      },
+      "archive-shot-evidence": {
+        "path": "skills/pipelines/documentary-montage/asset-director.md",
+        "task": "Arşiv adayı için işe yarayan başlangıç ve bitişi, tarih/yer kaydını, asıl kalıcı bağlantıyı ve dosya bazlı kullanım hakkını birlikte incele. B-roll yalnız bağlamı kuruyorsa görüntüye iddianın kanıtı gibi anlam yükleme.",
+        "role_keys": {
+          "tarih": [1, 2, 3, 4, 5, 9, 11, 13, 15, 17, 18, 19, 20],
+          "bakim": [1, 3, 4, 5, 8, 12, 14, 19, 20]
+        }
+      },
+      "sound-cause": {
+        "path": "skills/creative/sound-design.md",
+        "task": "Etkili sesi görünür temas veya açıkça açıklanan kaynakla ilişkilendir. Arşiv sesine sonradan eklenen foley'i ayrı işaretle. Aynı hareketi birden fazla vurgu ile şişirme ve onaylı anlatıcının ünsüzlerini örten sesi kaldırmayı değerlendir.",
+        "role_keys": {
+          "tarih": [7, 8, 13, 14, 15, 16, 17],
+          "bakim": [10, 14, 15, 16, 17, 20]
+        }
+      },
+      "reference-shot-log": {
+        "path": "skills/meta/video-reference-analyst.md",
+        "task": "İnceleme izni olan referansta kare aralığıyla plan ölçeğini, algılanan hareketi, ışığı, kesmeyi ve ses olayını kaydet. Bilinmeyen alanı boş tahminle doldurma. Özgün plan için süre ve vurgu örüntüsünü değerlendir.",
+        "role_keys": {
+          "tarih": [1, 3, 5, 10, 11, 12, 13, 15, 16, 17, 19, 20],
+          "bakim": [1, 2, 3, 6, 7, 8, 9, 11, 12, 13, 14, 15, 18, 19, 20]
+        }
+      }
+    }
   }
 }

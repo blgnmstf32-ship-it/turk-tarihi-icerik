@@ -151,9 +151,63 @@ class VideoQualityLabTest(unittest.TestCase):
         self.assertEqual(metric, {"n": 5, "median": 0.12})
         self.assertEqual(report["technical"]["status"], "not_measured")
 
+    def test_reference_uses_half_open_ranges_and_stays_advisory_through_router(self):
+        plan = scene_director.build_plan("tarih", self.history)
+        evidence = self.evidence(plan)
+        evidence["reference_review"] = {
+            "sha256": "e" * 64, "fps": [30000, 1001], "duration_frames": 150,
+            "review_permission": True, "shots": [
+                {"frames": [0, 30], "scale": "wide", "motion": "slide", "light": "soft",
+                 "transition": "none", "sound": "ambience"},
+                {"frames": [60, 150], "scale": "detail", "motion": "unknown", "light": "unknown",
+                 "transition": "cut", "sound": "speech"},
+            ],
+        }
+        with (patch("socket.socket.connect", side_effect=AssertionError("network")),
+              patch("subprocess.Popen", side_effect=AssertionError("process"))):
+            report, recheck = lab.evaluate(plan, evidence=evidence, state=self.state)
+            cached, _ = lab.evaluate(plan, evidence=evidence, state=self.state)
+        review = report["editor_review"]
+        self.assertEqual(review["scenes"]["s01"]["status"], "pending_editor_review")
+        self.assertEqual(review["reference"]["median_observed_shot_seconds"], 2.002)
+        self.assertFalse(review["reference"]["timeline_covered"])
+        self.assertFalse(review["reference"]["asset_reuse_approved"])
+        self.assertEqual(review["reference"]["observations_by_field"]["motion"], {"slide": 1, "unknown": 1})
+        self.assertEqual(report["tool_route"]["executed_adapter"]["id"], lab.TOOL_ID)
+        self.assertEqual(report["technical"]["status"], "not_measured")
+        self.assertEqual(report["scene_recheck"]["failures"], {})
+        self.assertIsNone(recheck)
+        self.assertFalse(report["media_created"])
+        self.assertEqual(cached["tool_route"]["status"], "cache")
+        self.assertEqual(cached["editor_review"], review)
+
+    def test_reference_rejects_unlicensed_paths_overlaps_and_invalid_values(self):
+        plan = scene_director.build_plan("bakim", self.beauty)
+        shot = {"frames": [0, 30], "scale": "close", "motion": "locked", "light": "soft",
+                "transition": "cut", "sound": "speech"}
+        reference = {"sha256": "e" * 64, "fps": [30, 1], "duration_frames": 90,
+                     "review_permission": True, "shots": [shot]}
+        for changes in ({"review_permission": False}, {"path": "arbitrary.mp4"}, {"fps": [30, 0]},
+                        {"shots": [shot, {**shot, "frames": [29, 90]}]},
+                        {"shots": [{**shot, "motion": "arbitrary_code"}]}):
+            with self.subTest(changes=changes), self.assertRaises(ValueError):
+                lab.evaluate(plan, evidence={**self.evidence(plan), "reference_review": {**reference, **changes}})
+        with self.assertRaises(ValueError):
+            lab.evaluate(plan, evidence={**self.evidence(plan), "asset_sha256": reference["sha256"],
+                                         "reference_review": reference})
+
+    def test_legacy_plan_without_review_skill_metadata_still_evaluates(self):
+        plan = scene_director.build_plan("bakim", self.beauty)
+        for scene in plan["scenes"]:
+            scene.pop("review_skills")
+        report, _ = lab.evaluate(plan, state=self.state)
+        self.assertEqual(report["editor_review"], {"scenes": {}, "reference": {"status": "not_supplied"}})
+        self.assertEqual(report["technical"]["status"], "not_measured")
+
     def test_registry_preserves_baseline_and_forty_primary_roles(self):
         view = registry_view()
-        self.assertEqual(len(view["entries"]), 163)
+        self.assertEqual(sum(not key.startswith("openmontage-15f:") for key in view["entries"]), 163)
+        self.assertEqual(len(view["entries"]), 171)
         for brand in ("tarih", "bakim"):
             roster = {role["id"] for role in view["experts"].values() if role["brand"] == brand}
             self.assertTrue(set(range(1, 21)).issubset(roster))

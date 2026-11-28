@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import json
 import re
 import subprocess
 from hashlib import file_digest
 from pathlib import Path
+from statistics import median
 
 from scripts import reels_editorial
 from scripts.editorial_state import EditorialState
@@ -35,6 +37,13 @@ DIAGNOSTICS = {"vmaf": "ffmpeg-libvmaf"}
 CODES = {"subtitle_sync": "sync_failed", "source_accuracy": "source_unverified"}
 RECHECK_PRIORITY = ("source_unverified", "sync_failed", "quality_failed")
 QA_ROLES = {"tarih": 16, "bakim": 20}
+SHOT_FIELDS = {
+    "scale": {"wide", "medium", "close", "detail", "unknown"},
+    "motion": {"locked", "push", "pull", "slide", "tilt", "pan", "orbit", "handheld", "unknown"},
+    "light": {"soft", "hard", "mixed", "unknown"},
+    "transition": {"cut", "dissolve", "other", "none", "unknown"},
+    "sound": {"speech", "ambience", "music", "effect", "silence", "unknown"},
+}
 
 
 def _number(value):
@@ -86,6 +95,67 @@ def _metrics(name, values):
     return [metric for metric, (lo, hi) in rules.items() if not lo <= values[metric] <= hi]
 
 
+def _reference_review(reference, asset_sha256):
+    """Summarize a reviewed shot log without reading or reusing its video."""
+    from scripts.scene_director import SHA
+
+    if reference is None:
+        return {"status": "not_supplied"}
+    if (not isinstance(reference, dict) or reference.keys() != {
+            "sha256", "fps", "duration_frames", "review_permission", "shots"
+            } or reference["review_permission"] is not True):
+        raise ValueError("Authorized local reference shot log required")
+    fingerprint = reference["sha256"]
+    if not isinstance(fingerprint, str) or not SHA.fullmatch(fingerprint) or fingerprint == asset_sha256:
+        raise ValueError("Invalid or identical reference fingerprint")
+    fps = reference["fps"]
+    duration = reference["duration_frames"]
+    if (not isinstance(fps, list) or len(fps) != 2 or any(type(x) is not int for x in fps)
+            or not 1 <= fps[1] <= 1001 or not 1 <= fps[0] / fps[1] <= 120
+            or type(duration) is not int or not 0 < duration <= 1800 * fps[0] / fps[1]):
+        raise ValueError("Unsupported reference timebase or duration")
+    shots = reference["shots"]
+    if not isinstance(shots, list) or not 1 <= len(shots) <= 160:
+        raise ValueError("Expected one to 160 reviewed shots")
+    cursor = 0
+    spans = []
+    counts = {field: Counter() for field in SHOT_FIELDS}
+    for shot in shots:
+        if not isinstance(shot, dict) or shot.keys() != {"frames", *SHOT_FIELDS}:
+            raise ValueError("Invalid reference shot fields")
+        start, end = _span(shot["frames"], duration)
+        if start < cursor:
+            raise ValueError("Overlapping or unordered reference shots")
+        for field, choices in SHOT_FIELDS.items():
+            value = shot[field]
+            if not isinstance(value, str) or value not in choices:
+                raise ValueError("Unsupported reference observation")
+            counts[field][value] += 1
+        spans.append([start, end])
+        cursor = end
+    return {"status": "reviewed_metadata", "reference_sha256": fingerprint, "shots": shots,
+            "timeline_covered": _covers(spans, duration),
+            "median_observed_shot_seconds": round(median(end - start for start, end in spans) * fps[1] / fps[0], 3),
+            "observations_by_field": {field: dict(values) for field, values in counts.items()},
+            "method": "supplied_human_shot_log", "asset_reuse_approved": False}
+
+
+def _pending_review_skills(scenes):
+    from scripts.skill_registry import registry_view
+
+    identifiers = {key for key in registry_view()["entries"] if key.startswith("openmontage-15f:")}
+    pending = {}
+    for key, scene in scenes.items():
+        skills = scene.get("review_skills", [])
+        if (not isinstance(skills, list) or len(skills) > 3
+                or any(not isinstance(skill, str) or skill not in identifiers for skill in skills)
+                or len(set(skills)) != len(skills)):
+            raise ValueError("Unsupported scene review skills")
+        if skills:
+            pending[key] = {"status": "pending_editor_review", "skill_ids": skills}
+    return pending
+
+
 def inspect_snapshot(snapshot, *, brand):
     """Allowlisted Tool Router entrypoint. It interprets evidence and has no I/O."""
     from scripts import scene_director as director
@@ -106,6 +176,8 @@ def inspect_snapshot(snapshot, *, brand):
     asset_id = evidence.get("asset_sha256")
     if asset_id is not None and (not isinstance(asset_id, str) or not director.SHA.fullmatch(asset_id)):
         raise ValueError("Invalid media fingerprint")
+    reference = _reference_review(evidence.get("reference_review"), asset_id)
+    planned_reviews = _pending_review_skills(scenes)
     observations = evidence.get("observations", {})
     if observations.keys() - (RULES.keys() | DIAGNOSTICS.keys()):
         raise ValueError("Unknown measurement")
@@ -206,6 +278,7 @@ def inspect_snapshot(snapshot, *, brand):
     return {"plan_sha256": plan_id, "asset_sha256": asset_id, "brand": brand, "duration_frames": duration,
             "technical": {"status": status, "checks": technical, "vmaf": diagnostic},
             "source_accuracy": source_accuracy, "issues": issues,
+            "editor_review": {"scenes": planned_reviews, "reference": reference},
             "scene_recheck": {"failures": failures, "unlocated_checks": sorted(set(untargeted))}}
 
 
