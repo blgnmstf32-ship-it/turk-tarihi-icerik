@@ -1,0 +1,4484 @@
+{
+  "assets": [
+    {
+      "file": "kultepe-kapanis.jpg",
+      "topic": "kultepe-kil-borc-kaydi",
+      "attribution": "The Met, 66.245.16a",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "original_page": "https://www.metmuseum.org/art/collection/search/325857",
+      "media_url": "https://collectionapi.metmuseum.org/api/collection/v1/iiif/325857/713233/main-image",
+      "purpose": "archive",
+      "review": "candidate_only",
+      "size": [
+        900,
+        1200
+      ],
+      "sha256": "555b134906c27cd397a4c0e4b5bc640af0d930d5e2dacbf716cf08b4428fba59",
+      "status": "downloaded_verified_format",
+      "bytes": 98795,
+      "preview_frame_reviewed": true
+    },
+    {
+      "file": "kultepe-borc.jpg",
+      "topic": "kultepe-kil-borc-kaydi",
+      "attribution": "The Met, 66.245.14a",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "original_page": "https://www.metmuseum.org/art/collection/search/325855",
+      "media_url": "https://collectionapi.metmuseum.org/api/collection/v1/iiif/325855/691434/main-image",
+      "purpose": "archive",
+      "review": "candidate_only",
+      "size": [
+        800,
+        683
+      ],
+      "sha256": "620c357e11aa9854f881384e075d09549066d50634447be82143727f4277f269",
+      "status": "downloaded_verified_format",
+      "bytes": 67676,
+      "preview_frame_reviewed": true
+    },
+    {
+      "file": "lewis-kral-kralice.jpg",
+      "topic": "lewis-satranc-tasim-takim",
+      "attribution": "Fernandopascullo / Wikimedia Commons",
+      "license": "CC-BY-3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "original_page": "https://commons.wikimedia.org/wiki/File:Lewis_Chessmen.jpg",
+      "media_url": "https://upload.wikimedia.org/wikipedia/commons/1/17/Lewis_Chessmen.jpg",
+      "purpose": "archive",
+      "review": "candidate_only",
+      "size": [
+        3072,
+        2304
+      ],
+      "sha256": "cec2beeb153a1fdd4d9260029351dc6bf34cb6745eea7f051e9a078e12665faa",
+      "status": "downloaded_verified_format",
+      "bytes": 2823662,
+      "preview_frame_reviewed": true
+    },
+    {
+      "file": "lewis-at.jpg",
+      "topic": "lewis-satranc-tasim-takim",
+      "attribution": "Rob Roy / Wikimedia Commons",
+      "license": "CC-BY-2.0",
+      "license_url": "https://creativecommons.org/licenses/by/2.0/",
+      "original_page": "https://commons.wikimedia.org/wiki/File:Knight,_Lewis_Chessmen,_British_Museum.jpg",
+      "media_url": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Knight%2C_Lewis_Chessmen%2C_British_Museum.jpg",
+      "purpose": "archive",
+      "review": "candidate_only",
+      "size": [
+        747,
+        1280
+      ],
+      "sha256": "06488da9bdaa9d3e7e1f6fb41f6e23fb14ea8188a5d2a50b5075c7268d613858",
+      "status": "downloaded_verified_format",
+      "bytes": 101189,
+      "preview_frame_reviewed": true
+    },
+    {
+      "file": "ife-bas.jpg",
+      "topic": "ife-heykel-mum-kalip",
+      "attribution": "CloudyMyst / Wikimedia Commons",
+      "license": "CC-BY-SA-4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "original_page": "https://commons.wikimedia.org/wiki/File:Ife_bronze_head.jpg",
+      "media_url": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Ife_bronze_head.jpg",
+      "purpose": "archive",
+      "review": "candidate_only",
+      "size": [
+        1509,
+        1998
+      ],
+      "sha256": "bc0f0f2dcac607fde2c64024f5761e6822dbb9814d956fb22b4e28718b1269cd",
+      "status": "downloaded_verified_format",
+      "bytes": 352625,
+      "preview_frame_reviewed": true
+    },
+    {
+      "file": "firca-durulama.mp4",
+      "topic": "firca-kurutma-duzeni",
+      "attribution": "Polina Tankilevitch / Pexels",
+      "license": "Pexels Content License",
+      "license_url": "https://www.pexels.com/license/",
+      "original_page": "https://www.pexels.com/video/a-person-washing-a-makeup-brush-with-water-on-a-sink-3741663/",
+      "media_url": "https://videos.pexels.com/video-files/3741663/3741663-hd_1920_1080_25fps.mp4",
+      "purpose": "illustrative_b_roll",
+      "review": "candidate_only",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 1920,
+            "height": 1080,
+            "avg_frame_rate": "25/1"
+          },
+          {
+            "codec_type": "audio",
+            "avg_frame_rate": "0/0"
+          }
+        ],
+        "format": {
+          "duration": "1.770000"
+        }
+      },
+      "sha256": "8ccd8af0ed67b0e8e89df2963497f0f2caf1d5c7afcf88044f120ea09a441832",
+      "status": "downloaded_verified_format",
+      "bytes": 1098434,
+      "preview_frame_reviewed": true
+    },
+    {
+      "file": "makyaj-fircalari.mp4",
+      "topic": "goz-makyaji-aplikatoru",
+      "attribution": "Rachel Claire / Pexels",
+      "license": "Pexels Content License",
+      "license_url": "https://www.pexels.com/license/",
+      "original_page": "https://www.pexels.com/video/close-up-of-makeup-brushes-8854950/",
+      "media_url": "https://videos.pexels.com/video-files/8854950/8854950-hd_1920_1080_25fps.mp4",
+      "purpose": "illustrative_b_roll",
+      "review": "candidate_only",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_type": "video",
+            "width": 1920,
+            "height": 1080,
+            "avg_frame_rate": "25/1"
+          },
+          {
+            "codec_type": "audio",
+            "avg_frame_rate": "0/0"
+          }
+        ],
+        "format": {
+          "duration": "7.018333"
+        }
+      },
+      "sha256": "56827ea9282b24731546f4f0f9f18b23b531672e339052612747facb1e7bb413",
+      "status": "downloaded_verified_format",
+      "bytes": 4820210,
+      "preview_frame_reviewed": true
+    }
+  ],
+  "plans": {
+    "firca-kurutma-duzeni": {
+      "schema_version": 1,
+      "brand": "bakim",
+      "topic": {
+        "id": "firca-kurutma-duzeni",
+        "title": "Makyaj fırçasını doğru kurutma",
+        "category": "kozmetik-icerikler",
+        "visual_mode": "2d"
+      },
+      "fps": 30,
+      "duration_frames": 2010,
+      "resolution": [
+        1080,
+        1920
+      ],
+      "timing": "estimated_from_script",
+      "sources": [
+        {
+          "number": 1,
+          "url": "https://www.aad.org/public/everyday-care/skin-care-secrets/routine/clean-your-makeup-brushes",
+          "title": "AAD · Makyaj fırçası bakımı"
+        }
+      ],
+      "quality_policy": {
+        "minimum_scenes_for_release": 10,
+        "opening_max_frames": 90,
+        "human_approval_required": true
+      },
+      "scenes": [
+        {
+          "id": "s01",
+          "purpose": "hook",
+          "kind": "motion",
+          "start_frame": 0,
+          "end_frame": 75,
+          "start_seconds": 0.0,
+          "end_seconds": 2.5,
+          "narration": {
+            "line": 1,
+            "text": "Fırçan nerede kuruyor?",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "hareketli_bilgi_grafiği",
+            "illustration_frames": 75,
+            "reason": "kozmetik-icerikler:hook:motion"
+          },
+          "camera": "sabit_okuma_kadrajı",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Fırçan nerede kuruyor?",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:opening-presets",
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": null,
+          "transition_out": "s01--s02",
+          "heading": "Fırçan nerede kuruyor?",
+          "motif": "label",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s02",
+          "purpose": "context",
+          "kind": "motion",
+          "start_frame": 75,
+          "end_frame": 320,
+          "start_seconds": 2.5,
+          "end_seconds": 10.6667,
+          "narration": {
+            "line": 2,
+            "text": "Makyaj fırçalarında ürün, yağ ve kir birikebilir. Temizlik gününü hatırlamak için kendine basit bir rutin kurabilirsin.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "hareketli_bilgi_grafiği",
+            "illustration_frames": 245,
+            "reason": "kozmetik-icerikler:context:motion"
+          },
+          "camera": "sabit_okuma_kadrajı",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Makyaj fırçalarında ürün, yağ ve kir birikebilir. Temizlik gününü hatırlamak için kendine basit bir rutin kurabilirsin.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s01--s02",
+          "transition_out": "s02--s03",
+          "heading": "Biriken kalıntı",
+          "motif": "label",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s03",
+          "purpose": "application",
+          "kind": "science",
+          "start_frame": 320,
+          "end_frame": 581,
+          "start_seconds": 10.6667,
+          "end_seconds": 19.3667,
+          "narration": {
+            "line": 3,
+            "text": "Fırça uçlarını ılık akan suda durula. Fırça başının tamamını suya batırmamak, sapla birleşen kısmı korumaya yardımcı olur.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "temsili_bilimsel_2b_şema",
+            "illustration_frames": 261,
+            "reason": "kozmetik-icerikler:application:science"
+          },
+          "camera": "bölgesel_vurgu",
+          "lighting": "kontrastı_koruyan_paleti",
+          "captions": {
+            "text": "Fırça uçlarını ılık akan suda durula. Fırça başının tamamını suya batırmamak, sapla birleşen kısmı korumaya yardımcı olur.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "cinecode:motivated-light",
+              "reason": "task_scene_match"
+            },
+            {
+              "id": "openmontage:storyboard",
+              "reason": "task_scene_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "craft_review": {
+            "visual_notes": [
+              "rough-js:seeded-sketch-strokes"
+            ],
+            "foley_notes": []
+          },
+          "transition_in": "s02--s03",
+          "transition_out": "s03--s04",
+          "heading": "Yalnız uçları ıslat",
+          "motif": "label",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s04",
+          "purpose": "application",
+          "kind": "science",
+          "start_frame": 581,
+          "end_frame": 750,
+          "start_seconds": 19.3667,
+          "end_seconds": 25.0,
+          "narration": {
+            "line": 4,
+            "text": "AAD, fırça uçlarını temizlemek için ılık suyla seyreltilmiş nazik şampuanı öneriyor.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "temsili_bilimsel_2b_şema",
+            "illustration_frames": 169,
+            "reason": "kozmetik-icerikler:application:science"
+          },
+          "camera": "bölgesel_vurgu",
+          "lighting": "kontrastı_koruyan_paleti",
+          "captions": {
+            "text": "AAD, fırça uçlarını temizlemek için ılık suyla seyreltilmiş nazik şampuanı öneriyor.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "cinecode:motivated-light",
+              "reason": "task_scene_match"
+            },
+            {
+              "id": "openmontage:storyboard",
+              "reason": "task_scene_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "craft_review": {
+            "visual_notes": [
+              "rough-js:seeded-sketch-strokes"
+            ],
+            "foley_notes": []
+          },
+          "transition_in": "s03--s04",
+          "transition_out": "s04--s05",
+          "heading": "Nazik yıkama",
+          "motif": "label",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s05",
+          "purpose": "application",
+          "kind": "science",
+          "start_frame": 750,
+          "end_frame": 980,
+          "start_seconds": 25.0,
+          "end_seconds": 32.6667,
+          "narration": {
+            "line": 5,
+            "text": "Fırçanın ucunu nazikçe yıkadıktan sonra akan suyla durula. Durulama suyu berraklaşana kadar gerekirse işlemi tekrarla.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "temsili_bilimsel_2b_şema",
+            "illustration_frames": 230,
+            "reason": "kozmetik-icerikler:application:science"
+          },
+          "camera": "bölgesel_vurgu",
+          "lighting": "kontrastı_koruyan_paleti",
+          "captions": {
+            "text": "Fırçanın ucunu nazikçe yıkadıktan sonra akan suyla durula. Durulama suyu berraklaşana kadar gerekirse işlemi tekrarla.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "cinecode:motivated-light",
+              "reason": "task_scene_match"
+            },
+            {
+              "id": "openmontage:storyboard",
+              "reason": "task_scene_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "craft_review": {
+            "visual_notes": [
+              "rough-js:seeded-sketch-strokes"
+            ],
+            "foley_notes": []
+          },
+          "transition_in": "s04--s05",
+          "transition_out": "s05--s06",
+          "heading": "Durulama",
+          "motif": "label",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s06",
+          "purpose": "application",
+          "kind": "science",
+          "start_frame": 980,
+          "end_frame": 1165,
+          "start_seconds": 32.6667,
+          "end_seconds": 38.8333,
+          "narration": {
+            "line": 6,
+            "text": "Fırça ucundaki fazla suyu temiz ve kuru bir kâğıt havluyla hafifçe al.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "temsili_bilimsel_2b_şema",
+            "illustration_frames": 185,
+            "reason": "kozmetik-icerikler:application:science"
+          },
+          "camera": "bölgesel_vurgu",
+          "lighting": "kontrastı_koruyan_paleti",
+          "captions": {
+            "text": "Fırça ucundaki fazla suyu temiz ve kuru bir kâğıt havluyla hafifçe al.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "cinecode:motivated-light",
+              "reason": "task_scene_match"
+            },
+            {
+              "id": "openmontage:storyboard",
+              "reason": "task_scene_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "craft_review": {
+            "visual_notes": [
+              "rough-js:seeded-sketch-strokes"
+            ],
+            "foley_notes": []
+          },
+          "transition_in": "s05--s06",
+          "transition_out": "s06--s07",
+          "heading": "Fazla suyu al",
+          "motif": "label",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s07",
+          "purpose": "application",
+          "kind": "science",
+          "start_frame": 1165,
+          "end_frame": 1395,
+          "start_seconds": 38.8333,
+          "end_seconds": 46.5,
+          "narration": {
+            "line": 7,
+            "text": "Bir havlu üzerinde düz yatır. Fırçanın ucu tezgâh kenarından dışarı taşarsa kılların çevresinde hava dolaşabilir.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "temsili_bilimsel_2b_şema",
+            "illustration_frames": 230,
+            "reason": "kozmetik-icerikler:application:science"
+          },
+          "camera": "bölgesel_vurgu",
+          "lighting": "kontrastı_koruyan_paleti",
+          "captions": {
+            "text": "Bir havlu üzerinde düz yatır. Fırçanın ucu tezgâh kenarından dışarı taşarsa kılların çevresinde hava dolaşabilir.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "cinecode:motivated-light",
+              "reason": "task_scene_match"
+            },
+            {
+              "id": "openmontage:storyboard",
+              "reason": "task_scene_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "craft_review": {
+            "visual_notes": [
+              "rough-js:seeded-sketch-strokes"
+            ],
+            "foley_notes": []
+          },
+          "transition_in": "s06--s07",
+          "transition_out": "s07--s08",
+          "heading": "Yatay yerleştir",
+          "motif": "label",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s08",
+          "purpose": "mechanism",
+          "kind": "motion",
+          "start_frame": 1395,
+          "end_frame": 1625,
+          "start_seconds": 46.5,
+          "end_seconds": 54.1667,
+          "narration": {
+            "line": 8,
+            "text": "Dik kurutunca su, kılları sapa bağlayan yapışkan bölgeye ilerleyebilir. AAD düz kurutmayı bu nedenle öneriyor.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "hareketli_bilgi_grafiği",
+            "illustration_frames": 230,
+            "reason": "kozmetik-icerikler:mechanism:motion"
+          },
+          "camera": "sabit_okuma_kadrajı",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Dik kurutunca su, kılları sapa bağlayan yapışkan bölgeye ilerleyebilir. AAD düz kurutmayı bu nedenle öneriyor.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s07--s08",
+          "transition_out": "s08--s09",
+          "heading": "Sap birleşimini koru",
+          "motif": "label",
+          "review_roles": [
+            1,
+            4,
+            5,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s09",
+          "purpose": "safety",
+          "kind": "motion",
+          "start_frame": 1625,
+          "end_frame": 1795,
+          "start_seconds": 54.1667,
+          "end_seconds": 59.8333,
+          "narration": {
+            "line": 9,
+            "text": "Makyaj fırçalarını paylaşma. Makyaj sonrası tekrarlayan cilt tahrişi varsa dermatoloğa danış.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "hareketli_bilgi_grafiği",
+            "illustration_frames": 170,
+            "reason": "kozmetik-icerikler:safety:motion"
+          },
+          "camera": "sabit_okuma_kadrajı",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Makyaj fırçalarını paylaşma. Makyaj sonrası tekrarlayan cilt tahrişi varsa dermatoloğa danış.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s08--s09",
+          "transition_out": "s09--s10",
+          "heading": "Kişisel kullanım",
+          "motif": "caution",
+          "review_roles": [
+            1,
+            4,
+            5,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s10",
+          "purpose": "sources",
+          "kind": "motion",
+          "start_frame": 1795,
+          "end_frame": 2010,
+          "start_seconds": 59.8333,
+          "end_seconds": 67.0,
+          "narration": {
+            "line": 10,
+            "text": "Bu adımlar Amerikan Dermatoloji Akademisinin fırça bakımı rehberinden. Kendi fırçanın bakım talimatına da bak.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "hareketli_bilgi_grafiği",
+            "illustration_frames": 215,
+            "reason": "kozmetik-icerikler:sources:motion"
+          },
+          "camera": "sabit_okuma_kadrajı",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Bu adımlar Amerikan Dermatoloji Akademisinin fırça bakımı rehberinden. Kendi fırçanın bakım talimatına da bak.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s09--s10",
+          "transition_out": null,
+          "heading": "Kaynak",
+          "motif": "sources",
+          "review_roles": [
+            1,
+            4,
+            5,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        }
+      ],
+      "transitions": [
+        {
+          "id": "s01--s02",
+          "left": "s01",
+          "right": "s02",
+          "frame": 75,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s02--s03",
+          "left": "s02",
+          "right": "s03",
+          "frame": 320,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s03--s04",
+          "left": "s03",
+          "right": "s04",
+          "frame": 581,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s04--s05",
+          "left": "s04",
+          "right": "s05",
+          "frame": 750,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s05--s06",
+          "left": "s05",
+          "right": "s06",
+          "frame": 980,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s06--s07",
+          "left": "s06",
+          "right": "s07",
+          "frame": 1165,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s07--s08",
+          "left": "s07",
+          "right": "s08",
+          "frame": 1395,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s08--s09",
+          "left": "s08",
+          "right": "s09",
+          "frame": 1625,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s09--s10",
+          "left": "s09",
+          "right": "s10",
+          "frame": 1795,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        }
+      ],
+      "paid_api_allowed": false,
+      "instagram_auto_publish": false,
+      "beauty": {
+        "topic_sha256": "de629b7f12b4b472f99723f82e7579692d350277bed0d9d3716258fadaf723ff",
+        "voice": "Sulafat",
+        "language": "tr",
+        "script_sha256": "2613a3918cd646f87a45fcf15c33d2a062b0e14c245cbcea92fe5b55dbffa8d5",
+        "health_warnings": [
+          "s09"
+        ],
+        "release_status": "human_review_required"
+      }
+    },
+    "goz-makyaji-aplikatoru": {
+      "schema_version": 1,
+      "brand": "bakim",
+      "topic": {
+        "id": "goz-makyaji-aplikatoru",
+        "title": "Göz makyajında temiz aplikatör",
+        "category": "kozmetik-icerikler",
+        "visual_mode": "2d"
+      },
+      "fps": 30,
+      "duration_frames": 2190,
+      "resolution": [
+        1080,
+        1920
+      ],
+      "timing": "estimated_from_script",
+      "sources": [
+        {
+          "number": 1,
+          "url": "https://www.fda.gov/cosmetics/resources-consumers-cosmetics/cosmetics-safety-qa-eye-cosmetic-safety",
+          "title": "FDA · Göz kozmetiği SSS"
+        },
+        {
+          "number": 2,
+          "url": "https://www.fda.gov/cosmetics/cosmetic-products/eye-cosmetic-safety",
+          "title": "FDA · Göz kozmetiği güvenliği"
+        }
+      ],
+      "quality_policy": {
+        "minimum_scenes_for_release": 10,
+        "opening_max_frames": 90,
+        "human_approval_required": true
+      },
+      "scenes": [
+        {
+          "id": "s01",
+          "purpose": "hook",
+          "kind": "motion",
+          "start_frame": 0,
+          "end_frame": 75,
+          "start_seconds": 0.0,
+          "end_seconds": 2.5,
+          "narration": {
+            "line": 1,
+            "text": "Aplikatörün temiz mi?",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "hareketli_bilgi_grafiği",
+            "illustration_frames": 75,
+            "reason": "kozmetik-icerikler:hook:motion"
+          },
+          "camera": "sabit_okuma_kadrajı",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Aplikatörün temiz mi?",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:opening-presets",
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": null,
+          "transition_out": "s01--s02",
+          "heading": "Aplikatörün temiz mi?",
+          "motif": "label",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s02",
+          "purpose": "context",
+          "kind": "motion",
+          "start_frame": 75,
+          "end_frame": 288,
+          "start_seconds": 2.5,
+          "end_seconds": 9.6,
+          "narration": {
+            "line": 2,
+            "text": "Bir ürünü göz çevresinde kullanmadan önce etikette o bölge için tasarlanıp tasarlanmadığına bak.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              2
+            ],
+            "candidate_source_numbers": [
+              1
+            ],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "hareketli_bilgi_grafiği",
+            "illustration_frames": 213,
+            "reason": "kozmetik-icerikler:context:motion"
+          },
+          "camera": "sabit_okuma_kadrajı",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Bir ürünü göz çevresinde kullanmadan önce etikette o bölge için tasarlanıp tasarlanmadığına bak.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s01--s02",
+          "transition_out": "s02--s03",
+          "heading": "Göz çevresi ayrı",
+          "motif": "label",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s03",
+          "purpose": "application",
+          "kind": "science",
+          "start_frame": 288,
+          "end_frame": 534,
+          "start_seconds": 9.6,
+          "end_seconds": 17.8,
+          "narration": {
+            "line": 3,
+            "text": "Göz makyajından önce ellerini yıka ve göz çevresine değecek uygulama aracının temiz olduğundan emin ol.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "temsili_bilimsel_2b_şema",
+            "illustration_frames": 246,
+            "reason": "kozmetik-icerikler:application:science"
+          },
+          "camera": "bölgesel_vurgu",
+          "lighting": "kontrastı_koruyan_paleti",
+          "captions": {
+            "text": "Göz makyajından önce ellerini yıka ve göz çevresine değecek uygulama aracının temiz olduğundan emin ol.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "cinecode:motivated-light",
+              "reason": "task_scene_match"
+            },
+            {
+              "id": "openmontage:storyboard",
+              "reason": "task_scene_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "craft_review": {
+            "visual_notes": [
+              "rough-js:seeded-sketch-strokes"
+            ],
+            "foley_notes": []
+          },
+          "transition_in": "s02--s03",
+          "transition_out": "s03--s04",
+          "heading": "Hazırlık",
+          "motif": "label",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s04",
+          "purpose": "mechanism",
+          "kind": "motion",
+          "start_frame": 534,
+          "end_frame": 714,
+          "start_seconds": 17.8,
+          "end_seconds": 23.8,
+          "narration": {
+            "line": 4,
+            "text": "Başka birinin kullandığı aplikatör mikroorganizmaları taşıyabilir. Kendi göz kozmetiğini kişisel tut.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              2
+            ],
+            "candidate_source_numbers": [
+              1
+            ],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "hareketli_bilgi_grafiği",
+            "illustration_frames": 180,
+            "reason": "kozmetik-icerikler:mechanism:motion"
+          },
+          "camera": "sabit_okuma_kadrajı",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Başka birinin kullandığı aplikatör mikroorganizmaları taşıyabilir. Kendi göz kozmetiğini kişisel tut.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s03--s04",
+          "transition_out": "s04--s05",
+          "heading": "Neden paylaşılmaz?",
+          "motif": "label",
+          "review_roles": [
+            1,
+            4,
+            5,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s05",
+          "purpose": "application",
+          "kind": "science",
+          "start_frame": 714,
+          "end_frame": 944,
+          "start_seconds": 23.8,
+          "end_seconds": 31.4667,
+          "narration": {
+            "line": 5,
+            "text": "Mağaza örneği kullanacaksan tek kullanımlık temiz bir uç iste. Başkasının kullandığı uçla deneme yapma.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              2
+            ],
+            "candidate_source_numbers": [
+              1
+            ],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "temsili_bilimsel_2b_şema",
+            "illustration_frames": 230,
+            "reason": "kozmetik-icerikler:application:science"
+          },
+          "camera": "bölgesel_vurgu",
+          "lighting": "kontrastı_koruyan_paleti",
+          "captions": {
+            "text": "Mağaza örneği kullanacaksan tek kullanımlık temiz bir uç iste. Başkasının kullandığı uçla deneme yapma.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "cinecode:motivated-light",
+              "reason": "task_scene_match"
+            },
+            {
+              "id": "openmontage:storyboard",
+              "reason": "task_scene_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "craft_review": {
+            "visual_notes": [
+              "rough-js:seeded-sketch-strokes"
+            ],
+            "foley_notes": []
+          },
+          "transition_in": "s04--s05",
+          "transition_out": "s05--s06",
+          "heading": "Testerda yeni uç",
+          "motif": "label",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s06",
+          "purpose": "context",
+          "kind": "motion",
+          "start_frame": 944,
+          "end_frame": 1206,
+          "start_seconds": 31.4667,
+          "end_seconds": 40.2,
+          "narration": {
+            "line": 6,
+            "text": "Hareket eden bir araçta ani duruş, aplikatörün göze çarpmasına yol açabilir. Uygulamayı sabit bir yerde yap.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              2
+            ],
+            "candidate_source_numbers": [
+              1
+            ],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "hareketli_bilgi_grafiği",
+            "illustration_frames": 262,
+            "reason": "kozmetik-icerikler:context:motion"
+          },
+          "camera": "sabit_okuma_kadrajı",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Hareket eden bir araçta ani duruş, aplikatörün göze çarpmasına yol açabilir. Uygulamayı sabit bir yerde yap.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s05--s06",
+          "transition_out": "s06--s07",
+          "heading": "Sabit bir yerde uygula",
+          "motif": "label",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s07",
+          "purpose": "application",
+          "kind": "science",
+          "start_frame": 1206,
+          "end_frame": 1468,
+          "start_seconds": 40.2,
+          "end_seconds": 48.9333,
+          "narration": {
+            "line": 7,
+            "text": "Kabı temiz tut ve ürünü toz veya kirle temas ettirme. Saklama ve kullanımda etiketteki uyarıları izle.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "temsili_bilimsel_2b_şema",
+            "illustration_frames": 262,
+            "reason": "kozmetik-icerikler:application:science"
+          },
+          "camera": "bölgesel_vurgu",
+          "lighting": "kontrastı_koruyan_paleti",
+          "captions": {
+            "text": "Kabı temiz tut ve ürünü toz veya kirle temas ettirme. Saklama ve kullanımda etiketteki uyarıları izle.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "cinecode:motivated-light",
+              "reason": "task_scene_match"
+            },
+            {
+              "id": "openmontage:storyboard",
+              "reason": "task_scene_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "craft_review": {
+            "visual_notes": [
+              "rough-js:seeded-sketch-strokes"
+            ],
+            "foley_notes": []
+          },
+          "transition_in": "s06--s07",
+          "transition_out": "s07--s08",
+          "heading": "Kapağı temiz tut",
+          "motif": "label",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s08",
+          "purpose": "recap",
+          "kind": "motion",
+          "start_frame": 1468,
+          "end_frame": 1714,
+          "start_seconds": 48.9333,
+          "end_seconds": 57.1333,
+          "narration": {
+            "line": 8,
+            "text": "Başlamadan önce ürünü, ellerini ve aplikatörü kontrol et. Basit bir hazırlık rutini bu adımları hatırlatır.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "hareketli_bilgi_grafiği",
+            "illustration_frames": 246,
+            "reason": "kozmetik-icerikler:recap:motion"
+          },
+          "camera": "sabit_okuma_kadrajı",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Başlamadan önce ürünü, ellerini ve aplikatörü kontrol et. Basit bir hazırlık rutini bu adımları hatırlatır.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s07--s08",
+          "transition_out": "s08--s09",
+          "heading": "Üç kontrol",
+          "motif": "recap",
+          "review_roles": [
+            1,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s09",
+          "purpose": "safety",
+          "kind": "motion",
+          "start_frame": 1714,
+          "end_frame": 1944,
+          "start_seconds": 57.1333,
+          "end_seconds": 64.8,
+          "narration": {
+            "line": 9,
+            "text": "Uygulama tahrişe neden olursa ürünü kullanmayı bırak. Tahriş devam ederse bir sağlık uzmanına danış.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "hareketli_bilgi_grafiği",
+            "illustration_frames": 230,
+            "reason": "kozmetik-icerikler:safety:motion"
+          },
+          "camera": "sabit_okuma_kadrajı",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Uygulama tahrişe neden olursa ürünü kullanmayı bırak. Tahriş devam ederse bir sağlık uzmanına danış.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s08--s09",
+          "transition_out": "s09--s10",
+          "heading": "Tahriş olursa",
+          "motif": "caution",
+          "review_roles": [
+            1,
+            4,
+            5,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "id": "s10",
+          "purpose": "sources",
+          "kind": "motion",
+          "start_frame": 1944,
+          "end_frame": 2190,
+          "start_seconds": 64.8,
+          "end_seconds": 73.0,
+          "narration": {
+            "line": 10,
+            "text": "Bu kontrol listesi FDA’nın göz kozmetiği güvenliği rehberine dayanıyor. Ürününe ait kullanım uyarılarını da oku.",
+            "voice": "Sulafat",
+            "source_numbers": [
+              2
+            ],
+            "candidate_source_numbers": [
+              1
+            ],
+            "source_review": "publisher_and_reference_checked_human_review_pending"
+          },
+          "visual_assets": [
+            {
+              "id": "beauty-original-graphics",
+              "kind": "representation",
+              "label": "TEMSİLÎ GÖRSEL · ÖLÇEK DIŞI",
+              "rights_status": "original_project_graphics",
+              "source_number": null,
+              "sha256": null,
+              "file": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 15,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "hareketli_bilgi_grafiği",
+            "illustration_frames": 246,
+            "reason": "kozmetik-icerikler:sources:motion"
+          },
+          "camera": "sabit_okuma_kadrajı",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Bu kontrol listesi FDA’nın göz kozmetiği güvenliği rehberine dayanıyor. Ürününe ait kullanım uyarılarını da oku.",
+            "timing": "draft_estimate",
+            "language": "tr"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:progressive-graphics",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s09--s10",
+          "transition_out": null,
+          "heading": "Kaynak",
+          "motif": "sources",
+          "review_roles": [
+            1,
+            4,
+            5,
+            10,
+            12,
+            14,
+            15,
+            16,
+            20
+          ]
+        }
+      ],
+      "transitions": [
+        {
+          "id": "s01--s02",
+          "left": "s01",
+          "right": "s02",
+          "frame": 75,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s02--s03",
+          "left": "s02",
+          "right": "s03",
+          "frame": 288,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s03--s04",
+          "left": "s03",
+          "right": "s04",
+          "frame": 534,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s04--s05",
+          "left": "s04",
+          "right": "s05",
+          "frame": 714,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s05--s06",
+          "left": "s05",
+          "right": "s06",
+          "frame": 944,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s06--s07",
+          "left": "s06",
+          "right": "s07",
+          "frame": 1206,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s07--s08",
+          "left": "s07",
+          "right": "s08",
+          "frame": 1468,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s08--s09",
+          "left": "s08",
+          "right": "s09",
+          "frame": 1714,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s09--s10",
+          "left": "s09",
+          "right": "s10",
+          "frame": 1944,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        }
+      ],
+      "paid_api_allowed": false,
+      "instagram_auto_publish": false,
+      "beauty": {
+        "topic_sha256": "b45dd02084b6404a79a64c37a86237c52e106ea39ec443307469a022366a3a70",
+        "voice": "Sulafat",
+        "language": "tr",
+        "script_sha256": "70c627e07ac2e43e082caa2cf94a6f37c66937c820884eacc0a35dec2bdc0e3d",
+        "health_warnings": [
+          "s09"
+        ],
+        "release_status": "human_review_required"
+      }
+    },
+    "ife-heykel-mum-kalip": {
+      "schema_version": 1,
+      "brand": "tarih",
+      "topic": {
+        "id": "ife-heykel-mum-kalip",
+        "title": "Ife’de bir yüz nasıl metal oldu?",
+        "category": "",
+        "visual_mode": ""
+      },
+      "fps": 30,
+      "duration_frames": 1950,
+      "resolution": [
+        1080,
+        1920
+      ],
+      "timing": "estimated_from_script",
+      "sources": [
+        {
+          "number": 1,
+          "url": "https://www.metmuseum.org/essays/african-lost-wax-casting",
+          "title": "The Met · Kayıp mum dökümü"
+        },
+        {
+          "number": 2,
+          "url": "https://www.metmuseum.org/essays/ife-terracottas-1000-1400-a-d",
+          "title": "The Met · Ife pişmiş toprakları"
+        }
+      ],
+      "quality_policy": {
+        "minimum_scenes_for_release": 10,
+        "opening_max_frames": 90,
+        "human_approval_required": true
+      },
+      "scenes": [
+        {
+          "id": "s01",
+          "purpose": "açılış",
+          "kind": "flat",
+          "start_frame": 0,
+          "end_frame": 75,
+          "start_seconds": 0.0,
+          "end_seconds": 2.5,
+          "narration": {
+            "line": 1,
+            "text": "Kalıpta önce metal yoktu.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 75,
+            "reason": "açılış:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Kalıpta önce metal yoktu.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:opening-presets",
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": null,
+          "transition_out": "s01--s02"
+        },
+        {
+          "id": "s02",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 75,
+          "end_frame": 274,
+          "start_seconds": 2.5,
+          "end_seconds": 9.1333,
+          "narration": {
+            "line": 2,
+            "text": "Bugünkü Nijerya’da bulunan Ife, gerçekçi yüz ayrıntıları ve farklı malzemelerde heykelleriyle tanınıyor.",
+            "voice": "Charon",
+            "source_numbers": [
+              2
+            ],
+            "candidate_source_numbers": [
+              1
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 199,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Bugünkü Nijerya’da bulunan Ife, gerçekçi yüz ayrıntıları ve farklı malzemelerde heykelleriyle tanınıyor.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s01--s02",
+          "transition_out": "s02--s03"
+        },
+        {
+          "id": "s03",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 274,
+          "end_frame": 473,
+          "start_seconds": 9.1333,
+          "end_seconds": 15.7667,
+          "narration": {
+            "line": 3,
+            "text": "Bölgede pişmiş toprakla yapılmış başların yanında bakır ve pirinç örnekleri de var.",
+            "voice": "Charon",
+            "source_numbers": [
+              2
+            ],
+            "candidate_source_numbers": [
+              1
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 199,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Bölgede pişmiş toprakla yapılmış başların yanında bakır ve pirinç örnekleri de var.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s02--s03",
+          "transition_out": "s03--s04"
+        },
+        {
+          "id": "s04",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 473,
+          "end_frame": 705,
+          "start_seconds": 15.7667,
+          "end_seconds": 23.5,
+          "narration": {
+            "line": 4,
+            "text": "Kayıp mum yönteminde sanatçı, kalıcı olmasını istemediği bir örnekle başlıyor. Biçimin ilk taşıyıcısı mum.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 232,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Kayıp mum yönteminde sanatçı, kalıcı olmasını istemediği bir örnekle başlıyor. Biçimin ilk taşıyıcısı mum.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s03--s04",
+          "transition_out": "s04--s05"
+        },
+        {
+          "id": "s05",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 705,
+          "end_frame": 888,
+          "start_seconds": 23.5,
+          "end_seconds": 29.6,
+          "narration": {
+            "line": 5,
+            "text": "Modelin dışına kil uygulanıyor. Kil, yüzeydeki ayrıntıları çevreleyen bir kalıp oluşturuyor.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 183,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Modelin dışına kil uygulanıyor. Kil, yüzeydeki ayrıntıları çevreleyen bir kalıp oluşturuyor.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s04--s05",
+          "transition_out": "s05--s06"
+        },
+        {
+          "id": "s06",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 888,
+          "end_frame": 1070,
+          "start_seconds": 29.6,
+          "end_seconds": 35.6667,
+          "narration": {
+            "line": 6,
+            "text": "Isı mumun yerini boşaltıyor. Kalıpta kalan boşluk, metalin alacağı biçimi taşıyor.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 182,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Isı mumun yerini boşaltıyor. Kalıpta kalan boşluk, metalin alacağı biçimi taşıyor.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s05--s06",
+          "transition_out": "s06--s07"
+        },
+        {
+          "id": "s07",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 1070,
+          "end_frame": 1286,
+          "start_seconds": 35.6667,
+          "end_seconds": 42.8667,
+          "narration": {
+            "line": 7,
+            "text": "Eritilen metal boşluğa ulaşıyor. Soğuyunca, daha önce mumun bulunduğu yerde artık metal var.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 216,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Eritilen metal boşluğa ulaşıyor. Soğuyunca, daha önce mumun bulunduğu yerde artık metal var.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s06--s07",
+          "transition_out": "s07--s08"
+        },
+        {
+          "id": "s08",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 1286,
+          "end_frame": 1502,
+          "start_seconds": 42.8667,
+          "end_seconds": 50.0667,
+          "narration": {
+            "line": 8,
+            "text": "Ife eserlerinin incelikli yüz çizgileri, kayıp mum tekniğinde modelin rolünü anlamaya yardım ediyor.",
+            "voice": "Charon",
+            "source_numbers": [
+              2
+            ],
+            "candidate_source_numbers": [
+              1
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 216,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Ife eserlerinin incelikli yüz çizgileri, kayıp mum tekniğinde modelin rolünü anlamaya yardım ediyor.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s07--s08",
+          "transition_out": "s08--s09"
+        },
+        {
+          "id": "s09",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 1502,
+          "end_frame": 1734,
+          "start_seconds": 50.0667,
+          "end_seconds": 57.8,
+          "narration": {
+            "line": 9,
+            "text": "Biçimi incelemek, heykeldeki kişinin adını tek başına ortaya çıkarmaz. Teknik ile kimlik ayrı sorular.",
+            "voice": "Charon",
+            "source_numbers": [
+              2
+            ],
+            "candidate_source_numbers": [
+              1
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 232,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Biçimi incelemek, heykeldeki kişinin adını tek başına ortaya çıkarmaz. Teknik ile kimlik ayrı sorular.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s08--s09",
+          "transition_out": "s09--s10"
+        },
+        {
+          "id": "s10",
+          "purpose": "kapanış_ve_kaynak",
+          "kind": "flat",
+          "start_frame": 1734,
+          "end_frame": 1950,
+          "start_seconds": 57.8,
+          "end_seconds": 65.0,
+          "narration": {
+            "line": 10,
+            "text": "Kalıp açıklaması The Met’in teknik incelemesine dayanıyor. Gösterilen çizim bu tekniğin temsili anlatımı.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 216,
+            "reason": "kapanış_ve_kaynak:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Kalıp açıklaması The Met’in teknik incelemesine dayanıyor. Gösterilen çizim bu tekniğin temsili anlatımı.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s09--s10",
+          "transition_out": null
+        }
+      ],
+      "transitions": [
+        {
+          "id": "s01--s02",
+          "left": "s01",
+          "right": "s02",
+          "frame": 75,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s02--s03",
+          "left": "s02",
+          "right": "s03",
+          "frame": 274,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s03--s04",
+          "left": "s03",
+          "right": "s04",
+          "frame": 473,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s04--s05",
+          "left": "s04",
+          "right": "s05",
+          "frame": 705,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s05--s06",
+          "left": "s05",
+          "right": "s06",
+          "frame": 888,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s06--s07",
+          "left": "s06",
+          "right": "s07",
+          "frame": 1070,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s07--s08",
+          "left": "s07",
+          "right": "s08",
+          "frame": 1286,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s08--s09",
+          "left": "s08",
+          "right": "s09",
+          "frame": 1502,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s09--s10",
+          "left": "s09",
+          "right": "s10",
+          "frame": 1734,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        }
+      ],
+      "paid_api_allowed": false,
+      "instagram_auto_publish": false
+    },
+    "kultepe-kil-borc-kaydi": {
+      "schema_version": 1,
+      "brand": "tarih",
+      "topic": {
+        "id": "kultepe-kil-borc-kaydi",
+        "title": "Kil tablet bir borcu nasıl kapattı?",
+        "category": "",
+        "visual_mode": ""
+      },
+      "fps": 30,
+      "duration_frames": 2160,
+      "resolution": [
+        1080,
+        1920
+      ],
+      "timing": "estimated_from_script",
+      "sources": [
+        {
+          "number": 1,
+          "url": "https://www.metmuseum.org/art/collection/search/325857",
+          "title": "The Met · Kültepe borç tableti"
+        },
+        {
+          "number": 2,
+          "url": "https://www.metmuseum.org/art/collection/search/325855",
+          "title": "The Met · Gümüş borcu kaydı"
+        }
+      ],
+      "quality_policy": {
+        "minimum_scenes_for_release": 10,
+        "opening_max_frames": 90,
+        "human_approval_required": true
+      },
+      "scenes": [
+        {
+          "id": "s01",
+          "purpose": "açılış",
+          "kind": "flat",
+          "start_frame": 0,
+          "end_frame": 75,
+          "start_seconds": 0.0,
+          "end_seconds": 2.5,
+          "narration": {
+            "line": 1,
+            "text": "Bu tablet bir borcu kapattı.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 75,
+            "reason": "açılış:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Bu tablet bir borcu kapattı.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:opening-presets",
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": null,
+          "transition_out": "s01--s02"
+        },
+        {
+          "id": "s02",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 75,
+          "end_frame": 294,
+          "start_seconds": 2.5,
+          "end_seconds": 9.8,
+          "narration": {
+            "line": 2,
+            "text": "The Met’teki kil yazıt, avuç içine sığacak boyutta. Katalog tabletin muhtemelen Kültepe’den geldiğini belirtiyor.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 219,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "The Met’teki kil yazıt, avuç içine sığacak boyutta. Katalog tabletin muhtemelen Kültepe’den geldiğini belirtiyor.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s01--s02",
+          "transition_out": "s02--s03"
+        },
+        {
+          "id": "s03",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 294,
+          "end_frame": 498,
+          "start_seconds": 9.8,
+          "end_seconds": 16.6,
+          "narration": {
+            "line": 3,
+            "text": "Metin, Aşur-taklaku’ya olan gümüş borcunun ödendiğini ve bu borca dayalı iddiaların kapandığını bildiriyor.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 204,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Metin, Aşur-taklaku’ya olan gümüş borcunun ödendiğini ve bu borca dayalı iddiaların kapandığını bildiriyor.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s02--s03",
+          "transition_out": "s03--s04"
+        },
+        {
+          "id": "s04",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 498,
+          "end_frame": 733,
+          "start_seconds": 16.6,
+          "end_seconds": 24.4333,
+          "narration": {
+            "line": 4,
+            "text": "Bu yazının bir de kil zarfı vardı. Müzedeki tablet ve zarfın ayrı katalog numaraları bulunuyor.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 235,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Bu yazının bir de kil zarfı vardı. Müzedeki tablet ve zarfın ayrı katalog numaraları bulunuyor.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s03--s04",
+          "transition_out": "s04--s05"
+        },
+        {
+          "id": "s05",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 733,
+          "end_frame": 953,
+          "start_seconds": 24.4333,
+          "end_seconds": 31.7667,
+          "narration": {
+            "line": 5,
+            "text": "Tanıkların adları yazıda geçiyor. Onların mühürleri ise tabletin dışındaki kil zarf üzerinde yer alıyor.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 220,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Tanıkların adları yazıda geçiyor. Onların mühürleri ise tabletin dışındaki kil zarf üzerinde yer alıyor.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s04--s05",
+          "transition_out": "s05--s06"
+        },
+        {
+          "id": "s06",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 953,
+          "end_frame": 1203,
+          "start_seconds": 31.7667,
+          "end_seconds": 40.1,
+          "narration": {
+            "line": 6,
+            "text": "Aşur’dan gelen tüccarlar Anadolu’da işlemleri yazıya döküyordu. Benzer belgeler iş anlaşmalarına ve anlaşmazlıklara da ışık tutuyor.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 250,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Aşur’dan gelen tüccarlar Anadolu’da işlemleri yazıya döküyordu. Benzer belgeler iş anlaşmalarına ve anlaşmazlıklara da ışık tutuyor.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s05--s06",
+          "transition_out": "s06--s07"
+        },
+        {
+          "id": "s07",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 1203,
+          "end_frame": 1454,
+          "start_seconds": 40.1,
+          "end_seconds": 48.4667,
+          "narration": {
+            "line": 7,
+            "text": "Müzenin koleksiyonunda gümüş borcu açılırken hazırlanmış başka kayıtlar da var. Başlangıç ve kapanış farklı işlevler görüyor.",
+            "voice": "Charon",
+            "source_numbers": [
+              2
+            ],
+            "candidate_source_numbers": [
+              1
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 251,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Müzenin koleksiyonunda gümüş borcu açılırken hazırlanmış başka kayıtlar da var. Başlangıç ve kapanış farklı işlevler görüyor.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s06--s07",
+          "transition_out": "s07--s08"
+        },
+        {
+          "id": "s08",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 1454,
+          "end_frame": 1642,
+          "start_seconds": 48.4667,
+          "end_seconds": 54.7333,
+          "narration": {
+            "line": 8,
+            "text": "Kazılarda ortaya çıkan çok sayıda tablet, tüccar evlerinde biriken kayıtların izini taşıyor.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 188,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Kazılarda ortaya çıkan çok sayıda tablet, tüccar evlerinde biriken kayıtların izini taşıyor.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s07--s08",
+          "transition_out": "s08--s09"
+        },
+        {
+          "id": "s09",
+          "purpose": "kanıt_ve_açıklama",
+          "kind": "flat",
+          "start_frame": 1642,
+          "end_frame": 1893,
+          "start_seconds": 54.7333,
+          "end_seconds": 63.1,
+          "narration": {
+            "line": 9,
+            "text": "Tek bir belge herkese uygulanan ticaret kuralını açıklamaz. Ama belirli bir ödemenin nasıl kayda geçtiğini gösterir.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 251,
+            "reason": "kanıt_ve_açıklama:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Tek bir belge herkese uygulanan ticaret kuralını açıklamaz. Ama belirli bir ödemenin nasıl kayda geçtiğini gösterir.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s08--s09",
+          "transition_out": "s09--s10"
+        },
+        {
+          "id": "s10",
+          "purpose": "kapanış_ve_kaynak",
+          "kind": "flat",
+          "start_frame": 1893,
+          "end_frame": 2160,
+          "start_seconds": 63.1,
+          "end_seconds": 72.0,
+          "narration": {
+            "line": 10,
+            "text": "Katalogda tabletin ve zarfın işlevlerini karşılaştırabilirsin. Eser numarası altmış altı, iki yüz kırk beş, on altı A.",
+            "voice": "Charon",
+            "source_numbers": [
+              1
+            ],
+            "candidate_source_numbers": [
+              2
+            ],
+            "source_review": "pending"
+          },
+          "visual_assets": [
+            {
+              "id": "planned-placeholder",
+              "kind": "representation",
+              "label": "TEMSİLÎ CANLANDIRMA",
+              "rights_status": "pending",
+              "source_number": null,
+              "sha256": null
+            }
+          ],
+          "render": {
+            "primary": {
+              "id": "media:remotion",
+              "hardware": "CPU, Node ve Chromium",
+              "license": "Remotion License; kullanım hakkı ekip ve kullanım koşullarına bağlı",
+              "registry_evidence": "historical_pass",
+              "review_role_id": 11,
+              "estimated_api_cost_usd": 0
+            },
+            "alternative": null,
+            "technique": "katmanlı_2b",
+            "illustration_frames": 267,
+            "reason": "kapanış_ve_kaynak:flat"
+          },
+          "camera": "sabit_veya_yavaş_yakınlaşma",
+          "lighting": "eşit_ve_okunaklı",
+          "captions": {
+            "text": "Katalogda tabletin ve zarfın işlevlerini karşılaştırabilirsin. Eser numarası altmış altı, iki yüz kırk beş, on altı A.",
+            "timing": "estimate_pending_voice_alignment"
+          },
+          "sound": {
+            "cue": "room_tone_if_approved",
+            "transition": "J_or_L_cut_if_continuous",
+            "priority": "narration",
+            "asset_source_review_required": true
+          },
+          "skills": [
+            {
+              "id": "openmontage:scene-tool-fit",
+              "reason": "task_match"
+            },
+            {
+              "id": "cinecode:preview-depth",
+              "reason": "task_match"
+            }
+          ],
+          "review_skills": [
+            "openmontage-15f:evidence-insert",
+            "openmontage-15f:sound-cause"
+          ],
+          "tools": [
+            "media:remotion"
+          ],
+          "quality": [
+            "source_review",
+            "asset_rights_review",
+            "voice_alignment",
+            "phone_safe_area",
+            "shot_edge_review",
+            "human_review"
+          ],
+          "transition_in": "s09--s10",
+          "transition_out": null
+        }
+      ],
+      "transitions": [
+        {
+          "id": "s01--s02",
+          "left": "s01",
+          "right": "s02",
+          "frame": 75,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s02--s03",
+          "left": "s02",
+          "right": "s03",
+          "frame": 294,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s03--s04",
+          "left": "s03",
+          "right": "s04",
+          "frame": 498,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s04--s05",
+          "left": "s04",
+          "right": "s05",
+          "frame": 733,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s05--s06",
+          "left": "s05",
+          "right": "s06",
+          "frame": 953,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s06--s07",
+          "left": "s06",
+          "right": "s07",
+          "frame": 1203,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s07--s08",
+          "left": "s07",
+          "right": "s08",
+          "frame": 1454,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s08--s09",
+          "left": "s08",
+          "right": "s09",
+          "frame": 1642,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        },
+        {
+          "id": "s09--s10",
+          "left": "s09",
+          "right": "s10",
+          "frame": 1893,
+          "default": "cut",
+          "review": [
+            "screen_direction",
+            "motion_speed",
+            "caption_legibility",
+            "audio_tail"
+          ]
+        }
+      ],
+      "paid_api_allowed": false,
+      "instagram_auto_publish": false
+    }
+  }
+}

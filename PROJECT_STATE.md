@@ -401,3 +401,28 @@ Dört canlı ücretsiz inference çağrısı ve iki salt okunur plan/kota isteğ
 28 Kasım 2026. [15F karşılaştırması](OPENMONTAGE_15F.md) OpenMontage'ın güncel `2e003e65` revizyonunu, 163 mevcut Registry kaydını ve ücretsiz gerçek stok/arşiv koşullarını kapsar. Önceki OpenMontage inceleme notları korunarak sinematik kamera, kanıt planı, hareket durakları, yüzey ışığı, grafik okuma sırası, arşiv kaydı, olay sesi ve referans çekim günlüğü için sekiz özgün not eklendi. 40 ana uzman, toplam 171 Registry kaydı.
 
 Scene Director inceleme görevlerini sahneye taşır. Video Kalite Laboratuvarı ve Tool Router, yalnız sağlanan referans çekim günlüğünden süre, gözlem kapsamı ve insan incelemesi bekleyen sahne kayıtları üretir. Teknik ve editoryal eşikler, OTIO, sahne onarımı ve mevcut render rotaları korundu. Yeni video, ücretli API ve Instagram paylaşımı yok.
+
+## 15G · Günlük içerik kapasitesi doğrulandı
+
+28 Kasım 2026. **3 tarih Reels, 2 güzellik Reels ve 20 sessiz hikâye** hazır. Beş önceki sahne planı, beş gerçek anlatım ve Lewis çıktısı korundu. Hikâyelerde 10 tarih ve 10 güzellik PNG’si, 1080×1920, 20 ayrı SHA-256 ve 160 güvenli metin katmanı doğrulandı. Hikâye renderı önceki koşuda 2,665 sn, 2,671 CPU-sn ve 130,9 MiB tepe RSS ölçüldü.
+
+| Konu | Anlatıcı | Süre (sn) | Editoryal | En büyük altyazı sapması | Mobil altyazı | Geçişler | Onarım |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
+| Lewis · Satranç Taşları | Charon | 64,7 | 96/100 | 20 ms | 30/30 | 9/9 | 7 sahne, 523 kare ve ses izi korundu |
+| Kültepe · Kil Borç Kaydı | Charon | 63,77 | 94/100 | 20 ms | 32/32 | 9/9 | 4 sahne, 1071 kare ve ses izi korundu |
+| Ife · Kayıp Mum Dökümü | Charon | 60,30 | 94/100 | 20 ms | 28/28 | 9/9 | 1 sahne, 1611 kare ve ses izi korundu |
+| Fırça Kurutma | Sulafat | 62,20 | 98/100 | 20 ms | 30/30 | 9/9 | Gerekmedi |
+| Göz Makyajı Aplikatörü | Sulafat | 61,47 | 98/100 | 20 ms | 29/29 | 9/9 | 2 sahne, 1393 kare ve ses izi korundu |
+
+Dört yeni MP4’ün dokuz teknik kontrolü geçti. 1080×1920 H.264/AAC, 30 fps ve SHA-256 dosyadan doğrulandı. Mobil güvenli alan ihlali 0. Lewis dahil her video için yayın öncesi insan onayı gereklidir. Teknik ölçümler, kaynak ve lisans makbuzları, önce/sonra onarım raporları ve OpenTimelineIO dosyaları Actions paketlerindedir. Göz aplikatörü ilk koşuda beşinci sahnenin kelime zamanını doğrulayamadı. Sabitlenmiş küçük Whisper modeli aynı Sulafat sesini hizaladı. Altıncı sahnedeki 240 ms tek sözcük önceki altyazıya eklendi. Onuncu sahnedeki 600 ms sapma gerçek ses başlangıcına göre düzeltildi. Son iş, ölçülmüş MP4’ü yeniden kullanarak yalnız bu iki sahneyi onardı. [İlk render](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/46147715090) · [Göz aplikatörü](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/46149497174)
+
+| Konu | Remotion duvar süresi (sn) | Ölçülen adımlar toplamı (sn) | CPU-sn | Tepe süreç ağacı RSS (MiB) |
+| --- | ---: | ---: | ---: | ---: |
+| Kültepe · Kil Borç Kaydı | 87.20 | 274.85 | 492.29 | 4441.2 |
+| Ife · Kayıp Mum Dökümü | 103.29 | 317.64 | 639.69 | 4138.8 |
+| Fırça Kurutma | 94.78 | 178.99 | 300.94 | 5580.9 |
+| Göz Makyajı Aplikatörü | 94.98 | 317.71 | 589.32 | 5160.9 |
+
+Render ve kalite adımları dört çekirdekli standart GitHub CPU işleri içinde ağsız çalıştı. Önceki ücretsiz Gemini koşusu, anahtarın kendisini loglamadan Free Tier eşleşmesini doğruladı. Önceki 7 istek 1.975 giriş ve 10.684 çıkış tokeni bildirdi. Bu renderlarda yeni seslendirme, sağlayıcı isteği veya token tüketimi yok. Ücretli API çağrısı ve maliyeti 0. [Ücretsiz ses makbuzları](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/46111381101)
+
+Graphify 0.9.121 `4056667672d4eb132726fb2abae7009d3e81ccba` üzerinde 125 dosya, 1.335 düğüm ve 4.348 kenarı doğruladı. Beş mimari sorguda tam kaynak 23.134, Graphify 2.769 ve hedefli Git Grep 365 `o200k_base` tokeni üretti. Beş bilinen üretim simgesi kaynak satırından kontrol edildi. Render ve onarımda Remotion, FFmpeg, faster-whisper, Scene Director, OpenTimelineIO ve Video Kalite Laboratuvarının mevcut yolları kullanıldı. Önceki test envanteri, 40 uzman, 171 Registry kaydı ve kalite eşikleri korundu. Instagram otomatik paylaşımı kapalı. [Graphify kıyaslaması](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/46146347869)

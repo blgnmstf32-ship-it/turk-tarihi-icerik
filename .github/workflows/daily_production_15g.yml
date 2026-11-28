@@ -1,0 +1,167 @@
+name: 15G remaining real reels
+on:
+  push:
+    branches: [stage-15g-daily-capacity]
+    paths:
+      - .github/workflows/daily_production_15g.yml
+      - scripts/render_capacity_15g.py
+      - scripts/final_media_qa.py
+      - remotion/daily15g_index.tsx
+      - data/capacity_15g_input.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  navigation:
+    if: github.repository == 'blgnmstf32-ship-it/turk-tarihi-icerik' && github.ref == 'refs/heads/stage-15g-daily-capacity'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify the exact inherited graph and named source symbols offline
+        run: |
+          python -m venv "$RUNNER_TEMP/graphify"
+          "$RUNNER_TEMP/graphify/bin/pip" install --only-binary=:all: --require-hashes -r requirements-graphify.txt
+          mkdir -p output/15g-navigation
+          sudo unshare --net -- runuser -u "$(id -un)" -- env -i PATH=/usr/bin:/bin LANG=C.UTF-8 \
+            "RUNNER_TEMP=$RUNNER_TEMP" bash -euc '
+              ref=4056667672d4eb132726fb2abae7009d3e81ccba
+              runtime="$RUNNER_TEMP/graphify/bin/python"
+              graph="$RUNNER_TEMP/graph15g"
+              "$runtime" graphify_project.py build --ref "$ref" --out "$graph" > output/15g-navigation/BUILD.txt
+              "$runtime" graphify_project.py verify --ref "$ref" --out "$graph" > output/15g-navigation/VERIFY.json
+              "$runtime" graphify_project.py query --ref "$ref" --out "$graph" \
+                --question "Scene Director video quality lab scoped repair remotion tools specialist route" > output/15g-navigation/QUERY.txt
+              git grep -n -E "^def (compose|preflight|collect_ffmpeg|audio_mix_command|_timeline)\(" "$ref" -- \
+                scripts/{pilot_scene_repair,scene_director,video_quality_lab,auto_produce,approved_pilot_replay}.py > output/15g-navigation/GIT_GREP.txt
+            '
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 15g-navigation-evidence
+          path: output/15g-navigation
+          if-no-files-found: error
+          retention-days: 30
+  reels:
+    needs: navigation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      REEL_ARTIFACT_FILES: |
+        output/15g-reel/*.mp4
+        output/15g-reel/*.json
+        output/15g-reel/*.srt
+        output/15g-reel/*.otio
+        output/15g-reel/REMOTION.log
+    concurrency:
+      group: daily-production-15g-${{ github.ref }}-${{ matrix.topic }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        topic: ${{ fromJSON((contains(github.event.head_commit.message, '[15g-eye-only]') || contains(github.event.head_commit.message, '[15g-eye-repair]')) && '["goz-makyaji-aplikatoru"]' || '["kultepe-kil-borc-kaydi","ife-heykel-mum-kalip","firca-kurutma-duzeni","goz-makyaji-aplikatoru"]') }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Reuse the verified Charon and Sulafat WAV artifact
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 46111381101
+          name: verified-15g-free-narration
+          path: output/15g-input/voices
+      - name: Reuse the measured eye-reel preview for bounded scene repair
+        if: matrix.topic == 'goz-makyaji-aplikatoru' && contains(github.event.head_commit.message, '[15g-eye-repair]')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 46148868888
+          name: 15g-goz-makyaji-aplikatoru
+          path: output/15g-input/inspection
+      - name: Prepare the existing CPU media toolchain
+        run: |
+          command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg)
+          python -m pip install -r requirements.txt faster-whisper==1.2.1 ctranslate2==4.9.1 av==17.1.0 \
+            opencv-python-headless==4.13.0.92 scenedetect==0.6.7.1 scipy==1.17.0 psutil==7.2.2
+          python -m pip install --no-deps --only-binary=:all: --require-hashes -r requirements-scene-otio.txt
+          npm ci --ignore-scripts --no-audit
+          npx --no-install remotion browser ensure
+      - name: Type-check the changed Remotion composition
+        if: matrix.topic == 'kultepe-kil-borc-kaydi'
+        run: |
+          set +e
+          npm run typecheck > "$RUNNER_TEMP/15g-typecheck.log" 2>&1
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then tail -n 35 "$RUNNER_TEMP/15g-typecheck.log"; fi
+          exit "$status"
+      - name: Prepare the reviewed asset and the pinned offline speech model
+        env:
+          TOPIC: ${{ matrix.topic }}
+        run: |
+          model=output/15g-input/whisper
+          mkdir -p "$model"
+          base=https://huggingface.co/Systran/faster-whisper-medium/resolve/08e178d48790749d25932bbc082711ddcfdfbc4f
+          checksum=9b45e1009dcc4ab601eff815b61d80e60ce3fd8c74c1a14f4a282258286b51ae
+          if [ "$TOPIC" = goz-makyaji-aplikatoru ]; then
+            base=https://huggingface.co/Systran/faster-whisper-small/resolve/536b0662742c02347bc0e980a01041f333bce120
+            checksum=3e305921506d8872816023e4c273e75d2419fb89b24da97b4fe7bce14170d671
+          fi
+          for model_file in model.bin config.json tokenizer.json vocabulary.txt; do
+            curl --fail --silent --show-error --retry 2 --location "$base/$model_file" -o "$model/$model_file"
+          done
+          printf '%s  %s\n' "$checksum" "$model/model.bin" | sha256sum -c
+          python -m scripts.render_capacity_15g --topic "$TOPIC" --assets output/15g-input/assets --fetch-assets
+      - name: Render, measure, and repair without network or secrets
+        env:
+          TOPIC: ${{ matrix.topic }}
+          RESUME_EYE: ${{ matrix.topic == 'goz-makyaji-aplikatoru' && contains(github.event.head_commit.message, '[15g-eye-repair]') }}
+        run: |
+          browser=$(find node_modules/.remotion -name chrome-headless-shell -type f | head -n 1)
+          test -x "$browser"
+          resume=()
+          if [ "$RESUME_EYE" = true ]; then resume=(--resume-inspection output/15g-input/inspection); fi
+          sudo unshare --net -- bash -euc '
+            ip link set lo up
+            test -z "$(ip route show default)"
+            exec runuser -u "$1" -- env -i PATH="$2" HOME="$HOME" LANG=C.UTF-8 DO_NOT_TRACK=1 \
+              HF_HUB_OFFLINE=1 OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 GITHUB_RUN_ID="$3" \
+              "$4" -m scripts.render_capacity_15g --topic "$5" --browser "$6" --model output/15g-input/whisper \
+              --assets output/15g-input/assets --voices output/15g-input/voices --out output/15g-reel "${@:7}"
+          ' _ "$(id -un)" "$PATH" "$GITHUB_RUN_ID" "$(command -v python)" "$TOPIC" "$browser" "${resume[@]}"
+      - name: Retain measured previews and receipts
+        id: reel-artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: 15g-${{ matrix.topic }}
+          path: ${{ env.REEL_ARTIFACT_FILES }}
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Retry an interrupted artifact transfer
+        uses: actions/upload-artifact@v4
+        if: always() && steps.reel-artifact.outcome == 'failure'
+        with:
+          name: 15g-${{ matrix.topic }}-upload-retry
+          path: ${{ env.REEL_ARTIFACT_FILES }}
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 30
