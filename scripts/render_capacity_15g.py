@@ -9,6 +9,7 @@ import json
 import math
 import os
 from pathlib import Path
+from shutil import copyfile
 import subprocess
 from tempfile import TemporaryDirectory
 import wave
@@ -245,11 +246,33 @@ def animate(video, clip, start, end):
                     '-an','-c:v','libx264','-preset','ultrafast','-threads','2','-qp','0',str(clip)],check=True,timeout=90)
 
 
+def combine_short_mobile_cues(cues, samples, shots):
+    """Keep a short, unmeasurable final word with its preceding caption in the same scene."""
+    spans = []
+    for i in range(len(cues)-1,0,-1):
+        if samples[i]['sampled_phone_pixels'] is not None:
+            continue
+        current, before = cues[i], cues[i-1]
+        text = before['text'] + ' ' + current['text']
+        if (len(current['text'].split()) != 1 or current['end']-current['start'] > .35
+                or abs(current['start']-before['end']) > .04 or len(text) > 48):
+            continue
+        start, end = math.floor(before['start']*FPS), math.ceil(current['end']*FPS)
+        if not any(s['start']<=start<end<=s['end'] for s in shots):
+            continue
+        cues[i-1] = {**before,'text':text,'end':current['end'],
+                     'wordStarts':before['wordStarts']+current['wordStarts']}
+        del cues[i]
+        spans.append((start,end))
+    return spans
+
+
 def recover(video, plan, props, prior, result, speech, state, voice, model, assets, browser, work, log):
     cues=props['captions']
     measured=result['actual']
     indices=[i for i,cue in enumerate(measured['cue_matches']) if cue['offset_ms'] is not None and cue['offset_ms']>350]
     new_cues,timing_spans=repair.retime(cues,measured['cue_matches'],indices)
+    timing_spans.extend(combine_short_mobile_cues(new_cues,measured['samples']['mobile_subtitle_samples'],props['shots']))
     freezes=[i['frames'] for i in result['issues'] if i['check']=='frozen_frames' and i['frames']]
     changes={}
     for s in props['shots']:
@@ -319,8 +342,28 @@ def run(opts):
             batch.write(out/'ALIGNMENT_DIAGNOSTIC.json', speech)
             raise
 
-    cues,cuts=meter.measure('align_from_recording',align_recording)
+    baseline = opts.resume_inspection
+    source_video = None
+    if baseline:
+        status = director._read(baseline/'STATUS.json')
+        source_video = baseline/'INSPECTION_REQUIRED.mp4'
+        if (status['topic'] != key or status['passed'] or status['voice'] != take['voice']
+                or director._read(baseline/'TTS_TAKE.json') != take
+                or batch.digest(source_video) != status['video_sha256']):
+            raise ValueError('Prior inspection media does not match its bound source and narration')
+        old_plan = director._read(baseline/'SCENE_PLAN.json')
+        cuts = [scene['end_frame'] for scene in old_plan['scenes']]
+        cues = director._read(baseline/'CAPTION_ALIGNMENT.json')
+        if ' '.join(' '.join(c['text'].split()) for c in cues) != ' '.join(' '.join(lines).split()):
+            raise ValueError('Prior captions diverge from the approved recording script')
+        old_meter = director._read(baseline/'PERFORMANCE.json')
+        meter.stages.update(old_meter['stages'])
+        meter.host['initial_render_runner'] = old_meter['runner']
+    else:
+        cues,cuts=meter.measure('align_from_recording',align_recording)
     plan=adopted_plan(key,lines,cuts)
+    if baseline and (plan != old_plan or cuts[-1] != math.ceil(duration*FPS)):
+        raise ValueError('The prior video plan and approved scene frames do not match')
     verdict=review({**topic,'sources':plan['sources'],'evidence_boundary':topic['boundary']},topic['brand'],lines,fixed_recording=True)
     if verdict['status']!='passes_edit_index' or verdict['best']['total']<85:
         raise ValueError('The editorial score gate failed')
@@ -350,22 +393,34 @@ def run(opts):
     with TemporaryDirectory(dir=out) as temporary:
         work=Path(temporary)
         visual=work/'visual.mp4'
-        meter.measure('remotion',render,props,assets,opts.browser.resolve(),visual,log)
         dry=work/'normalized.wav'
         bed=work/'bed.wav'
 
-        def mix():
-            audio_bed.create(duration,bed)
+        def normalize():
             subprocess.run(['ffmpeg','-nostdin','-v','error','-i',str(voice),'-af','loudnorm=I=-16:TP=-2:LRA=7',
                             '-ar','48000','-c:a','pcm_s16le',str(dry)],check=True,timeout=90)
+
+        def mix():
+            audio_bed.create(duration,bed)
+            normalize()
             subprocess.run(audio_mix_command(visual,dry,bed,final),check=True,timeout=120)
 
-        meter.measure('ffmpeg_mix',mix)
-        qa,speech=meter.measure('actual_video_qa',evidence,final,plan,cues,dry,state,model)
+        if baseline:
+            copyfile(source_video,final)
+            qa = director._read(baseline/'VIDEO_QUALITY_LAB.json')
+            if passes(qa) or len(qa['actual']['cue_matches']) != len(cues):
+                raise ValueError('Prior evidence has no matching unresolved caption inspection')
+            speech = None
+            meter.measure('resume_normalize_voice',normalize)
+        else:
+            meter.measure('remotion',render,props,assets,opts.browser.resolve(),visual,log)
+            meter.measure('ffmpeg_mix',mix)
+            qa,speech=meter.measure('actual_video_qa',evidence,final,plan,cues,dry,state,model)
         repair_report={'status':'unnecessary'}
         if not passes(qa):
             try:
-                qa,cues,repair_report=meter.measure('bounded_scene_repair',recover,final,plan,props,prior,qa,speech,state,dry,
+                stage = 'resumed_bounded_scene_repair' if baseline else 'bounded_scene_repair'
+                qa,cues,repair_report=meter.measure(stage,recover,final,plan,props,prior,qa,speech,state,dry,
                                                    model,assets,opts.browser.resolve(),work,log)
             except (ValueError,RuntimeError,subprocess.SubprocessError) as error:
                 repair_report={'status':'original_retained','reason':str(error)}
@@ -380,6 +435,8 @@ def run(opts):
     outcome={'topic':key,'voice':take['voice'],'seconds':media['seconds'],'video_sha256':media['sha256'],'passed':checked,
              'editorial_score':verdict['best']['total'],'renderers_executed':['Remotion','FFmpeg'],'api_calls_in_render':0,
              'instagram_published':False,'human_approval_required':True,'repair_status':repair_report['status']}
+    if source_video:
+        outcome['initial_video_sha256'] = status['video_sha256']
     batch.write(out/'STATUS.json',outcome)
     print(json.dumps(outcome,ensure_ascii=False), flush=True)
     actual = qa['actual']
@@ -398,6 +455,7 @@ def main():
     cli.add_argument('--topic',choices=VISUALS,required=True)
     cli.add_argument('--assets',type=Path,required=True)
     cli.add_argument('--fetch-assets',action='store_true')
+    cli.add_argument('--resume-inspection',type=Path)
     for arg in ('model','voices','browser','out'):
         cli.add_argument('--'+arg,type=Path)
     opt=cli.parse_args()

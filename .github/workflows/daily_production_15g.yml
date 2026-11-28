@@ -67,7 +67,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        topic: ${{ fromJSON(contains(github.event.head_commit.message, '[15g-eye-only]') && '["goz-makyaji-aplikatoru"]' || '["kultepe-kil-borc-kaydi","ife-heykel-mum-kalip","firca-kurutma-duzeni","goz-makyaji-aplikatoru"]') }}
+        topic: ${{ fromJSON((contains(github.event.head_commit.message, '[15g-eye-only]') || contains(github.event.head_commit.message, '[15g-eye-repair]')) && '["goz-makyaji-aplikatoru"]' || '["kultepe-kil-borc-kaydi","ife-heykel-mum-kalip","firca-kurutma-duzeni","goz-makyaji-aplikatoru"]') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -86,6 +86,14 @@ jobs:
           run-id: 46111381101
           name: verified-15g-free-narration
           path: output/15g-input/voices
+      - name: Reuse the measured eye-reel preview for bounded scene repair
+        if: matrix.topic == 'goz-makyaji-aplikatoru' && contains(github.event.head_commit.message, '[15g-eye-repair]')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 46148868888
+          name: 15g-goz-makyaji-aplikatoru
+          path: output/15g-input/inspection
       - name: Prepare the existing CPU media toolchain
         run: |
           command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg)
@@ -123,17 +131,20 @@ jobs:
       - name: Render, measure, and repair without network or secrets
         env:
           TOPIC: ${{ matrix.topic }}
+          RESUME_EYE: ${{ matrix.topic == 'goz-makyaji-aplikatoru' && contains(github.event.head_commit.message, '[15g-eye-repair]') }}
         run: |
           browser=$(find node_modules/.remotion -name chrome-headless-shell -type f | head -n 1)
           test -x "$browser"
+          resume=()
+          if [ "$RESUME_EYE" = true ]; then resume=(--resume-inspection output/15g-input/inspection); fi
           sudo unshare --net -- bash -euc '
             ip link set lo up
             test -z "$(ip route show default)"
             exec runuser -u "$1" -- env -i PATH="$2" HOME="$HOME" LANG=C.UTF-8 DO_NOT_TRACK=1 \
               HF_HUB_OFFLINE=1 OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 GITHUB_RUN_ID="$3" \
               "$4" -m scripts.render_capacity_15g --topic "$5" --browser "$6" --model output/15g-input/whisper \
-              --assets output/15g-input/assets --voices output/15g-input/voices --out output/15g-reel
-          ' _ "$(id -un)" "$PATH" "$GITHUB_RUN_ID" "$(command -v python)" "$TOPIC" "$browser"
+              --assets output/15g-input/assets --voices output/15g-input/voices --out output/15g-reel "${@:7}"
+          ' _ "$(id -un)" "$PATH" "$GITHUB_RUN_ID" "$(command -v python)" "$TOPIC" "$browser" "${resume[@]}"
       - name: Retain measured previews and receipts
         id: reel-artifact
         uses: actions/upload-artifact@v4
