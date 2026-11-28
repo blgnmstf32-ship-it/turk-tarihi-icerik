@@ -54,6 +54,13 @@ jobs:
     needs: navigation
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    env:
+      REEL_ARTIFACT_FILES: |
+        output/15g-reel/*.mp4
+        output/15g-reel/*.json
+        output/15g-reel/*.srt
+        output/15g-reel/*.otio
+        output/15g-reel/REMOTION.log
     concurrency:
       group: daily-production-15g-${{ github.ref }}-${{ matrix.topic }}
       cancel-in-progress: false
@@ -128,15 +135,22 @@ jobs:
               --assets output/15g-input/assets --voices output/15g-input/voices --out output/15g-reel
           ' _ "$(id -un)" "$PATH" "$GITHUB_RUN_ID" "$(command -v python)" "$TOPIC" "$browser"
       - name: Retain measured previews and receipts
+        id: reel-artifact
         uses: actions/upload-artifact@v4
         if: always()
+        continue-on-error: true
         with:
           name: 15g-${{ matrix.topic }}
-          path: |
-            output/15g-reel/*.mp4
-            output/15g-reel/*.json
-            output/15g-reel/*.srt
-            output/15g-reel/*.otio
-            output/15g-reel/REMOTION.log
+          path: ${{ env.REEL_ARTIFACT_FILES }}
+          compression-level: 0
           if-no-files-found: warn
+          retention-days: 30
+      - name: Retry an interrupted artifact transfer
+        uses: actions/upload-artifact@v4
+        if: always() && steps.reel-artifact.outcome == 'failure'
+        with:
+          name: 15g-${{ matrix.topic }}-upload-retry
+          path: ${{ env.REEL_ARTIFACT_FILES }}
+          compression-level: 0
+          if-no-files-found: error
           retention-days: 30

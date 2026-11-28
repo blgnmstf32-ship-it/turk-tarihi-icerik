@@ -381,7 +381,15 @@ def run(opts):
              'editorial_score':verdict['best']['total'],'renderers_executed':['Remotion','FFmpeg'],'api_calls_in_render':0,
              'instagram_published':False,'human_approval_required':True,'repair_status':repair_report['status']}
     batch.write(out/'STATUS.json',outcome)
-    print(json.dumps(outcome,ensure_ascii=False))
+    print(json.dumps(outcome,ensure_ascii=False), flush=True)
+    actual = qa['actual']
+    diagnostic = {'pass': checked, 'subtitle_max_ms': actual['subtitle_max_ms'],
+                  'timed_subtitles': actual['subtitle_measured'], 'caption_count': actual['caption_count'],
+                  'mobile_subtitles': actual['mobile_measured'], 'unplanned_cuts': actual['unplanned_cuts'],
+                  'issues': qa['issues'], 'repair_status': repair_report['status'],
+                  'repair_reason': repair_report.get('reason'),
+                  'remaining_candidate_issues': repair_report.get('after', {}).get('issues', [])}
+    print('VIDEO_QA_SUMMARY ' + json.dumps(diagnostic, ensure_ascii=False), flush=True)
     return checked
 
 
