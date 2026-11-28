@@ -402,18 +402,22 @@ Dört canlı ücretsiz inference çağrısı ve iki salt okunur plan/kota isteğ
 
 Scene Director inceleme görevlerini sahneye taşır. Video Kalite Laboratuvarı ve Tool Router, yalnız sağlanan referans çekim günlüğünden süre, gözlem kapsamı ve insan incelemesi bekleyen sahne kayıtları üretir. Teknik ve editoryal eşikler, OTIO, sahne onarımı ve mevcut render rotaları korundu. Yeni video, ücretli API ve Instagram paylaşımı yok.
 
-## 15G · Günlük içerik koşusu ve açık seslendirme kapısı
+## 15G · Günlük içerik üretimi ve doğrulama durumu
 
 28 Kasım 2026, taban `105c908492da442ca15557b11aa11740f95f30f1`. Bu koşunun hedefi **3 tarih Reels, 2 güzellik Reels, 10 tarih ve 10 güzellik hikâyesi**. 15B'nin beş konusu ve kaynak kayıtları kullanıldı. Her marka için 10 sessiz PNG, 1080×1920, tek kare ve 20 farklı SHA-256 ile doğrulandı. 160 metin katmanının güvenli alan denetiminde 0 ihlal. Hikâye renderı **2,665 sn**, 2,671 CPU-sn, tepe süreç ağacı RSS 130,9 MiB. 9 erişilebilir mantıksal CPU ve 9.967 MiB RAM olan Work koşucusunda beş plan ve OTIO doğrulaması 0,419 sn, 0,289 CPU-sn, tepe 134,0 MiB aldı. Hikâye ve planların tam hazırlık koşusu 3,550 sn ve 3,543 CPU-sn.
 
-| Başlık | Planlanan süre | Editoryal plan puanı | Gerçek sesli Reels |
-| --- | ---: | ---: | --- |
-| Kültepe kil borç kaydı | 72 sn | 96/100 | Bekliyor |
-| Lewis satranç taşları | 68 sn | 96/100 | Bekliyor |
-| Ife kayıp mum dökümü | 65 sn | 96/100 | Bekliyor |
-| Fırça kurutma | 67 sn | 100/100 | Bekliyor |
-| Göz makyajı aplikatörü | 73 sn | 100/100 | Bekliyor |
+[Ücretsiz seslendirme doğrulaması](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/46110837010) ve [iki eksik kaydın tamamlanması](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/46111381101) başarılı. Kullanıcının faturalandırmasız Free Tier doğrulamasından sonra GitHub Actions yalnızca anahtar eşleşme durumunu kaydetti. 7 HTTP 200 isteğinde 1.975 giriş ve 10.684 çıkış tokeni bildirildi. Yerel kısıt 1 RPM, 12.000 TPM, 8 RPD. Beş sesin WAV ve senaryo SHA-256 kayıtları uygulanır. Yeni üretimde bu kayıtlar kullanılır ve seslendirme çağrısı yapılmaz.
 
-**Kapasite sonucu 20/20 hikâye, 0/5 gerçek sesli Reels.** GitHub'da `GEMINI_API_KEY` mevcut. 15E'de de eksik görülen faturalandırmasız proje onayı bu koşuda doğrulanamadı. [Gemini Flash TTS fiyat tablosu](https://aistudio.google.com/docs/pricing#gemini-3.8-flash-tts) modele ait ücretsiz seçeneği belgeler. [Aktif kota](https://aistudio.google.com/docs/rate-limits) hesap ve proje düzeyindedir. Charon ve Sulafat isteği yapılmadı. Hesap kotası ve gerçek video süresi belirsiz kaldı. Beş senaryo 1.440 yerel `o200k_base` tokeni. Sağlayıcı çağrıları, sağlayıcı tokenleri ve ücretli API çağrısı 0.
+| Başlık | Anlatıcı | Gerçek ses süresi | Editoryal puan | Durum |
+| --- | --- | ---: | ---: | --- |
+| Kültepe kil borç kaydı | Charon | 63,76 sn | 96/100 | Son MP4 tekrar doğrulanacak |
+| Lewis satranç taşları | Charon | 64,67 sn | 96/100 | Gerçek MP4 ve teknik kontroller başarılı |
+| Ife kayıp mum dökümü | Charon | 60,27 sn | 96/100 | Son MP4 tekrar doğrulanacak |
+| Fırça kurutma | Sulafat | 62,18 sn | 100/100 | Son MP4 bekliyor |
+| Göz makyajı aplikatörü | Sulafat | 61,44 sn | 100/100 | Son MP4 bekliyor |
 
-Açık arşiv ve stok kaynaklarından 7 varlık adayının erişimi, dosya tipi, özet değeri, lisansı ve örnek karesi kontrol edildi. Sahne planlarında OpenMontage 15F ayrıntı planı, grafik sırası ve olay sesi notları kullanıldı. Eser ve iddia bağları ile stok görüntü bağlamı ayrı kaydedildi. İlk üç saniye performansı, altyazı senkronu, ses dengesi, mobil video, görsel tekrar, geçişler ve otomatik sahne onarımı gerçek Reels olmadığından ölçülmedi. Simülasyon oluşturulmadı. 226 medyasız ve 15 medya Python testi, 2 JS testi ve Remotion tip kontrolü geçti. 40 uzman, 171 Registry kaydı, kalite eşikleri ve yayın kapısı korundu. Instagram otomatik paylaşımı kapalı.
+Lewis, 1080×1920 H.264/AAC, 30 fps. En büyük altyazı sapması 20 ms. Mobil altyazı 30/30, dokuz planlı geçişin tamamı ölçüldü. Ses −16,29 LUFS, −1,74 dBTP ve 33,28 dB anlatım/fon farkı. Scene Director ile iki bitişik geçiş grubu dahil kusurlu sahne aralıkları ölçüldü, yedi sahnede hareket onarıldı. 523 kare ve AAC izi bit düzeyinde korundu. Son MP4 SHA-256 `4adf73040565600627fc9b194affdd01498fd28f5f2b864c1a988eb6f5c47786`. İnsan incelemesi gerekli.
+
+Dört bekleyen Reels için Actions taslağı, önceden hazırlanmış sahne planlarının kare sınırlarını doğrulanmış sesle eşler. Mevcut Remotion, FFmpeg, faster-whisper, OpenTimelineIO, Scene Director ve Video Kalite Laboratuvarını kullanır. OpenMontage notları sahne kayıtlarında korunur. Graphify 0.9.121, `4056667672d4eb132726fb2abae7009d3e81ccba` commit’i üzerinde GitHub CPU’da doğrulandı. 125 dosya, 1.335 düğüm ve 4.348 kenar. Beş sorguda tam kaynak 23.134, Graphify 2.769 ve Git Grep 365 `o200k_base` tokeni üretti. Bilinen beş üretim simgesi yerel Git Grep ile doğrulandı. Yeni render iş akışı henüz çalışmadı. [Graphify Actions](https://github.com/blgnmstf32-ship-it/turk-tarihi-icerik/actions/runs/46146347869)
+
+Önceki aşamada 226 medyasız, 15 medya Python testi, 2 JS testi ve Remotion tip kontrolü geçti. 40 uzman, 171 Registry kaydı ve kalite eşikleri korunuyor. Ücretli API maliyeti 0. Instagram otomatik paylaşımı kapalı.

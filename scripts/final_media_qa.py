@@ -217,7 +217,7 @@ def comparison(before, after, out, start):
        "-threads", "3", "-preset", "veryfast", "-crf", 20, "-c:a", "aac", "-movflags", "+faststart", out)
 
 
-def metrics(path, cues, model, *, timeline=False):
+def metrics(path, cues, model, *, timeline=False, transcript=None):
     import cv2
     import numpy as np
     from scenedetect import SceneManager, open_video
@@ -225,7 +225,7 @@ def metrics(path, cues, model, *, timeline=False):
 
     cv2.setNumThreads(2)
     seconds = media_duration(path)
-    transcript = transcribe_local(path, model=model)
+    transcript = transcribe_local(path, model=model) if transcript is None else transcript
     expected = media_pilot.normalize(" ".join(cue["text"] for cue in cues))
     heard = media_pilot.normalize(" ".join(row["text"] for row in transcript["segments"]))
     tokens, times = [], []
