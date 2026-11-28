@@ -6,6 +6,7 @@ on:
     paths: [.github/workflows/voice_capacity_15g.yml]
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: turk-tarihi-content-drafts
   cancel-in-progress: false
@@ -52,7 +53,14 @@ jobs:
               raise SystemExit("FREE_PROJECT_KEY_MATCH=false")
           print("FREE_PROJECT_KEY_MATCH=true")
           PY
-      - name: Produce five owner-approved source-bound takes using the free ledger
+      - name: Resume only the previously incomplete takes
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          name: verified-15g-free-narration
+          path: output/15g-voice
+          run-id: 46110837010
+          github-token: ${{ github.token }}
+      - name: Complete incomplete owner-approved takes using the free ledger
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
