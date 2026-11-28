@@ -23,7 +23,7 @@ TARGETS = {
 USAGE_FIELDS = ("total_input_tokens", "total_output_tokens", "total_tokens")
 
 
-def take(topic, budget, folder):
+def take(topic, budget, folder, *, retry=False):
     identifier = topic["id"]
     brand = topic["brand"]
     voice = {"tarih": "Charon", "bakim": "Sulafat"}[brand]
@@ -50,6 +50,13 @@ def take(topic, budget, folder):
             f" Yaklaşık {TARGETS[identifier]} saniyelik doğal bir okuma yap. 60–75 saniye içinde kal."
             " İlk kısa cümle ile hemen başla. Sonuna sessizlik ekleme."
         )
+        if retry:
+            tempo = {"lewis-satranc-tasim-takim": 110, "ife-heykel-mum-kalip": 101}[identifier]
+            style["style"] += (
+                f" Açılışı ilk üç saniyede bitirdikten sonra anlatımı dakikada yaklaşık {tempo} kelimeye yavaşlat. "
+                "Sonraki cümle aralarında düşünceyi belirginleştiren kısa doğal duraklar bırak. "
+                "Hedefi konuşmanın kendi akışıyla 65 ila 71 saniye tut."
+            )
         result["api_calls"] += 1
         response = requests.post(url, json=json, **kwargs)
         result["http_status"] = response.status_code
@@ -102,6 +109,8 @@ def main():
         "free_project_confirmation": "owner_verified_and_runner_matched",
         "model": gemini_tts.MODEL, "local_limits": list(gemini_tts.LOCAL_LIMIT), "takes": []}
     saved = {row["id"]: row for row in report["takes"] if row["status"] == "recorded"}
+    retries = {"lewis-satranc-tasim-takim", "ife-heykel-mum-kalip"}
+    attempted = {row["id"] for row in report["takes"] if row["status"] == "duration_out_of_range"}
     for topic in catalog["reels"]:
         if prior := saved.get(topic["id"]):
             expected = sha256("\n".join(beat["text"] for beat in topic["beats"]).encode()).hexdigest()
@@ -109,7 +118,9 @@ def main():
             if prior["script_sha256"] != expected or capacity_15b.digest(wav) != prior["audio_sha256"]:
                 raise ValueError("Existing narration does not match its receipt")
             continue
-        row = take(topic, budget, args.out)
+        if topic["id"] in attempted and topic["id"] not in retries:
+            continue
+        row = take(topic, budget, args.out, retry=topic["id"] in attempted)
         report["takes"].append(row)
         capacity_15b.write(report_path, report)
         print(json.dumps({"id": row["id"], "status": row["status"], "http_status": row["http_status"]}),
