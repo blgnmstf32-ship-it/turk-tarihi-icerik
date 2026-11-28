@@ -401,3 +401,19 @@ Dört canlı ücretsiz inference çağrısı ve iki salt okunur plan/kota isteğ
 28 Kasım 2026. [15F karşılaştırması](OPENMONTAGE_15F.md) OpenMontage'ın güncel `2e003e65` revizyonunu, 163 mevcut Registry kaydını ve ücretsiz gerçek stok/arşiv koşullarını kapsar. Önceki OpenMontage inceleme notları korunarak sinematik kamera, kanıt planı, hareket durakları, yüzey ışığı, grafik okuma sırası, arşiv kaydı, olay sesi ve referans çekim günlüğü için sekiz özgün not eklendi. 40 ana uzman, toplam 171 Registry kaydı.
 
 Scene Director inceleme görevlerini sahneye taşır. Video Kalite Laboratuvarı ve Tool Router, yalnız sağlanan referans çekim günlüğünden süre, gözlem kapsamı ve insan incelemesi bekleyen sahne kayıtları üretir. Teknik ve editoryal eşikler, OTIO, sahne onarımı ve mevcut render rotaları korundu. Yeni video, ücretli API ve Instagram paylaşımı yok.
+
+## 15G · Günlük içerik koşusu ve açık seslendirme kapısı
+
+28 Kasım 2026, taban `105c908492da442ca15557b11aa11740f95f30f1`. Bu koşunun hedefi **3 tarih Reels, 2 güzellik Reels, 10 tarih ve 10 güzellik hikâyesi**. 15B'nin beş konusu ve kaynak kayıtları kullanıldı. Her marka için 10 sessiz PNG, 1080×1920, tek kare ve 20 farklı SHA-256 ile doğrulandı. 160 metin katmanının güvenli alan denetiminde 0 ihlal. Hikâye renderı **2,665 sn**, 2,671 CPU-sn, tepe süreç ağacı RSS 130,9 MiB. 9 erişilebilir mantıksal CPU ve 9.967 MiB RAM olan Work koşucusunda beş plan ve OTIO doğrulaması 0,419 sn, 0,289 CPU-sn, tepe 134,0 MiB aldı. Hikâye ve planların tam hazırlık koşusu 3,550 sn ve 3,543 CPU-sn.
+
+| Başlık | Planlanan süre | Editoryal plan puanı | Gerçek sesli Reels |
+| --- | ---: | ---: | --- |
+| Kültepe kil borç kaydı | 72 sn | 96/100 | Bekliyor |
+| Lewis satranç taşları | 68 sn | 96/100 | Bekliyor |
+| Ife kayıp mum dökümü | 65 sn | 96/100 | Bekliyor |
+| Fırça kurutma | 67 sn | 100/100 | Bekliyor |
+| Göz makyajı aplikatörü | 73 sn | 100/100 | Bekliyor |
+
+**Kapasite sonucu 20/20 hikâye, 0/5 gerçek sesli Reels.** GitHub'da `GEMINI_API_KEY` mevcut. 15E'de de eksik görülen faturalandırmasız proje onayı bu koşuda doğrulanamadı. [Gemini Flash TTS fiyat tablosu](https://aistudio.google.com/docs/pricing#gemini-3.8-flash-tts) modele ait ücretsiz seçeneği belgeler. [Aktif kota](https://aistudio.google.com/docs/rate-limits) hesap ve proje düzeyindedir. Charon ve Sulafat isteği yapılmadı. Hesap kotası ve gerçek video süresi belirsiz kaldı. Beş senaryo 1.440 yerel `o200k_base` tokeni. Sağlayıcı çağrıları, sağlayıcı tokenleri ve ücretli API çağrısı 0.
+
+Açık arşiv ve stok kaynaklarından 7 varlık adayının erişimi, dosya tipi, özet değeri, lisansı ve örnek karesi kontrol edildi. Sahne planlarında OpenMontage 15F ayrıntı planı, grafik sırası ve olay sesi notları kullanıldı. Eser ve iddia bağları ile stok görüntü bağlamı ayrı kaydedildi. İlk üç saniye performansı, altyazı senkronu, ses dengesi, mobil video, görsel tekrar, geçişler ve otomatik sahne onarımı gerçek Reels olmadığından ölçülmedi. Simülasyon oluşturulmadı. 226 medyasız ve 15 medya Python testi, 2 JS testi ve Remotion tip kontrolü geçti. 40 uzman, 171 Registry kaydı, kalite eşikleri ve yayın kapısı korundu. Instagram otomatik paylaşımı kapalı.

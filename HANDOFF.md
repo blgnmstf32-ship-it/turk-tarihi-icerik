@@ -192,3 +192,10 @@ Arşiv süresi dolduysa önce onaylı yedeği ve SHA-256 kayıtlarını bul. Eks
 - Geçerli Scene Director planında `scenes[].review_skills` alanındaki görevleri görüntü ve ses editörü değerlendirir. Bunlar teknik ölçüm, render veya üretime hazır kararı vermez. Eski planlar alan olmadan kabul edilir.
 - İzinli bir referansın kare aralıklı çekim günlüğünü [Video Kalite Laboratuvarı](scripts/video_quality_lab.py) için `--evidence` dosyasına ekle. `reference_review` alanı kaynağın SHA-256 özetini, kare hızını, süreyi ve gözlem aralıklarını taşır. Rapor `editor_review.reference` altında kapsam, plan süresi medyanı ve kategori sayısını gösterir. VMAF, medya doğruluğu ve arşiv varlığı kullanma izni ayrı kanıt gerektirir.
 - Stok veya arşiv sayfasını kaynak, hak, atıf ve tarih/yer kaydıyla değerlendir. Sağlık iddiasında görseli yayın iddiasının kanıtı sayma. Yeni indirici veya kaynak sağlayıcısı açılmadı. Instagram otomatik paylaşımı kapalı.
+
+## 15G · Hazır hikâyeler ve gerçek Reels engeli
+
+- `15G_Hikayeler_ve_Kalite_Paketi.zip` içinde 20 gerçek 1080×1920 PNG, beş çekim planı ve OTIO dosyası, anlatım metinleri, 7 görsel adayının lisans kaydı, `CAPACITY_15G.json`, `PERFORMANCE.json` ve test kayıtları var. MP4 ve ses dosyası üretilmedi. Başarılı hikâyeler ve kaynak makbuzları korunur.
+- 15B kataloğundaki Kültepe, Lewis, Ife, fırça kurutma ve göz aplikatörü konuları kullanıldı. Beş taslak 65–73 saniye hedefler. `prepare_reel` başka bir süre ile çağrılmadığında eski 70 saniyelik iş yükünü kullanır.
+- Üretim anahtarının faturalandırmasız AI Studio projesine ait olduğu doğrulanmadan `--confirm-gemini-free-project` işaretleme. Aktif hesap kotasını ve aynı modelin yerel 1 RPM / 12.000 TPM / 8 RPD defterini kontrol et. Yalnız Charon ve Sulafat kullan. Piper, ücretli yedek, ses tekrarından simülasyon ve Instagram otomatik paylaşımı kapalı.
+- Uygun erişimle her anlatımı aynı senaryo ve ses SHA-256 özetiyle bağla. Gerçek konuşma tanıma ile altyazıyı hizala. Son MP4 üzerinde açılışı, ses dengesini, mobil güvenli alanı, tekrarları, kesmeleri ve altyazıyı ölç. Onarım yalnız doğrulanmış kusurlu sahne ve komşu geçişleri kapsar. Ölçüm eksikse raporda açık bırak.
