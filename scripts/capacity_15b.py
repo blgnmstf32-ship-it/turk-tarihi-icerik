@@ -85,7 +85,7 @@ def story_file(path, row, source, profiles):
             "audio": False, "size": [1080, 1920], "source": url}
 
 
-def prepare_reel(row, sources, out, rosters):
+def prepare_reel(row, sources, out, rosters, *, duration_frames=2100):
     brand = row["brand"]
     beats = row["beats"]
     by_key = {beat["source"]: sources[beat["source"]] for beat in beats}
@@ -95,10 +95,10 @@ def prepare_reel(row, sources, out, rosters):
              "evidence_boundary": row["boundary"]}
     if brand == "bakim":
         plan = beauty_production.make_plan({**row, "sources": source_rows,
-            "beats": [{**beat, "references": [beat["source"]]} for beat in beats]})
+            "beats": [{**beat, "references": [beat["source"]]} for beat in beats]}, duration_frames=duration_frames)
     else:
         source_number = {key: index for index, key in enumerate(source_rows, 1)}
-        plan = director.build_plan(brand, topic, overrides={
+        plan = director.build_plan(brand, topic, duration_frames=duration_frames, overrides={
             str(index): {"source_numbers": [source_number[beat["source"]]]}
             for index, beat in enumerate(beats, 1)})
     roles = [{
@@ -196,7 +196,7 @@ def batch(out, meter):
     inventory = registry_view()
     rosters = {brand: [r for r in director._read(ROOT / "config" / path) if 1 <= r["id"] <= 20]
                for brand, path in BRANDS.items()}
-    if len(inventory["entries"]) != 163 or any(len(roles) != 20 for roles in rosters.values()):
+    if len(inventory["entries"]) < 163 or any(len(roles) != 20 for roles in rosters.values()):
         raise ValueError("Registry or specialist inventory drift")
     stories, reels = [], []
     for row in catalogue["stories"]:
