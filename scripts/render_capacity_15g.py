@@ -311,7 +311,15 @@ def run(opts):
         raise ValueError('The exact recorded WAV is outside the accepted duration')
     meter=Measurements(out/'PERFORMANCE.json')
     model=WhisperModel(str(opts.model.resolve()),device='cpu',compute_type='int8',cpu_threads=3,local_files_only=True)
-    cues,cuts=meter.measure('align_from_recording',lambda:align(lines,transcribe(voice,model,key),duration))
+    def align_recording():
+        speech = transcribe(voice, model, key)
+        try:
+            return align(lines, speech, duration)
+        except ValueError:
+            batch.write(out/'ALIGNMENT_DIAGNOSTIC.json', speech)
+            raise
+
+    cues,cuts=meter.measure('align_from_recording',align_recording)
     plan=adopted_plan(key,lines,cuts)
     verdict=review({**topic,'sources':plan['sources'],'evidence_boundary':topic['boundary']},topic['brand'],lines,fixed_recording=True)
     if verdict['status']!='passes_edit_index' or verdict['best']['total']<85:

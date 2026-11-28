@@ -14,10 +14,6 @@ permissions:
   contents: read
   actions: read
 
-concurrency:
-  group: daily-production-15g-${{ github.ref }}
-  cancel-in-progress: false
-
 jobs:
   navigation:
     if: github.repository == 'blgnmstf32-ship-it/turk-tarihi-icerik' && github.ref == 'refs/heads/stage-15g-daily-capacity'
@@ -58,10 +54,13 @@ jobs:
     needs: navigation
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    concurrency:
+      group: daily-production-15g-${{ github.ref }}-${{ matrix.topic }}
+      cancel-in-progress: false
     strategy:
       fail-fast: false
       matrix:
-        topic: [kultepe-kil-borc-kaydi, ife-heykel-mum-kalip, firca-kurutma-duzeni, goz-makyaji-aplikatoru]
+        topic: ${{ fromJSON(contains(github.event.head_commit.message, '[15g-eye-only]') && '["goz-makyaji-aplikatoru"]' || '["kultepe-kil-borc-kaydi","ife-heykel-mum-kalip","firca-kurutma-duzeni","goz-makyaji-aplikatoru"]') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -104,10 +103,15 @@ jobs:
           model=output/15g-input/whisper
           mkdir -p "$model"
           base=https://huggingface.co/Systran/faster-whisper-medium/resolve/08e178d48790749d25932bbc082711ddcfdfbc4f
+          checksum=9b45e1009dcc4ab601eff815b61d80e60ce3fd8c74c1a14f4a282258286b51ae
+          if [ "$TOPIC" = goz-makyaji-aplikatoru ]; then
+            base=https://huggingface.co/Systran/faster-whisper-small/resolve/536b0662742c02347bc0e980a01041f333bce120
+            checksum=3e305921506d8872816023e4c273e75d2419fb89b24da97b4fe7bce14170d671
+          fi
           for model_file in model.bin config.json tokenizer.json vocabulary.txt; do
             curl --fail --silent --show-error --retry 2 --location "$base/$model_file" -o "$model/$model_file"
           done
-          printf '%s  %s\n' 9b45e1009dcc4ab601eff815b61d80e60ce3fd8c74c1a14f4a282258286b51ae "$model/model.bin" | sha256sum -c
+          printf '%s  %s\n' "$checksum" "$model/model.bin" | sha256sum -c
           python -m scripts.render_capacity_15g --topic "$TOPIC" --assets output/15g-input/assets --fetch-assets
       - name: Render, measure, and repair without network or secrets
         env:
