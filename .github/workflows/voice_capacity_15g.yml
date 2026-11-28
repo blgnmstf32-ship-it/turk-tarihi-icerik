@@ -1,0 +1,78 @@
+name: 15G · Verified free narration
+on:
+  workflow_dispatch:
+  push:
+    branches: [stage-15g-daily-capacity]
+    paths: [.github/workflows/voice_capacity_15g.yml]
+permissions:
+  contents: read
+concurrency:
+  group: turk-tarihi-content-drafts
+  cancel-in-progress: false
+jobs:
+  voice:
+    if: >-
+      github.repository == 'blgnmstf32-ship-it/turk-tarihi-icerik' &&
+      github.actor == 'blgnmstf32-ship-it' &&
+      github.ref == 'refs/heads/stage-15g-daily-capacity'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - name: Restore existing free quota records
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .cache/editorial-llm.sqlite3
+            .cache/gemini-quota.sqlite3
+            .cache/gemini-voice
+          key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            editorial-llm-v1-
+      - name: Match owner's confirmed free project without returning key material
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python - <<'PY'
+          import hashlib
+          import hmac
+          import os
+
+          key = os.environ.get("GEMINI_API_KEY", "").strip()
+          allowed = (bytes.fromhex("321374e22a95c757e359ab60730947f991f5c83f20d742cb9cba2b035703aa9ddaa98228bc9b2fe248852b994e358622ae317ada67a62aded8350df96c64244b"), bytes.fromhex("3a95c38c531b50816ced81247cf00481ca8564d05691d7432d7f4858ea664183cd3b5830c70475cc875248b71badbe6e33669f3960ec03e4533de6da70bff89c"))
+          candidate = hashlib.scrypt(
+              key[-4:].encode(), salt=bytes.fromhex("a574df2261b967d6b81b6d944fce51c8e18999938b4e548fb4cf9d014236aed7"), n=2**17, r=8, p=1, maxmem=250_000_000)
+          if len(key) < 24 or not any(hmac.compare_digest(candidate, digest) for digest in allowed):
+              raise SystemExit("FREE_PROJECT_KEY_MATCH=false")
+          print("FREE_PROJECT_KEY_MATCH=true")
+          PY
+      - name: Produce five owner-approved source-bound takes using the free ledger
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python -m scripts.voice_capacity_15g --out output/15g-voice --quota .cache/gemini-quota.sqlite3
+      - name: Save free quota records
+        if: ${{ always() && hashFiles('.cache/gemini-quota.sqlite3') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .cache/editorial-llm.sqlite3
+            .cache/gemini-quota.sqlite3
+            .cache/gemini-voice
+          key: editorial-llm-v1-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Save validated takes and aggregate usage
+        if: ${{ always() && hashFiles('output/15g-voice/TTS_REPORT.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-15g-free-narration
+          path: |
+            output/15g-voice/*.wav
+            output/15g-voice/TTS_REPORT.json
+          if-no-files-found: error
+          retention-days: 7
